@@ -1,37 +1,39 @@
-<section class="hero-section">
-    <div class="hero-section__copy reveal">
-        <h1>{{ $content['hero']['title'] }}</h1>
-        <p class="hero-lede">{{ $content['hero']['lede'] }}</p>
+@php
+    $stageHrefs = [
+        'work' => config('portfolio.socials.github.url'),
+        'about' => route('home', ['locale' => $locale]).'#stage-about',
+        'stack' => route('home', ['locale' => $locale]).'#stage-stack',
+        'contact' => config('portfolio.socials.email.url'),
+    ];
+@endphp
+
+<section class="loaf-stage" data-cat-stage>
+    <div class="loaf-stage__word" aria-hidden="true">
+        @foreach ($content['hero']['backdrop'] as $word)
+            <span>{{ $word }}</span>
+        @endforeach
     </div>
 
-    <aside class="hero-visual reveal" aria-label="{{ $content['hero']['proof']['label'] }}">
-        <div class="hero-atom">
-            <div class="hero-atom__viewport">
-                <div class="atom-scene" aria-label="{{ $content['hero']['proof']['orbit_label'] }}">
-                    <span class="atom-orbit atom-orbit--outer"></span>
-                    <span class="atom-orbit atom-orbit--middle"></span>
-                    <span class="atom-orbit atom-orbit--inner"></span>
-                    <span class="atom-orbit atom-orbit--dashed"></span>
-                    <span class="atom-orbit atom-orbit--core"></span>
+    <div class="loaf-stage__scene" aria-label="{{ $content['ui']['menu'] }}">
+        @foreach ($content['hero']['stage'] as $prop)
+            @php($href = $stageHrefs[$prop['key']] ?? '#')
+            @php($isExternal = str_starts_with($href, 'http') && ! str_starts_with($href, url('/')))
+            <a
+                id="stage-{{ $prop['key'] }}"
+                class="stage-prop stage-prop--{{ $prop['key'] }}"
+                href="{{ $href }}"
+                @if ($isExternal) rel="noreferrer" @endif
+                data-cat-message="{{ $prop['message'] }}"
+            >
+                <span>{{ $prop['label'] }}</span>
+            </a>
+        @endforeach
 
-                    @foreach (['outer', 'middle', 'inner'] as $track)
-                        <div class="atom-track atom-track--{{ $track }}">
-                            @foreach (array_filter($content['hero']['proof']['signals'], fn ($signal) => $signal['track'] === $track) as $signal)
-                                <div class="atom-chip atom-chip--{{ $signal['class'] }}">
-                                    <span class="atom-chip__content">
-                                        <span class="atom-chip__signal" aria-hidden="true"></span>
-                                        {{ $signal['label'] }}
-                                    </span>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="hero-logo-core">
-                    <x-brand-mark class="hero-logo-core__mark" />
-                </div>
-            </div>
+        <div class="loaf-stage__bubble" aria-live="polite" data-cat-bubble>
+            {{ $content['hero']['bubble'] }}
         </div>
-    </aside>
+
+        <x-cat-loaf-character class="loaf-stage__cat" data-cat-character />
+        <div class="loaf-stage__floor"></div>
+    </div>
 </section>

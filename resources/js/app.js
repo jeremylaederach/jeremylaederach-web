@@ -1,52 +1,153 @@
+const selectors = {
+    catBubble: '[data-cat-bubble]',
+    catStage: '[data-cat-stage]',
+    catTrigger: '[data-cat-message]',
+    menuPanel: '[data-menu-panel]',
+    menuToggle: '[data-menu-toggle]',
+    reveal: '.reveal',
+};
+
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const revealSelector = '.reveal';
-const tiltSelector = '[data-tilt]';
 
 const markRevealed = (element) => element.classList.add('is-visible');
 
 const initScrollReveals = () => {
+    const revealElements = document.querySelectorAll(selectors.reveal);
+
+    if (!('IntersectionObserver' in window)) {
+        revealElements.forEach(markRevealed);
+
+        return;
+    }
+
     const revealObserver = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    markRevealed(entry.target);
-                    revealObserver.unobserve(entry.target);
+                if (!entry.isIntersecting) {
+                    return;
                 }
+
+                markRevealed(entry.target);
+                revealObserver.unobserve(entry.target);
             });
         },
         { threshold: 0.14 },
     );
 
-    document.querySelectorAll(revealSelector).forEach((element) => revealObserver.observe(element));
+    revealElements.forEach((element) => revealObserver.observe(element));
 };
 
-const initSurfaceTilt = () => {
-    document.querySelectorAll(tiltSelector).forEach((element) => {
-        element.addEventListener('pointermove', (event) => {
-            const rect = element.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const rotateY = ((x / rect.width) - 0.5) * 3.2;
-            const rotateX = ((y / rect.height) - 0.5) * -3.2;
+const initCatStage = () => {
+    const stage = document.querySelector(selectors.catStage);
+    const bubble = document.querySelector(selectors.catBubble);
 
-            element.style.setProperty('--cursor-x', `${x}px`);
-            element.style.setProperty('--cursor-y', `${y}px`);
-            element.style.setProperty('--tilt-x', `${rotateX}deg`);
-            element.style.setProperty('--tilt-y', `${rotateY}deg`);
-        });
+    if (!stage || !bubble) {
+        return;
+    }
 
-        element.addEventListener('pointerleave', () => {
-            element.style.removeProperty('--tilt-x');
-            element.style.removeProperty('--tilt-y');
+    const defaultMessage = bubble.textContent.trim();
+
+    document.querySelectorAll(selectors.catTrigger).forEach((trigger) => {
+        const showMessage = () => {
+            bubble.textContent = trigger.dataset.catMessage || defaultMessage;
+            stage.classList.add('is-curious');
+        };
+
+        const resetMessage = () => {
+            bubble.textContent = defaultMessage;
+            stage.classList.remove('is-curious');
+        };
+
+        trigger.addEventListener('pointerenter', showMessage);
+        trigger.addEventListener('focus', showMessage);
+        trigger.addEventListener('pointerleave', resetMessage);
+        trigger.addEventListener('blur', resetMessage);
+    });
+};
+
+const initSiteMenu = () => {
+    const toggle = document.querySelector(selectors.menuToggle);
+    const panel = document.querySelector(selectors.menuPanel);
+
+    if (!toggle || !panel) {
+        return;
+    }
+
+    let closeTimer;
+
+    const finishClose = () => {
+        panel.hidden = true;
+        panel.removeAttribute('data-closing');
+        panel.setAttribute('aria-hidden', 'true');
+    };
+
+    const openMenu = () => {
+        window.clearTimeout(closeTimer);
+        panel.hidden = false;
+        panel.removeAttribute('data-closing');
+        panel.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+
+        window.requestAnimationFrame(() => {
+            panel.setAttribute('data-open', '');
         });
+    };
+
+    const closeMenu = ({ restoreFocus = false } = {}) => {
+        if (panel.hidden) {
+            return;
+        }
+
+        window.clearTimeout(closeTimer);
+        toggle.setAttribute('aria-expanded', 'false');
+        panel.removeAttribute('data-open');
+        panel.setAttribute('data-closing', '');
+        panel.setAttribute('aria-hidden', 'true');
+
+        closeTimer = window.setTimeout(finishClose, prefersReducedMotion ? 0 : 820);
+
+        if (restoreFocus) {
+            toggle.focus();
+        }
+    };
+
+    toggle.addEventListener('click', () => {
+        if (toggle.getAttribute('aria-expanded') === 'true') {
+            closeMenu();
+
+            return;
+        }
+
+        openMenu();
+    });
+
+    panel.addEventListener('click', (event) => {
+        if (event.target.closest('a')) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (toggle.contains(event.target) || panel.contains(event.target)) {
+            return;
+        }
+
+        closeMenu();
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeMenu({ restoreFocus: true });
+        }
     });
 };
 
 document.documentElement.classList.add('js');
+initSiteMenu();
+initCatStage();
 
 if (prefersReducedMotion) {
-    document.querySelectorAll(revealSelector).forEach(markRevealed);
+    document.querySelectorAll(selectors.reveal).forEach(markRevealed);
 } else {
     initScrollReveals();
-    initSurfaceTilt();
 }

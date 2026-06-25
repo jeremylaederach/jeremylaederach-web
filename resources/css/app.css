@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import './foundation.css';
+@import './layout.css';
+@import './hero.css';
 @import './components.css';
+@import './sections.css';
 @import './responsive.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -17,4 +20,6 @@
     --color-line: #231144;
     --color-accent: #b56cff;
     --color-glow: #d99bff;
+    --color-signal: #79f2c0;
+    --color-warm: #ffd166;
 }

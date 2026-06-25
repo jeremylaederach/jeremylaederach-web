@@ -1,0 +1,249 @@
+@layer components {
+    .loaf-stage {
+        position: relative;
+        min-height: calc(100svh - 72px);
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 54% 24%, rgba(217, 155, 255, 0.2), transparent 34rem),
+            linear-gradient(180deg, #080211 0%, #14061f 52%, #080211 100%);
+        isolation: isolate;
+    }
+
+    .loaf-stage::before {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(rgba(245, 242, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 255, 0.02) 1px, transparent 1px);
+        background-size: 78px 78px;
+        content: "";
+        mask-image: linear-gradient(to bottom, black 0%, black 74%, transparent 100%);
+    }
+
+    .loaf-stage__word {
+        position: absolute;
+        z-index: 0;
+        top: clamp(78px, 11vh, 120px);
+        right: -6vw;
+        left: -6vw;
+        color: rgba(217, 155, 255, 0.14);
+        font-size: clamp(88px, 16vw, 224px);
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 0.8;
+        text-align: center;
+        text-transform: uppercase;
+        user-select: none;
+    }
+
+    .loaf-stage__word span {
+        display: block;
+    }
+
+    .loaf-stage__scene {
+        position: absolute;
+        inset: clamp(130px, 19vh, 190px) clamp(28px, 5vw, 84px) 36px;
+        z-index: 2;
+    }
+
+    .loaf-stage__floor {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(245, 242, 255, 0.18);
+    }
+
+    .loaf-stage__cat {
+        position: absolute;
+        z-index: 4;
+        left: 50%;
+        bottom: -2px;
+        width: min(360px, 33vw);
+        transform: translateX(-50%);
+        animation: loaf-float 4.2s ease-in-out infinite;
+    }
+
+    .cat-loaf-character * {
+        vector-effect: non-scaling-stroke;
+    }
+
+    .cat-loaf-character__body path,
+    .cat-loaf-character__tail path,
+    .cat-loaf-character__paw path,
+    .cat-loaf-character__paw circle {
+        fill: url("#catLoafGradient");
+        stroke: #05010d;
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .cat-loaf-character__face rect {
+        fill: #05010d;
+    }
+
+    .cat-loaf-character__face path {
+        fill: none;
+        stroke: #05010d;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .cat-loaf-character__blink {
+        opacity: 0;
+        animation: loaf-blink 5.4s ease-in-out infinite;
+    }
+
+    .cat-loaf-character__tail {
+        transform-origin: 252px 122px;
+        animation: loaf-tail 3.6s ease-in-out infinite;
+    }
+
+    .cat-loaf-character__paw {
+        transform-origin: 88px 174px;
+        opacity: 0;
+        transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .loaf-stage.is-curious .cat-loaf-character__paw,
+    .stage-prop:hover ~ .loaf-stage__bubble + .loaf-stage__cat .cat-loaf-character__paw {
+        opacity: 1;
+        transform: rotate(-6deg);
+    }
+
+    .loaf-stage__bubble {
+        position: absolute;
+        z-index: 5;
+        left: 50%;
+        bottom: min(318px, 36vh);
+        width: min(260px, 70vw);
+        border: 5px solid #05010d;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #05010d;
+        font-size: 17px;
+        font-weight: 850;
+        line-height: 1.25;
+        padding: 14px 16px;
+        text-align: center;
+        transform: translateX(-50%) rotate(-1deg);
+        transition: transform 180ms ease;
+    }
+
+    .loaf-stage__bubble::after {
+        position: absolute;
+        bottom: -18px;
+        left: 50%;
+        width: 28px;
+        height: 28px;
+        border-right: 5px solid #05010d;
+        border-bottom: 5px solid #05010d;
+        background: var(--ink);
+        content: "";
+        transform: translateX(-50%) rotate(45deg);
+    }
+
+    .stage-prop {
+        position: absolute;
+        z-index: 3;
+        display: grid;
+        place-items: center;
+        border: 5px solid #05010d;
+        border-radius: 8px;
+        box-shadow: 0 16px 0 -9px rgba(5, 1, 13, 0.85);
+        color: var(--ink);
+        font-weight: 900;
+        text-transform: uppercase;
+        transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .stage-prop:hover,
+    .stage-prop:focus-visible {
+        filter: brightness(1.08);
+        transform: translateY(-5px) rotate(var(--prop-rotate, 0deg));
+    }
+
+    .stage-prop--work {
+        --prop-rotate: -1deg;
+        left: 10%;
+        bottom: 18px;
+        width: min(250px, 23vw);
+        height: 130px;
+        background: #07030f;
+        font-size: clamp(26px, 3vw, 42px);
+    }
+
+    .stage-prop--about {
+        --prop-rotate: 3deg;
+        right: 11%;
+        bottom: 42px;
+        width: 132px;
+        height: 66px;
+        background: var(--ink);
+        color: #05010d;
+        transform: rotate(3deg);
+    }
+
+    .stage-prop--stack {
+        --prop-rotate: -4deg;
+        top: 24px;
+        left: 24%;
+        width: 118px;
+        height: 54px;
+        background: var(--signal);
+        color: #05010d;
+        transform: rotate(-4deg);
+    }
+
+    .stage-prop--contact {
+        --prop-rotate: 2deg;
+        top: 18px;
+        right: 12%;
+        width: 152px;
+        height: 58px;
+        background: var(--warm);
+        color: #05010d;
+        transform: rotate(2deg);
+    }
+
+    @keyframes loaf-float {
+        0%,
+        100% {
+            translate: 0 0;
+        }
+
+        50% {
+            translate: 0 -8px;
+        }
+    }
+
+    @keyframes loaf-tail {
+        0%,
+        100% {
+            rotate: -3deg;
+        }
+
+        50% {
+            rotate: 5deg;
+        }
+    }
+
+    @keyframes loaf-blink {
+        0%,
+        92%,
+        100% {
+            opacity: 0;
+        }
+
+        94%,
+        96% {
+            opacity: 1;
+        }
+    }
+}

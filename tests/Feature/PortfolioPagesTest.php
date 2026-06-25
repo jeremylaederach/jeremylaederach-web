@@ -19,24 +19,31 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_localized_home_pages_render_real_portfolio_content(): void
+    public function test_localized_home_pages_render_the_cat_stage(): void
     {
         $this->get('/en')
             ->assertOk()
-            ->assertSee('Jeremy Läderach')
-            ->assertSee('Quantified')
-            ->assertSee('Jay-Jay');
+            ->assertSee('<title>Jeremy Läderach</title>', false)
+            ->assertSee('SOFTWARE')
+            ->assertSee('ENGINEER')
+            ->assertSee('Work')
+            ->assertSee('Stack')
+            ->assertSee('Pick a prop')
+            ->assertDontSee('Useful web software');
 
         $this->get('/de')
             ->assertOk()
-            ->assertSee('Scharfe Software')
-            ->assertSee('Scherer Gartengestaltung');
+            ->assertSee('SOFTWARE')
+            ->assertSee('ENGINEER')
+            ->assertSee('Stack');
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void
     {
         $this->get('/en/contact')
             ->assertOk()
+            ->assertSee('<title>Jeremy Läderach</title>', false)
+            ->assertSee('The contact form can come later')
             ->assertSee('info@jeremylaederach.ch')
             ->assertSee('GitHub');
 

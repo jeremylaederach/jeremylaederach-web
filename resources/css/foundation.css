@@ -9,7 +9,10 @@
         --muted: #b9b2d1;
         --accent: #b56cff;
         --glow: #d99bff;
+        --signal: #79f2c0;
+        --warm: #ffd166;
         --soft-line: rgba(245, 242, 255, 0.08);
+        --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.32);
     }
 
     * {

@@ -1,0 +1,31 @@
+@layer components {
+    .contact-panel,
+    .mini-card {
+        border: 1px solid rgba(245, 242, 255, 0.08);
+        border-radius: 8px;
+        background:
+            linear-gradient(180deg, rgba(245, 242, 255, 0.035), transparent 34%),
+            rgba(10, 6, 23, 0.78);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .contact-panel {
+        padding: 24px;
+    }
+
+    .contact-page-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+        gap: 24px;
+        align-items: start;
+        padding-top: 34px;
+    }
+
+    .imprint-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        padding-top: 34px;
+        padding-bottom: 130px;
+    }
+}

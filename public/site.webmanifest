@@ -3,13 +3,13 @@
     "short_name": "JL Portfolio",
     "icons": [
         {
-            "src": "/brand/cat-loaf-transparent-256.png",
+            "src": "/brand/cats/main/cat-loaf-256.png",
             "sizes": "256x256",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/brand/apple-touch-icon.png",
+            "src": "/brand/icons/apple-touch-icon.png",
             "sizes": "180x180",
             "type": "image/png",
             "purpose": "any"

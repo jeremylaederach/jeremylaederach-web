@@ -6,7 +6,7 @@
 
 @php
     $variants = [
-        'cat-loaf' => 'brand/cat-loaf-transparent.png',
+        'cat-loaf' => 'brand/cats/main/cat-loaf.png',
     ];
 
     $src = $variants[$variant] ?? $variants['cat-loaf'];
