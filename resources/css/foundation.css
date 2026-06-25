@@ -1,0 +1,49 @@
+@layer base {
+    :root {
+        color-scheme: dark;
+        --bg: #05010d;
+        --surface: #0a0617;
+        --elevated: #120a24;
+        --line: #231144;
+        --ink: #f5f2ff;
+        --muted: #b9b2d1;
+        --accent: #b56cff;
+        --glow: #d99bff;
+        --soft-line: rgba(245, 242, 255, 0.08);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        letter-spacing: 0;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+        background: rgba(181, 108, 255, 0.34);
+        color: var(--ink);
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+}

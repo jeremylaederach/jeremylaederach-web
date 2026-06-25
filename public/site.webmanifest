@@ -1,0 +1,21 @@
+{
+    "name": "Jeremy Läderach Portfolio",
+    "short_name": "JL Portfolio",
+    "icons": [
+        {
+            "src": "/brand/cat-loaf-transparent-256.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/brand/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "theme_color": "#05010D",
+    "background_color": "#05010D",
+    "display": "standalone"
+}

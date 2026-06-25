@@ -1,0 +1,247 @@
+@media (max-width: 940px) {
+    .site-header__inner {
+        grid-template-columns: minmax(0, 1fr) auto;
+        min-height: auto;
+        padding-block: 12px;
+    }
+
+    .language-switcher {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .primary-nav {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .hero-section,
+    .section-grid,
+    .contact-band,
+    .contact-page-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+        min-height: auto;
+        padding-top: 58px;
+        padding-inline: 24px;
+    }
+
+    .hero-atom {
+        min-height: auto;
+    }
+
+    .hero-atom__viewport {
+        min-height: 480px;
+    }
+
+    .atom-scene {
+        left: 50%;
+        top: 51%;
+        width: min(820px, 118vw);
+        height: 520px;
+    }
+
+    .project-grid,
+    .highlight-grid,
+    .imprint-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 640px) {
+    .section-shell {
+        width: min(100% - 24px, 1120px);
+    }
+
+    .brand-lockup small {
+        display: none;
+    }
+
+    .hero-section h1,
+    .page-hero h1 {
+        font-size: 40px;
+        line-height: 1.06;
+    }
+
+    .section-heading h2,
+    .contact-band h2 {
+        font-size: 31px;
+    }
+
+    .hero-lede,
+    .section-heading p,
+    .section-copy p,
+    .contact-band__copy p,
+    .page-hero p {
+        font-size: 16px;
+    }
+
+    .hero-section {
+        gap: 34px;
+        overflow: hidden;
+        padding-top: 34px;
+        padding-inline: 12px;
+    }
+
+    .hero-section::before,
+    .hero-section::after {
+        inset: 0;
+    }
+
+    .hero-section__copy {
+        padding-inline: 6px;
+    }
+
+    .hero-section h1 {
+        font-size: 42px;
+    }
+
+    .hero-atom__viewport {
+        min-height: 390px;
+        overflow: hidden;
+    }
+
+    .atom-scene {
+        inset: 20px 0 20px;
+        width: auto;
+        height: auto;
+        transform: none;
+    }
+
+    .atom-track--outer,
+    .atom-track--middle,
+    .atom-track--inner {
+        inset: 0;
+        animation: none;
+        transform: none;
+    }
+
+    .atom-track--outer .atom-chip__content,
+    .atom-track--middle .atom-chip__content,
+    .atom-track--inner .atom-chip__content {
+        animation: none;
+        transform: none;
+    }
+
+    .atom-orbit--outer {
+        inset: 12% 2% 14%;
+    }
+
+    .atom-orbit--middle {
+        inset: 23% 7% 22%;
+    }
+
+    .atom-orbit--inner {
+        inset: 34% 18% 33%;
+    }
+
+    .atom-orbit--dashed {
+        inset: 17% 5% 18%;
+    }
+
+    .atom-orbit--core {
+        inset: 38%;
+    }
+
+    .hero-logo-core {
+        width: 150px;
+        min-height: 130px;
+    }
+
+    .hero-logo-core__mark {
+        width: 140px;
+        height: 140px;
+    }
+
+    .atom-chip__content {
+        min-height: 34px;
+        gap: 6px;
+        font-size: 11px;
+        padding-inline: 9px;
+    }
+
+    .atom-chip__signal {
+        width: 6px;
+        height: 6px;
+    }
+
+    .atom-chip--angular,
+    .atom-chip--dotnet {
+        display: none;
+    }
+
+    .atom-chip--laravel {
+        left: 4%;
+        top: 8%;
+    }
+
+    .atom-chip--client {
+        right: 4%;
+        top: 8%;
+        bottom: auto;
+    }
+
+    .atom-chip--hosting {
+        left: 6%;
+        bottom: 9%;
+    }
+
+    .atom-chip--github {
+        right: 6%;
+        top: auto;
+        bottom: 9%;
+    }
+
+    .contact-panel__notes {
+        grid-template-columns: 1fr;
+    }
+
+    .project-card__visual,
+    .project-card__visual img {
+        height: 210px;
+        min-height: 210px;
+    }
+
+    .site-footer__inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    .interactive-surface {
+        transform: none !important;
+    }
+}
