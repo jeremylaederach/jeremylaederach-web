@@ -104,7 +104,7 @@ const initSiteMenu = () => {
         panel.setAttribute('data-closing', '');
         panel.setAttribute('aria-hidden', 'true');
 
-        closeTimer = window.setTimeout(finishClose, prefersReducedMotion ? 0 : 820);
+        closeTimer = window.setTimeout(finishClose, prefersReducedMotion ? 0 : 980);
 
         if (restoreFocus) {
             toggle.focus();
