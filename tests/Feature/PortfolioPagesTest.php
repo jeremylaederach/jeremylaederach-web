@@ -19,18 +19,19 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_landing_page_renders_as_navigation_stage(): void
+    public function test_landing_page_renders_as_card_stage(): void
     {
         $this->get('/en')
             ->assertOk()
             ->assertSee('<title>Jeremy', false)
+            ->assertSee('Jeremy')
             ->assertSee('Software Engineer')
             ->assertSee('About me')
             ->assertSee('Projects')
             ->assertSee('Contact')
             ->assertDontSee('fetchpriority="high"', false)
             ->assertSee('data-landing-card', false)
-            ->assertSee('Open')
+            ->assertDontSee('data-portfolio-chat', false)
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false)
             ->assertDontSee('Developer work with a practical business edge');
@@ -38,7 +39,6 @@ class PortfolioPagesTest extends TestCase
         $this->get('/de')
             ->assertOk()
             ->assertSee('Software Engineer')
-            ->assertSee('Öffnen')
             ->assertSee('Profil')
             ->assertSee('Projekte');
     }

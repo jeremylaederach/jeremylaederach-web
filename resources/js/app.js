@@ -5,23 +5,105 @@ const selectors = {
     reveal: '.reveal',
 };
 
+const LANDING_TRANSITION_MS = 780;
+
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const markRevealed = (element) => element.classList.add('is-visible');
 
-const initLandingCards = () => {
-    if (prefersReducedMotion) {
+const shouldAnimateCardNavigation = (event, card) => {
+    if (document.documentElement.classList.contains('is-landing-transitioning')) {
+        return false;
+    }
+
+    if (prefersReducedMotion || event.defaultPrevented || event.button !== 0) {
+        return false;
+    }
+
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return false;
+    }
+
+    return card.target !== '_blank' && card.href;
+};
+
+const animateCardNavigation = async (card) => {
+    const rect = card.getBoundingClientRect();
+    const styles = window.getComputedStyle(card);
+    const backdrop = document.createElement('div');
+    const clone = card.cloneNode(true);
+    const target = {
+        height: window.innerHeight * 1.12,
+        left: window.innerWidth * -0.06,
+        top: window.innerHeight * -0.06,
+        width: window.innerWidth * 1.12,
+    };
+
+    backdrop.className = 'landing-transition-backdrop';
+    clone.classList.add('landing-card--transition-clone');
+    clone.removeAttribute('data-landing-card');
+    clone.setAttribute('aria-hidden', 'true');
+
+    Object.assign(clone.style, {
+        borderRadius: styles.borderRadius,
+        height: `${rect.height}px`,
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        transform: 'none',
+        transformOrigin: 'top left',
+        width: `${rect.width}px`,
+    });
+
+    document.documentElement.classList.add('is-landing-transitioning');
+    card.classList.add('landing-card--is-hidden');
+    document.body.append(backdrop, clone);
+
+    if (!clone.animate || !backdrop.animate) {
+        window.location.href = card.href;
+
         return;
     }
 
-    document.querySelectorAll(selectors.landingCard).forEach((card) => {
-        card.addEventListener('pointermove', (event) => {
-            const rect = card.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 100;
-            const y = ((event.clientY - rect.top) / rect.height) * 100;
+    const easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
+    const targetTransform = `translate3d(${target.left - rect.left}px, ${target.top - rect.top}px, 0) scale(${target.width / rect.width}, ${target.height / rect.height})`;
+    const backdropAnimation = backdrop.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: LANDING_TRANSITION_MS,
+        easing: 'ease',
+        fill: 'forwards',
+    });
+    const cardAnimation = clone.animate(
+        [
+            {
+                borderRadius: styles.borderRadius,
+                opacity: 1,
+                transform: 'translate3d(0, 0, 0) scale(1)',
+            },
+            {
+                borderRadius: '0',
+                opacity: 1,
+                transform: targetTransform,
+            },
+        ],
+        {
+            duration: LANDING_TRANSITION_MS,
+            easing,
+            fill: 'forwards',
+        },
+    );
 
-            card.style.setProperty('--pointer-x', `${x}%`);
-            card.style.setProperty('--pointer-y', `${y}%`);
+    await Promise.allSettled([backdropAnimation.finished, cardAnimation.finished]);
+    window.location.href = card.href;
+};
+
+const initLandingCards = () => {
+    document.querySelectorAll(selectors.landingCard).forEach((card) => {
+        card.addEventListener('click', (event) => {
+            if (!shouldAnimateCardNavigation(event, card)) {
+                return;
+            }
+
+            event.preventDefault();
+            animateCardNavigation(card);
         });
     });
 };
