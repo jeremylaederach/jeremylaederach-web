@@ -52,8 +52,8 @@
 
     .site-header__inner {
         display: grid;
-        width: min(1180px, calc(100% - 24px));
-        min-height: 72px;
+        width: min(1560px, calc(100% - 32px));
+        min-height: 86px;
         margin-inline: auto;
         grid-template-columns: auto auto;
         align-items: center;
@@ -65,14 +65,24 @@
         display: inline-flex;
         min-width: 0;
         align-items: center;
-        gap: 11px;
+        gap: 12px;
+        border: 1px solid rgba(245, 242, 255, 0.11);
+        border-radius: 999px;
+        background:
+            linear-gradient(145deg, rgba(245, 242, 255, 0.08), rgba(245, 242, 255, 0.02)),
+            rgba(5, 1, 13, 0.42);
         color: var(--ink);
+        padding: 8px 13px 8px 9px;
         pointer-events: auto;
+        backdrop-filter: blur(18px);
+        box-shadow:
+            0 18px 42px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .brand-lockup__mark {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
         flex: 0 0 auto;
         filter: drop-shadow(0 0 18px rgba(181, 108, 255, 0.28));
     }
@@ -84,21 +94,22 @@
     }
 
     .brand-lockup strong {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 750;
         line-height: 1.1;
     }
 
     .brand-lockup small {
-        margin-top: 3px;
+        margin-top: 4px;
         color: var(--muted);
-        font-size: 12px;
+        font-size: 11px;
+        font-weight: 620;
     }
 
     .site-menu {
         position: fixed;
-        top: 20px;
-        right: clamp(16px, 3vw, 34px);
+        top: 18px;
+        right: max(16px, calc((100vw - 1560px) / 2));
         display: grid;
         z-index: 70;
         justify-items: end;
@@ -108,8 +119,8 @@
     .site-menu__toggle {
         position: relative;
         display: grid;
-        width: 62px;
-        height: 62px;
+        width: 60px;
+        height: 60px;
         place-items: center;
         border: 1px solid rgba(245, 242, 255, 0.16);
         border-radius: 999px;
@@ -190,8 +201,8 @@
 
     .site-menu__panel {
         position: absolute;
-        top: calc(100% + 11px);
-        right: 2px;
+        top: calc(100% + 10px);
+        right: 1px;
         display: grid;
         width: 58px;
         gap: 0;

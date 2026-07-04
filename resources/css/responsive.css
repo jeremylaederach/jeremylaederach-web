@@ -1,6 +1,6 @@
 @media (max-width: 940px) {
     .site-header__inner {
-        min-height: 66px;
+        min-height: 76px;
     }
 
     .contact-page-grid,
@@ -10,6 +10,20 @@
 }
 
 @media (max-width: 720px) {
+    .brand-lockup {
+        gap: 9px;
+        padding: 7px 11px 7px 8px;
+    }
+
+    .brand-lockup__mark {
+        width: 36px;
+        height: 36px;
+    }
+
+    .brand-lockup strong {
+        font-size: 13px;
+    }
+
     .brand-lockup small {
         display: none;
     }
@@ -48,23 +62,23 @@
     }
 
     .site-menu {
-        top: 14px;
+        top: 13px;
         right: 14px;
     }
 
     .site-menu__toggle {
-        width: 54px;
-        height: 54px;
+        width: 52px;
+        height: 52px;
     }
 
     .site-menu__panel {
-        width: 54px;
+        width: 52px;
         right: 0;
     }
 
     .primary-nav a {
-        width: 43px;
-        height: 43px;
+        width: 41px;
+        height: 41px;
     }
 
     .nav-icon {

@@ -1,26 +1,10 @@
 <section class="landing-stage" aria-labelledby="landing-title">
-    <div class="landing-stage__backdrop" aria-hidden="true">
-        @foreach ($content['home']['backdrop'] as $word)
-            <span>{{ $word }}</span>
-        @endforeach
-    </div>
-
     <div class="landing-stage__halo" aria-hidden="true"></div>
 
     <div class="landing-stage__inner">
-        <div class="landing-stage__copy">
-            <p class="landing-stage__kicker">{{ $content['home']['kicker'] }}</p>
-            <h1 id="landing-title">{{ $content['home']['title'] }}</h1>
-            <p>{{ $content['home']['intro'] }}</p>
-        </div>
+        <h1 id="landing-title" class="sr-only">{{ $content['home']['title'] }}</h1>
 
         <div class="landing-stage__experience">
-            <div class="landing-stage__brand-orbit" aria-hidden="true">
-                <div class="landing-stage__cat-frame">
-                    <x-brand-mark class="landing-stage__cat" size="1024" fetchpriority="high" />
-                </div>
-            </div>
-
             <nav class="landing-nav" aria-label="{{ $content['ui']['menu'] }}">
                 @foreach ($content['home']['entries'] as $entry)
                     <a
@@ -29,7 +13,6 @@
                         aria-label="{{ $entry['label'] }}: {{ $entry['description'] }}"
                         data-landing-card
                     >
-                        <span class="landing-nav__index">{{ $entry['index'] }}</span>
                         <span class="landing-nav__icon">
                             <x-nav-icon :name="$entry['icon']" />
                         </span>
