@@ -14,45 +14,36 @@
             <p>{{ $content['home']['intro'] }}</p>
         </div>
 
-        <div class="landing-stage__brand-orbit" aria-hidden="true">
-            <div class="landing-stage__status">
-                <span></span>
-                {{ $content['home']['status'] }}
+        <div class="landing-stage__experience">
+            <div class="landing-stage__brand-orbit" aria-hidden="true">
+                <div class="landing-stage__cat-frame">
+                    <x-brand-mark class="landing-stage__cat" size="1024" fetchpriority="high" />
+                </div>
             </div>
 
-            <div class="landing-stage__cat-frame">
-                <x-brand-mark class="landing-stage__cat" size="1024" fetchpriority="high" />
-            </div>
-
-            <div class="landing-stage__chips">
-                @foreach ($content['home']['chips'] as $chip)
-                    <span>{{ $chip }}</span>
+            <nav class="landing-nav" aria-label="{{ $content['ui']['menu'] }}">
+                @foreach ($content['home']['entries'] as $entry)
+                    <a
+                        href="{{ route($entry['route'], ['locale' => $locale]) }}"
+                        class="landing-nav__item"
+                        aria-label="{{ $entry['label'] }}: {{ $entry['description'] }}"
+                        data-landing-card
+                    >
+                        <span class="landing-nav__index">{{ $entry['index'] }}</span>
+                        <span class="landing-nav__icon">
+                            <x-nav-icon :name="$entry['icon']" />
+                        </span>
+                        <span class="landing-nav__text">
+                            <strong>{{ $entry['label'] }}</strong>
+                            <span>{{ $entry['description'] }}</span>
+                        </span>
+                        <span class="landing-nav__action">
+                            {{ $content['ui']['open'] }}
+                            <span aria-hidden="true">&rarr;</span>
+                        </span>
+                    </a>
                 @endforeach
-            </div>
+            </nav>
         </div>
-
-        <nav class="landing-nav" aria-label="{{ $content['ui']['menu'] }}">
-            @foreach ($content['home']['entries'] as $entry)
-                <a
-                    href="{{ route($entry['route'], ['locale' => $locale]) }}"
-                    class="landing-nav__item"
-                    aria-label="{{ $entry['label'] }}: {{ $entry['description'] }}"
-                    data-landing-card
-                >
-                    <span class="landing-nav__index">{{ $entry['index'] }}</span>
-                    <span class="landing-nav__icon">
-                        <x-nav-icon :name="$entry['icon']" />
-                    </span>
-                    <span class="landing-nav__text">
-                        <strong>{{ $entry['label'] }}</strong>
-                        <span>{{ $entry['description'] }}</span>
-                    </span>
-                    <span class="landing-nav__action">
-                        {{ $content['ui']['open'] }}
-                        <span aria-hidden="true">&rarr;</span>
-                    </span>
-                </a>
-            @endforeach
-        </nav>
     </div>
 </section>
