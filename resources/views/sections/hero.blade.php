@@ -1,39 +1,51 @@
-@php
-    $stageHrefs = [
-        'work' => config('portfolio.socials.github.url'),
-        'about' => route('home', ['locale' => $locale]).'#stage-about',
-        'stack' => route('home', ['locale' => $locale]).'#stage-stack',
-        'contact' => config('portfolio.socials.email.url'),
-    ];
-@endphp
-
-<section class="loaf-stage" data-cat-stage>
-    <div class="loaf-stage__word" aria-hidden="true">
-        @foreach ($content['hero']['backdrop'] as $word)
+<section class="landing-stage" aria-labelledby="landing-title">
+    <div class="landing-stage__backdrop" aria-hidden="true">
+        @foreach ($content['home']['backdrop'] as $word)
             <span>{{ $word }}</span>
         @endforeach
     </div>
 
-    <div class="loaf-stage__scene" aria-label="{{ $content['ui']['menu'] }}">
-        @foreach ($content['hero']['stage'] as $prop)
-            @php($href = $stageHrefs[$prop['key']] ?? '#')
-            @php($isExternal = str_starts_with($href, 'http') && ! str_starts_with($href, url('/')))
-            <a
-                id="stage-{{ $prop['key'] }}"
-                class="stage-prop stage-prop--{{ $prop['key'] }}"
-                href="{{ $href }}"
-                @if ($isExternal) rel="noreferrer" @endif
-                data-cat-message="{{ $prop['message'] }}"
-            >
-                <span>{{ $prop['label'] }}</span>
-            </a>
-        @endforeach
+    <div class="landing-stage__halo" aria-hidden="true"></div>
 
-        <div class="loaf-stage__bubble" aria-live="polite" data-cat-bubble>
-            {{ $content['hero']['bubble'] }}
+    <div class="landing-stage__inner">
+        <div class="landing-stage__copy">
+            <p class="landing-stage__kicker">{{ $content['home']['kicker'] }}</p>
+            <h1 id="landing-title">{{ $content['home']['title'] }}</h1>
+            <p>{{ $content['home']['intro'] }}</p>
         </div>
 
-        <x-cat-loaf-character class="loaf-stage__cat" data-cat-character />
-        <div class="loaf-stage__floor"></div>
+        <div class="landing-stage__cat-area" aria-hidden="true">
+            <div class="landing-stage__status">
+                <span></span>
+                {{ $content['home']['status'] }}
+            </div>
+
+            <x-brand-mark class="landing-stage__cat" size="1024" fetchpriority="high" />
+
+            <div class="landing-stage__chips">
+                @foreach ($content['home']['chips'] as $chip)
+                    <span>{{ $chip }}</span>
+                @endforeach
+            </div>
+        </div>
+
+        <nav class="landing-nav" aria-label="{{ $content['ui']['menu'] }}">
+            @foreach ($content['home']['entries'] as $entry)
+                <a
+                    href="{{ route($entry['route'], ['locale' => $locale]) }}"
+                    class="landing-nav__item"
+                    aria-label="{{ $entry['label'] }}: {{ $entry['description'] }}"
+                >
+                    <span class="landing-nav__index">{{ $entry['index'] }}</span>
+                    <span class="landing-nav__icon">
+                        <x-nav-icon :name="$entry['icon']" />
+                    </span>
+                    <span class="landing-nav__text">
+                        <strong>{{ $entry['label'] }}</strong>
+                        <span>{{ $entry['description'] }}</span>
+                    </span>
+                </a>
+            @endforeach
+        </nav>
     </div>
 </section>

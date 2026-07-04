@@ -21,7 +21,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
+    <body class="route-{{ $currentRoute }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
 
@@ -31,7 +31,7 @@
                     <x-brand-mark class="brand-lockup__mark" size="96" />
                     <span>
                         <strong>Jeremy Läderach</strong>
-                        <small>Software Developer</small>
+                        <small>{{ $content['ui']['role'] }}</small>
                     </span>
                 </a>
 
@@ -54,14 +54,15 @@
                             @foreach ($content['nav'] as $item)
                                 @php
                                     $navCount = count($content['nav']);
-                                    $href = isset($item['route'])
-                                        ? route($item['route'], ['locale' => $locale])
-                                        : route('home', ['locale' => $locale]).$item['anchor'];
+                                    $href = route($item['route'], ['locale' => $locale]);
+                                    $isActive = $currentRoute === $item['route'];
                                     $reverseIndex = $navCount - $loop->iteration + 1;
                                 @endphp
                                 <a
+                                    @class(['is-active' => $isActive])
                                     href="{{ $href }}"
                                     aria-label="{{ $item['label'] }}"
+                                    @if ($isActive) aria-current="page" @endif
                                     data-menu-label="{{ $item['label'] }}"
                                     style="--menu-index: {{ $loop->index }}; --menu-reverse-index: {{ $reverseIndex }}"
                                 >

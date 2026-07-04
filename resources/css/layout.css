@@ -33,7 +33,7 @@
     }
 
     .section-shell {
-        width: min(1120px, calc(100% - 32px));
+        width: min(1480px, calc(100% - 32px));
         margin-inline: auto;
     }
 
@@ -262,7 +262,7 @@
         transition-delay: calc(var(--menu-index) * 78ms);
     }
 
-    .primary-nav a:first-child {
+    .primary-nav a.is-active {
         background:
             linear-gradient(145deg, rgba(217, 155, 255, 0.34), rgba(217, 155, 255, 0.12)),
             rgba(217, 155, 255, 0.08);
@@ -404,6 +404,10 @@
     .site-footer {
         border-top: 1px solid rgba(35, 17, 68, 0.78);
         background: rgba(3, 1, 7, 0.72);
+    }
+
+    .route-home .site-footer {
+        display: none;
     }
 
     .site-footer__inner {

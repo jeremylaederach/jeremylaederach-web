@@ -1,7 +1,4 @@
 const selectors = {
-    catBubble: '[data-cat-bubble]',
-    catStage: '[data-cat-stage]',
-    catTrigger: '[data-cat-message]',
     menuPanel: '[data-menu-panel]',
     menuToggle: '[data-menu-toggle]',
     reveal: '.reveal',
@@ -35,34 +32,6 @@ const initScrollReveals = () => {
     );
 
     revealElements.forEach((element) => revealObserver.observe(element));
-};
-
-const initCatStage = () => {
-    const stage = document.querySelector(selectors.catStage);
-    const bubble = document.querySelector(selectors.catBubble);
-
-    if (!stage || !bubble) {
-        return;
-    }
-
-    const defaultMessage = bubble.textContent.trim();
-
-    document.querySelectorAll(selectors.catTrigger).forEach((trigger) => {
-        const showMessage = () => {
-            bubble.textContent = trigger.dataset.catMessage || defaultMessage;
-            stage.classList.add('is-curious');
-        };
-
-        const resetMessage = () => {
-            bubble.textContent = defaultMessage;
-            stage.classList.remove('is-curious');
-        };
-
-        trigger.addEventListener('pointerenter', showMessage);
-        trigger.addEventListener('focus', showMessage);
-        trigger.addEventListener('pointerleave', resetMessage);
-        trigger.addEventListener('blur', resetMessage);
-    });
 };
 
 const initSiteMenu = () => {
@@ -144,7 +113,6 @@ const initSiteMenu = () => {
 
 document.documentElement.classList.add('js');
 initSiteMenu();
-initCatStage();
 
 if (prefersReducedMotion) {
     document.querySelectorAll(selectors.reveal).forEach(markRevealed);

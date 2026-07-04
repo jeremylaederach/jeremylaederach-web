@@ -9,79 +9,18 @@
     }
 }
 
-@media (max-width: 640px) {
-    .section-shell {
-        width: min(100% - 24px, 1120px);
-    }
-
+@media (max-width: 720px) {
     .brand-lockup small {
         display: none;
     }
 
-    .site-menu__toggle {
-        width: 52px;
-        height: 52px;
+    .page-hero {
+        padding-block: 92px 10px;
     }
 
-    .loaf-stage {
-        min-height: calc(100svh - 66px);
-    }
-
-    .loaf-stage__word {
-        top: 108px;
-        right: -45vw;
-        left: -45vw;
-        font-size: 92px;
-    }
-
-    .loaf-stage__scene {
-        inset: 178px 14px 26px;
-    }
-
-    .loaf-stage__cat {
-        width: min(250px, 66vw);
-    }
-
-    .loaf-stage__bubble {
-        bottom: min(252px, 32vh);
-        font-size: 14px;
-    }
-
-    .stage-prop {
-        z-index: 6;
-        border-width: 4px;
-    }
-
-    .stage-prop--work {
-        left: -2px;
-        bottom: 14px;
-        width: 116px;
-        height: 66px;
-        font-size: 22px;
-    }
-
-    .stage-prop--about {
-        right: -2px;
-        bottom: 54px;
-        width: 94px;
-        height: 48px;
-        font-size: 13px;
-    }
-
-    .stage-prop--stack {
-        top: 44px;
-        left: 3%;
-        width: 86px;
-        height: 42px;
-        font-size: 13px;
-    }
-
-    .stage-prop--contact {
-        top: 22px;
-        right: 0;
-        width: 104px;
-        height: 44px;
-        font-size: 13px;
+    .page-hero h1,
+    .section-heading h2 {
+        font-size: 32px;
     }
 
     .section-heading p:not(.eyebrow),
@@ -93,11 +32,6 @@
         padding-block: 64px;
     }
 
-    .section-heading h2,
-    .page-hero h1 {
-        font-size: 32px;
-    }
-
     .site-footer__inner {
         align-items: flex-start;
         flex-direction: column;
@@ -105,6 +39,37 @@
 
     .footer-links {
         justify-content: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    .section-shell {
+        width: min(100% - 24px, 1480px);
+    }
+
+    .site-menu {
+        top: 14px;
+        right: 14px;
+    }
+
+    .site-menu__toggle {
+        width: 54px;
+        height: 54px;
+    }
+
+    .site-menu__panel {
+        width: 54px;
+        right: 0;
+    }
+
+    .primary-nav a {
+        width: 43px;
+        height: 43px;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
     }
 }
 

@@ -36,53 +36,113 @@ return [
         'en' => [
             'meta' => [
                 'title' => 'Jeremy Läderach',
-                'description' => 'Personal portfolio of Jeremy Läderach, a software developer building practical web systems with Laravel, .NET, and Angular.',
+                'description' => 'Personal portfolio of Jeremy Läderach, a software engineer building practical web systems with Laravel, .NET, and Angular.',
             ],
             'ui' => [
                 'skip' => 'Skip to content',
                 'language' => 'Language',
                 'menu' => 'Primary navigation',
                 'brand' => 'Jeremy Läderach home',
-                'footer_note' => 'Built with Laravel, Blade, and a small purple cat.',
+                'role' => 'Software Engineer',
+                'footer_note' => 'Personal Laravel portfolio.',
             ],
             'nav' => [
                 ['label' => 'Home', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'About', 'anchor' => '#stage-about', 'icon' => 'user'],
-                ['label' => 'Work', 'anchor' => '#stage-work', 'icon' => 'folder'],
+                ['label' => 'About', 'route' => 'about', 'icon' => 'user'],
+                ['label' => 'Projects', 'route' => 'projects', 'icon' => 'folder'],
                 ['label' => 'Contact', 'route' => 'contact', 'icon' => 'mail'],
             ],
-            'hero' => [
-                'backdrop' => ['SOFTWARE', 'ENGINEER'],
-                'bubble' => 'Pick a prop.',
-                'stage' => [
+            'home' => [
+                'backdrop' => ['Software', 'Engineer'],
+                'kicker' => 'Jeremy Läderach',
+                'title' => 'Software Engineer',
+                'intro' => 'Laravel, .NET, Angular, migrations, and calm product-minded interfaces.',
+                'status' => 'Open to focused software engineering work',
+                'chips' => ['Laravel', '.NET', 'Angular', 'Migrations'],
+                'entries' => [
                     [
-                        'key' => 'work',
-                        'label' => 'Work',
-                        'message' => 'Proof of work first: selected builds, client work, and product experiments.',
+                        'index' => '01',
+                        'label' => 'About me',
+                        'description' => 'Profile, stack, and the way I think about useful software.',
+                        'route' => 'about',
+                        'icon' => 'user',
                     ],
                     [
-                        'key' => 'about',
-                        'label' => 'About',
-                        'message' => 'Short version: calm systems, useful UI, maintainable code.',
+                        'index' => '02',
+                        'label' => 'Projects',
+                        'description' => 'A small proof-of-work set instead of a noisy project wall.',
+                        'route' => 'projects',
+                        'icon' => 'folder',
                     ],
                     [
-                        'key' => 'stack',
-                        'label' => 'Stack',
-                        'message' => 'Laravel, .NET, Angular, and the boring bits that make software ship.',
-                    ],
-                    [
-                        'key' => 'contact',
+                        'index' => '03',
                         'label' => 'Contact',
-                        'message' => 'Email is the cleanest first step. Send context and the goal.',
+                        'description' => 'Email and socials for roles, builds, migrations, or focused project work.',
+                        'route' => 'contact',
+                        'icon' => 'mail',
                     ],
                 ],
             ],
-            'contact' => [
-                'kicker' => 'Contact',
+            'about_page' => [
+                'backdrop' => 'About',
+                'kicker' => 'About me',
+                'title' => 'A practical developer with a business edge.',
+                'intro' => 'I like systems that are quiet, useful, and maintainable: clear code, deliberate interfaces, and software that survives real deployment constraints.',
+                'body' => [
+                    'My work sits between application development, web delivery, hosting/domain work, and a growing interest in business informatics. That mix helps me think past individual screens and keep the whole system in view.',
+                    'I am especially interested in Laravel foundations, .NET backends, Angular frontends, and migrations where the result needs to feel simpler than the system it replaced.',
+                ],
+                'facts' => [
+                    ['label' => 'Current role', 'value' => 'Software Developer'],
+                    ['label' => 'Planning', 'value' => 'Business Informatics BSc from 09/2026'],
+                    ['label' => 'Focus', 'value' => 'Maintainable web applications'],
+                ],
+                'stack' => [
+                    [
+                        'name' => 'Web foundations',
+                        'items' => ['Laravel', 'Blade', 'TailwindCSS', 'PHP', 'JavaScript'],
+                    ],
+                    [
+                        'name' => 'Applications',
+                        'items' => ['C#', 'ASP.NET Core', 'Angular', 'TypeScript', 'SQL'],
+                    ],
+                    [
+                        'name' => 'Delivery',
+                        'items' => ['Git', 'GitHub', 'Hosting', 'Domains', 'WordPress migrations'],
+                    ],
+                ],
+            ],
+            'projects_page' => [
+                'backdrop' => 'Projects',
+                'kicker' => 'Selected work',
+                'title' => 'Proof of work, kept focused.',
+                'intro' => 'A few projects that show the direction: personal products, client-facing web delivery, and this Laravel rebuild.',
+                'items' => [
+                    [
+                        'name' => 'Quantified',
+                        'type' => 'Personal full-stack product',
+                        'description' => 'A personal assistant and life-tracking dashboard for finances, time, activities, and life areas.',
+                        'tags' => ['.NET', 'Angular', 'PostgreSQL'],
+                    ],
+                    [
+                        'name' => 'Jay-Jay',
+                        'type' => 'Web solutions business',
+                        'description' => 'A practical web business covering websites, hosting, domains, and maintenance for small organizations.',
+                        'tags' => ['Websites', 'Hosting', 'WordPress'],
+                    ],
+                    [
+                        'name' => 'jeremylaederach-web',
+                        'type' => 'This Laravel portfolio',
+                        'description' => 'A WordPress-to-Laravel rebuild with localized routes, a custom identity, and a maintainable Blade/CSS structure.',
+                        'tags' => ['Laravel', 'Blade', 'i18n'],
+                    ],
+                ],
             ],
             'contact_page' => [
-                'title' => 'Contact',
-                'intro' => 'The contact form can come later. For this prototype, direct links keep the path simple and reliable.',
+                'backdrop' => 'Contact',
+                'kicker' => 'Contact',
+                'title' => 'Send context. I will connect the dots.',
+                'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
                 'reasons' => [
                     'Software engineering opportunities',
                     'Laravel or .NET project work',
@@ -104,53 +164,113 @@ return [
         'de' => [
             'meta' => [
                 'title' => 'Jeremy Läderach',
-                'description' => 'Persönliches Portfolio von Jeremy Läderach, Software Developer mit Fokus auf praktische Websysteme mit Laravel, .NET und Angular.',
+                'description' => 'Persönliches Portfolio von Jeremy Läderach, Software Engineer mit Fokus auf praktische Websysteme mit Laravel, .NET und Angular.',
             ],
             'ui' => [
                 'skip' => 'Zum Inhalt springen',
                 'language' => 'Sprache',
                 'menu' => 'Hauptnavigation',
                 'brand' => 'Jeremy Läderach Startseite',
-                'footer_note' => 'Gebaut mit Laravel, Blade und einer kleinen violetten Katze.',
+                'role' => 'Software Engineer',
+                'footer_note' => 'Persönliches Laravel-Portfolio.',
             ],
             'nav' => [
                 ['label' => 'Start', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'Profil', 'anchor' => '#stage-about', 'icon' => 'user'],
-                ['label' => 'Arbeit', 'anchor' => '#stage-work', 'icon' => 'folder'],
+                ['label' => 'Profil', 'route' => 'about', 'icon' => 'user'],
+                ['label' => 'Projekte', 'route' => 'projects', 'icon' => 'folder'],
                 ['label' => 'Kontakt', 'route' => 'contact', 'icon' => 'mail'],
             ],
-            'hero' => [
-                'backdrop' => ['SOFTWARE', 'ENGINEER'],
-                'bubble' => 'Wähl ein Prop.',
-                'stage' => [
+            'home' => [
+                'backdrop' => ['Software', 'Engineer'],
+                'kicker' => 'Jeremy Läderach',
+                'title' => 'Software Engineer',
+                'intro' => 'Laravel, .NET, Angular, Migrationen und ruhige produktorientierte Oberflächen.',
+                'status' => 'Offen für fokussierte Software-Engineering-Arbeit',
+                'chips' => ['Laravel', '.NET', 'Angular', 'Migrationen'],
+                'entries' => [
                     [
-                        'key' => 'work',
-                        'label' => 'Arbeit',
-                        'message' => 'Proof of Work zuerst: Builds, Kundenarbeit und Produkt-Experimente.',
-                    ],
-                    [
-                        'key' => 'about',
+                        'index' => '01',
                         'label' => 'Profil',
-                        'message' => 'Kurz gesagt: ruhige Systeme, nützliche UI, wartbarer Code.',
+                        'description' => 'Kurzprofil, Stack und wie ich über nützliche Software denke.',
+                        'route' => 'about',
+                        'icon' => 'user',
                     ],
                     [
-                        'key' => 'stack',
-                        'label' => 'Stack',
-                        'message' => 'Laravel, .NET, Angular und die soliden Details, die Software lieferbar machen.',
+                        'index' => '02',
+                        'label' => 'Projekte',
+                        'description' => 'Eine kleine Proof-of-Work-Auswahl statt einer lauten Kartenwand.',
+                        'route' => 'projects',
+                        'icon' => 'folder',
                     ],
                     [
-                        'key' => 'contact',
+                        'index' => '03',
                         'label' => 'Kontakt',
-                        'message' => 'E-Mail ist der sauberste erste Schritt. Schick Kontext und Ziel.',
+                        'description' => 'E-Mail und Profile für Rollen, Builds, Migrationen oder fokussierte Projektarbeit.',
+                        'route' => 'contact',
+                        'icon' => 'mail',
                     ],
                 ],
             ],
-            'contact' => [
-                'kicker' => 'Kontakt',
+            'about_page' => [
+                'backdrop' => 'Profil',
+                'kicker' => 'Über mich',
+                'title' => 'Ein praktischer Entwickler mit Business-Blick.',
+                'intro' => 'Ich mag Systeme, die ruhig, nützlich und wartbar sind: klarer Code, bewusste Oberflächen und Software, die reale Deployment-Bedingungen übersteht.',
+                'body' => [
+                    'Meine Arbeit verbindet Applikationsentwicklung, Web-Delivery, Hosting-/Domain-Themen und ein wachsendes Interesse an Wirtschaftsinformatik. Diese Mischung hilft mir, über einzelne Screens hinaus das ganze System zu sehen.',
+                    'Besonders spannend finde ich Laravel-Fundamente, .NET-Backends, Angular-Frontends und Migrationen, bei denen das Ergebnis einfacher wirken soll als das System, das es ersetzt.',
+                ],
+                'facts' => [
+                    ['label' => 'Aktuell', 'value' => 'Software Developer'],
+                    ['label' => 'Planung', 'value' => 'Wirtschaftsinformatik BSc ab 09/2026'],
+                    ['label' => 'Fokus', 'value' => 'Wartbare Webanwendungen'],
+                ],
+                'stack' => [
+                    [
+                        'name' => 'Web-Fundament',
+                        'items' => ['Laravel', 'Blade', 'TailwindCSS', 'PHP', 'JavaScript'],
+                    ],
+                    [
+                        'name' => 'Applikationen',
+                        'items' => ['C#', 'ASP.NET Core', 'Angular', 'TypeScript', 'SQL'],
+                    ],
+                    [
+                        'name' => 'Delivery',
+                        'items' => ['Git', 'GitHub', 'Hosting', 'Domains', 'WordPress-Migrationen'],
+                    ],
+                ],
+            ],
+            'projects_page' => [
+                'backdrop' => 'Projekte',
+                'kicker' => 'Ausgewählte Arbeit',
+                'title' => 'Proof of Work, fokussiert gehalten.',
+                'intro' => 'Ein paar Projekte, die die Richtung zeigen: persönliche Produkte, Web-Delivery und dieser Laravel-Rebuild.',
+                'items' => [
+                    [
+                        'name' => 'Quantified',
+                        'type' => 'Persönliches Fullstack-Produkt',
+                        'description' => 'Ein Personal-Assistant- und Life-Tracking-Dashboard für Finanzen, Zeit, Aktivitäten und Lebensbereiche.',
+                        'tags' => ['.NET', 'Angular', 'PostgreSQL'],
+                    ],
+                    [
+                        'name' => 'Jay-Jay',
+                        'type' => 'Web-Solutions-Business',
+                        'description' => 'Ein praktisches Web-Business für Websites, Hosting, Domains und Wartung kleiner Organisationen.',
+                        'tags' => ['Websites', 'Hosting', 'WordPress'],
+                    ],
+                    [
+                        'name' => 'jeremylaederach-web',
+                        'type' => 'Dieses Laravel-Portfolio',
+                        'description' => 'Ein WordPress-zu-Laravel-Rebuild mit lokalisierten Routen, eigener Identität und wartbarer Blade/CSS-Struktur.',
+                        'tags' => ['Laravel', 'Blade', 'i18n'],
+                    ],
+                ],
             ],
             'contact_page' => [
-                'title' => 'Kontakt',
-                'intro' => 'Ein Kontaktformular kann später dazukommen. Für diesen Prototyp bleiben direkte Links einfach und zuverlässig.',
+                'backdrop' => 'Kontakt',
+                'kicker' => 'Kontakt',
+                'title' => 'Schick Kontext. Ich verbinde die Punkte.',
+                'intro' => 'E-Mail ist der beste erste Schritt. Schick das grobe Ziel, Links, Rahmenbedingungen und wie ein gutes Resultat wirken soll.',
                 'reasons' => [
                     'Software-Engineering-Rollen',
                     'Laravel- oder .NET-Projektarbeit',

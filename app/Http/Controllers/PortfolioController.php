@@ -12,6 +12,16 @@ class PortfolioController extends Controller
         return $this->render('pages.home', $locale);
     }
 
+    public function about(string $locale): View
+    {
+        return $this->render('pages.about', $locale);
+    }
+
+    public function projects(string $locale): View
+    {
+        return $this->render('pages.projects', $locale);
+    }
+
     public function contact(string $locale): View
     {
         return $this->render('pages.contact', $locale);

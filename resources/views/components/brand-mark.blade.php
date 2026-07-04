@@ -2,6 +2,7 @@
     'class' => '',
     'size' => '1024',
     'variant' => 'cat-loaf',
+    'alt' => '',
 ])
 
 @php
@@ -10,16 +11,20 @@
     ];
 
     $src = $variants[$variant] ?? $variants['cat-loaf'];
+    $imageAttributes = [
+        'class' => $class,
+        'src' => asset($src),
+        'alt' => $alt,
+        'width' => $size,
+        'height' => $size,
+        'decoding' => 'async',
+    ];
+
+    if ($alt === '') {
+        $imageAttributes['aria-hidden'] = 'true';
+    }
 @endphp
 
 <img
-    {{ $attributes->merge([
-        'class' => $class,
-        'src' => asset($src),
-        'alt' => '',
-        'width' => $size,
-        'height' => $size,
-        'aria-hidden' => 'true',
-        'decoding' => 'async',
-    ]) }}
+    {{ $attributes->merge($imageAttributes) }}
 >

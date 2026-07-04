@@ -19,31 +19,50 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_localized_home_pages_render_the_cat_stage(): void
+    public function test_landing_page_renders_as_navigation_stage(): void
     {
         $this->get('/en')
             ->assertOk()
-            ->assertSee('<title>Jeremy Läderach</title>', false)
-            ->assertSee('SOFTWARE')
-            ->assertSee('ENGINEER')
-            ->assertSee('Work')
-            ->assertSee('Stack')
-            ->assertSee('Pick a prop')
-            ->assertDontSee('Useful web software');
+            ->assertSee('<title>Jeremy', false)
+            ->assertSee('Software Engineer')
+            ->assertSee('About me')
+            ->assertSee('Projects')
+            ->assertSee('Contact')
+            ->assertSee('brand/cats/main/cat-loaf.png')
+            ->assertSee('fetchpriority="high"', false)
+            ->assertSee('href="http://localhost/en/about"', false)
+            ->assertSee('href="http://localhost/en/projects"', false)
+            ->assertDontSee('Developer work with a practical business edge');
 
         $this->get('/de')
             ->assertOk()
-            ->assertSee('SOFTWARE')
-            ->assertSee('ENGINEER')
-            ->assertSee('Stack');
+            ->assertSee('Software Engineer')
+            ->assertSee('Profil')
+            ->assertSee('Projekte');
+    }
+
+    public function test_about_and_projects_pages_render_per_locale(): void
+    {
+        $this->get('/en/about')
+            ->assertOk()
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('A practical developer with a business edge')
+            ->assertSee('Business Informatics BSc from 09/2026')
+            ->assertSee('Laravel');
+
+        $this->get('/de/projects')
+            ->assertOk()
+            ->assertSee('Proof of Work')
+            ->assertSee('Quantified')
+            ->assertSee('Jay-Jay');
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void
     {
         $this->get('/en/contact')
             ->assertOk()
-            ->assertSee('<title>Jeremy Läderach</title>', false)
-            ->assertSee('The contact form can come later')
+            ->assertSee('<title>Jeremy', false)
+            ->assertSee('Send context')
             ->assertSee('info@jeremylaederach.ch')
             ->assertSee('GitHub');
 
