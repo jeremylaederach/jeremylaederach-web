@@ -44,6 +44,7 @@ return [
                 'menu' => 'Primary navigation',
                 'brand' => 'Jeremy Läderach home',
                 'role' => 'Software Engineer',
+                'open' => 'Open',
                 'footer_note' => 'Personal Laravel portfolio.',
             ],
             'nav' => [
@@ -172,6 +173,7 @@ return [
                 'menu' => 'Hauptnavigation',
                 'brand' => 'Jeremy Läderach Startseite',
                 'role' => 'Software Engineer',
+                'open' => 'Öffnen',
                 'footer_note' => 'Persönliches Laravel-Portfolio.',
             ],
             'nav' => [

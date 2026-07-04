@@ -30,6 +30,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Contact')
             ->assertSee('brand/cats/main/cat-loaf.png')
             ->assertSee('fetchpriority="high"', false)
+            ->assertSee('data-landing-card', false)
+            ->assertSee('Open')
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false)
             ->assertDontSee('Developer work with a practical business edge');
@@ -37,6 +39,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/de')
             ->assertOk()
             ->assertSee('Software Engineer')
+            ->assertSee('Öffnen')
             ->assertSee('Profil')
             ->assertSee('Projekte');
     }

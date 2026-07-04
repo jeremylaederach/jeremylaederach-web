@@ -1,4 +1,5 @@
 const selectors = {
+    landingCard: '[data-landing-card]',
     menuPanel: '[data-menu-panel]',
     menuToggle: '[data-menu-toggle]',
     reveal: '.reveal',
@@ -7,6 +8,23 @@ const selectors = {
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const markRevealed = (element) => element.classList.add('is-visible');
+
+const initLandingCards = () => {
+    if (prefersReducedMotion) {
+        return;
+    }
+
+    document.querySelectorAll(selectors.landingCard).forEach((card) => {
+        card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+            card.style.setProperty('--pointer-x', `${x}%`);
+            card.style.setProperty('--pointer-y', `${y}%`);
+        });
+    });
+};
 
 const initScrollReveals = () => {
     const revealElements = document.querySelectorAll(selectors.reveal);
@@ -112,6 +130,7 @@ const initSiteMenu = () => {
 };
 
 document.documentElement.classList.add('js');
+initLandingCards();
 initSiteMenu();
 
 if (prefersReducedMotion) {
