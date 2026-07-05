@@ -55,9 +55,10 @@ return [
             ],
             'home' => [
                 'backdrop' => ['Software', 'Engineer'],
+                'greeting' => "Hi, I'm Jeremy.",
                 'kicker' => 'Jeremy Läderach',
                 'title' => 'Software Engineer',
-                'intro' => 'I build maintainable web applications with a focus on clean systems, careful delivery, and useful interfaces.',
+                'intro' => 'I build, improve, and ship digital products.',
                 'status' => 'Open to focused software engineering work',
                 'chips' => ['Laravel', '.NET', 'Angular', 'Migrations'],
                 'entries' => [
@@ -184,9 +185,10 @@ return [
             ],
             'home' => [
                 'backdrop' => ['Software', 'Engineer'],
+                'greeting' => 'Hi, ich bin Jeremy.',
                 'kicker' => 'Jeremy Läderach',
                 'title' => 'Software Engineer',
-                'intro' => 'Ich baue wartbare Webanwendungen mit Fokus auf klare Systeme, saubere Delivery und nützliche Oberflächen.',
+                'intro' => 'Ich baue, verbessere und liefere digitale Produkte.',
                 'status' => 'Offen für fokussierte Software-Engineering-Arbeit',
                 'chips' => ['Laravel', '.NET', 'Angular', 'Migrationen'],
                 'entries' => [
