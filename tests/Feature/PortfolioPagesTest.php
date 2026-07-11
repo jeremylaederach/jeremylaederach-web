@@ -31,7 +31,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About me')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSee('useful digital systems.')
+            ->assertDontSee('useful digital systems.')
+            ->assertDontSee('Explore my work')
             ->assertDontSee('fetchpriority="high"', false)
             ->assertSee('data-liquid-home', false)
             ->assertSee('data-liquid-canvas', false)
@@ -53,7 +54,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/de')
             ->assertOk()
             ->assertSee('Software Engineer')
-            ->assertSee('nützliche digitale Systeme.')
+            ->assertDontSee('Arbeit entdecken')
             ->assertSee('Profil')
             ->assertSee('Projekte');
     }

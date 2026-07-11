@@ -154,88 +154,6 @@
         box-shadow: 0 0 18px rgba(181, 108, 255, 0.7);
     }
 
-    .liquid-home__intro {
-        position: absolute;
-        top: 29%;
-        left: 0;
-        z-index: 7;
-        width: min(340px, 26vw);
-    }
-
-    .liquid-home__eyebrow {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 0 0 22px;
-        color: var(--glow);
-        font-size: 12px;
-        font-weight: 620;
-        text-transform: uppercase;
-    }
-
-    .liquid-home__eyebrow span {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--accent);
-        box-shadow: 0 0 16px rgba(181, 108, 255, 0.68);
-    }
-
-    .liquid-home__intro h1 {
-        margin: 0;
-        color: var(--ink);
-        font-size: 58px;
-        font-weight: 540;
-        line-height: 0.98;
-        letter-spacing: 0;
-    }
-
-    .liquid-home__intro h1 strong {
-        display: block;
-        margin-top: 10px;
-        color: #a96aff;
-        font: inherit;
-    }
-
-    .liquid-home__summary {
-        max-width: 275px;
-        margin: 30px 0 0;
-        color: rgba(185, 178, 209, 0.75);
-        font-size: 15px;
-        line-height: 1.7;
-    }
-
-    .liquid-home__explore {
-        display: flex;
-        width: 190px;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(181, 108, 255, 0.84);
-        margin-top: 34px;
-        color: var(--glow);
-        padding: 0 0 12px;
-        font-size: 14px;
-        font-weight: 520;
-        transition: border-color 220ms ease, color 220ms ease;
-    }
-
-    .liquid-home__explore .nav-icon {
-        width: 22px;
-        height: 22px;
-        transition: translate 280ms ease;
-    }
-
-    .liquid-home__explore:hover,
-    .liquid-home__explore:focus-visible {
-        border-color: var(--ink);
-        color: var(--ink);
-    }
-
-    .liquid-home__explore:hover .nav-icon,
-    .liquid-home__explore:focus-visible .nav-icon {
-        translate: 6px 0;
-    }
-
     .liquid-bodies {
         position: absolute;
         inset: 0;
@@ -259,26 +177,26 @@
     }
 
     .liquid-body--projects {
-        top: 11%;
-        left: 31%;
-        width: 43%;
-        height: 46%;
+        top: 9%;
+        left: 16%;
+        width: 53%;
+        height: 51%;
         z-index: 4;
     }
 
     .liquid-body--about {
-        top: 41%;
-        left: 58%;
-        width: 30%;
-        height: 34%;
+        top: 40%;
+        left: 56%;
+        width: 35%;
+        height: 37%;
         z-index: 5;
     }
 
     .liquid-body--contact {
-        top: 58%;
-        left: 34%;
-        width: 26%;
-        height: 29%;
+        top: 59%;
+        left: 22%;
+        width: 32%;
+        height: 32%;
         z-index: 6;
     }
 
@@ -417,15 +335,10 @@
         height: 7px;
     }
 
-    .js .liquid-home__intro,
     .js .liquid-home__top-nav,
     .js .liquid-home__footer,
     .js .liquid-body {
         opacity: 0;
-    }
-
-    .js .liquid-home__intro {
-        translate: -18px 0;
     }
 
     .js .liquid-home__top-nav {
@@ -440,7 +353,6 @@
         scale: 0.96;
     }
 
-    .js.is-ready .liquid-home__intro,
     .js.is-ready .liquid-home__top-nav,
     .js.is-ready .liquid-home__footer,
     .js.is-ready .liquid-body {
@@ -448,7 +360,6 @@
         translate: var(--liquid-x, 0px) var(--liquid-y, 0px);
     }
 
-    .js.is-ready .liquid-home__intro,
     .js.is-ready .liquid-home__top-nav,
     .js.is-ready .liquid-home__footer {
         translate: 0 0;
@@ -459,10 +370,9 @@
         scale: var(--liquid-scale);
     }
 
-    .is-route-leaving .site-header,
-    .is-route-leaving .liquid-home__intro,
-    .is-route-leaving .liquid-home__top-nav,
-    .is-route-leaving .liquid-home__footer {
+    .js.is-route-leaving .site-header,
+    .js.is-route-leaving .liquid-home__top-nav,
+    .js.is-route-leaving .liquid-home__footer {
         opacity: 0;
         transition: opacity 260ms ease;
     }
@@ -565,14 +475,6 @@
 }
 
 @media (max-width: 1280px) {
-    .liquid-home__intro {
-        width: 300px;
-    }
-
-    .liquid-home__intro h1 {
-        font-size: 52px;
-    }
-
     .liquid-body__copy strong {
         font-size: 34px;
     }
@@ -601,62 +503,25 @@
         display: none;
     }
 
-    .liquid-home__intro {
-        top: 102px;
-        left: 3px;
-        width: min(330px, 78vw);
-    }
-
-    .liquid-home__eyebrow {
-        gap: 9px;
-        margin-bottom: 12px;
-        font-size: 10px;
-    }
-
-    .liquid-home__eyebrow span {
-        width: 6px;
-        height: 6px;
-    }
-
-    .liquid-home__intro h1 {
-        font-size: 38px;
-        line-height: 0.98;
-    }
-
-    .liquid-home__intro h1 strong {
-        margin-top: 5px;
-    }
-
-    .liquid-home__summary {
-        display: none;
-    }
-
-    .liquid-home__explore {
-        width: 160px;
-        margin-top: 18px;
-        padding-bottom: 9px;
-        font-size: 12px;
-    }
-
     .liquid-body--projects {
-        top: 34%;
-        left: 7%;
-        width: 86%;
-        height: 31%;
+        top: 13%;
+        left: 3%;
+        width: 94%;
+        height: 40%;
     }
 
     .liquid-body--about {
-        top: 56%;
-        left: 36%;
-        width: 62%;
-        height: 25%;
+        top: 44%;
+        left: 34%;
+        width: 64%;
+        height: 29%;
     }
 
     .liquid-body--contact {
-        top: 72%;
-        left: 2%;
-        width: 59%;
-        height: 22%;
+        top: 67%;
+        left: 1%;
+        width: 64%;
+        height: 27%;
     }
 
     .liquid-body__link {
@@ -713,14 +578,6 @@
         font-size: 11px;
     }
 
-    .liquid-home__intro h1 {
-        font-size: 34px;
-    }
-
-    .liquid-home__explore {
-        width: 145px;
-    }
-
     .liquid-body__copy strong {
         font-size: 24px;
     }
@@ -740,36 +597,19 @@
 }
 
 @media (max-height: 700px) and (min-width: 901px) {
-    .liquid-home__intro {
-        top: 26%;
-    }
-
-    .liquid-home__intro h1 {
-        font-size: 48px;
-    }
-
-    .liquid-home__summary {
-        margin-top: 20px;
-        line-height: 1.55;
-    }
-
-    .liquid-home__explore {
-        margin-top: 22px;
-    }
-
     .liquid-body--projects {
-        top: 9%;
-        height: 48%;
+        top: 7%;
+        height: 53%;
     }
 
     .liquid-body--about {
-        top: 39%;
-        height: 36%;
+        top: 38%;
+        height: 39%;
     }
 
     .liquid-body--contact {
-        top: 56%;
-        height: 31%;
+        top: 57%;
+        height: 34%;
     }
 }
 

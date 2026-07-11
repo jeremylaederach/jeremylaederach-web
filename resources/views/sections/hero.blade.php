@@ -6,7 +6,7 @@
     ];
 @endphp
 
-<section class="liquid-home" aria-labelledby="landing-title" data-liquid-home>
+<section class="liquid-home" data-liquid-home>
     <canvas class="liquid-home__canvas" data-liquid-canvas aria-hidden="true"></canvas>
     <div class="liquid-home__fallback" aria-hidden="true"></div>
 
@@ -19,22 +19,6 @@
             @endforeach
             <span aria-hidden="true"></span>
         </nav>
-
-        <header class="liquid-home__intro">
-            <p class="liquid-home__eyebrow">
-                <span aria-hidden="true"></span>
-                {{ $content['home']['greeting'] }}
-            </p>
-            <h1 id="landing-title">
-                {{ $content['home']['title'] }}
-                <strong>{{ $content['home']['title_accent'] }}</strong>
-            </h1>
-            <p class="liquid-home__summary">{{ $content['home']['intro'] }}</p>
-            <a class="liquid-home__explore" href="{{ route('projects', ['locale' => $locale]) }}">
-                {{ $content['home']['explore'] }}
-                <x-nav-icon name="arrow-right" />
-            </a>
-        </header>
 
         <nav class="liquid-bodies" aria-label="{{ $content['ui']['menu'] }}" data-liquid-bodies>
             @foreach ($content['home']['routes'] as $route)

@@ -54,12 +54,6 @@ return [
                 ['label' => 'Contact', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
-                'greeting' => 'Hello',
-                'kicker' => 'Jeremy Läderach',
-                'title' => 'I build',
-                'title_accent' => 'useful digital systems.',
-                'intro' => 'Focused on building clean, meaningful products with thoughtful user experiences.',
-                'explore' => 'Explore my work',
                 'location' => 'Based in Switzerland',
                 'footer_prompt' => "Let's build something great.",
                 'routes' => [
@@ -185,12 +179,6 @@ return [
                 ['label' => 'Kontakt', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
-                'greeting' => 'Hallo',
-                'kicker' => 'Jeremy Läderach',
-                'title' => 'Ich entwickle',
-                'title_accent' => 'nützliche digitale Systeme.',
-                'intro' => 'Fokussiert auf klare, sinnvolle Produkte mit durchdachten Nutzererlebnissen.',
-                'explore' => 'Arbeit entdecken',
                 'location' => 'In der Schweiz zuhause',
                 'footer_prompt' => 'Lass uns etwas Grossartiges bauen.',
                 'routes' => [
