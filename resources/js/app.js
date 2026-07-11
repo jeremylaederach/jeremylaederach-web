@@ -1,123 +1,45 @@
 const selectors = {
-    landingCard: '[data-landing-card]',
+    liquidIndex: '[data-liquid-index]',
+    liquidNavigation: '[data-liquid-navigation]',
+    liquidRoute: '[data-liquid-route]',
+    liquidRoutes: '[data-liquid-routes]',
+    liquidSvg: '[data-liquid-svg]',
     menuPanel: '[data-menu-panel]',
     menuToggle: '[data-menu-toggle]',
     reveal: '.reveal',
+    revealSection: '[data-reveal-section]',
 };
 
-const LANDING_TRANSITION_MS = 780;
+const motionPreferences = {
+    reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    finePointer: window.matchMedia('(pointer: fine)').matches,
+};
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const timings = {
+    menuClose: 980,
+    navigationWipe: 680,
+};
 
+const root = document.documentElement;
+const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
 const markRevealed = (element) => element.classList.add('is-visible');
 
-const shouldAnimateCardNavigation = (event, card) => {
-    if (document.documentElement.classList.contains('is-landing-transitioning')) {
-        return false;
-    }
-
-    if (prefersReducedMotion || event.defaultPrevented || event.button !== 0) {
-        return false;
-    }
-
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-        return false;
-    }
-
-    return card.target !== '_blank' && card.href;
-};
-
-const animateCardNavigation = async (card) => {
-    const rect = card.getBoundingClientRect();
-    const styles = window.getComputedStyle(card);
-    const backdrop = document.createElement('div');
-    const clone = card.cloneNode(true);
-    const target = {
-        height: window.innerHeight * 1.12,
-        left: window.innerWidth * -0.06,
-        top: window.innerHeight * -0.06,
-        width: window.innerWidth * 1.12,
-    };
-
-    backdrop.className = 'landing-transition-backdrop';
-    clone.classList.add('landing-card--transition-clone');
-    clone.removeAttribute('data-landing-card');
-    clone.setAttribute('aria-hidden', 'true');
-
-    Object.assign(clone.style, {
-        borderRadius: styles.borderRadius,
-        height: `${rect.height}px`,
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        transform: 'none',
-        transformOrigin: 'top left',
-        width: `${rect.width}px`,
-    });
-
-    document.documentElement.classList.add('is-landing-transitioning');
-    card.classList.add('landing-card--is-hidden');
-    document.body.append(backdrop, clone);
-
-    if (!clone.animate || !backdrop.animate) {
-        window.location.href = card.href;
-
-        return;
-    }
-
-    const easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
-    const targetTransform = `translate3d(${target.left - rect.left}px, ${target.top - rect.top}px, 0) scale(${target.width / rect.width}, ${target.height / rect.height})`;
-    const backdropAnimation = backdrop.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: LANDING_TRANSITION_MS,
-        easing: 'ease',
-        fill: 'forwards',
-    });
-    const cardAnimation = clone.animate(
-        [
-            {
-                borderRadius: styles.borderRadius,
-                opacity: 1,
-                transform: 'translate3d(0, 0, 0) scale(1)',
-            },
-            {
-                borderRadius: '0',
-                opacity: 1,
-                transform: targetTransform,
-            },
-        ],
-        {
-            duration: LANDING_TRANSITION_MS,
-            easing,
-            fill: 'forwards',
-        },
-    );
-
-    await Promise.allSettled([backdropAnimation.finished, cardAnimation.finished]);
-    window.location.href = card.href;
-};
-
-const initLandingCards = () => {
-    document.querySelectorAll(selectors.landingCard).forEach((card) => {
-        card.addEventListener('click', (event) => {
-            if (!shouldAnimateCardNavigation(event, card)) {
-                return;
-            }
-
-            event.preventDefault();
-            animateCardNavigation(card);
-        });
+const initPageEntrance = () => {
+    window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => root.classList.add('is-ready'));
     });
 };
 
 const initScrollReveals = () => {
-    const revealElements = document.querySelectorAll(selectors.reveal);
+    const elements = document.querySelectorAll(`${selectors.reveal}, ${selectors.revealSection}`);
 
-    if (!('IntersectionObserver' in window)) {
-        revealElements.forEach(markRevealed);
+    if (motionPreferences.reduced || !('IntersectionObserver' in window)) {
+        elements.forEach(markRevealed);
 
         return;
     }
 
-    const revealObserver = new IntersectionObserver(
+    const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
                 if (!entry.isIntersecting) {
@@ -125,13 +47,154 @@ const initScrollReveals = () => {
                 }
 
                 markRevealed(entry.target);
-                revealObserver.unobserve(entry.target);
+                observer.unobserve(entry.target);
             });
         },
-        { threshold: 0.14 },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
     );
 
-    revealElements.forEach((element) => revealObserver.observe(element));
+    elements.forEach((element) => observer.observe(element));
+};
+
+const shouldAnimateNavigation = (event, link) => {
+    if (motionPreferences.reduced || event.defaultPrevented || event.button !== 0) {
+        return false;
+    }
+
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return false;
+    }
+
+    return link.target !== '_blank' && Boolean(link.href) && !root.classList.contains('is-navigating');
+};
+
+const animateLiquidNavigation = (link) => {
+    const rect = link.getBoundingClientRect();
+    const originX = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+    const originY = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+    const wipe = document.createElement('div');
+
+    wipe.className = 'liquid-navigation-wipe';
+    wipe.style.setProperty('--wipe-x', `${originX.toFixed(2)}%`);
+    wipe.style.setProperty('--wipe-y', `${originY.toFixed(2)}%`);
+    wipe.setAttribute('aria-hidden', 'true');
+
+    root.classList.add('is-navigating');
+    document.body.append(wipe);
+
+    window.requestAnimationFrame(() => wipe.classList.add('is-active'));
+    window.setTimeout(() => window.location.assign(link.href), timings.navigationWipe);
+};
+
+const initLiquidNavigation = (index) => {
+    const routes = index.querySelector(selectors.liquidRoutes);
+
+    if (!routes) {
+        return;
+    }
+
+    const links = [...routes.querySelectorAll(selectors.liquidRoute)];
+    const clearFocus = () => index.removeAttribute('data-liquid-focus');
+
+    links.forEach((link) => {
+        const focusLiquid = () => {
+            index.dataset.liquidFocus = link.dataset.liquidRoute;
+        };
+
+        link.addEventListener('focus', focusLiquid);
+        link.addEventListener('blur', () => {
+            window.requestAnimationFrame(() => {
+                if (!routes.contains(document.activeElement)) {
+                    clearFocus();
+                }
+            });
+        });
+
+        link.addEventListener('click', (event) => {
+            if (!shouldAnimateNavigation(event, link)) {
+                return;
+            }
+
+            event.preventDefault();
+            animateLiquidNavigation(link);
+        });
+    });
+
+    routes.addEventListener('pointermove', (event) => {
+        if (!(event.target instanceof Element)) {
+            return;
+        }
+
+        const link = event.target.closest(selectors.liquidRoute);
+
+        if (link && routes.contains(link)) {
+            index.dataset.liquidFocus = link.dataset.liquidRoute;
+        }
+    });
+
+    routes.addEventListener('pointerleave', clearFocus);
+};
+
+const initLiquidPointerMotion = (index) => {
+    if (motionPreferences.reduced || !motionPreferences.finePointer) {
+        return;
+    }
+
+    let frameId;
+    let state = { cursorX: 72, cursorY: 42, shiftX: 0, shiftY: 0 };
+
+    const render = () => {
+        index.style.setProperty('--cursor-x', `${state.cursorX.toFixed(2)}%`);
+        index.style.setProperty('--cursor-y', `${state.cursorY.toFixed(2)}%`);
+        index.style.setProperty('--pointer-shift-x', `${state.shiftX.toFixed(2)}px`);
+        index.style.setProperty('--pointer-shift-y', `${state.shiftY.toFixed(2)}px`);
+        frameId = undefined;
+    };
+
+    const scheduleRender = () => {
+        if (!frameId) {
+            frameId = window.requestAnimationFrame(render);
+        }
+    };
+
+    index.addEventListener('pointermove', (event) => {
+        const rect = index.getBoundingClientRect();
+        const normalizedX = clamp((event.clientX - rect.left) / rect.width);
+        const normalizedY = clamp((event.clientY - rect.top) / rect.height);
+
+        state = {
+            cursorX: normalizedX * 100,
+            cursorY: normalizedY * 100,
+            shiftX: (normalizedX * 2 - 1) * 8,
+            shiftY: (normalizedY * 2 - 1) * 6,
+        };
+
+        index.classList.add('is-pointer-active');
+        scheduleRender();
+    });
+
+    index.addEventListener('pointerleave', () => {
+        state = { cursorX: 72, cursorY: 42, shiftX: 0, shiftY: 0 };
+        index.classList.remove('is-pointer-active');
+        scheduleRender();
+    });
+};
+
+const initLiquidIndex = () => {
+    const index = document.querySelector(selectors.liquidIndex);
+
+    if (!index) {
+        return;
+    }
+
+    const svg = index.querySelector(selectors.liquidSvg);
+
+    if (motionPreferences.reduced && svg instanceof SVGSVGElement) {
+        svg.pauseAnimations();
+    }
+
+    initLiquidNavigation(index);
+    initLiquidPointerMotion(index);
 };
 
 const initSiteMenu = () => {
@@ -157,9 +220,7 @@ const initSiteMenu = () => {
         panel.setAttribute('aria-hidden', 'false');
         toggle.setAttribute('aria-expanded', 'true');
 
-        window.requestAnimationFrame(() => {
-            panel.setAttribute('data-open', '');
-        });
+        window.requestAnimationFrame(() => panel.setAttribute('data-open', ''));
     };
 
     const closeMenu = ({ restoreFocus = false } = {}) => {
@@ -173,7 +234,7 @@ const initSiteMenu = () => {
         panel.setAttribute('data-closing', '');
         panel.setAttribute('aria-hidden', 'true');
 
-        closeTimer = window.setTimeout(finishClose, prefersReducedMotion ? 0 : 980);
+        closeTimer = window.setTimeout(finishClose, motionPreferences.reduced ? 0 : timings.menuClose);
 
         if (restoreFocus) {
             toggle.focus();
@@ -191,7 +252,7 @@ const initSiteMenu = () => {
     });
 
     panel.addEventListener('click', (event) => {
-        if (event.target.closest('a')) {
+        if (event.target instanceof Element && event.target.closest('a')) {
             closeMenu();
         }
     });
@@ -211,12 +272,9 @@ const initSiteMenu = () => {
     });
 };
 
-document.documentElement.classList.add('js');
-initLandingCards();
-initSiteMenu();
+root.classList.add('js');
 
-if (prefersReducedMotion) {
-    document.querySelectorAll(selectors.reveal).forEach(markRevealed);
-} else {
-    initScrollReveals();
-}
+initPageEntrance();
+initSiteMenu();
+initScrollReveals();
+initLiquidIndex();

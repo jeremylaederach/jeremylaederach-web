@@ -1,686 +1,631 @@
 @layer components {
-    .landing-stage {
+    .route-home {
+        height: 100svh;
+        min-height: 100svh;
+        overflow: hidden;
+        background: #030107;
+    }
+
+    .route-home .site-background {
+        background:
+            radial-gradient(64% 74% at 72% 42%, rgba(118, 48, 202, 0.12), transparent 72%),
+            radial-gradient(42% 48% at 8% 84%, rgba(72, 132, 184, 0.045), transparent 76%),
+            linear-gradient(180deg, #05010d 0%, #030107 100%);
+        mask-image: none;
+    }
+
+    .home-shell {
+        width: min(1660px, calc(100% - 48px));
+        margin-inline: auto;
+    }
+
+    .liquid-index {
+        --cursor-x: 72%;
+        --cursor-y: 42%;
+        --pointer-shift-x: 0px;
+        --pointer-shift-y: 0px;
+        --liquid-focus-x: 0px;
+        --liquid-focus-y: 0px;
+        --liquid-focus-rotate: 0deg;
+        --liquid-focus-scale: 1;
+
         position: relative;
         min-height: 100svh;
         overflow: hidden;
         background:
-            radial-gradient(760px 520px at 77% 22%, rgba(181, 108, 255, 0.18), transparent 68%),
-            radial-gradient(640px 420px at 14% 78%, rgba(217, 155, 255, 0.09), transparent 70%),
-            linear-gradient(180deg, #05010d 0%, #070211 52%, #030107 100%);
+            linear-gradient(90deg, rgba(5, 1, 13, 0.94) 0%, rgba(5, 1, 13, 0.72) 35%, rgba(5, 1, 13, 0.1) 72%),
+            radial-gradient(ellipse at 74% 46%, rgba(181, 108, 255, 0.08), transparent 63%);
         isolation: isolate;
     }
 
-    .landing-stage::before,
-    .landing-stage::after {
+    .liquid-index::before,
+    .liquid-index::after {
         position: absolute;
         content: "";
         pointer-events: none;
     }
 
-    .landing-stage::before {
-        inset: 1px;
-        z-index: 0;
-        border: 1px solid rgba(245, 242, 255, 0.055);
-        border-radius: 28px;
-        opacity: 0.8;
+    .liquid-index::before {
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(420px circle at var(--cursor-x) var(--cursor-y), rgba(217, 155, 255, 0.075), transparent 72%);
+        opacity: 0;
+        transition: opacity 420ms ease;
     }
 
-    .landing-stage::after {
-        right: clamp(18px, 4vw, 78px);
-        bottom: clamp(18px, 4vw, 68px);
-        z-index: 3;
-        width: 9px;
-        height: 9px;
-        border-radius: 999px;
-        background: var(--glow);
-        box-shadow:
-            0 0 18px rgba(217, 155, 255, 0.75),
-            0 0 46px rgba(181, 108, 255, 0.3);
-        opacity: 0.86;
-        animation: landing-pulse 4.8s ease-in-out infinite;
+    .liquid-index::after {
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 5;
+        height: 150px;
+        background: linear-gradient(180deg, transparent, rgba(3, 1, 7, 0.86) 72%);
     }
 
-    .landing-stage__inner {
+    .liquid-index.is-pointer-active::before {
+        opacity: 1;
+    }
+
+    .liquid-index[data-liquid-focus="about"] {
+        --liquid-focus-x: -24px;
+        --liquid-focus-y: 12px;
+        --liquid-focus-rotate: -1.2deg;
+        --liquid-focus-scale: 0.985;
+    }
+
+    .liquid-index[data-liquid-focus="projects"] {
+        --liquid-focus-x: 2px;
+        --liquid-focus-y: -8px;
+        --liquid-focus-rotate: 0.4deg;
+        --liquid-focus-scale: 1.025;
+    }
+
+    .liquid-index[data-liquid-focus="contact"] {
+        --liquid-focus-x: 28px;
+        --liquid-focus-y: 8px;
+        --liquid-focus-rotate: 1.4deg;
+        --liquid-focus-scale: 0.99;
+    }
+
+    .liquid-index__light {
+        position: absolute;
+        top: 7%;
+        right: 5%;
+        z-index: -1;
+        width: min(880px, 64vw);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(152, 75, 249, 0.085), transparent 69%);
+        opacity: 0.72;
+        pointer-events: none;
+        transform: translate3d(calc(var(--pointer-shift-x) * 0.35), calc(var(--pointer-shift-y) * 0.35), 0);
+        transition: transform 500ms cubic-bezier(0.22, 0.72, 0.18, 1);
+    }
+
+    .liquid-index__inner {
         position: relative;
-        z-index: 1;
         display: grid;
         min-height: 100svh;
-        width: min(1760px, calc(100% - 32px));
-        margin-inline: auto;
-        padding: clamp(90px, 12vh, 128px) 0 clamp(20px, 4vh, 44px);
-    }
-
-    .landing-frame {
-        position: relative;
-        display: grid;
-        min-height: min(760px, calc(100svh - 140px));
-        grid-template-columns: minmax(280px, 0.58fr) minmax(700px, 1.42fr);
+        grid-template-columns: minmax(370px, 0.68fr) minmax(620px, 1.32fr);
+        grid-template-rows: minmax(0, 1fr) auto;
         align-items: center;
-        gap: clamp(24px, 3.6vw, 72px);
-        overflow: hidden;
-        border: 1px solid rgba(245, 242, 255, 0.07);
-        border-radius: clamp(24px, 2.2vw, 34px);
-        background:
-            radial-gradient(circle at 72% 50%, rgba(181, 108, 255, 0.08), transparent 44%),
-            linear-gradient(145deg, rgba(245, 242, 255, 0.032), rgba(245, 242, 255, 0.006)),
-            rgba(5, 1, 13, 0.2);
-        box-shadow:
-            0 32px 100px rgba(0, 0, 0, 0.22),
-            inset 0 1px 0 rgba(255, 255, 255, 0.055);
-        padding: clamp(28px, 3.4vw, 62px);
+        gap: 24px 60px;
+        padding-block: 106px 36px;
     }
 
-    .landing-frame::before {
-        position: absolute;
-        inset: auto auto -24% -8%;
-        width: clamp(340px, 34vw, 680px);
-        aspect-ratio: 1.8;
-        border-radius: 999px;
-        background: radial-gradient(circle at 50% 50%, rgba(217, 155, 255, 0.16), transparent 64%);
-        filter: blur(16px);
-        content: "";
-        opacity: 0.52;
-        pointer-events: none;
-    }
-
-    .landing-copy {
+    .liquid-index__copy {
         position: relative;
-        z-index: 4;
+        z-index: 8;
+        grid-column: 1;
+        grid-row: 1;
+        max-width: 570px;
         align-self: center;
-        max-width: 530px;
+        padding-bottom: 64px;
     }
 
-    .landing-copy__eyebrow {
+    .liquid-index__eyebrow {
         margin: 0 0 18px;
-        color: var(--ink);
-        font-size: clamp(15px, 1.1vw, 18px);
-        font-weight: 620;
-        line-height: 1.4;
+        color: rgba(217, 155, 255, 0.84);
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-transform: uppercase;
     }
 
-    .landing-copy h1 {
-        max-width: 9ch;
+    .liquid-index h1 {
+        display: grid;
         margin: 0;
         color: var(--ink);
-        font-size: clamp(64px, 6.8vw, 124px);
-        font-weight: 860;
-        line-height: 0.88;
+        font-size: 102px;
+        font-weight: 810;
+        line-height: 0.86;
         letter-spacing: 0;
-        text-wrap: balance;
     }
 
-    .landing-copy p:not(.landing-copy__eyebrow) {
-        max-width: 30ch;
-        margin: clamp(22px, 2.4vw, 34px) 0 0;
-        color: rgba(245, 242, 255, 0.78);
-        font-size: clamp(17px, 1.25vw, 22px);
-        font-weight: 450;
-        line-height: 1.65;
+    .liquid-index h1 span:last-child {
+        color: transparent;
+        background: linear-gradient(100deg, #f5f2ff 8%, #d4c5ea 48%, #9b6ccc 94%);
+        background-clip: text;
     }
 
-    .landing-scene {
-        position: relative;
-        z-index: 2;
-        min-height: clamp(500px, 62vh, 720px);
-        isolation: isolate;
+    .liquid-index__intro {
+        max-width: 36ch;
+        margin: 28px 0 0;
+        color: rgba(245, 242, 255, 0.65);
+        font-size: 18px;
+        line-height: 1.68;
     }
 
-    .landing-scene__blob {
-        position: absolute;
-        inset: 5% -3% 7% -1%;
-        z-index: 0;
-        overflow: hidden;
-        border: 1px solid rgba(217, 155, 255, 0.25);
-        border-radius: 53% 47% 47% 53% / 42% 48% 52% 58%;
-        background:
-            radial-gradient(circle at 35% 18%, rgba(245, 242, 255, 0.14), transparent 27%),
-            radial-gradient(circle at 82% 34%, rgba(181, 108, 255, 0.36), transparent 42%),
-            radial-gradient(circle at 48% 96%, rgba(217, 155, 255, 0.25), transparent 50%),
-            linear-gradient(145deg, rgba(32, 13, 54, 0.88), rgba(9, 3, 20, 0.96) 58%, rgba(20, 7, 42, 0.9));
-        box-shadow:
-            0 0 0 1px rgba(245, 242, 255, 0.025),
-            0 34px 100px rgba(0, 0, 0, 0.34),
-            0 0 72px rgba(181, 108, 255, 0.18),
-            inset 0 1px 0 rgba(255, 255, 255, 0.16),
-            inset 0 -60px 120px rgba(181, 108, 255, 0.19);
-        animation: landing-blob 24s ease-in-out infinite;
-        will-change: border-radius, transform;
-    }
-
-    .landing-scene__blob::before {
-        position: absolute;
-        inset: 0;
-        background:
-            linear-gradient(120deg, transparent 0 36%, rgba(245, 242, 255, 0.08) 48%, transparent 62%),
-            radial-gradient(circle at 50% 74%, rgba(5, 1, 13, 0.36), transparent 52%);
-        content: "";
-        opacity: 0.78;
-        transform: translate3d(-8%, 0, 0);
-        animation: landing-sheen 18s ease-in-out infinite;
-    }
-
-    .landing-scene__blob::after {
-        position: absolute;
-        inset: 15% 12%;
-        border: 1px solid rgba(217, 155, 255, 0.12);
-        border-radius: inherit;
-        background: radial-gradient(circle at 50% 50%, rgba(217, 155, 255, 0.12), transparent 62%);
-        content: "";
-        filter: blur(1px);
-        opacity: 0.7;
-    }
-
-    .landing-scene__light {
-        position: absolute;
-        border-radius: 999px;
-        background: var(--glow);
-        box-shadow:
-            0 0 20px rgba(217, 155, 255, 0.86),
-            0 0 58px rgba(181, 108, 255, 0.44);
-    }
-
-    .landing-scene__light--top {
-        top: 15%;
-        left: 7%;
-        width: 14px;
-        height: 14px;
-        opacity: 0.95;
-    }
-
-    .landing-scene__light--bottom {
-        right: 10%;
-        bottom: 17%;
-        width: 8px;
-        height: 8px;
-        opacity: 0.76;
-    }
-
-    .landing-scene__cat {
-        position: absolute;
-        right: clamp(10px, 4vw, 70px);
-        bottom: clamp(150px, 17vh, 210px);
-        z-index: 2;
-        width: clamp(230px, 25vw, 420px);
-        height: auto;
-        filter:
-            drop-shadow(0 18px 28px rgba(0, 0, 0, 0.28))
-            drop-shadow(0 0 34px rgba(217, 155, 255, 0.28));
-        transform-origin: 50% 80%;
-        animation: landing-cat 7s ease-in-out infinite;
-    }
-
-    .landing-cards {
-        position: absolute;
-        right: clamp(42px, 5.5vw, 98px);
-        bottom: clamp(24px, 4.8vh, 76px);
-        left: clamp(24px, 3.2vw, 56px);
-        z-index: 3;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: clamp(12px, 1.5vw, 20px);
-        align-items: stretch;
-    }
-
-    .landing-card {
-        position: relative;
-        display: grid;
-        min-height: clamp(132px, 14vh, 168px);
-        overflow: hidden;
-        border: 1px solid rgba(245, 242, 255, 0.11);
-        border-radius: 32px;
-        background:
-            radial-gradient(circle at 50% 0%, rgba(217, 155, 255, 0.13), transparent 62%),
-            linear-gradient(145deg, rgba(245, 242, 255, 0.09), rgba(245, 242, 255, 0.026)),
-            rgba(5, 1, 13, 0.45);
-        color: var(--ink);
-        text-decoration: none;
-        box-shadow:
-            0 20px 48px rgba(0, 0, 0, 0.24),
-            inset 0 1px 0 rgba(255, 255, 255, 0.11);
-        backdrop-filter: blur(18px);
-        transform: translate3d(0, 0, 0);
+    .js .liquid-index__copy {
+        opacity: 0;
+        transform: translate3d(0, 24px, 0);
         transition:
-            border-color 220ms ease,
-            background 220ms ease,
-            box-shadow 220ms ease,
-            transform 260ms cubic-bezier(0.2, 0.82, 0.24, 1);
+            opacity 760ms ease 90ms,
+            transform 920ms cubic-bezier(0.22, 0.72, 0.18, 1) 90ms;
     }
 
-    .landing-card::before,
-    .landing-card::after {
-        position: absolute;
-        content: "";
+    .js.is-ready .liquid-index__copy {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    .liquid-stage {
+        position: relative;
+        z-index: 2;
+        width: min(980px, 72vw);
+        aspect-ratio: 5 / 4;
+        grid-column: 2;
+        grid-row: 1 / 3;
+        justify-self: end;
+        transform:
+            translate3d(
+                calc(var(--pointer-shift-x) + var(--liquid-focus-x)),
+                calc(var(--pointer-shift-y) + var(--liquid-focus-y)),
+                0
+            )
+            rotate(var(--liquid-focus-rotate))
+            scale(var(--liquid-focus-scale));
+        transform-origin: 54% 54%;
+        transition: transform 620ms cubic-bezier(0.22, 0.72, 0.18, 1);
+        will-change: transform;
+    }
+
+    .js .liquid-stage {
+        opacity: 0;
+        scale: 0.955;
+        transition:
+            opacity 980ms ease 120ms,
+            scale 1100ms cubic-bezier(0.22, 0.72, 0.18, 1) 120ms,
+            transform 620ms cubic-bezier(0.22, 0.72, 0.18, 1);
+    }
+
+    .js.is-ready .liquid-stage {
+        opacity: 1;
+        scale: 1;
+    }
+
+    .liquid-stage__svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .liquid-stage__aura {
+        fill: none;
+        stroke: rgba(181, 108, 255, 0.15);
+        stroke-width: 22;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .liquid-stage__body {
+        stroke: rgba(223, 184, 255, 0.34);
+        stroke-width: 1.2;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .liquid-stage__sheen {
+        opacity: 0.76;
         pointer-events: none;
     }
 
-    .landing-card::before {
-        inset: -40% -22% auto;
-        height: 82%;
-        background: radial-gradient(circle, rgba(217, 155, 255, 0.25), transparent 68%);
-        opacity: 0;
-        transition: opacity 220ms ease, transform 260ms ease;
+    .liquid-stage__contour {
+        fill: none;
+        stroke: rgba(229, 196, 255, 0.2);
+        stroke-width: 1;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+        animation: liquid-contour-breathe 8s ease-in-out infinite;
     }
 
-    .landing-card::after {
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 34%);
-        opacity: 0.36;
+    .liquid-stage__contour--two {
+        stroke: rgba(134, 198, 255, 0.09);
+        animation-delay: -3.5s;
     }
 
-    .landing-card__content {
+    .liquid-stage__satellite {
+        stroke: rgba(239, 208, 255, 0.38);
+        stroke-width: 1;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: liquid-satellite-float 9s ease-in-out infinite;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .liquid-routes {
         position: relative;
-        z-index: 1;
+        z-index: 10;
         display: grid;
-        min-height: inherit;
-        grid-template-columns: 1fr 38px;
-        align-content: center;
-        align-items: start;
-        gap: 14px;
-        padding: clamp(20px, 2vw, 28px);
+        grid-column: 1 / -1;
+        grid-row: 2;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 34px;
+        padding-inline: 2px;
+        transform: translateY(-14px);
     }
 
-    .landing-card__icon,
-    .landing-card__action {
-        display: grid;
-        aspect-ratio: 1;
-        place-items: center;
-        border: 1px solid rgba(217, 155, 255, 0.18);
-        border-radius: 999px;
-        background: rgba(245, 242, 255, 0.052);
-        color: var(--glow);
-        box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.08),
-            0 12px 28px rgba(0, 0, 0, 0.18);
+    .liquid-route {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid rgba(245, 242, 255, 0.14);
+        color: var(--ink);
+        padding: 17px 3px 3px;
         transition:
-            background 180ms ease,
-            border-color 180ms ease,
-            color 180ms ease,
-            transform 180ms ease;
+            border-color 260ms ease,
+            color 260ms ease;
     }
 
-    .landing-card__icon {
-        width: 50px;
+    .liquid-route::before {
+        position: absolute;
+        top: -1px;
+        right: 0;
+        left: 0;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(217, 155, 255, 0.9), rgba(134, 198, 255, 0.36), transparent 86%);
+        content: "";
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 420ms cubic-bezier(0.22, 0.72, 0.18, 1);
     }
 
-    .landing-card__icon .nav-icon {
-        width: 23px;
-        height: 23px;
-    }
-
-    .landing-card__text {
+    .liquid-route > span {
         display: grid;
         min-width: 0;
-        grid-column: 1 / -1;
-        gap: 8px;
-        padding-right: 8px;
+        gap: 7px;
+        transition: transform 320ms cubic-bezier(0.22, 0.72, 0.18, 1);
     }
 
-    .landing-card__text strong {
-        display: block;
-        color: var(--ink);
-        font-size: clamp(22px, 1.8vw, 32px);
-        font-weight: 820;
-        line-height: 1.02;
+    .liquid-route strong {
+        font-size: 19px;
+        font-weight: 720;
+        line-height: 1;
+    }
+
+    .liquid-route small {
+        overflow: hidden;
+        color: rgba(245, 242, 255, 0.45);
+        font-size: 12px;
+        font-weight: 620;
+        line-height: 1.2;
+        text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .landing-card__text span {
-        display: block;
-        max-width: 24ch;
-        color: rgba(245, 242, 255, 0.68);
-        font-size: clamp(13px, 0.96vw, 15px);
-        font-weight: 460;
-        line-height: 1.45;
+    .liquid-route .nav-icon {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 auto;
+        color: rgba(217, 155, 255, 0.7);
+        transition:
+            color 260ms ease,
+            transform 320ms cubic-bezier(0.22, 0.72, 0.18, 1);
     }
 
-    .landing-card__action {
-        width: 38px;
-        justify-self: end;
-        grid-column: 2;
-        grid-row: 1;
+    .liquid-route:hover,
+    .liquid-route:focus-visible {
+        border-color: rgba(217, 155, 255, 0.32);
+        outline: none;
     }
 
-    .landing-card__action .nav-icon {
-        width: 18px;
-        height: 18px;
+    .liquid-route:hover::before,
+    .liquid-route:focus-visible::before {
+        transform: scaleX(1);
     }
 
-    .landing-card:hover,
-    .landing-card:focus-visible {
-        border-color: rgba(217, 155, 255, 0.42);
-        background:
-            radial-gradient(circle at 50% 0%, rgba(217, 155, 255, 0.22), transparent 64%),
-            linear-gradient(145deg, rgba(245, 242, 255, 0.12), rgba(245, 242, 255, 0.034)),
-            rgba(13, 5, 28, 0.58);
-        box-shadow:
-            0 28px 70px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(217, 155, 255, 0.14),
-            inset 0 1px 0 rgba(255, 255, 255, 0.16);
-        transform: translate3d(0, -8px, 0) scale(1.015);
+    .liquid-route:hover > span,
+    .liquid-route:focus-visible > span {
+        transform: translateX(7px);
     }
 
-    .landing-card:hover::before,
-    .landing-card:focus-visible::before {
-        opacity: 1;
-        transform: translateY(18%);
-    }
-
-    .landing-card:hover .landing-card__icon,
-    .landing-card:focus-visible .landing-card__icon,
-    .landing-card:hover .landing-card__action,
-    .landing-card:focus-visible .landing-card__action {
-        border-color: rgba(217, 155, 255, 0.46);
-        background: rgba(217, 155, 255, 0.14);
+    .liquid-route:hover .nav-icon,
+    .liquid-route:focus-visible .nav-icon {
         color: var(--ink);
+        transform: translateX(7px);
     }
 
-    .landing-card:hover .landing-card__action,
-    .landing-card:focus-visible .landing-card__action {
-        transform: translateX(5px);
+    .js .liquid-route {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+        transition:
+            border-color 260ms ease,
+            color 260ms ease,
+            opacity 620ms ease,
+            transform 760ms cubic-bezier(0.22, 0.72, 0.18, 1);
+        transition-delay: calc(340ms + var(--route-index, 0) * 90ms);
     }
 
-    .landing-transition-backdrop {
+    .js.is-ready .liquid-route {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    .liquid-navigation-wipe {
         position: fixed;
         inset: 0;
-        z-index: 190;
+        z-index: 200;
         background:
-            radial-gradient(circle at 55% 42%, rgba(181, 108, 255, 0.2), transparent 38%),
-            rgba(5, 1, 13, 0.76);
-        opacity: 0;
+            radial-gradient(circle at var(--wipe-x) var(--wipe-y), rgba(130, 52, 214, 0.42), transparent 32%),
+            #080312;
+        clip-path: circle(0 at var(--wipe-x) var(--wipe-y));
         pointer-events: none;
+        transition: clip-path 680ms cubic-bezier(0.22, 0.72, 0.18, 1);
+        will-change: clip-path;
     }
 
-    .landing-card--transition-clone {
-        position: fixed !important;
-        z-index: 200 !important;
-        margin: 0 !important;
-        pointer-events: none !important;
-        transition: none !important;
-        will-change: border-radius, transform, opacity;
+    .liquid-navigation-wipe.is-active {
+        clip-path: circle(150vmax at var(--wipe-x) var(--wipe-y));
     }
 
-    .landing-card--is-hidden {
+    .js [data-reveal-section] {
         opacity: 0;
+        transform: translateY(22px);
+        transition:
+            opacity 620ms ease,
+            transform 680ms cubic-bezier(0.22, 0.72, 0.18, 1);
     }
 
-    .is-landing-transitioning .landing-card:not(.landing-card--is-hidden) {
-        opacity: 0.42;
-        transition: opacity 180ms ease;
+    .js [data-reveal-section].is-visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 
-    @keyframes landing-blob {
+    @keyframes liquid-contour-breathe {
         0%,
         100% {
-            border-radius: 53% 47% 47% 53% / 42% 48% 52% 58%;
-            transform: translate3d(0, 0, 0) rotate(-1deg);
-        }
-
-        46% {
-            border-radius: 45% 55% 57% 43% / 52% 39% 61% 48%;
-            transform: translate3d(-10px, 8px, 0) rotate(1.2deg);
-        }
-
-        76% {
-            border-radius: 60% 40% 43% 57% / 48% 58% 42% 52%;
-            transform: translate3d(9px, -6px, 0) rotate(-0.4deg);
-        }
-    }
-
-    @keyframes landing-sheen {
-        0%,
-        100% {
-            opacity: 0.58;
-            transform: translate3d(-12%, 0, 0);
+            opacity: 0.38;
+            transform: translate3d(-5px, 0, 0);
         }
 
         50% {
             opacity: 0.86;
-            transform: translate3d(8%, 0, 0);
+            transform: translate3d(8px, -5px, 0);
         }
     }
 
-    @keyframes landing-cat {
+    @keyframes liquid-satellite-float {
         0%,
         100% {
-            transform: translate3d(0, 0, 0) rotate(-1deg);
+            transform: translate3d(0, 0, 0) rotate(-2deg);
         }
 
         50% {
-            transform: translate3d(0, -10px, 0) rotate(1deg);
+            transform: translate3d(-14px, 24px, 0) rotate(4deg);
         }
     }
 
-    @keyframes landing-pulse {
-        0%,
-        100% {
-            opacity: 0.54;
-            transform: scale(0.8);
+    @media (max-width: 1320px) {
+        .liquid-index__inner {
+            grid-template-columns: minmax(340px, 0.72fr) minmax(560px, 1.28fr);
+            gap: 20px 34px;
         }
 
-        50% {
-            opacity: 0.95;
-            transform: scale(1);
+        .liquid-index h1 {
+            font-size: 84px;
+        }
+
+        .liquid-stage {
+            width: min(850px, 70vw);
+        }
+
+        .liquid-routes {
+            gap: 26px;
         }
     }
 
-    @media (max-width: 1280px) {
-        .landing-frame {
-            grid-template-columns: minmax(250px, 0.56fr) minmax(620px, 1.44fr);
-            gap: 28px;
+    @media (max-width: 980px) {
+        .home-shell {
+            width: min(100% - 30px, 1660px);
         }
 
-        .landing-card__content {
-            grid-template-columns: 1fr 34px;
+        .liquid-index__inner {
+            grid-template-columns: minmax(300px, 0.78fr) minmax(440px, 1.22fr);
+            gap: 18px 24px;
+        }
+
+        .liquid-index h1 {
+            font-size: 72px;
+        }
+
+        .liquid-index__intro {
+            font-size: 16px;
+        }
+
+        .liquid-stage {
+            right: -6%;
+            width: 720px;
+        }
+
+        .liquid-route strong {
+            font-size: 17px;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .route-home {
+            height: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .liquid-index {
+            min-height: 100svh;
+            overflow-y: auto;
+            background:
+                linear-gradient(180deg, rgba(5, 1, 13, 0.92), rgba(5, 1, 13, 0.3) 58%, #030107 100%),
+                radial-gradient(ellipse at 54% 58%, rgba(181, 108, 255, 0.09), transparent 68%);
+        }
+
+        .liquid-index::after {
+            height: 100px;
+        }
+
+        .liquid-index__inner {
+            min-height: 100svh;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto minmax(280px, 1fr) auto;
+            align-items: start;
+            gap: 0;
+            padding-block: 96px 18px;
+        }
+
+        .liquid-index__copy {
+            grid-column: 1;
+            grid-row: 1;
+            max-width: 540px;
+            padding: 12px 8px 0;
+        }
+
+        .liquid-index__eyebrow {
+            margin-bottom: 14px;
+            font-size: 11px;
+        }
+
+        .liquid-index h1 {
+            font-size: 60px;
+        }
+
+        .liquid-index__intro {
+            max-width: 32ch;
+            margin-top: 18px;
+            font-size: 15px;
+            line-height: 1.58;
+        }
+
+        .liquid-stage {
+            right: auto;
+            width: 116%;
+            max-width: 640px;
+            grid-column: 1;
+            grid-row: 2;
+            align-self: center;
+            justify-self: center;
+        }
+
+        .liquid-routes {
+            grid-column: 1;
+            grid-row: 3;
             gap: 12px;
         }
 
-        .landing-card__icon {
-            width: 46px;
+        .liquid-route {
+            gap: 9px;
+            padding-top: 13px;
         }
 
-        .landing-card__action {
-            width: 34px;
-        }
-    }
-
-    @media (max-width: 1060px) {
-        .landing-stage {
-            min-height: auto;
-            overflow: clip;
+        .liquid-route strong {
+            font-size: 15px;
         }
 
-        .landing-stage::after {
+        .liquid-route small {
             display: none;
         }
 
-        .landing-stage__inner {
-            min-height: 100svh;
-            width: min(100% - 24px, 1760px);
-            padding-block: 86px 18px;
-        }
-
-        .landing-frame {
-            min-height: calc(100svh - 104px);
-            grid-template-columns: 1fr;
-            align-content: start;
-            gap: 24px;
-            padding: clamp(22px, 5vw, 44px);
-        }
-
-        .landing-copy {
-            max-width: 640px;
-        }
-
-        .landing-copy h1 {
-            max-width: 12ch;
-            font-size: clamp(58px, 11vw, 98px);
-        }
-
-        .landing-scene {
-            min-height: 560px;
-        }
-
-        .landing-scene__blob {
-            inset: 0 -4% 0 -4%;
-        }
-
-        .landing-scene__cat {
-            right: clamp(14px, 5vw, 72px);
-            bottom: 206px;
-            width: clamp(230px, 42vw, 390px);
-        }
-
-        .landing-cards {
-            right: clamp(18px, 4vw, 42px);
-            bottom: clamp(24px, 5vw, 42px);
-            left: clamp(18px, 4vw, 42px);
-            grid-template-columns: 1fr;
-        }
-
-        .landing-card {
-            min-height: 104px;
-            border-radius: 26px;
-        }
-
-        .landing-card__text span {
-            max-width: none;
+        .liquid-route .nav-icon {
+            width: 17px;
+            height: 17px;
         }
     }
 
-    @media (max-width: 640px) {
-        .landing-stage__inner {
-            width: min(100% - 16px, 1760px);
-            padding-block: 78px 8px;
+    @media (max-width: 430px) {
+        .home-shell {
+            width: calc(100% - 20px);
         }
 
-        .landing-stage::before {
-            border-radius: 20px;
+        .liquid-index__inner {
+            grid-template-rows: auto minmax(260px, 1fr) auto;
+            padding-block: 86px 14px;
         }
 
-        .landing-frame {
-            min-height: calc(100svh - 86px);
-            border-radius: 22px;
-            padding: 22px;
+        .liquid-index h1 {
+            font-size: 52px;
         }
 
-        .landing-copy__eyebrow {
-            margin-bottom: 12px;
+        .liquid-index__intro {
+            max-width: 29ch;
             font-size: 14px;
         }
 
-        .landing-copy h1 {
-            max-width: 11ch;
-            font-size: clamp(52px, 15.5vw, 72px);
+        .liquid-stage {
+            width: 126%;
         }
 
-        .landing-copy p:not(.landing-copy__eyebrow) {
-            max-width: 27ch;
-            margin-top: 16px;
-            font-size: 15px;
-            line-height: 1.55;
+        .liquid-routes {
+            gap: 9px;
         }
 
-        .landing-scene {
-            min-height: 500px;
-        }
-
-        .landing-scene__blob {
-            inset: 8px -22px 0;
-            border-radius: 45% 55% 48% 52% / 38% 42% 58% 62%;
-        }
-
-        .landing-scene__cat {
-            right: 10px;
-            bottom: 248px;
-            width: min(260px, 62vw);
-        }
-
-        .landing-cards {
-            right: 0;
-            bottom: 18px;
-            left: 0;
-            gap: 10px;
-        }
-
-        .landing-card {
-            min-height: 92px;
-            border-radius: 22px;
-        }
-
-        .landing-card__content {
-            grid-template-columns: 42px minmax(0, 1fr) 32px;
-            gap: 12px;
-            padding: 16px;
-        }
-
-        .landing-card__icon {
-            width: 42px;
-        }
-
-        .landing-card__icon .nav-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .landing-card__text strong {
-            font-size: 22px;
-        }
-
-        .landing-card__text {
-            grid-column: 2;
-            grid-row: 1;
-            align-self: center;
-            padding-right: 0;
-        }
-
-        .landing-card__text span {
-            font-size: 13px;
-            line-height: 1.35;
-        }
-
-        .landing-card__action {
-            width: 32px;
-            grid-column: 3;
-            grid-row: 1;
-            align-self: center;
-        }
-
-        .landing-card__action .nav-icon {
-            width: 16px;
-            height: 16px;
+        .liquid-route strong {
+            font-size: 14px;
         }
     }
 
-    @media (max-width: 420px) {
-        .landing-card__text span {
-            display: none;
+    @media (max-height: 720px) and (min-width: 761px) {
+        .liquid-index__inner {
+            padding-block: 92px 28px;
         }
 
-        .landing-scene {
-            min-height: 430px;
+        .liquid-index__copy {
+            padding-bottom: 34px;
         }
 
-        .landing-scene__cat {
-            bottom: 270px;
-            width: min(210px, 56vw);
+        .liquid-index h1 {
+            font-size: 76px;
         }
 
-        .landing-card {
-            min-height: 82px;
+        .liquid-index__intro {
+            margin-top: 22px;
+            font-size: 16px;
         }
 
-        .landing-card__content {
-            padding: 12px 14px;
+        .liquid-stage {
+            width: min(790px, 68vw);
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .landing-stage::after,
-        .landing-scene__blob,
-        .landing-scene__blob::before,
-        .landing-scene__cat {
+        .liquid-stage__contour,
+        .liquid-stage__satellite {
             animation: none;
+        }
+
+        .liquid-index__light,
+        .liquid-stage,
+        .liquid-route > span,
+        .liquid-route .nav-icon {
+            transform: none;
+            transition: none;
+        }
+
+        .js .liquid-index__copy,
+        .js .liquid-stage,
+        .js .liquid-route {
+            opacity: 1;
+            scale: 1;
+            transform: none;
         }
     }
 }

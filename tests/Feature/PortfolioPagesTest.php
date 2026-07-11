@@ -19,7 +19,7 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_landing_page_renders_as_card_stage(): void
+    public function test_landing_page_renders_the_liquid_navigation_index(): void
     {
         $this->get('/en')
             ->assertOk()
@@ -30,7 +30,11 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Projects')
             ->assertSee('Contact')
             ->assertDontSee('fetchpriority="high"', false)
-            ->assertSee('data-landing-card', false)
+            ->assertSee('data-liquid-index', false)
+            ->assertSee('data-liquid-svg', false)
+            ->assertSee('data-liquid-navigation', false)
+            ->assertDontSee('data-motion-chip', false)
+            ->assertDontSee('Quantified')
             ->assertDontSee('data-portfolio-chat', false)
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false)
