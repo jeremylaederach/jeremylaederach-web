@@ -19,9 +19,11 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_landing_page_renders_the_liquid_navigation_index(): void
+    public function test_landing_page_renders_the_liquid_metal_navigation_scene(): void
     {
-        $this->get('/en')
+        $response = $this->get('/en');
+
+        $response
             ->assertOk()
             ->assertSee('<title>Jeremy', false)
             ->assertSee('Jeremy')
@@ -29,10 +31,15 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About me')
             ->assertSee('Projects')
             ->assertSee('Contact')
+            ->assertSee('useful digital systems.')
             ->assertDontSee('fetchpriority="high"', false)
-            ->assertSee('data-liquid-index', false)
-            ->assertSee('data-liquid-svg', false)
+            ->assertSee('data-liquid-home', false)
+            ->assertSee('data-liquid-canvas', false)
+            ->assertSee('data-liquid-bodies', false)
             ->assertSee('data-liquid-navigation', false)
+            ->assertDontSee('data-lava-index', false)
+            ->assertDontSee('data-liquid-svg', false)
+            ->assertDontSee('<animate', false)
             ->assertDontSee('data-motion-chip', false)
             ->assertDontSee('Quantified')
             ->assertDontSee('data-portfolio-chat', false)
@@ -40,9 +47,13 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false)
             ->assertDontSee('Developer work with a practical business edge');
 
+        $this->assertSame(3, substr_count($response->getContent(), 'data-liquid-navigation'));
+        $this->assertSame(3, substr_count($response->getContent(), 'data-body-index='));
+
         $this->get('/de')
             ->assertOk()
             ->assertSee('Software Engineer')
+            ->assertSee('nützliche digitale Systeme.')
             ->assertSee('Profil')
             ->assertSee('Projekte');
     }

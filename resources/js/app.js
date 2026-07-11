@@ -1,9 +1,8 @@
 const selectors = {
-    liquidIndex: '[data-liquid-index]',
+    liquidBody: '[data-liquid-body]',
+    liquidCanvas: '[data-liquid-canvas]',
+    liquidHome: '[data-liquid-home]',
     liquidNavigation: '[data-liquid-navigation]',
-    liquidRoute: '[data-liquid-route]',
-    liquidRoutes: '[data-liquid-routes]',
-    liquidSvg: '[data-liquid-svg]',
     menuPanel: '[data-menu-panel]',
     menuToggle: '[data-menu-toggle]',
     reveal: '.reveal',
@@ -17,11 +16,10 @@ const motionPreferences = {
 
 const timings = {
     menuClose: 980,
-    navigationWipe: 680,
+    routeFallback: 680,
 };
 
 const root = document.documentElement;
-const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
 const markRevealed = (element) => element.classList.add('is-visible');
 
 const initPageEntrance = () => {
@@ -65,136 +63,111 @@ const shouldAnimateNavigation = (event, link) => {
         return false;
     }
 
-    return link.target !== '_blank' && Boolean(link.href) && !root.classList.contains('is-navigating');
+    const destination = new URL(link.href, window.location.href);
+
+    return (
+        link.target !== '_blank'
+        && destination.origin === window.location.origin
+        && !root.classList.contains('is-route-leaving')
+    );
 };
 
-const animateLiquidNavigation = (link) => {
+const portalRadii = {
+    about: '49% 51% 53% 47% / 47% 55% 45% 53%',
+    projects: '52% 48% 49% 51% / 54% 47% 53% 46%',
+    contact: '54% 46% 48% 52% / 51% 45% 55% 49%',
+};
+
+const createRoutePortal = (link) => {
     const rect = link.getBoundingClientRect();
-    const originX = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
-    const originY = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
-    const wipe = document.createElement('div');
+    const route = link.dataset.route;
+    const portal = document.createElement('div');
 
-    wipe.className = 'liquid-navigation-wipe';
-    wipe.style.setProperty('--wipe-x', `${originX.toFixed(2)}%`);
-    wipe.style.setProperty('--wipe-y', `${originY.toFixed(2)}%`);
-    wipe.setAttribute('aria-hidden', 'true');
+    portal.className = 'route-portal';
+    portal.dataset.route = route;
+    portal.setAttribute('aria-hidden', 'true');
+    portal.style.setProperty('--portal-x', `${rect.left.toFixed(2)}px`);
+    portal.style.setProperty('--portal-y', `${rect.top.toFixed(2)}px`);
+    portal.style.setProperty('--portal-scale-x', (rect.width / window.innerWidth).toFixed(4));
+    portal.style.setProperty('--portal-scale-y', (rect.height / window.innerHeight).toFixed(4));
+    portal.style.setProperty('--portal-radius', portalRadii[route] ?? '50%');
 
-    root.classList.add('is-navigating');
-    document.body.append(wipe);
+    document.body.append(portal);
 
-    window.requestAnimationFrame(() => wipe.classList.add('is-active'));
-    window.setTimeout(() => window.location.assign(link.href), timings.navigationWipe);
+    return portal;
 };
 
-const initLiquidNavigation = (index) => {
-    const routes = index.querySelector(selectors.liquidRoutes);
+const animateRouteNavigation = (event, link, getLiquidScene) => {
+    if (root.classList.contains('is-route-leaving')) {
+        event.preventDefault();
 
-    if (!routes) {
         return;
     }
 
-    const links = [...routes.querySelectorAll(selectors.liquidRoute)];
-    const clearFocus = () => index.removeAttribute('data-liquid-focus');
+    if (!shouldAnimateNavigation(event, link)) {
+        return;
+    }
 
-    links.forEach((link) => {
-        const focusLiquid = () => {
-            index.dataset.liquidFocus = link.dataset.liquidRoute;
-        };
+    const body = link.closest(selectors.liquidBody);
+    const liquidScene = getLiquidScene();
+    const liquidDuration = liquidScene?.transitionTo(link.dataset.route) ?? 0;
 
-        link.addEventListener('focus', focusLiquid);
-        link.addEventListener('blur', () => {
-            window.requestAnimationFrame(() => {
-                if (!routes.contains(document.activeElement)) {
-                    clearFocus();
-                }
-            });
+    event.preventDefault();
+    root.classList.add('is-route-leaving');
+    body?.classList.add('is-selected');
+
+    if (liquidDuration > 0) {
+        window.setTimeout(() => window.location.assign(link.href), liquidDuration);
+
+        return;
+    }
+
+    const portal = createRoutePortal(link);
+
+    window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => portal.classList.add('is-active'));
+    });
+
+    window.setTimeout(() => window.location.assign(link.href), timings.routeFallback);
+};
+
+const initLiquidNavigation = (home, getLiquidScene) => {
+    home.querySelectorAll(selectors.liquidNavigation).forEach((link) => {
+        link.addEventListener('click', (event) => animateRouteNavigation(event, link, getLiquidScene));
+    });
+};
+
+const initLiquidHome = async () => {
+    const home = document.querySelector(selectors.liquidHome);
+
+    if (!home) {
+        return;
+    }
+
+    const canvas = home.querySelector(selectors.liquidCanvas);
+    const bodies = [...home.querySelectorAll(selectors.liquidBody)];
+    let liquidScene;
+
+    initLiquidNavigation(home, () => liquidScene);
+
+    if (!(canvas instanceof HTMLCanvasElement) || bodies.length !== 3) {
+        return;
+    }
+
+    try {
+        const { createLiquidScene } = await import('./liquid-scene.js');
+
+        liquidScene = createLiquidScene({
+            root: home,
+            canvas,
+            bodies,
+            reducedMotion: motionPreferences.reduced,
+            finePointer: motionPreferences.finePointer,
         });
-
-        link.addEventListener('click', (event) => {
-            if (!shouldAnimateNavigation(event, link)) {
-                return;
-            }
-
-            event.preventDefault();
-            animateLiquidNavigation(link);
-        });
-    });
-
-    routes.addEventListener('pointermove', (event) => {
-        if (!(event.target instanceof Element)) {
-            return;
-        }
-
-        const link = event.target.closest(selectors.liquidRoute);
-
-        if (link && routes.contains(link)) {
-            index.dataset.liquidFocus = link.dataset.liquidRoute;
-        }
-    });
-
-    routes.addEventListener('pointerleave', clearFocus);
-};
-
-const initLiquidPointerMotion = (index) => {
-    if (motionPreferences.reduced || !motionPreferences.finePointer) {
-        return;
+    } catch (error) {
+        console.warn('Liquid scene unavailable; using the CSS fallback.', error);
+        home.classList.add('is-webgl-unavailable');
     }
-
-    let frameId;
-    let state = { cursorX: 72, cursorY: 42, shiftX: 0, shiftY: 0 };
-
-    const render = () => {
-        index.style.setProperty('--cursor-x', `${state.cursorX.toFixed(2)}%`);
-        index.style.setProperty('--cursor-y', `${state.cursorY.toFixed(2)}%`);
-        index.style.setProperty('--pointer-shift-x', `${state.shiftX.toFixed(2)}px`);
-        index.style.setProperty('--pointer-shift-y', `${state.shiftY.toFixed(2)}px`);
-        frameId = undefined;
-    };
-
-    const scheduleRender = () => {
-        if (!frameId) {
-            frameId = window.requestAnimationFrame(render);
-        }
-    };
-
-    index.addEventListener('pointermove', (event) => {
-        const rect = index.getBoundingClientRect();
-        const normalizedX = clamp((event.clientX - rect.left) / rect.width);
-        const normalizedY = clamp((event.clientY - rect.top) / rect.height);
-
-        state = {
-            cursorX: normalizedX * 100,
-            cursorY: normalizedY * 100,
-            shiftX: (normalizedX * 2 - 1) * 8,
-            shiftY: (normalizedY * 2 - 1) * 6,
-        };
-
-        index.classList.add('is-pointer-active');
-        scheduleRender();
-    });
-
-    index.addEventListener('pointerleave', () => {
-        state = { cursorX: 72, cursorY: 42, shiftX: 0, shiftY: 0 };
-        index.classList.remove('is-pointer-active');
-        scheduleRender();
-    });
-};
-
-const initLiquidIndex = () => {
-    const index = document.querySelector(selectors.liquidIndex);
-
-    if (!index) {
-        return;
-    }
-
-    const svg = index.querySelector(selectors.liquidSvg);
-
-    if (motionPreferences.reduced && svg instanceof SVGSVGElement) {
-        svg.pauseAnimations();
-    }
-
-    initLiquidNavigation(index);
-    initLiquidPointerMotion(index);
 };
 
 const initSiteMenu = () => {
@@ -272,9 +245,19 @@ const initSiteMenu = () => {
     });
 };
 
+const resetRouteTransition = () => {
+    root.classList.remove('is-route-leaving');
+    document.querySelectorAll('.route-portal').forEach((portal) => portal.remove());
+    document.querySelectorAll(`${selectors.liquidBody}.is-selected`).forEach((body) => {
+        body.classList.remove('is-selected');
+    });
+};
+
 root.classList.add('js');
+
+window.addEventListener('pageshow', resetRouteTransition);
 
 initPageEntrance();
 initSiteMenu();
 initScrollReveals();
-initLiquidIndex();
+void initLiquidHome();
