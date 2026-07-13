@@ -1,6 +1,6 @@
-<section class="landing-scene" aria-labelledby="landing-title">
-    <div class="landing-scene__inner">
-        <header class="landing-scene__intro">
+<section class="landing-page" aria-labelledby="landing-title">
+    <div class="landing-page__inner">
+        <header class="landing-page__intro">
             <p>{{ $content['home']['statement'] }}</p>
             <h1 id="landing-title">{{ $content['home']['statement_accent'] }}</h1>
         </header>

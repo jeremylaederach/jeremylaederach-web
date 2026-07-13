@@ -19,7 +19,7 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_landing_page_renders_the_liquid_glass_navigation_scene(): void
+    public function test_landing_page_renders_the_liquid_navigation_scene(): void
     {
         $response = $this->get('/en');
 
@@ -32,21 +32,19 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Projects')
             ->assertSee('Contact')
             ->assertSee('useful digital systems.')
-            ->assertDontSee('fetchpriority="high"', false)
-            ->assertSee('class="landing-scene"', false)
+            ->assertSee('class="landing-page"', false)
             ->assertSee('data-liquid-stage', false)
-            ->assertSee('class="landing-liquid-nav"', false)
+            ->assertSee('class="liquid-navigation"', false)
+            ->assertSee('data-liquid-canvas', false)
+            ->assertSee('class="liquid-stage__fallback"', false)
+            ->assertSee('data-sound-toggle', false)
             ->assertSee('data-page-main', false)
-            ->assertSee('brand/liquid/liquid-projects.png', false)
-            ->assertSee('brand/liquid/liquid-about.png', false)
-            ->assertSee('brand/liquid/liquid-contact.png', false)
-            ->assertDontSee('data-liquid-canvas', false)
+            ->assertDontSee('brand/liquid/', false)
             ->assertDontSee('data-motion-chip', false)
-            ->assertDontSee('Quantified')
             ->assertDontSee('data-portfolio-chat', false)
+            ->assertDontSee('Quantified')
             ->assertSee('href="http://localhost/en/about"', false)
-            ->assertSee('href="http://localhost/en/projects"', false)
-            ->assertDontSee('Developer work with a practical business edge');
+            ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->getContent(), 'data-liquid-route'));
 
@@ -56,6 +54,10 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('nützliche digitale Systeme.')
             ->assertSee('Profil')
             ->assertSee('Projekte');
+
+        $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-projects.png'));
+        $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-about.png'));
+        $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-contact.png'));
     }
 
     public function test_about_and_projects_pages_render_per_locale(): void
@@ -63,8 +65,8 @@ class PortfolioPagesTest extends TestCase
         $this->get('/en/about')
             ->assertOk()
             ->assertSee('aria-current="page"', false)
-            ->assertSee('detail-page--about', false)
-            ->assertSee('brand/liquid/liquid-about.png', false)
+            ->assertSee('page-scene--about', false)
+            ->assertSee('aria-hidden="true"', false)
             ->assertSee('data-scene="about"', false)
             ->assertSee('Tech I work with')
             ->assertSee('Laravel')
@@ -73,10 +75,10 @@ class PortfolioPagesTest extends TestCase
 
         $this->get('/de/projects')
             ->assertOk()
-            ->assertSee('detail-page--projects', false)
-            ->assertSee('brand/liquid/liquid-projects.png', false)
+            ->assertSee('page-scene--projects', false)
             ->assertSee('data-scene="projects"', false)
             ->assertSee('Projekte')
+            ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
             ->assertSee('Jay-Jay Web')
             ->assertSee('Scherer Garten');
@@ -87,8 +89,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/en/contact')
             ->assertOk()
             ->assertSee('<title>Jeremy', false)
-            ->assertSee('detail-page--contact', false)
-            ->assertSee('brand/liquid/liquid-contact.png', false)
+            ->assertSee('page-scene--contact', false)
             ->assertSee('data-scene="contact"', false)
             ->assertSee('Send message')
             ->assertSee('name="message"', false)

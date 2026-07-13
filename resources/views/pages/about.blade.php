@@ -1,27 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="detail-page detail-page--about" aria-labelledby="about-title">
-        <div class="detail-page__inner about-layout">
-            <header class="detail-page__intro">
-                <span>02</span>
+    <section class="page-scene page-scene--about" aria-labelledby="about-title">
+        <div class="page-scene__shell about-layout">
+            <header class="page-heading page-heading--about">
+                <span>02 / {{ $content['about_page']['eyebrow'] }}</span>
                 <h1 id="about-title">{{ $content['about_page']['heading'] }}</h1>
                 <p>{{ $content['about_page']['intro'] }}</p>
-
-                <div class="about-copy">
-                    @foreach ($content['about_page']['body'] as $paragraph)
-                        <p>{{ $paragraph }}</p>
-                    @endforeach
-                </div>
             </header>
 
-            <section class="technology-list" id="stack" aria-labelledby="technology-title">
+            <div class="about-narrative">
+                @foreach ($content['about_page']['body'] as $paragraph)
+                    <p>{{ $paragraph }}</p>
+                @endforeach
+            </div>
+
+            <section class="technology-index" id="stack" aria-labelledby="technology-title">
                 <p id="technology-title">{{ $content['about_page']['technology_heading'] }}</p>
-                <ul>
+                <ol>
                     @foreach ($content['about_page']['technology_list'] as $technology)
-                        <li>{{ $technology }}</li>
+                        <li>
+                            <span>0{{ $loop->iteration }}</span>
+                            <strong>{{ $technology }}</strong>
+                        </li>
                     @endforeach
-                </ul>
+                </ol>
             </section>
         </div>
 

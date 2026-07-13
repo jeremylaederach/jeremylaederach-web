@@ -46,6 +46,8 @@ return [
                 'role' => 'Software Engineer',
                 'open' => 'Open',
                 'footer_note' => 'Personal Laravel portfolio.',
+                'sound_mute' => 'Mute interface sounds',
+                'sound_enable' => 'Enable interface sounds',
             ],
             'nav' => [
                 ['label' => 'Home', 'route' => 'home', 'icon' => 'home'],
@@ -76,6 +78,7 @@ return [
                 ],
             ],
             'about_page' => [
+                'eyebrow' => 'Profile',
                 'heading' => 'About me',
                 'intro' => 'I like systems that are quiet, useful, and maintainable: clear code, deliberate interfaces, and software that survives real deployment constraints.',
                 'body' => [
@@ -86,6 +89,9 @@ return [
                 'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
             ],
             'projects_page' => [
+                'eyebrow' => 'Selected work',
+                'featured_label' => 'Featured build',
+                'secondary_label' => 'Additional work',
                 'heading' => 'Projects',
                 'intro' => 'A few projects that show the range: product engineering, client delivery, and maintainable web foundations.',
                 'items' => [
@@ -110,6 +116,7 @@ return [
                 ],
             ],
             'contact_page' => [
+                'eyebrow' => 'Start a conversation',
                 'heading' => 'Contact',
                 'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
                 'form' => [
@@ -143,6 +150,8 @@ return [
                 'role' => 'Software Engineer',
                 'open' => 'Öffnen',
                 'footer_note' => 'Persönliches Laravel-Portfolio.',
+                'sound_mute' => 'Interface-Töne ausschalten',
+                'sound_enable' => 'Interface-Töne einschalten',
             ],
             'nav' => [
                 ['label' => 'Start', 'route' => 'home', 'icon' => 'home'],
@@ -173,6 +182,7 @@ return [
                 ],
             ],
             'about_page' => [
+                'eyebrow' => 'Profil',
                 'heading' => 'Über mich',
                 'intro' => 'Ich mag Systeme, die ruhig, nützlich und wartbar sind: klarer Code, bewusste Oberflächen und Software, die reale Deployment-Bedingungen übersteht.',
                 'body' => [
@@ -183,6 +193,9 @@ return [
                 'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
             ],
             'projects_page' => [
+                'eyebrow' => 'Ausgewählte Arbeiten',
+                'featured_label' => 'Hauptprojekt',
+                'secondary_label' => 'Weitere Arbeiten',
                 'heading' => 'Projekte',
                 'intro' => 'Ein paar Projekte, die die Bandbreite zeigen: Product Engineering, Kundenarbeit und wartbare Web-Fundamente.',
                 'items' => [
@@ -207,6 +220,7 @@ return [
                 ],
             ],
             'contact_page' => [
+                'eyebrow' => 'Gespräch beginnen',
                 'heading' => 'Kontakt',
                 'intro' => 'E-Mail ist der beste erste Schritt. Schick das grobe Ziel, Links, Rahmenbedingungen und wie ein gutes Resultat wirken soll.',
                 'form' => [

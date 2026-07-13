@@ -42,41 +42,57 @@
                     </span>
                 </a>
 
-                <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
-                    @foreach ($content['nav'] as $item)
-                        @continue($item['route'] === 'home')
+                <div class="site-header__controls">
+                    <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
+                        @foreach ($content['nav'] as $item)
+                            @continue($item['route'] === 'home')
 
-                        @php
-                            $isActive = $currentRoute === $item['route'];
-                        @endphp
-
-                        <a
-                            @class(['is-active' => $isActive])
-                            href="{{ route($item['route'], ['locale' => $locale]) }}"
-                            data-route="{{ $item['route'] }}"
-                            data-route-transition
-                            @if ($isActive) aria-current="page" @endif
-                        >
-                            {{ $item['label'] }}
-                        </a>
-                    @endforeach
-
-                    <span class="site-header__nav-dot" aria-hidden="true"></span>
-
-                    <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
-                        @foreach (config('portfolio.locales') as $code => $localeMeta)
                             @php
-                                $targetParams = array_merge($currentParams, ['locale' => $code]);
-                                $targetUrl = route($currentRoute, $targetParams);
+                                $isActive = $currentRoute === $item['route'];
                             @endphp
-                            <a @class(['is-active' => $code === $locale]) href="{{ $targetUrl }}" hreflang="{{ $code }}">
-                                {{ $localeMeta['label'] }}
+
+                            <a
+                                @class(['is-active' => $isActive])
+                                href="{{ route($item['route'], ['locale' => $locale]) }}"
+                                data-page-route="{{ $item['route'] }}"
+                                data-route="{{ $item['route'] }}"
+                                data-route-transition
+                                @if ($isActive) aria-current="page" @endif
+                            >
+                                {{ $item['label'] }}
                             </a>
                         @endforeach
-                    </div>
-                </nav>
 
-                <div class="site-menu">
+                        <span class="site-header__nav-dot" aria-hidden="true"></span>
+
+                        <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
+                            @foreach (config('portfolio.locales') as $code => $localeMeta)
+                                @php
+                                    $targetParams = array_merge($currentParams, ['locale' => $code]);
+                                    $targetUrl = route($currentRoute, $targetParams);
+                                @endphp
+                                <a @class(['is-active' => $code === $locale]) href="{{ $targetUrl }}" hreflang="{{ $code }}">
+                                    {{ $localeMeta['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </nav>
+
+                    <button
+                        class="sound-toggle"
+                        type="button"
+                        aria-label="{{ $content['ui']['sound_mute'] }}"
+                        aria-pressed="false"
+                        title="{{ $content['ui']['sound_mute'] }}"
+                        data-sound-toggle
+                        data-label-muted="{{ $content['ui']['sound_enable'] }}"
+                        data-label-playing="{{ $content['ui']['sound_mute'] }}"
+                    >
+                        <span class="sound-toggle__on"><x-nav-icon name="sound-on" /></span>
+                        <span class="sound-toggle__off"><x-nav-icon name="sound-off" /></span>
+                    </button>
+
+                    <div class="site-menu">
                     <button
                         class="site-menu__toggle"
                         type="button"
@@ -104,6 +120,7 @@
                                     href="{{ $href }}"
                                     aria-label="{{ $item['label'] }}"
                                     @if ($isActive) aria-current="page" @endif
+                                    data-page-route="{{ $item['route'] }}"
                                     data-route="{{ $item['route'] }}"
                                     data-route-transition
                                     data-menu-label="{{ $item['label'] }}"
@@ -128,6 +145,7 @@
                                 </a>
                             @endforeach
                         </nav>
+                    </div>
                     </div>
                 </div>
             </div>

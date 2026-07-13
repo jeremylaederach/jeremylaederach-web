@@ -1,6 +1,6 @@
 @media (max-width: 900px) {
     :root {
-        --shell: min(100% - 32px, 700px);
+        --shell: min(calc(100% - 32px), 700px);
     }
 
     .site-header__inner {
@@ -8,8 +8,7 @@
     }
 
     .brand-lockup {
-        gap: 8px;
-        min-width: auto;
+        min-width: 0;
     }
 
     .brand-lockup__mark {
@@ -22,9 +21,18 @@
         display: none;
     }
 
+    .site-header__controls {
+        gap: 9px;
+    }
+
+    .sound-toggle {
+        width: 42px;
+        height: 42px;
+        background: rgba(7, 4, 16, 0.76);
+    }
+
     .site-menu {
         display: block;
-        position: relative;
     }
 
     .site-menu__toggle {
@@ -36,9 +44,8 @@
         padding: 0;
         border: 1px solid rgba(221, 196, 255, 0.17);
         border-radius: 50%;
-        background: rgba(12, 6, 27, 0.67);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 30px rgba(3, 0, 11, 0.22);
-        backdrop-filter: blur(12px);
+        background: rgba(7, 4, 16, 0.82);
+        cursor: pointer;
     }
 
     .site-menu__toggle span {
@@ -46,7 +53,7 @@
         width: 16px;
         height: 1px;
         background: rgba(250, 246, 255, 0.88);
-        transition: transform 280ms ease, opacity 180ms ease;
+        transition: opacity 180ms ease, transform 320ms var(--ease-heavy);
     }
 
     .site-menu__toggle[aria-expanded='true'] span:first-child {
@@ -69,13 +76,12 @@
         padding: 8px;
         border: 1px solid rgba(221, 196, 255, 0.17);
         border-radius: 28px;
-        background: rgba(12, 6, 27, 0.86);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 60px rgba(3, 0, 11, 0.38);
-        backdrop-filter: blur(20px);
-        transform: translateY(-12px) scaleY(0.78);
-        transform-origin: top;
+        background: rgba(8, 4, 18, 0.94);
+        box-shadow: 0 18px 52px rgba(0, 0, 0, 0.4);
         opacity: 0;
-        transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 0.75, 0.18, 1);
+        transform: translateY(-10px) scaleY(0.72);
+        transform-origin: top;
+        transition: opacity 260ms ease, transform 460ms var(--ease-heavy);
     }
 
     .site-menu__panel[data-open] {
@@ -95,15 +101,15 @@
         height: 38px;
         margin: 0 auto;
         border-radius: 50%;
-        color: rgba(242, 235, 253, 0.78);
-        transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+        color: rgba(242, 235, 253, 0.72);
+        transition: background 180ms ease, color 180ms ease, transform 220ms ease;
     }
 
     .primary-nav a.is-active,
     .primary-nav a:hover {
-        background: rgba(183, 97, 255, 0.19);
+        background: rgba(163, 94, 242, 0.18);
         color: white;
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
 
     .primary-nav .nav-icon {
@@ -114,224 +120,191 @@
     .site-menu__divider {
         height: 1px;
         margin: 8px 4px;
-        background: rgba(220, 202, 250, 0.16);
+        background: rgba(220, 202, 250, 0.14);
     }
 
     .language-switcher {
         display: grid;
         gap: 3px;
-        padding: 0 0 2px;
+        padding-bottom: 2px;
         text-align: center;
     }
 
     .language-switcher a {
         padding: 4px 0;
-        color: rgba(222, 209, 243, 0.52);
+        color: rgba(222, 209, 243, 0.48);
         font-size: 9px;
-        font-weight: 650;
+        font-weight: 600;
     }
 
     .language-switcher a.is-active {
         color: white;
     }
 
-    .landing-scene__intro {
-        top: 13%;
+    .landing-page__intro {
+        top: 12%;
         left: 2%;
-        width: 160px;
+        width: 178px;
     }
 
-    .landing-scene__intro p,
-    .landing-scene__intro h1 {
-        font-size: 23px;
+    .landing-page__intro p,
+    .landing-page__intro h1 {
+        font-size: 27px;
     }
 
-    .landing-liquid-nav__body--projects {
-        top: 24%;
-        left: -8%;
-        width: 116%;
-        height: 42%;
+    .liquid-navigation__label {
+        gap: 6px;
+        min-width: 126px;
     }
 
-    .landing-liquid-nav__body--about {
-        bottom: 20%;
-        left: -6%;
-        width: 71%;
-        height: 37%;
+    .liquid-navigation__label strong {
+        font-size: 25px;
     }
 
-    .landing-liquid-nav__body--contact {
-        --art-stretch: 1.68;
-
-        right: -16%;
-        bottom: 17%;
-        width: 88%;
-        height: 39%;
-    }
-
-    .landing-liquid-nav__idle {
-        animation: none !important;
-        will-change: auto;
-    }
-
-    .landing-liquid-nav__body {
-        mix-blend-mode: screen;
-    }
-
-    .liquid-stage {
-        isolation: isolate;
-    }
-
-    .liquid-stage::before {
-        position: absolute;
-        inset: 0;
-        background: var(--bg);
-        content: '';
-    }
-
-    .landing-liquid-nav__visual > img {
-        filter: none;
-        will-change: auto;
-    }
-
-    .liquid-stage[data-scene='projects'] .landing-liquid-nav__body--projects {
-        top: 5%;
-        right: auto;
-        bottom: auto;
-        left: -30%;
-        width: 162%;
-        height: 68%;
-    }
-
-    .liquid-stage[data-scene='about'] .landing-liquid-nav__body--about {
-        top: 7%;
-        right: -42%;
-        bottom: auto;
-        left: auto;
-        width: 148%;
-        height: 70%;
-    }
-
-    .liquid-stage[data-scene='contact'] .landing-liquid-nav__body--contact {
-        --art-stretch: 1.18;
-
-        top: 3%;
-        right: auto;
-        bottom: auto;
-        left: 36%;
-        width: 96%;
-        height: 94%;
-    }
-
-    .landing-liquid-nav__visual > img {
-        inset: -13%;
-        width: 126%;
-        height: 126%;
-    }
-
-    .landing-liquid-nav__copy {
-        top: 42%;
-        left: 27%;
+    .liquid-navigation__label > span {
         gap: 8px;
+        font-size: 9px;
     }
 
-    .landing-liquid-nav__copy strong {
-        font-size: 29px;
-    }
-
-    .landing-liquid-nav__copy > span {
-        gap: 10px;
-        font-size: 10px;
-    }
-
-    .landing-liquid-nav__body--about .landing-liquid-nav__copy,
-    .landing-liquid-nav__body--contact .landing-liquid-nav__copy {
-        top: 42%;
-        left: 25%;
-    }
-
-    .landing-liquid-nav__body--about .landing-liquid-nav__copy strong,
-    .landing-liquid-nav__body--contact .landing-liquid-nav__copy strong {
-        font-size: 21px;
+    .liquid-navigation__label .nav-icon {
+        width: 15px;
+        height: 15px;
     }
 
     .scene-index {
-        bottom: 18px;
-        left: 0;
+        bottom: 17px;
+        left: 16px;
     }
 
-    .detail-page {
+    .page-scene {
+        min-height: 100svh;
         overflow: clip;
     }
 
-    .detail-page__inner {
+    .page-scene__shell {
         min-height: 100svh;
-        padding: 136px 2% 64px;
+        padding: 118px 2% 70px;
     }
 
-    .detail-page__intro h1 {
-        font-size: 44px;
+    .page-heading h1 {
+        margin-top: 16px;
+        font-size: 46px;
     }
 
-    .detail-page--projects .detail-page__intro {
-        padding-top: 0;
+    .page-heading > p {
+        margin-top: 18px;
+        font-size: 14px;
     }
 
-    .project-grid {
-        position: relative;
-        top: auto;
-        right: auto;
-        width: 100%;
-        margin-top: 42px;
-    }
-
-    .project-card,
-    .project-card--featured {
-        min-height: 185px;
-        padding: 20px;
-    }
-
-    .project-card--featured {
-        grid-column: 1 / -1;
-    }
-
+    .projects-layout,
     .about-layout,
     .contact-layout {
         display: grid;
         grid-template-columns: 1fr;
+        align-content: start;
         gap: 42px;
     }
 
-    .technology-list {
-        padding: 26px 28px;
+    .page-heading--projects,
+    .page-heading--about {
+        margin-top: 0;
+    }
+
+    .projects-showcase {
+        margin-top: 60px;
+    }
+
+    .project-feature {
+        min-height: 255px;
+        padding: 22px 18px;
+    }
+
+    .project-feature__body {
+        margin-top: 34px;
+    }
+
+    .project-feature__body h2 {
+        font-size: 34px;
+    }
+
+    .project-row {
+        grid-template-columns: 24px 1fr;
+        gap: 15px;
+        padding: 22px 4px;
+    }
+
+    .project-row > p,
+    .project-row ul {
+        grid-column: 2;
+    }
+
+    .project-row ul {
+        margin-top: 0;
+    }
+
+    .about-narrative {
+        align-self: auto;
+        padding: 24px 0 0;
+    }
+
+    .technology-index {
+        padding-top: 20px;
     }
 
     .contact-layout {
-        gap: 34px;
+        gap: 72px;
     }
 
     .contact-form {
-        padding: 20px;
+        padding: 24px 0;
     }
 
     .site-footer {
-        padding-bottom: 22px;
+        padding-bottom: 20px;
     }
 
     .site-footer__inner {
         align-items: flex-start;
-        gap: 22px;
+        gap: 20px;
         flex-direction: column;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+    }
+
+    .imprint-page {
+        padding: 118px 2% 76px;
+    }
+
+    .imprint-page h1 {
+        font-size: 44px;
     }
 }
 
 @media (max-width: 520px) {
-    .project-grid {
-        grid-template-columns: 1fr;
+    .brand-lockup strong {
+        font-size: 9px;
     }
 
-    .project-card--featured {
-        grid-column: auto;
+    .liquid-navigation__label {
+        min-width: 112px;
+    }
+
+    .liquid-navigation__label strong {
+        font-size: 22px;
+    }
+
+    .liquid-navigation__label > span {
+        font-size: 8px;
+    }
+
+    .page-heading h1 {
+        font-size: 42px;
+    }
+
+    .contact-links {
+        display: grid;
     }
 }
 
@@ -343,18 +316,5 @@
         animation-duration: 1ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 1ms !important;
-    }
-
-    .landing-liquid-nav__idle {
-        animation: none !important;
-    }
-
-    .landing-liquid-nav__pointer,
-    .landing-liquid-nav__hover {
-        transform: none !important;
-    }
-
-    .landing-liquid-nav__sheen {
-        display: none;
     }
 }

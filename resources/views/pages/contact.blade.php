@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="detail-page detail-page--contact" aria-labelledby="contact-title">
-        <div class="detail-page__inner contact-layout">
-            <header class="detail-page__intro">
-                <span>03</span>
+    <section class="page-scene page-scene--contact" aria-labelledby="contact-title">
+        <div class="page-scene__shell contact-layout">
+            <header class="page-heading page-heading--contact">
+                <span>03 / {{ $content['contact_page']['eyebrow'] }}</span>
                 <h1 id="contact-title">{{ $content['contact_page']['heading'] }}</h1>
                 <p>{{ $content['contact_page']['intro'] }}</p>
                 <x-social-links />

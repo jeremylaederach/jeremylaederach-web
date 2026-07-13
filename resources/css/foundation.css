@@ -1,14 +1,18 @@
 @layer base {
     :root {
-        --bg: #000000;
-        --surface: rgba(10, 4, 24, 0.72);
-        --surface-solid: #0b0619;
-        --ink: #f4f1ff;
-        --muted: #aaa2bd;
-        --line: rgba(177, 125, 255, 0.2);
-        --violet: #a95cff;
-        --pink: #ff71d6;
-        --shell: min(100% - 48px, 1540px);
+        --bg: #010106;
+        --surface: #090613;
+        --surface-soft: rgba(10, 6, 22, 0.76);
+        --ink: #f5f3fb;
+        --muted: #aaa4b9;
+        --quiet: #6f687f;
+        --line: rgba(192, 163, 230, 0.2);
+        --line-strong: rgba(205, 171, 248, 0.38);
+        --violet: #a970ff;
+        --blue: #706cff;
+        --pink: #f06bc7;
+        --shell: min(calc(100% - 48px), 1540px);
+        --ease-heavy: cubic-bezier(0.16, 0.72, 0.22, 1);
     }
 
     * {
@@ -20,6 +24,7 @@
         background: var(--bg);
         color: var(--ink);
         font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+        scroll-behavior: smooth;
         text-rendering: optimizeLegibility;
     }
 
@@ -28,6 +33,10 @@
         margin: 0;
         overflow-x: hidden;
         background: var(--bg);
+    }
+
+    body.is-routing {
+        cursor: progress;
     }
 
     a {
@@ -39,6 +48,7 @@
     input,
     textarea {
         font: inherit;
+        letter-spacing: 0;
     }
 
     button {
@@ -51,12 +61,12 @@
     }
 
     ::selection {
-        background: rgba(181, 91, 255, 0.42);
+        background: rgba(169, 112, 255, 0.42);
         color: white;
     }
 
     :focus-visible {
-        outline: 2px solid var(--pink);
+        outline: 2px solid var(--violet);
         outline-offset: 4px;
     }
 
@@ -66,9 +76,9 @@
         height: 1px;
         padding: 0;
         overflow: hidden;
+        border: 0;
         clip: rect(0, 0, 0, 0);
         white-space: nowrap;
-        border: 0;
     }
 
     .skip-link {
@@ -77,7 +87,7 @@
         left: 12px;
         z-index: 100;
         padding: 10px 14px;
-        border-radius: 999px;
+        border-radius: 4px;
         background: white;
         color: #120622;
         transform: translateY(-160%);

@@ -9,6 +9,8 @@
         'folder' => '<path d="M3.5 6.5h6l2 2h9v10.5a2 2 0 0 1-2 2h-15z" /><path d="M3.5 6.5v14.5" />',
         'mail' => '<rect x="3.5" y="6" width="17" height="12" rx="2" /><path d="m5 8 7 5 7-5" />',
         'arrow-right' => '<path d="M5 12h14" /><path d="m13 6 6 6-6 6" />',
+        'sound-on' => '<path d="M5 10v4h3l4 3V7L8 10H5Z" /><path d="M15 9.5a4 4 0 0 1 0 5" /><path d="M17.5 7a7.4 7.4 0 0 1 0 10" />',
+        'sound-off' => '<path d="M5 10v4h3l4 3V7L8 10H5Z" /><path d="m16 10 5 5" /><path d="m21 10-5 5" />',
     ];
 @endphp
 

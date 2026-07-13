@@ -16,6 +16,12 @@ const isEligibleLink = (event, link) => {
     return new URL(link.href, window.location.href).origin === window.location.origin;
 };
 
+const routeFromUrl = (url) => {
+    const route = url.pathname.split('/').filter(Boolean).at(-1);
+
+    return liquidScenes.has(route) ? route : 'home';
+};
+
 const loadPage = async (url) => {
     const cacheKey = url.href;
 
@@ -42,14 +48,12 @@ const loadPage = async (url) => {
     const html = await pageCache.get(cacheKey);
     const nextDocument = new DOMParser().parseFromString(html, 'text/html');
     const main = nextDocument.querySelector('[data-page-main]');
-    const header = nextDocument.querySelector('[data-page-header]');
-    const footer = nextDocument.querySelector('[data-page-footer]');
 
-    if (!(main instanceof HTMLElement) || !(header instanceof HTMLElement) || !(footer instanceof HTMLElement)) {
-        throw new Error('Navigation response is missing a required page region.');
+    if (!(main instanceof HTMLElement)) {
+        throw new Error('Navigation response is missing the main page region.');
     }
 
-    return { footer, header, main, nextDocument };
+    return { main, nextDocument };
 };
 
 const updateDocumentMetadata = (nextDocument) => {
@@ -64,6 +68,28 @@ const updateDocumentMetadata = (nextDocument) => {
     }
 };
 
+const syncPersistentChrome = (nextDocument, scene) => {
+    document.querySelectorAll('[data-page-route]').forEach((link) => {
+        const active = link.dataset.pageRoute === scene;
+
+        link.classList.toggle('is-active', active);
+        link.toggleAttribute('aria-current', active);
+
+        if (active) {
+            link.setAttribute('aria-current', 'page');
+        }
+    });
+
+    document.querySelectorAll('[hreflang]').forEach((link) => {
+        const language = link.getAttribute('hreflang');
+        const nextLink = nextDocument.querySelector(`[hreflang="${language}"]`);
+
+        if (nextLink instanceof HTMLAnchorElement) {
+            link.href = nextLink.href;
+        }
+    });
+};
+
 const focusPageHeading = (main) => {
     const heading = main.querySelector('h1');
 
@@ -76,51 +102,47 @@ const focusPageHeading = (main) => {
     heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
 };
 
-export const createPageRouter = ({ menuController, reducedMotion, stageController }) => {
-    let isNavigating = false;
+export const createPageRouter = ({ reducedMotion, soundController, stageController }) => {
+    let navigationSequence = 0;
 
-    const navigate = async (url, { historyMode = 'push', routeHint, restoreFocus = true } = {}) => {
-        if (isNavigating) {
-            return;
-        }
-
-        isNavigating = true;
+    const navigate = async (url, { historyMode = 'push', restoreFocus = true, routeHint } = {}) => {
+        const sequence = ++navigationSequence;
+        const startedAt = performance.now();
+        const hintedScene = liquidScenes.has(routeHint) ? routeHint : routeFromUrl(url);
+        const timing = stageController.beginTransition(hintedScene);
         const currentMain = document.querySelector('[data-page-main]');
-        const hintedScene = liquidScenes.has(routeHint) ? routeHint : null;
 
+        soundController.select();
         document.body.classList.add('is-routing');
         currentMain?.classList.add('is-page-exiting');
-
-        if (hintedScene) {
-            stageController.setScene(hintedScene);
-        }
 
         try {
             const [page] = await Promise.all([
                 loadPage(url),
-                wait(reducedMotion ? 0 : 480),
+                wait(timing.swapDelay),
             ]);
-            const scene = page.nextDocument.body.dataset.page ?? hintedScene ?? 'home';
 
-            stageController.setScene(scene);
+            if (sequence !== navigationSequence) {
+                return;
+            }
+
+            const scene = page.nextDocument.body.dataset.page ?? hintedScene;
+
+            stageController.commitScene(scene);
             page.main.classList.add('is-page-entering');
-
-            document.querySelector('[data-page-header]')?.replaceWith(page.header);
             currentMain?.replaceWith(page.main);
-            document.querySelector('[data-page-footer]')?.replaceWith(page.footer);
 
             document.body.className = page.nextDocument.body.className;
             document.body.classList.add('is-routing');
             document.body.dataset.page = scene;
             updateDocumentMetadata(page.nextDocument);
+            syncPersistentChrome(page.nextDocument, scene);
 
             if (historyMode === 'push') {
                 window.history.pushState({ portfolioNavigation: true }, '', url);
             }
 
             window.scrollTo(0, 0);
-            menuController.initialize();
-
             await nextFrame();
             await nextFrame();
             page.main.classList.remove('is-page-entering');
@@ -129,14 +151,27 @@ export const createPageRouter = ({ menuController, reducedMotion, stageControlle
                 focusPageHeading(page.main);
             }
 
-            await wait(reducedMotion ? 0 : 560);
+            const elapsed = performance.now() - startedAt;
+            await wait(Math.max(0, timing.completeDelay - elapsed));
+
+            if (sequence !== navigationSequence) {
+                return;
+            }
+
+            stageController.completeTransition(scene);
+            soundController.complete();
         } catch (error) {
+            if (sequence !== navigationSequence) {
+                return;
+            }
+
             console.error(error);
             window.location.assign(url.href);
             return;
         } finally {
-            document.body.classList.remove('is-routing');
-            isNavigating = false;
+            if (sequence === navigationSequence) {
+                document.body.classList.remove('is-routing');
+            }
         }
     };
 
@@ -153,14 +188,14 @@ export const createPageRouter = ({ menuController, reducedMotion, stageControlle
 
         event.preventDefault();
 
-        if (destination.href === window.location.href || isNavigating) {
+        if (destination.href === window.location.href) {
             return;
         }
 
         navigate(destination, { routeHint: link.dataset.route });
     });
 
-    document.addEventListener('pointerover', (event) => {
+    const prefetch = (event) => {
         const link = event.target instanceof Element
             ? event.target.closest('a[data-route-transition]')
             : null;
@@ -174,13 +209,26 @@ export const createPageRouter = ({ menuController, reducedMotion, stageControlle
         if (destination.origin === window.location.origin && destination.href !== window.location.href) {
             loadPage(destination).catch(() => {});
         }
-    }, { passive: true });
+    };
 
+    document.addEventListener('pointerover', prefetch, { passive: true });
+    document.addEventListener('focusin', prefetch);
     window.addEventListener('popstate', () => {
         navigate(new URL(window.location.href), {
             historyMode: 'pop',
             restoreFocus: false,
         });
+    });
+    window.addEventListener('pageshow', (event) => {
+        if (!event.persisted) {
+            return;
+        }
+
+        const scene = document.body.dataset.page ?? 'home';
+        navigationSequence += 1;
+        document.body.classList.remove('is-routing');
+        document.querySelector('[data-page-main]')?.classList.remove('is-page-entering', 'is-page-exiting');
+        stageController.completeTransition(scene);
     });
 
     window.history.scrollRestoration = 'manual';
