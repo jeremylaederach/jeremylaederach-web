@@ -1,627 +1,456 @@
 @layer components {
-    .route-home {
-        height: 100svh;
-        min-height: 100svh;
+    .route-home .site-footer {
+        display: none;
+    }
+
+    .liquid-stage {
+        position: fixed;
+        z-index: 2;
+        inset: 0;
         overflow: hidden;
-        background: #020007;
+        pointer-events: none;
+        transition: opacity 420ms ease;
     }
 
-    .route-home main {
-        height: 100%;
-    }
-
-    .route-home .site-background {
-        background: #020007;
-        mask-image: none;
-    }
-
-    .route-home .site-header__inner,
-    .home-shell {
-        width: min(1760px, calc(100% - 64px));
-    }
-
-    .route-home .brand-lockup {
-        gap: 12px;
-        border-color: transparent;
-        background: transparent;
-        box-shadow: none;
-        padding: 6px;
-        backdrop-filter: none;
-        transition: opacity 260ms ease;
-    }
-
-    .route-home .brand-lockup__mark {
-        width: 38px;
-        height: 38px;
-        filter: drop-shadow(0 0 16px rgba(181, 108, 255, 0.34));
-    }
-
-    .route-home .brand-lockup strong {
-        font-size: 13px;
-        font-weight: 650;
-        text-transform: uppercase;
-    }
-
-    .route-home .brand-lockup small {
-        margin-top: 4px;
-        font-size: 9px;
-        font-weight: 550;
-        text-transform: uppercase;
-    }
-
-    .liquid-home {
+    .liquid-stage__field {
         position: relative;
+        width: var(--shell);
         height: 100svh;
         min-height: 640px;
+        margin: 0 auto;
+    }
+
+    .liquid-stage__filters {
+        position: absolute;
+        width: 0;
+        height: 0;
         overflow: hidden;
-        background:
-            radial-gradient(ellipse at 60% 46%, rgba(44, 12, 82, 0.2), transparent 58%),
-            #020007;
-        isolation: isolate;
     }
 
-    .liquid-home__canvas,
-    .liquid-home__fallback {
+    .landing-liquid-nav {
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
     }
 
-    .liquid-home__canvas {
-        z-index: 1;
+    .landing-liquid-nav__body {
+        --art-scale: 1;
+        --art-stretch: 1;
+        --cursor-x: 0px;
+        --cursor-y: 0px;
+        --hover-scale: 1;
+        --sheen-x: 50%;
+        --sheen-y: 42%;
+
+        position: absolute;
         display: block;
-        opacity: 0;
-        transition: opacity 700ms ease;
-    }
-
-    .liquid-home.is-webgl-ready .liquid-home__canvas {
+        color: white;
         opacity: 1;
+        pointer-events: none;
+        transform: translate3d(0, 0, 0) scale(1);
+        transform-origin: center;
+        transition:
+            top 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            right 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            bottom 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            left 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            width 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            height 880ms cubic-bezier(0.16, 0.72, 0.22, 1),
+            filter 620ms ease,
+            opacity 520ms ease,
+            transform 880ms cubic-bezier(0.16, 0.72, 0.22, 1);
     }
 
-    .liquid-home__fallback {
-        z-index: 0;
-        background:
-            radial-gradient(ellipse 29% 30% at 54% 34%, rgba(124, 40, 221, 0.42), transparent 71%),
-            radial-gradient(ellipse 21% 23% at 72% 58%, rgba(88, 32, 171, 0.38), transparent 72%),
-            radial-gradient(ellipse 18% 20% at 47% 74%, rgba(156, 40, 177, 0.3), transparent 70%),
-            radial-gradient(ellipse 34% 28% at 102% 54%, rgba(115, 28, 199, 0.33), transparent 72%),
-            linear-gradient(180deg, #05010e, #020007 72%);
-        opacity: 1;
-        transition: opacity 600ms ease;
-    }
-
-    .liquid-home.is-webgl-ready .liquid-home__fallback {
-        opacity: 0;
-    }
-
-    .liquid-home__frame {
-        position: relative;
-        z-index: 3;
-        height: 100%;
-    }
-
-    .liquid-home__top-nav {
+    .landing-liquid-nav__idle,
+    .landing-liquid-nav__pointer,
+    .landing-liquid-nav__hover,
+    .landing-liquid-nav__visual {
         position: absolute;
-        top: 34px;
-        right: 0;
-        z-index: 8;
-        display: flex;
-        align-items: center;
-        gap: 34px;
-    }
-
-    .liquid-home__top-nav a {
-        position: relative;
-        color: rgba(245, 242, 255, 0.76);
-        font-size: 14px;
-        font-weight: 500;
-        transition: color 220ms ease;
-    }
-
-    .liquid-home__top-nav a::after {
-        position: absolute;
-        right: 0;
-        bottom: -7px;
-        left: 0;
-        height: 1px;
-        background: var(--glow);
-        content: "";
-        opacity: 0;
-        scale: 0 1;
-        transform-origin: left;
-        transition: opacity 220ms ease, scale 260ms ease;
-    }
-
-    .liquid-home__top-nav a:hover,
-    .liquid-home__top-nav a:focus-visible {
-        color: var(--ink);
-    }
-
-    .liquid-home__top-nav a:hover::after,
-    .liquid-home__top-nav a:focus-visible::after {
-        opacity: 1;
-        scale: 1;
-    }
-
-    .liquid-home__top-nav > span,
-    .liquid-home__footer i {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--accent);
-        box-shadow: 0 0 18px rgba(181, 108, 255, 0.7);
-    }
-
-    .liquid-bodies {
-        position: absolute;
+        display: block;
         inset: 0;
-        z-index: 5;
-        pointer-events: none;
+        transform-origin: center;
     }
 
-    .liquid-body {
-        --liquid-x: 0px;
-        --liquid-y: 0px;
-        --liquid-scale: 1;
-
-        position: absolute;
-        z-index: 2;
-        opacity: 1;
-        translate: var(--liquid-x) var(--liquid-y);
-        scale: var(--liquid-scale);
-        transition: opacity 360ms ease;
-        pointer-events: auto;
-        backface-visibility: hidden;
-    }
-
-    .liquid-body--projects {
-        top: 9%;
-        left: 16%;
-        width: 53%;
-        height: 51%;
-        z-index: 4;
-    }
-
-    .liquid-body--about {
-        top: 40%;
-        left: 56%;
-        width: 35%;
-        height: 37%;
-        z-index: 5;
-    }
-
-    .liquid-body--contact {
-        top: 59%;
-        left: 22%;
-        width: 32%;
-        height: 32%;
-        z-index: 6;
-    }
-
-    .liquid-body::before {
-        position: absolute;
-        inset: 3%;
-        z-index: -1;
-        border: 1px solid rgba(217, 155, 255, 0.22);
-        border-radius: 48% 52% 51% 49% / 52% 47% 53% 48%;
-        background:
-            radial-gradient(circle at 34% 20%, rgba(245, 242, 255, 0.14), transparent 31%),
-            radial-gradient(circle at 74% 76%, rgba(181, 108, 255, 0.23), transparent 48%),
-            rgba(16, 5, 34, 0.82);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 42px rgba(181, 108, 255, 0.11);
-        content: "";
-        opacity: 1;
-        animation: liquid-fallback-breathe 10s ease-in-out infinite;
-        transition: opacity 400ms ease;
-    }
-
-    .liquid-home.is-webgl-ready .liquid-body::before {
-        opacity: 0;
-    }
-
-    .liquid-body__link {
-        position: absolute;
-        inset: 17% 14%;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 22px;
-        color: var(--ink);
-        border-radius: 50%;
-        outline: none;
-    }
-
-    .liquid-body__copy {
-        min-width: 0;
-    }
-
-    .liquid-body__copy strong,
-    .liquid-body__copy small {
-        display: block;
-    }
-
-    .liquid-body__copy strong {
-        font-size: 39px;
-        font-weight: 520;
-        line-height: 1;
-    }
-
-    .liquid-body__copy small {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-top: 24px;
-        color: rgba(217, 203, 235, 0.7);
-        font-size: 14px;
-        font-weight: 450;
-    }
-
-    .liquid-body__copy small .nav-icon {
-        width: 22px;
-        height: 22px;
-        color: var(--glow);
-        transition: translate 280ms ease;
-    }
-
-    .liquid-body__arrow {
-        display: grid;
-        width: 52px;
-        height: 52px;
-        place-items: center;
-        border: 1px solid rgba(181, 108, 255, 0.9);
-        border-radius: 50%;
-        color: var(--glow);
-        box-shadow: 0 0 26px rgba(181, 108, 255, 0.12), inset 0 0 20px rgba(181, 108, 255, 0.07);
-        transition: background 260ms ease, color 260ms ease, scale 360ms ease, translate 360ms ease;
-    }
-
-    .liquid-body__arrow .nav-icon {
-        width: 23px;
-        height: 23px;
-    }
-
-    .liquid-body__link:hover .liquid-body__copy small .nav-icon,
-    .liquid-body__link:focus-visible .liquid-body__copy small .nav-icon {
-        translate: 7px 0;
-    }
-
-    .liquid-body__link:hover .liquid-body__arrow,
-    .liquid-body__link:focus-visible .liquid-body__arrow {
-        background: rgba(181, 108, 255, 0.18);
-        color: var(--ink);
-        scale: 1.08;
-        translate: 5px 0;
-    }
-
-    .liquid-body__link:focus-visible::after {
-        position: absolute;
-        inset: 8%;
-        border: 2px solid rgba(217, 155, 255, 0.76);
-        border-radius: 50%;
-        content: "";
-    }
-
-    .liquid-home__footer {
-        position: absolute;
-        right: 0;
-        bottom: 20px;
-        left: 0;
-        z-index: 8;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        color: rgba(185, 178, 209, 0.57);
-        font-size: 11px;
-    }
-
-    .liquid-home__footer p {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        margin: 0;
-    }
-
-    .liquid-home__footer i {
-        display: block;
-        width: 4px;
-        height: 4px;
-    }
-
-    .liquid-home__footer p:last-child i {
-        width: 7px;
-        height: 7px;
-    }
-
-    .js .liquid-home__top-nav,
-    .js .liquid-home__footer,
-    .js .liquid-body {
-        opacity: 0;
-    }
-
-    .js .liquid-home__top-nav {
-        translate: 0 -10px;
-    }
-
-    .js .liquid-home__footer {
-        translate: 0 8px;
-    }
-
-    .js .liquid-body {
-        scale: 0.96;
-    }
-
-    .js.is-ready .liquid-home__top-nav,
-    .js.is-ready .liquid-home__footer,
-    .js.is-ready .liquid-body {
-        opacity: 1;
-        translate: var(--liquid-x, 0px) var(--liquid-y, 0px);
-    }
-
-    .js.is-ready .liquid-home__top-nav,
-    .js.is-ready .liquid-home__footer {
-        translate: 0 0;
-        transition: opacity 620ms ease, translate 720ms cubic-bezier(0.2, 0.78, 0.24, 1);
-    }
-
-    .js.is-ready .liquid-body {
-        scale: var(--liquid-scale);
-    }
-
-    .js.is-route-leaving .site-header,
-    .js.is-route-leaving .liquid-home__top-nav,
-    .js.is-route-leaving .liquid-home__footer {
-        opacity: 0;
-        transition: opacity 260ms ease;
-    }
-
-    .is-route-leaving .liquid-body:not(.is-selected) {
-        opacity: 0;
-        scale: 0.9;
-    }
-
-    .is-route-leaving .liquid-body.is-selected .liquid-body__link {
-        opacity: 0;
-        scale: 1.08;
-        transition: opacity 220ms ease 180ms, scale 520ms ease;
-    }
-
-    .route-portal {
-        --portal-x: 0px;
-        --portal-y: 0px;
-        --portal-scale-x: 1;
-        --portal-scale-y: 1;
-        --portal-radius: 50%;
-        --portal-tone: 181, 108, 255;
-
-        position: fixed;
-        inset: 0;
-        z-index: 90;
-        border: 1px solid rgba(217, 155, 255, 0.3);
-        border-radius: var(--portal-radius);
-        background:
-            radial-gradient(circle at 64% 42%, rgba(var(--portal-tone), 0.3), transparent 42%),
-            #05010d;
-        opacity: 0;
-        pointer-events: none;
-        transform: translate3d(var(--portal-x), var(--portal-y), 0) scale(var(--portal-scale-x), var(--portal-scale-y));
-        transform-origin: top left;
-        transition: border-radius 620ms cubic-bezier(0.76, 0, 0.24, 1), opacity 80ms linear, transform 620ms cubic-bezier(0.76, 0, 0.24, 1);
+    .landing-liquid-nav__idle {
         will-change: transform;
     }
 
-    .route-portal[data-route="about"] {
-        --portal-tone: 112, 94, 220;
+    .landing-liquid-nav__pointer {
+        transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+        will-change: transform;
     }
 
-    .route-portal[data-route="contact"] {
-        --portal-tone: 204, 76, 179;
+    .landing-liquid-nav__hover {
+        transform: scale(var(--hover-scale));
+        transition: transform 680ms cubic-bezier(0.16, 0.72, 0.22, 1);
+        will-change: transform;
     }
 
-    .route-portal.is-active {
-        border-radius: 0;
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
+    .landing-liquid-nav__visual {
+        pointer-events: none;
+        transition: filter 520ms ease, opacity 520ms ease;
     }
 
-    .js .route-about .page-stage,
-    .js .route-projects .page-stage,
-    .js .route-contact .page-stage {
+    .landing-liquid-nav__visual > img {
+        position: absolute;
+        z-index: 0;
+        inset: -15%;
+        width: 130%;
+        height: 130%;
+        object-fit: contain;
+        opacity: 0.98;
+        filter: url('#liquid-alpha');
+        transform: scaleX(var(--art-stretch)) scale(var(--art-scale));
+        transform-origin: center;
+        transition: filter 420ms ease, opacity 420ms ease, transform 880ms cubic-bezier(0.16, 0.72, 0.22, 1);
+        will-change: transform;
+    }
+
+    .landing-liquid-nav__sheen {
+        position: absolute;
+        z-index: 1;
+        inset: -15%;
+        display: block;
+        background: radial-gradient(
+            circle at var(--sheen-x) var(--sheen-y),
+            rgba(255, 238, 255, 0.18) 0,
+            rgba(211, 142, 255, 0.09) 10%,
+            rgba(166, 75, 255, 0.03) 21%,
+            transparent 36%
+        );
+        mask-image: var(--liquid-mask);
+        mask-mode: luminance;
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: contain;
+        mix-blend-mode: screen;
         opacity: 0;
-        transform: translate3d(0, 16px, 0) scale(0.988);
-        transition: opacity 620ms ease, transform 760ms cubic-bezier(0.22, 0.72, 0.18, 1);
+        pointer-events: none;
+        transition: opacity 420ms ease;
     }
 
-    .js .route-about .site-header,
-    .js .route-projects .site-header,
-    .js .route-contact .site-header {
+    .landing-liquid-nav__hit {
+        position: absolute;
+        z-index: 2;
+        display: block;
+        border-radius: 50%;
+        pointer-events: auto;
+    }
+
+    .landing-liquid-nav__body::after {
+        position: absolute;
+        z-index: -1;
+        inset: 10%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 56% 44%, rgba(208, 154, 255, 0.13), transparent 66%);
+        content: '';
+        filter: blur(24px);
         opacity: 0;
-        translate: 0 -10px;
-        transition: opacity 420ms ease 100ms, translate 520ms ease 100ms;
+        transition: opacity 420ms ease;
     }
 
-    .js.is-ready .route-about .page-stage,
-    .js.is-ready .route-projects .page-stage,
-    .js.is-ready .route-contact .page-stage {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
+    .landing-liquid-nav__body--projects {
+        z-index: 3;
+        top: 8%;
+        left: 27%;
+        width: min(62vw, 920px);
+        height: min(54vw, 650px);
     }
 
-    .js.is-ready .route-about .site-header,
-    .js.is-ready .route-projects .site-header,
-    .js.is-ready .route-contact .site-header {
-        opacity: 1;
-        translate: 0 0;
-    }
-
-    @keyframes liquid-fallback-breathe {
-        0%,
-        100% {
-            transform: scale(0.98) rotate(-1deg);
-        }
-
-        50% {
-            transform: scale(1.02) rotate(1deg);
-        }
-    }
-}
-
-@media (min-width: 901px) {
-    .route-home .site-menu {
-        display: none;
-    }
-}
-
-@media (max-width: 1280px) {
-    .liquid-body__copy strong {
-        font-size: 34px;
-    }
-
-    .liquid-body__copy small {
-        margin-top: 18px;
-    }
-}
-
-@media (max-width: 900px) {
-    .route-home .site-header__inner,
-    .home-shell {
-        width: min(100% - 24px, 820px);
-    }
-
-    .route-home .brand-lockup__mark {
-        width: 34px;
-        height: 34px;
-    }
-
-    .liquid-home {
-        min-height: 620px;
-    }
-
-    .liquid-home__top-nav {
-        display: none;
-    }
-
-    .liquid-body--projects {
-        top: 13%;
-        left: 3%;
-        width: 94%;
-        height: 40%;
-    }
-
-    .liquid-body--about {
-        top: 44%;
-        left: 34%;
-        width: 64%;
-        height: 29%;
-    }
-
-    .liquid-body--contact {
-        top: 67%;
+    .landing-liquid-nav__body--about {
+        z-index: 2;
+        bottom: 3%;
         left: 1%;
-        width: 64%;
-        height: 27%;
+        width: min(44vw, 590px);
+        height: min(38vw, 455px);
     }
 
-    .liquid-body__link {
-        inset: 17% 13%;
-        gap: 12px;
+    .landing-liquid-nav__body--contact {
+        --art-stretch: 1.5;
+
+        z-index: 1;
+        right: 0;
+        bottom: 2%;
+        width: min(43vw, 570px);
+        height: min(39vw, 470px);
     }
 
-    .liquid-body__copy strong {
-        font-size: 28px;
+    .landing-liquid-nav__body--projects .landing-liquid-nav__idle {
+        animation: liquid-idle-projects 15s cubic-bezier(0.45, 0.05, 0.22, 1) infinite alternate;
     }
 
-    .liquid-body__copy small {
-        gap: 8px;
-        margin-top: 11px;
-        font-size: 12px;
+    .landing-liquid-nav__body--about .landing-liquid-nav__idle {
+        animation: liquid-idle-about 18s cubic-bezier(0.42, 0.04, 0.2, 1) infinite alternate;
     }
 
-    .liquid-body__copy small .nav-icon {
-        width: 18px;
-        height: 18px;
+    .landing-liquid-nav__body--contact .landing-liquid-nav__idle {
+        animation: liquid-idle-contact 13.5s cubic-bezier(0.46, 0.04, 0.24, 1) infinite alternate;
     }
 
-    .liquid-body__arrow {
-        width: 42px;
-        height: 42px;
+    .landing-liquid-nav__body--projects .landing-liquid-nav__hit {
+        inset: 20% 5% 21%;
     }
 
-    .liquid-body__arrow .nav-icon {
+    .landing-liquid-nav__body--about .landing-liquid-nav__hit {
+        inset: 20% 6% 21%;
+    }
+
+    .landing-liquid-nav__body--contact .landing-liquid-nav__hit {
+        inset: 13% 21% 12%;
+    }
+
+    .landing-liquid-nav__copy {
+        position: absolute;
+        z-index: 3;
+        top: 42%;
+        left: 31%;
+        display: grid;
+        gap: 10px;
+        min-width: 178px;
+        pointer-events: auto;
+        text-shadow: 0 2px 18px rgba(3, 0, 10, 0.86);
+        transition: opacity 360ms ease, transform 560ms cubic-bezier(0.16, 0.72, 0.22, 1);
+    }
+
+    .landing-liquid-nav__copy small {
+        color: rgba(218, 158, 255, 0.86);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+    }
+
+    .landing-liquid-nav__copy strong {
+        font-size: clamp(26px, 2.2vw, 42px);
+        font-weight: 440;
+        line-height: 0.95;
+    }
+
+    .landing-liquid-nav__copy > span {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: rgba(235, 225, 255, 0.67);
+        font-size: 11px;
+    }
+
+    .landing-liquid-nav__copy .nav-icon {
         width: 19px;
         height: 19px;
+        color: var(--pink);
+        transition: transform 260ms ease;
     }
 
-    .liquid-home__footer {
-        bottom: 12px;
+    .landing-liquid-nav__body--about .landing-liquid-nav__copy,
+    .landing-liquid-nav__body--contact .landing-liquid-nav__copy {
+        top: 40%;
+        left: 26%;
+    }
+
+    .landing-liquid-nav__body--about .landing-liquid-nav__copy strong,
+    .landing-liquid-nav__body--contact .landing-liquid-nav__copy strong {
+        font-size: clamp(22px, 1.8vw, 32px);
+    }
+
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:hover,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:focus-visible,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body.is-hovered {
+        --hover-scale: 1.03;
+    }
+
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:hover .landing-liquid-nav__visual,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:focus-visible .landing-liquid-nav__visual,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body.is-hovered .landing-liquid-nav__visual {
+        filter: brightness(1.09) saturate(1.04);
+    }
+
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:hover::after,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body:focus-visible::after,
+    .liquid-stage[data-scene='home'] .landing-liquid-nav__body.is-hovered::after {
+        opacity: 1;
+    }
+
+    .landing-liquid-nav.is-engaged .landing-liquid-nav__body:not(.is-hovered) .landing-liquid-nav__visual {
+        filter: brightness(0.86) saturate(0.92);
+        opacity: 0.88;
+    }
+
+    .liquid-stage.has-pointer .landing-liquid-nav__sheen {
+        opacity: 0.3;
+    }
+
+    .liquid-stage.has-pointer .landing-liquid-nav__body.is-hovered .landing-liquid-nav__sheen {
+        opacity: 0.46;
+    }
+
+    .landing-liquid-nav__body:hover .nav-icon,
+    .landing-liquid-nav__body:focus-visible .nav-icon {
+        transform: translateX(6px);
+    }
+
+    .landing-liquid-nav__body:focus-visible {
+        outline: 0;
+    }
+
+    .landing-liquid-nav__body:focus-visible .landing-liquid-nav__copy strong {
+        text-decoration: underline;
+        text-decoration-color: var(--pink);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 8px;
+    }
+
+    .liquid-stage:not([data-scene='home']) .landing-liquid-nav__copy {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+    }
+
+    .liquid-stage[data-scene='projects'] .landing-liquid-nav__body--projects {
+        top: -15%;
+        right: auto;
+        bottom: auto;
+        left: 21%;
+        width: min(89vw, 1320px);
+        height: min(69vw, 820px);
+        opacity: 0.92;
+        transform: rotate(-3deg) scale(1.02);
+    }
+
+    .liquid-stage[data-scene='about'] .landing-liquid-nav__body--about {
+        top: 1%;
+        right: -8%;
+        bottom: auto;
+        left: auto;
+        width: min(82vw, 1180px);
+        height: min(70vw, 830px);
+        opacity: 0.92;
+        transform: rotate(-2deg) scale(1.02);
+    }
+
+    .liquid-stage[data-scene='contact'] .landing-liquid-nav__body--contact {
+        --art-stretch: 1.12;
+
+        top: -8%;
+        right: auto;
+        bottom: auto;
+        left: 31%;
+        width: min(47vw, 660px);
+        height: 110svh;
+        opacity: 0.88;
+        transform: rotate(-6deg) scale(1.01);
+    }
+
+    .liquid-stage[data-scene='projects'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--projects),
+    .liquid-stage[data-scene='about'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--about),
+    .liquid-stage[data-scene='contact'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--contact) {
+        filter: brightness(0.55);
+        opacity: 0;
+        transform: translateY(7vh) scale(0.82);
+    }
+
+    .liquid-stage[data-scene='projects'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--projects) .landing-liquid-nav__idle,
+    .liquid-stage[data-scene='about'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--about) .landing-liquid-nav__idle,
+    .liquid-stage[data-scene='contact'] .landing-liquid-nav__body:not(.landing-liquid-nav__body--contact) .landing-liquid-nav__idle {
+        animation-play-state: paused;
+    }
+
+    .landing-scene {
+        position: relative;
+        min-height: 100svh;
+        overflow: hidden;
+        background: transparent;
+    }
+
+    .landing-scene__inner {
+        position: relative;
+        z-index: 3;
+        width: var(--shell);
+        min-height: 100svh;
+        margin: 0 auto;
+        pointer-events: none;
+    }
+
+    .landing-scene__intro {
+        position: absolute;
+        top: 31.5%;
+        left: 1.5%;
+        width: 188px;
+    }
+
+    .landing-scene__intro p,
+    .landing-scene__intro h1 {
+        margin: 0;
+        font-size: clamp(28px, 2.35vw, 47px);
+        font-weight: 430;
+        line-height: 0.98;
+        letter-spacing: 0;
+    }
+
+    .landing-scene__intro p {
+        color: var(--ink);
+    }
+
+    .landing-scene__intro h1 {
+        max-width: 205px;
+        margin-top: 4px;
+        color: var(--violet);
+    }
+
+    .scene-index {
+        position: absolute;
+        bottom: 24px;
+        left: 0;
+        z-index: 5;
+        display: flex;
+        gap: 13px;
+        margin: 0;
+        color: rgba(219, 202, 240, 0.42);
         font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
     }
 
-    .liquid-home__footer p:first-child span:last-child,
-    .liquid-home__footer p:first-child i {
-        display: none;
+    .scene-index span {
+        color: var(--violet);
     }
 
-    .liquid-home__footer p:last-child {
-        gap: 8px;
-    }
-}
-
-@media (max-width: 520px) {
-    .route-home .brand-lockup {
-        padding-left: 2px;
+    .route-home main {
+        pointer-events: none;
     }
 
-    .route-home .brand-lockup strong {
-        font-size: 11px;
+    .js .liquid-stage,
+    .js .landing-scene__intro,
+    .js .scene-index {
+        opacity: 0;
     }
 
-    .liquid-body__copy strong {
-        font-size: 24px;
+    .js .landing-scene__intro {
+        transform: translateY(16px);
     }
 
-    .liquid-body__copy small {
-        font-size: 11px;
+    .js.is-ready .liquid-stage,
+    .js.is-ready .landing-scene__intro,
+    .js.is-ready .scene-index {
+        opacity: 1;
     }
 
-    .liquid-body__arrow {
-        width: 38px;
-        height: 38px;
+    .js.is-ready .landing-scene__intro {
+        transform: none;
+        transition: opacity 520ms ease 100ms, transform 680ms cubic-bezier(0.22, 0.75, 0.18, 1) 100ms;
     }
 
-    .liquid-home__footer p:last-child span {
-        display: none;
-    }
-}
-
-@media (max-height: 700px) and (min-width: 901px) {
-    .liquid-body--projects {
-        top: 7%;
-        height: 53%;
+    @keyframes liquid-idle-projects {
+        0% { transform: translate3d(-8px, 5px, 0) rotate(-0.75deg) scaleX(0.994) scaleY(1.006); }
+        48% { transform: translate3d(3px, -7px, 0) rotate(0.2deg) scaleX(1.006) scaleY(0.996); }
+        100% { transform: translate3d(10px, 7px, 0) rotate(0.85deg) scaleX(1.003) scaleY(0.992); }
     }
 
-    .liquid-body--about {
-        top: 38%;
-        height: 39%;
+    @keyframes liquid-idle-about {
+        0% { transform: translate3d(7px, -9px, 0) rotate(0.65deg) scaleX(1.006) scaleY(0.995); }
+        54% { transform: translate3d(-5px, 3px, 0) rotate(-0.25deg) scaleX(0.995) scaleY(1.008); }
+        100% { transform: translate3d(-9px, 11px, 0) rotate(-0.8deg) scaleX(1.002) scaleY(0.994); }
     }
 
-    .liquid-body--contact {
-        top: 57%;
-        height: 34%;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .liquid-body::before {
-        animation: none;
-    }
-
-    .liquid-home__canvas,
-    .liquid-body,
-    .liquid-body__link,
-    .route-portal {
-        transition-duration: 0.001ms;
+    @keyframes liquid-idle-contact {
+        0% { transform: translate3d(-6px, -8px, 0) rotate(-0.55deg) scaleX(0.996) scaleY(1.007); }
+        45% { transform: translate3d(6px, 2px, 0) rotate(0.15deg) scaleX(1.007) scaleY(0.995); }
+        100% { transform: translate3d(9px, 10px, 0) rotate(0.9deg) scaleX(1.001) scaleY(0.993); }
     }
 }

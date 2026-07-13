@@ -1,28 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="page-stage section-shell">
-        <div class="page-stage__backdrop" aria-hidden="true">{{ $content['contact_page']['backdrop'] }}</div>
-
-        <div class="contact-layout">
-            <div class="page-stage__intro">
-                <p class="eyebrow">{{ $content['contact_page']['kicker'] }}</p>
-                <h1>{{ $content['contact_page']['title'] }}</h1>
+    <section class="detail-page detail-page--contact" aria-labelledby="contact-title">
+        <div class="detail-page__inner contact-layout">
+            <header class="detail-page__intro">
+                <span>03</span>
+                <h1 id="contact-title">{{ $content['contact_page']['heading'] }}</h1>
                 <p>{{ $content['contact_page']['intro'] }}</p>
-            </div>
+                <x-social-links />
+            </header>
 
-            <div class="contact-panel interactive-surface reveal">
-                <x-social-links large />
-            </div>
+            <form
+                class="contact-form"
+                action="{{ config('portfolio.socials.email.url') }}"
+                method="post"
+                enctype="text/plain"
+            >
+                <label>
+                    <span>{{ $content['contact_page']['form']['name'] }}</span>
+                    <input type="text" name="name" placeholder="{{ $content['contact_page']['form']['name'] }}" autocomplete="name" required>
+                </label>
+
+                <label>
+                    <span>{{ $content['contact_page']['form']['email'] }}</span>
+                    <input type="email" name="email" placeholder="{{ $content['contact_page']['form']['email'] }}" autocomplete="email" required>
+                </label>
+
+                <label>
+                    <span>{{ $content['contact_page']['form']['message'] }}</span>
+                    <textarea name="message" placeholder="{{ $content['contact_page']['form']['message'] }}" rows="5" required></textarea>
+                </label>
+
+                <button type="submit">
+                    {{ $content['contact_page']['form']['submit'] }}
+                    <x-nav-icon name="arrow-right" />
+                </button>
+            </form>
         </div>
 
-        <div class="reason-list reason-list--wide reveal">
-            @foreach ($content['contact_page']['reasons'] as $reason)
-                <div>
-                    <span></span>
-                    <p>{{ $reason }}</p>
-                </div>
-            @endforeach
-        </div>
+        <p class="scene-index"><span>04</span>{{ $content['contact_page']['heading'] }}</p>
     </section>
 @endsection

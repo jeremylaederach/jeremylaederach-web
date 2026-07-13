@@ -21,19 +21,60 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="route-{{ $currentRoute }}">
+    <body class="route-{{ $currentRoute }}" data-page="{{ $currentRoute }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
+        <x-liquid-stage :content="$content" :locale="$locale" :current-route="$currentRoute" />
 
-        <header class="site-header">
+        <header class="site-header" data-page-header>
             <div class="site-header__inner">
-                <a class="brand-lockup" href="{{ route('home', ['locale' => $locale]) }}" aria-label="{{ $content['ui']['brand'] }}">
+                <a
+                    class="brand-lockup"
+                    href="{{ route('home', ['locale' => $locale]) }}"
+                    aria-label="{{ $content['ui']['brand'] }}"
+                    data-route="home"
+                    data-route-transition
+                >
                     <x-brand-mark class="brand-lockup__mark" size="96" />
                     <span>
                         <strong>Jeremy Läderach</strong>
                         <small>{{ $content['ui']['role'] }}</small>
                     </span>
                 </a>
+
+                <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
+                    @foreach ($content['nav'] as $item)
+                        @continue($item['route'] === 'home')
+
+                        @php
+                            $isActive = $currentRoute === $item['route'];
+                        @endphp
+
+                        <a
+                            @class(['is-active' => $isActive])
+                            href="{{ route($item['route'], ['locale' => $locale]) }}"
+                            data-route="{{ $item['route'] }}"
+                            data-route-transition
+                            @if ($isActive) aria-current="page" @endif
+                        >
+                            {{ $item['label'] }}
+                        </a>
+                    @endforeach
+
+                    <span class="site-header__nav-dot" aria-hidden="true"></span>
+
+                    <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
+                        @foreach (config('portfolio.locales') as $code => $localeMeta)
+                            @php
+                                $targetParams = array_merge($currentParams, ['locale' => $code]);
+                                $targetUrl = route($currentRoute, $targetParams);
+                            @endphp
+                            <a @class(['is-active' => $code === $locale]) href="{{ $targetUrl }}" hreflang="{{ $code }}">
+                                {{ $localeMeta['label'] }}
+                            </a>
+                        @endforeach
+                    </div>
+                </nav>
 
                 <div class="site-menu">
                     <button
@@ -63,6 +104,8 @@
                                     href="{{ $href }}"
                                     aria-label="{{ $item['label'] }}"
                                     @if ($isActive) aria-current="page" @endif
+                                    data-route="{{ $item['route'] }}"
+                                    data-route-transition
                                     data-menu-label="{{ $item['label'] }}"
                                     style="--menu-index: {{ $loop->index }}; --menu-reverse-index: {{ $reverseIndex }}"
                                 >
@@ -90,14 +133,19 @@
             </div>
         </header>
 
-        <main id="main">
+        <main id="main" data-page-main>
             @yield('content')
         </main>
 
-        <footer class="site-footer">
+        <footer class="site-footer" data-page-footer>
             <div class="section-shell site-footer__inner">
                 <div>
-                    <a class="brand-lockup brand-lockup--footer" href="{{ route('home', ['locale' => $locale]) }}">
+                    <a
+                        class="brand-lockup brand-lockup--footer"
+                        href="{{ route('home', ['locale' => $locale]) }}"
+                        data-route="home"
+                        data-route-transition
+                    >
                         <x-brand-mark class="brand-lockup__mark" size="96" />
                         <span>
                             <strong>Jeremy Läderach</strong>

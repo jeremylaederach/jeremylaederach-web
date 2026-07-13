@@ -54,8 +54,9 @@ return [
                 ['label' => 'Contact', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
-                'location' => 'Based in Switzerland',
-                'footer_prompt' => "Let's build something great.",
+                'statement' => 'I build',
+                'statement_accent' => 'useful digital systems.',
+                'index_label' => 'Landing',
                 'routes' => [
                     [
                         'label' => 'Projects',
@@ -75,38 +76,17 @@ return [
                 ],
             ],
             'about_page' => [
-                'backdrop' => 'About',
-                'kicker' => 'About me',
-                'title' => 'A practical developer with a business edge.',
+                'heading' => 'About me',
                 'intro' => 'I like systems that are quiet, useful, and maintainable: clear code, deliberate interfaces, and software that survives real deployment constraints.',
                 'body' => [
                     'My work sits between application development, web delivery, hosting/domain work, and a growing interest in business informatics. That mix helps me think past individual screens and keep the whole system in view.',
                     'I am especially interested in Laravel foundations, .NET backends, Angular frontends, and migrations where the result needs to feel simpler than the system it replaced.',
                 ],
-                'facts' => [
-                    ['label' => 'Current role', 'value' => 'Software Developer'],
-                    ['label' => 'Planning', 'value' => 'Business Informatics BSc from 09/2026'],
-                    ['label' => 'Focus', 'value' => 'Maintainable web applications'],
-                ],
-                'stack' => [
-                    [
-                        'name' => 'Web foundations',
-                        'items' => ['Laravel', 'Blade', 'TailwindCSS', 'PHP', 'JavaScript'],
-                    ],
-                    [
-                        'name' => 'Applications',
-                        'items' => ['C#', 'ASP.NET Core', 'Angular', 'TypeScript', 'SQL'],
-                    ],
-                    [
-                        'name' => 'Delivery',
-                        'items' => ['Git', 'GitHub', 'Hosting', 'Domains', 'WordPress migrations'],
-                    ],
-                ],
+                'technology_heading' => 'Tech I work with',
+                'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
             ],
             'projects_page' => [
-                'backdrop' => 'Projects',
-                'kicker' => 'Selected work',
-                'title' => 'Proof of work, kept focused.',
+                'heading' => 'Projects',
                 'intro' => 'A few projects that show the range: product engineering, client delivery, and maintainable web foundations.',
                 'items' => [
                     [
@@ -116,35 +96,27 @@ return [
                         'tags' => ['.NET', 'Angular', 'PostgreSQL'],
                     ],
                     [
-                        'name' => 'Scherer Garten',
-                        'type' => 'Client website and delivery',
-                        'description' => 'A modern website and dependable hosting setup for a Swiss gardening and landscaping company.',
-                        'tags' => ['Web design', 'WordPress', 'Hosting'],
-                    ],
-                    [
-                        'name' => 'Jay-Jay',
+                        'name' => 'Jay-Jay Web',
                         'type' => 'Web solutions business',
                         'description' => 'A calm web platform for websites, hosting, domains, and maintenance services.',
                         'tags' => ['Websites', 'Hosting', 'WordPress'],
                     ],
                     [
-                        'name' => 'jeremylaederach-web',
-                        'type' => 'This Laravel portfolio',
-                        'description' => 'A Laravel rebuild focused on identity, localization, and maintainable frontend structure.',
-                        'tags' => ['Laravel', 'Blade', 'i18n'],
+                        'name' => 'Scherer Garten',
+                        'type' => 'Client website and delivery',
+                        'description' => 'A modern website and dependable hosting setup for a Swiss gardening and landscaping company.',
+                        'tags' => ['Web design', 'WordPress', 'Hosting'],
                     ],
                 ],
             ],
             'contact_page' => [
-                'backdrop' => 'Contact',
-                'kicker' => 'Contact',
-                'title' => 'Send context. I will connect the dots.',
+                'heading' => 'Contact',
                 'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
-                'reasons' => [
-                    'Software engineering opportunities',
-                    'Laravel or .NET project work',
-                    'WordPress-to-Laravel migrations',
-                    'Small-business websites and hosting setup',
+                'form' => [
+                    'name' => 'Name',
+                    'email' => 'Email',
+                    'message' => 'Message',
+                    'submit' => 'Send message',
                 ],
             ],
             'imprint' => [
@@ -179,8 +151,9 @@ return [
                 ['label' => 'Kontakt', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
-                'location' => 'In der Schweiz zuhause',
-                'footer_prompt' => 'Lass uns etwas Grossartiges bauen.',
+                'statement' => 'Ich entwickle',
+                'statement_accent' => 'nützliche digitale Systeme.',
+                'index_label' => 'Start',
                 'routes' => [
                     [
                         'label' => 'Projekte',
@@ -200,38 +173,17 @@ return [
                 ],
             ],
             'about_page' => [
-                'backdrop' => 'Profil',
-                'kicker' => 'Über mich',
-                'title' => 'Ein praktischer Entwickler mit Business-Blick.',
+                'heading' => 'Über mich',
                 'intro' => 'Ich mag Systeme, die ruhig, nützlich und wartbar sind: klarer Code, bewusste Oberflächen und Software, die reale Deployment-Bedingungen übersteht.',
                 'body' => [
                     'Meine Arbeit verbindet Applikationsentwicklung, Web-Delivery, Hosting-/Domain-Themen und ein wachsendes Interesse an Wirtschaftsinformatik. Diese Mischung hilft mir, über einzelne Screens hinaus das ganze System zu sehen.',
                     'Besonders spannend finde ich Laravel-Fundamente, .NET-Backends, Angular-Frontends und Migrationen, bei denen das Ergebnis einfacher wirken soll als das System, das es ersetzt.',
                 ],
-                'facts' => [
-                    ['label' => 'Aktuell', 'value' => 'Software Developer'],
-                    ['label' => 'Planung', 'value' => 'Wirtschaftsinformatik BSc ab 09/2026'],
-                    ['label' => 'Fokus', 'value' => 'Wartbare Webanwendungen'],
-                ],
-                'stack' => [
-                    [
-                        'name' => 'Web-Fundament',
-                        'items' => ['Laravel', 'Blade', 'TailwindCSS', 'PHP', 'JavaScript'],
-                    ],
-                    [
-                        'name' => 'Applikationen',
-                        'items' => ['C#', 'ASP.NET Core', 'Angular', 'TypeScript', 'SQL'],
-                    ],
-                    [
-                        'name' => 'Delivery',
-                        'items' => ['Git', 'GitHub', 'Hosting', 'Domains', 'WordPress-Migrationen'],
-                    ],
-                ],
+                'technology_heading' => 'Technologien',
+                'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
             ],
             'projects_page' => [
-                'backdrop' => 'Projekte',
-                'kicker' => 'Ausgewählte Arbeit',
-                'title' => 'Proof of Work, fokussiert gehalten.',
+                'heading' => 'Projekte',
                 'intro' => 'Ein paar Projekte, die die Bandbreite zeigen: Product Engineering, Kundenarbeit und wartbare Web-Fundamente.',
                 'items' => [
                     [
@@ -241,35 +193,27 @@ return [
                         'tags' => ['.NET', 'Angular', 'PostgreSQL'],
                     ],
                     [
-                        'name' => 'Scherer Garten',
-                        'type' => 'Kundenwebsite und Delivery',
-                        'description' => 'Eine moderne Website mit verlässlichem Hosting für einen Schweizer Garten- und Landschaftsbaubetrieb.',
-                        'tags' => ['Webdesign', 'WordPress', 'Hosting'],
-                    ],
-                    [
-                        'name' => 'Jay-Jay',
+                        'name' => 'Jay-Jay Web',
                         'type' => 'Web-Solutions-Business',
                         'description' => 'Eine ruhige Web-Plattform für Websites, Hosting, Domains und Betreuung.',
                         'tags' => ['Websites', 'Hosting', 'WordPress'],
                     ],
                     [
-                        'name' => 'jeremylaederach-web',
-                        'type' => 'Dieses Laravel-Portfolio',
-                        'description' => 'Ein Laravel-Rebuild mit Fokus auf Identität, Lokalisierung und wartbare Frontend-Struktur.',
-                        'tags' => ['Laravel', 'Blade', 'i18n'],
+                        'name' => 'Scherer Garten',
+                        'type' => 'Kundenwebsite und Delivery',
+                        'description' => 'Eine moderne Website mit verlässlichem Hosting für einen Schweizer Garten- und Landschaftsbaubetrieb.',
+                        'tags' => ['Webdesign', 'WordPress', 'Hosting'],
                     ],
                 ],
             ],
             'contact_page' => [
-                'backdrop' => 'Kontakt',
-                'kicker' => 'Kontakt',
-                'title' => 'Schick Kontext. Ich verbinde die Punkte.',
+                'heading' => 'Kontakt',
                 'intro' => 'E-Mail ist der beste erste Schritt. Schick das grobe Ziel, Links, Rahmenbedingungen und wie ein gutes Resultat wirken soll.',
-                'reasons' => [
-                    'Software-Engineering-Rollen',
-                    'Laravel- oder .NET-Projektarbeit',
-                    'WordPress-zu-Laravel-Migrationen',
-                    'KMU-Websites und Hosting-Setup',
+                'form' => [
+                    'name' => 'Name',
+                    'email' => 'E-Mail',
+                    'message' => 'Nachricht',
+                    'submit' => 'Nachricht senden',
                 ],
             ],
             'imprint' => [

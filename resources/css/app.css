@@ -14,12 +14,12 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-ink: #f5f2ff;
     --color-muted: #b9b2d1;
-    --color-bg: #05010d;
-    --color-surface: #0a0617;
-    --color-elevated: #120a24;
-    --color-line: #231144;
-    --color-accent: #b56cff;
-    --color-glow: #d99bff;
+    --color-bg: #020108;
+    --color-surface: #070311;
+    --color-elevated: #0d061c;
+    --color-line: #251242;
+    --color-accent: #9f5cff;
+    --color-glow: #df9bff;
     --color-signal: #79f2c0;
     --color-warm: #ffd166;
 }

@@ -1,33 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="page-stage section-shell">
-        <div class="page-stage__backdrop" aria-hidden="true">{{ $content['projects_page']['backdrop'] }}</div>
+    <section class="detail-page detail-page--projects" aria-labelledby="projects-title">
+        <div class="detail-page__inner">
+            <header class="detail-page__intro">
+                <span>01</span>
+                <h1 id="projects-title">{{ $content['projects_page']['heading'] }}</h1>
+                <p>{{ $content['projects_page']['intro'] }}</p>
+            </header>
 
-        <div class="page-stage__intro page-stage__intro--split">
-            <div>
-                <p class="eyebrow">{{ $content['projects_page']['kicker'] }}</p>
-                <h1>{{ $content['projects_page']['title'] }}</h1>
+            <div class="project-grid">
+                @foreach ($content['projects_page']['items'] as $project)
+                    <article @class(['project-card', 'project-card--featured' => $loop->first])>
+                        <div>
+                            <span>{{ $project['type'] }}</span>
+                            <h2>{{ $project['name'] }}</h2>
+                            <p>{{ $project['description'] }}</p>
+                        </div>
+
+                        <ul aria-label="{{ $project['name'] }} technologies">
+                            @foreach (array_slice($project['tags'], 0, 4) as $tag)
+                                <li>{{ $tag }}</li>
+                            @endforeach
+                        </ul>
+                    </article>
+                @endforeach
             </div>
-            <p>{{ $content['projects_page']['intro'] }}</p>
         </div>
 
-        <div class="project-list">
-            @foreach ($content['projects_page']['items'] as $project)
-                <article class="project-row reveal">
-                    <span class="project-row__number">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                    <div class="project-row__content">
-                        <span>{{ $project['type'] }}</span>
-                        <h2>{{ $project['name'] }}</h2>
-                        <p>{{ $project['description'] }}</p>
-                    </div>
-                    <ul class="project-row__tags">
-                        @foreach ($project['tags'] as $tag)
-                            <li>{{ $tag }}</li>
-                        @endforeach
-                    </ul>
-                </article>
-            @endforeach
-        </div>
+        <p class="scene-index"><span>02</span>{{ $content['projects_page']['heading'] }}</p>
     </section>
 @endsection
