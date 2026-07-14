@@ -18,6 +18,7 @@ export const createSiteMenuController = ({ reducedMotion }) => {
             panel.hidden = true;
             panel.removeAttribute('data-closing');
             panel.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('is-menu-open');
         };
         const close = ({ restoreFocus = false } = {}) => {
             if (panel.hidden) {
@@ -29,7 +30,7 @@ export const createSiteMenuController = ({ reducedMotion }) => {
             panel.removeAttribute('data-open');
             panel.setAttribute('data-closing', '');
             panel.setAttribute('aria-hidden', 'true');
-            closeTimer = window.setTimeout(completeClose, reducedMotion ? 0 : 420);
+            closeTimer = window.setTimeout(completeClose, reducedMotion ? 0 : 540);
 
             if (restoreFocus) {
                 toggle.focus();
@@ -41,6 +42,7 @@ export const createSiteMenuController = ({ reducedMotion }) => {
             panel.removeAttribute('data-closing');
             panel.setAttribute('aria-hidden', 'false');
             toggle.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('is-menu-open');
             window.requestAnimationFrame(() => panel.setAttribute('data-open', ''));
         };
 
@@ -65,7 +67,10 @@ export const createSiteMenuController = ({ reducedMotion }) => {
             }
         }, { signal });
 
-        signal.addEventListener('abort', () => window.clearTimeout(closeTimer), { once: true });
+        signal.addEventListener('abort', () => {
+            window.clearTimeout(closeTimer);
+            document.body.classList.remove('is-menu-open');
+        }, { once: true });
     };
 
     return { initialize };

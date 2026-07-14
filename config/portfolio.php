@@ -51,28 +51,30 @@ return [
             ],
             'nav' => [
                 ['label' => 'Home', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'About', 'route' => 'about', 'icon' => 'user'],
                 ['label' => 'Projects', 'route' => 'projects', 'icon' => 'folder'],
+                ['label' => 'About', 'route' => 'about', 'icon' => 'user'],
                 ['label' => 'Contact', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
+                'summary' => 'I build useful digital systems and thoughtful web experiences.',
+                'explore' => 'Explore projects',
                 'index_label' => 'Landing',
                 'routes' => [
                     [
                         'label' => 'Projects',
-                        'description' => 'View work',
+                        'description' => 'Products, migrations, and client work.',
                         'route' => 'projects',
                     ],
                     [
                         'label' => 'About me',
-                        'description' => 'Learn more',
+                        'description' => 'How I work, what I value, and the stack behind it.',
                         'route' => 'about',
                     ],
                     [
                         'label' => 'Contact',
-                        'description' => 'Get in touch',
+                        'description' => 'A direct line for focused collaboration.',
                         'route' => 'contact',
                     ],
                 ],
@@ -87,6 +89,18 @@ return [
                 ],
                 'technology_heading' => 'Tech I work with',
                 'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
+                'principles_heading' => 'How I work',
+                'principles' => [
+                    ['title' => 'Clarity first', 'body' => 'Make the system understandable before making it clever.'],
+                    ['title' => 'Built for reality', 'body' => 'Design around deployment, maintenance, and the people using it.'],
+                    ['title' => 'Finish with care', 'body' => 'The small interaction and delivery details are part of the product.'],
+                ],
+                'facts_heading' => 'Current direction',
+                'facts' => [
+                    ['value' => '08 / 2024', 'label' => 'Working as a software developer'],
+                    ['value' => '09 / 2026', 'label' => 'Business Informatics BSc planned'],
+                    ['value' => 'CH', 'label' => 'Based in Switzerland'],
+                ],
             ],
             'projects_page' => [
                 'eyebrow' => 'Selected work',
@@ -119,6 +133,8 @@ return [
                 'eyebrow' => 'Start a conversation',
                 'heading' => 'Contact',
                 'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
+                'direct_label' => 'Write directly',
+                'form_heading' => 'Or leave a note',
                 'form' => [
                     'name' => 'Name',
                     'email' => 'Email',
@@ -155,28 +171,30 @@ return [
             ],
             'nav' => [
                 ['label' => 'Start', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'Profil', 'route' => 'about', 'icon' => 'user'],
                 ['label' => 'Projekte', 'route' => 'projects', 'icon' => 'folder'],
+                ['label' => 'Profil', 'route' => 'about', 'icon' => 'user'],
                 ['label' => 'Kontakt', 'route' => 'contact', 'icon' => 'mail'],
             ],
             'home' => [
                 'statement' => 'Ich entwickle',
                 'statement_accent' => 'nützliche digitale Systeme.',
+                'summary' => 'Ich entwickle nützliche digitale Systeme und durchdachte Web-Erlebnisse.',
+                'explore' => 'Projekte entdecken',
                 'index_label' => 'Start',
                 'routes' => [
                     [
                         'label' => 'Projekte',
-                        'description' => 'Arbeiten ansehen',
+                        'description' => 'Produkte, Migrationen und Kundenprojekte.',
                         'route' => 'projects',
                     ],
                     [
                         'label' => 'Über mich',
-                        'description' => 'Mehr erfahren',
+                        'description' => 'Wie ich arbeite, was mir wichtig ist und mein Stack.',
                         'route' => 'about',
                     ],
                     [
                         'label' => 'Kontakt',
-                        'description' => 'Kontakt aufnehmen',
+                        'description' => 'Der direkte Weg für eine fokussierte Zusammenarbeit.',
                         'route' => 'contact',
                     ],
                 ],
@@ -191,6 +209,18 @@ return [
                 ],
                 'technology_heading' => 'Technologien',
                 'technology_list' => ['.NET / C#', 'Angular', 'TypeScript', 'Laravel', 'PostgreSQL'],
+                'principles_heading' => 'Wie ich arbeite',
+                'principles' => [
+                    ['title' => 'Klarheit zuerst', 'body' => 'Das System verständlich machen, bevor es clever wird.'],
+                    ['title' => 'Für die Realität gebaut', 'body' => 'Deployment, Wartung und die Menschen im Produkt mitdenken.'],
+                    ['title' => 'Sorgfältig abschliessen', 'body' => 'Kleine Interaktions- und Delivery-Details gehören zum Produkt.'],
+                ],
+                'facts_heading' => 'Aktuelle Richtung',
+                'facts' => [
+                    ['value' => '08 / 2024', 'label' => 'Als Softwareentwickler tätig'],
+                    ['value' => '09 / 2026', 'label' => 'BSc Wirtschaftsinformatik geplant'],
+                    ['value' => 'CH', 'label' => 'In der Schweiz zu Hause'],
+                ],
             ],
             'projects_page' => [
                 'eyebrow' => 'Ausgewählte Arbeiten',
@@ -223,6 +253,8 @@ return [
                 'eyebrow' => 'Gespräch beginnen',
                 'heading' => 'Kontakt',
                 'intro' => 'E-Mail ist der beste erste Schritt. Schick das grobe Ziel, Links, Rahmenbedingungen und wie ein gutes Resultat wirken soll.',
+                'direct_label' => 'Direkt schreiben',
+                'form_heading' => 'Oder eine Nachricht hinterlassen',
                 'form' => [
                     'name' => 'Name',
                     'email' => 'E-Mail',

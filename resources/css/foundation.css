@@ -1,18 +1,46 @@
 @layer base {
     :root {
-        --bg: #010106;
-        --surface: #090613;
-        --surface-soft: rgba(10, 6, 22, 0.76);
-        --ink: #f5f3fb;
-        --muted: #aaa4b9;
-        --quiet: #6f687f;
-        --line: rgba(192, 163, 230, 0.2);
-        --line-strong: rgba(205, 171, 248, 0.38);
-        --violet: #a970ff;
-        --blue: #706cff;
-        --pink: #f06bc7;
-        --shell: min(calc(100% - 48px), 1540px);
-        --ease-heavy: cubic-bezier(0.16, 0.72, 0.22, 1);
+        --bg: #07070a;
+        --surface: #101014;
+        --surface-strong: #17171d;
+        --ink: #f4f1ea;
+        --muted: #aaa6af;
+        --ink-muted: var(--muted);
+        --quiet: #716d78;
+        --line: rgba(244, 241, 234, 0.13);
+        --line-strong: rgba(244, 241, 234, 0.26);
+        --violet: #a978ff;
+        --blue: #7ec8ff;
+        --coral: #ff8eaa;
+        --green: #8ee0b0;
+        --accent: var(--violet);
+        --accent-rgb: 169, 120, 255;
+        --accent-projects: var(--violet);
+        --accent-projects-rgb: 169, 120, 255;
+        --accent-about: var(--blue);
+        --accent-about-rgb: 126, 200, 255;
+        --accent-contact: var(--coral);
+        --accent-contact-rgb: 255, 142, 170;
+        --route-accent: var(--violet);
+        --route-accent-rgb: 169, 120, 255;
+        --shell: min(calc(100% - 64px), 1600px);
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-heavy: cubic-bezier(0.16, 0.76, 0.24, 1);
+    }
+
+    .route-projects {
+        --route-accent: var(--violet);
+        --route-accent-rgb: 169, 120, 255;
+    }
+
+    .route-about {
+        --route-accent: var(--blue);
+        --route-accent-rgb: 126, 200, 255;
+    }
+
+    .route-contact {
+        --route-accent: var(--coral);
+        --route-accent-rgb: 255, 142, 170;
     }
 
     * {
@@ -61,13 +89,13 @@
     }
 
     ::selection {
-        background: rgba(169, 112, 255, 0.42);
+        background: rgba(var(--route-accent-rgb), 0.38);
         color: white;
     }
 
     :focus-visible {
-        outline: 2px solid var(--violet);
-        outline-offset: 4px;
+        outline: 2px solid var(--route-accent);
+        outline-offset: 5px;
     }
 
     .sr-only {
@@ -85,11 +113,11 @@
         position: fixed;
         top: 12px;
         left: 12px;
-        z-index: 100;
+        z-index: 200;
         padding: 10px 14px;
         border-radius: 4px;
-        background: white;
-        color: #120622;
+        background: var(--ink);
+        color: var(--bg);
         transform: translateY(-160%);
     }
 

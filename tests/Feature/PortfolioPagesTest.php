@@ -19,7 +19,7 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_landing_page_renders_the_liquid_navigation_scene(): void
+    public function test_landing_page_renders_the_kinetic_route_index(): void
     {
         $response = $this->get('/en');
 
@@ -28,30 +28,33 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Jeremy', false)
             ->assertSee('Jeremy')
             ->assertSee('Software Engineer')
-            ->assertSee('About me')
+            ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSee('useful digital systems.')
-            ->assertSee('class="landing-page"', false)
-            ->assertSee('data-liquid-stage', false)
-            ->assertSee('class="liquid-navigation"', false)
-            ->assertSee('data-liquid-canvas', false)
-            ->assertSee('class="liquid-stage__fallback"', false)
+            ->assertSee('I build useful digital systems and thoughtful web experiences.')
+            ->assertSee('class="kinetic-index"', false)
+            ->assertSee('class="index-navigation"', false)
+            ->assertSee('data-index-panel', false)
+            ->assertSee('data-page-transition', false)
             ->assertSee('data-sound-toggle', false)
             ->assertSee('data-page-main', false)
+            ->assertDontSee('data-project-stage', false)
+            ->assertDontSee('data-project-canvas', false)
             ->assertDontSee('brand/liquid/', false)
             ->assertDontSee('data-motion-chip', false)
             ->assertDontSee('data-portfolio-chat', false)
-            ->assertDontSee('Quantified')
+            ->assertSee('Quantified')
+            ->assertSee('Jay-Jay Web')
+            ->assertSee('Scherer Garten')
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
-        $this->assertSame(3, substr_count($response->getContent(), 'data-liquid-route'));
+        $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
 
         $this->get('/de')
             ->assertOk()
             ->assertSee('Software Engineer')
-            ->assertSee('nützliche digitale Systeme.')
+            ->assertSee('nützliche digitale Systeme')
             ->assertSee('Profil')
             ->assertSee('Projekte');
 
@@ -65,23 +68,30 @@ class PortfolioPagesTest extends TestCase
         $this->get('/en/about')
             ->assertOk()
             ->assertSee('aria-current="page"', false)
-            ->assertSee('page-scene--about', false)
-            ->assertSee('aria-hidden="true"', false)
-            ->assertSee('data-scene="about"', false)
+            ->assertSee('class="portfolio-page about-page"', false)
+            ->assertSee('class="about-story"', false)
+            ->assertSee('class="principles-list"', false)
             ->assertSee('Tech I work with')
             ->assertSee('Laravel')
             ->assertSee('PostgreSQL')
-            ->assertDontSee('page-stage', false);
+            ->assertDontSee('page-stage', false)
+            ->assertDontSee('data-project-stage', false);
 
-        $this->get('/de/projects')
+        $projects = $this->get('/de/projects');
+
+        $projects
             ->assertOk()
-            ->assertSee('page-scene--projects', false)
-            ->assertSee('data-scene="projects"', false)
+            ->assertSee('class="portfolio-page projects-page"', false)
+            ->assertSee('class="project-cases"', false)
+            ->assertSee('assets/work/jay-jay-home.jpg', false)
+            ->assertSee('assets/work/scherer-garten.jpg', false)
             ->assertSee('Projekte')
             ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
             ->assertSee('Jay-Jay Web')
             ->assertSee('Scherer Garten');
+
+        $this->assertSame(3, substr_count($projects->getContent(), 'class="project-case project-case--'));
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void
@@ -89,9 +99,12 @@ class PortfolioPagesTest extends TestCase
         $this->get('/en/contact')
             ->assertOk()
             ->assertSee('<title>Jeremy', false)
-            ->assertSee('page-scene--contact', false)
-            ->assertSee('data-scene="contact"', false)
+            ->assertSee('class="portfolio-page contact-page"', false)
+            ->assertSee('class="contact-workspace"', false)
+            ->assertSee('class="contact-form"', false)
             ->assertSee('Send message')
+            ->assertSee('name="name"', false)
+            ->assertSee('name="email"', false)
             ->assertSee('name="message"', false)
             ->assertSee('info@jeremylaederach.ch')
             ->assertSee('GitHub');

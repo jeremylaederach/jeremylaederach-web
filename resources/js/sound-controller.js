@@ -127,7 +127,7 @@ export const createSoundController = ({ finePointer }) => {
 
         document.addEventListener('pointerdown', () => ensureContext(), { once: true, passive: true });
         document.addEventListener('keydown', () => ensureContext(), { once: true });
-        document.addEventListener('liquid-hover', hover);
+        document.addEventListener('interface-hover', hover);
         document.addEventListener('click', (event) => {
             const control = event.target instanceof Element
                 ? event.target.closest('[data-sound-toggle]')

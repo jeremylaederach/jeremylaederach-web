@@ -8,63 +8,169 @@
         stroke-width: 1.7;
     }
 
+    .accent-dot {
+        color: var(--route-accent);
+    }
+
+    .section-label {
+        margin: 0;
+        color: var(--route-accent);
+        font-size: 10px;
+        font-weight: 650;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+
+    .scroll-cue {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+        width: max-content;
+        color: var(--ink-muted);
+        font-size: 11px;
+        transition: color 240ms ease, transform 420ms var(--ease-out);
+    }
+
+    .scroll-cue .nav-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--route-accent);
+        transition: transform 420ms var(--ease-out);
+    }
+
+    .scroll-cue:hover,
+    .scroll-cue:focus-visible {
+        color: var(--ink);
+        transform: translateY(2px);
+    }
+
+    .scroll-cue:hover .nav-icon,
+    .scroll-cue:focus-visible .nav-icon {
+        transform: translateY(5px);
+    }
+
     .contact-links {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
-        padding-top: 22px;
-        margin-top: 28px;
+        gap: 24px;
+        padding-top: 28px;
+        margin-top: 34px;
         border-top: 1px solid var(--line);
     }
 
     .contact-links a {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 5px;
-        color: rgba(236, 231, 243, 0.7);
-        font-size: 10px;
-        transition: color 180ms ease;
+        display: grid;
+        gap: 7px;
+        min-width: 110px;
+        color: var(--ink-muted);
+        transition: color 220ms ease, transform 360ms var(--ease-out);
     }
 
-    .contact-links a:hover {
-        color: white;
+    .contact-links a:hover,
+    .contact-links a:focus-visible {
+        color: var(--ink);
+        transform: translateY(-2px);
     }
 
     .contact-links a span {
-        color: rgba(184, 139, 236, 0.8);
-        font-size: 8px;
+        color: var(--route-accent);
+        font-size: 9px;
         text-transform: uppercase;
     }
 
     .contact-links a strong {
-        font-weight: 500;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+        font-weight: 450;
+    }
+
+    .page-cta {
+        position: relative;
+        isolation: isolate;
+        display: grid;
+        min-height: 360px;
+        overflow: hidden;
+        grid-template-columns: minmax(100px, 0.4fr) minmax(0, 1.6fr) 64px;
+        gap: 48px;
+        align-items: center;
+        padding: 72px max(32px, calc((100vw - 1600px) / 2));
+        border-top: 1px solid var(--line);
+        color: var(--ink);
+    }
+
+    .page-cta::before {
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        background:
+            radial-gradient(640px circle at var(--pointer-x, 72%) var(--pointer-y, 50%), rgba(var(--route-accent-rgb), 0.18), transparent 64%),
+            linear-gradient(90deg, rgba(var(--route-accent-rgb), 0.08), transparent 62%);
+        content: '';
+        opacity: 0.72;
+        transition: opacity 420ms ease;
+    }
+
+    .page-cta > span {
+        color: var(--route-accent);
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+
+    .page-cta strong {
+        font-size: 76px;
+        font-weight: 420;
+        line-height: 0.95;
+        transition: transform 620ms var(--ease-heavy);
+    }
+
+    .page-cta > .nav-icon {
+        width: 42px;
+        height: 42px;
+        color: var(--route-accent);
+        transition: transform 620ms var(--ease-heavy);
+    }
+
+    .page-cta:hover::before,
+    .page-cta:focus-visible::before {
+        opacity: 1;
+    }
+
+    .page-cta:hover strong,
+    .page-cta:focus-visible strong {
+        transform: translateX(10px);
+    }
+
+    .page-cta:hover > .nav-icon,
+    .page-cta:focus-visible > .nav-icon {
+        transform: translateX(10px);
     }
 
     .imprint-page {
         position: relative;
-        z-index: 4;
+        z-index: 1;
         width: var(--shell);
         min-height: 100svh;
-        padding: 150px 4% 96px;
+        padding: 160px 0 110px;
         margin: 0 auto;
     }
 
     .imprint-page h1 {
-        margin: 0 0 34px;
-        font-size: 60px;
-        font-weight: 450;
-        letter-spacing: 0;
+        margin: 0 0 52px;
+        font-size: 72px;
+        font-weight: 430;
+        line-height: 0.95;
     }
 
     .imprint-page section {
-        max-width: 680px;
-        padding: 24px 0;
+        max-width: 720px;
+        padding: 30px 0;
         border-top: 1px solid var(--line);
     }
 
     .imprint-page h2 {
         margin: 0 0 14px;
-        font-size: 18px;
+        font-size: 20px;
+        font-weight: 520;
     }
 
     .imprint-page p,

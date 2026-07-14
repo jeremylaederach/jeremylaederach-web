@@ -1,4 +1,4 @@
-import { liquidScenes } from './liquid-stage.js';
+import { pageRoutes } from './transition-controller.js';
 
 const pageCache = new Map();
 const wait = (duration) => new Promise((resolve) => window.setTimeout(resolve, duration));
@@ -19,7 +19,7 @@ const isEligibleLink = (event, link) => {
 const routeFromUrl = (url) => {
     const route = url.pathname.split('/').filter(Boolean).at(-1);
 
-    return liquidScenes.has(route) ? route : 'home';
+    return pageRoutes.has(route) ? route : 'home';
 };
 
 const loadPage = async (url) => {
@@ -102,14 +102,20 @@ const focusPageHeading = (main) => {
     heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
 };
 
-export const createPageRouter = ({ reducedMotion, soundController, stageController }) => {
+export const createPageRouter = ({ reducedMotion, soundController, transitionController }) => {
     let navigationSequence = 0;
 
-    const navigate = async (url, { historyMode = 'push', restoreFocus = true, routeHint } = {}) => {
+    const navigate = async (url, {
+        historyMode = 'push',
+        origin,
+        restoreFocus = true,
+        routeHint,
+        transitionLabel,
+    } = {}) => {
         const sequence = ++navigationSequence;
         const startedAt = performance.now();
-        const hintedScene = liquidScenes.has(routeHint) ? routeHint : routeFromUrl(url);
-        const timing = stageController.beginTransition(hintedScene);
+        const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
+        const timing = transitionController.beginTransition(hintedScene, { origin, transitionLabel });
         const currentMain = document.querySelector('[data-page-main]');
 
         soundController.select();
@@ -128,7 +134,7 @@ export const createPageRouter = ({ reducedMotion, soundController, stageControll
 
             const scene = page.nextDocument.body.dataset.page ?? hintedScene;
 
-            stageController.commitScene(scene);
+            transitionController.commitScene(scene);
             page.main.classList.add('is-page-entering');
             currentMain?.replaceWith(page.main);
 
@@ -146,6 +152,9 @@ export const createPageRouter = ({ reducedMotion, soundController, stageControll
             await nextFrame();
             await nextFrame();
             page.main.classList.remove('is-page-entering');
+            document.dispatchEvent(new CustomEvent('portfolio:page-swapped', {
+                detail: { scene },
+            }));
 
             if (restoreFocus) {
                 focusPageHeading(page.main);
@@ -158,7 +167,7 @@ export const createPageRouter = ({ reducedMotion, soundController, stageControll
                 return;
             }
 
-            stageController.completeTransition(scene);
+            transitionController.completeTransition(scene);
             soundController.complete();
         } catch (error) {
             if (sequence !== navigationSequence) {
@@ -192,7 +201,11 @@ export const createPageRouter = ({ reducedMotion, soundController, stageControll
             return;
         }
 
-        navigate(destination, { routeHint: link.dataset.route });
+        navigate(destination, {
+            origin: link,
+            routeHint: link.dataset.route,
+            transitionLabel: link.dataset.transitionLabel ?? link.textContent.trim(),
+        });
     });
 
     const prefetch = (event) => {
@@ -228,7 +241,7 @@ export const createPageRouter = ({ reducedMotion, soundController, stageControll
         navigationSequence += 1;
         document.body.classList.remove('is-routing');
         document.querySelector('[data-page-main]')?.classList.remove('is-page-entering', 'is-page-exiting');
-        stageController.completeTransition(scene);
+        transitionController.completeTransition(scene);
     });
 
     window.history.scrollRestoration = 'manual';
