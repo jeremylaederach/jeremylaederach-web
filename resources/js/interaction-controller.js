@@ -3,8 +3,15 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 export const createInteractionController = ({ finePointer, reducedMotion }) => {
     let revealObserver;
     let activeFrame;
+    let trailFrame;
     let pointerEvent;
+    let hasPointerPosition = false;
+    let isPointerInside = false;
     const sitePointer = document.querySelector('[data-site-pointer]');
+    const trailElements = sitePointer instanceof HTMLElement
+        ? [...sitePointer.querySelectorAll('[data-pointer-trail]')]
+        : [];
+    const trailPoints = trailElements.map(() => ({ x: -48, y: -48 }));
 
     const getInteractiveTarget = (target) => target instanceof Element
         ? target.closest('a[href], button, input, textarea, select')
@@ -28,12 +35,6 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             return;
         }
 
-        if (sitePointer instanceof HTMLElement) {
-            sitePointer.style.setProperty('--site-pointer-x', `${pointerEvent.clientX}px`);
-            sitePointer.style.setProperty('--site-pointer-y', `${pointerEvent.clientY}px`);
-            document.documentElement.classList.add('has-site-pointer');
-        }
-
         const surface = pointerEvent.target instanceof Element
             ? pointerEvent.target.closest('[data-pointer-surface]')
             : null;
@@ -50,11 +51,67 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         surface.style.setProperty('--pointer-y', `${y}%`);
     };
 
+    const updateSitePointer = () => {
+        if (!(sitePointer instanceof HTMLElement) || !pointerEvent) {
+            trailFrame = undefined;
+            return;
+        }
+
+        const targetX = pointerEvent.clientX;
+        const targetY = pointerEvent.clientY;
+        let leaderX = targetX;
+        let leaderY = targetY;
+        let remainingDistance = 0;
+
+        sitePointer.style.setProperty('--site-pointer-x', `${targetX}px`);
+        sitePointer.style.setProperty('--site-pointer-y', `${targetY}px`);
+        if (isPointerInside) {
+            document.documentElement.classList.add('has-site-pointer');
+        }
+
+        trailPoints.forEach((point, index) => {
+            const follow = 0.52 - (index * 0.06);
+
+            point.x += (leaderX - point.x) * follow;
+            point.y += (leaderY - point.y) * follow;
+            leaderX = point.x;
+            leaderY = point.y;
+            remainingDistance = Math.max(
+                remainingDistance,
+                Math.abs(targetX - point.x),
+                Math.abs(targetY - point.y),
+            );
+
+            trailElements[index].style.setProperty('--trail-x', `${point.x - targetX}px`);
+            trailElements[index].style.setProperty('--trail-y', `${point.y - targetY}px`);
+        });
+
+        if (remainingDistance > 0.08) {
+            trailFrame = window.requestAnimationFrame(updateSitePointer);
+            return;
+        }
+
+        trailFrame = undefined;
+    };
+
     const schedulePointerUpdate = (event) => {
         pointerEvent = event;
+        isPointerInside = true;
+
+        if (!hasPointerPosition) {
+            trailPoints.forEach((point) => {
+                point.x = event.clientX;
+                point.y = event.clientY;
+            });
+            hasPointerPosition = true;
+        }
 
         if (activeFrame === undefined) {
             activeFrame = window.requestAnimationFrame(updatePointerSurface);
+        }
+
+        if (trailFrame === undefined) {
+            trailFrame = window.requestAnimationFrame(updateSitePointer);
         }
     };
 
@@ -117,6 +174,7 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             }, { passive: true });
 
             window.addEventListener('blur', () => {
+                isPointerInside = false;
                 document.documentElement.classList.remove('has-site-pointer');
             });
         }
@@ -153,6 +211,7 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
 
             if (finePointer && !reducedMotion) {
                 if (!event.relatedTarget) {
+                    isPointerInside = false;
                     document.documentElement.classList.remove('has-site-pointer');
                 }
 

@@ -25,6 +25,10 @@
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
         <div class="site-pointer" data-site-pointer aria-hidden="true">
+            <span class="site-pointer__trail site-pointer__trail--1" data-pointer-trail></span>
+            <span class="site-pointer__trail site-pointer__trail--2" data-pointer-trail></span>
+            <span class="site-pointer__trail site-pointer__trail--3" data-pointer-trail></span>
+            <span class="site-pointer__trail site-pointer__trail--4" data-pointer-trail></span>
             <span class="site-pointer__ring"></span>
             <span class="site-pointer__dot"></span>
         </div>
