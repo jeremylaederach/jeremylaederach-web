@@ -15,8 +15,8 @@
 
         <title>{{ $pageTitle }}</title>
 
-        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
-        <link rel="apple-touch-icon" href="{{ asset('brand/icons/apple-touch-icon.png') }}">
+        <link rel="icon" href="{{ asset('brand/cats/main/cat-loaf-classic-256.png') }}" type="image/png">
+        <link rel="apple-touch-icon" href="{{ asset('brand/cats/main/cat-loaf-classic-256.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
