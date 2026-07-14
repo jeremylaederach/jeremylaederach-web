@@ -36,20 +36,6 @@
         align-items: center;
     }
 
-    .page-hero::before {
-        position: absolute;
-        z-index: -1;
-        top: 16%;
-        right: -18%;
-        width: 62%;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(var(--route-accent-rgb), 0.12), transparent 68%);
-        content: '';
-        opacity: 0.78;
-        pointer-events: none;
-    }
-
     .page-hero__index {
         display: flex;
         grid-row: 1;

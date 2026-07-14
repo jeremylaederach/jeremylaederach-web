@@ -4,12 +4,34 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
     let revealObserver;
     let activeFrame;
     let pointerEvent;
+    const sitePointer = document.querySelector('[data-site-pointer]');
+
+    const getInteractiveTarget = (target) => target instanceof Element
+        ? target.closest('a[href], button, input, textarea, select')
+        : null;
+
+    const setPointerIntent = (target) => {
+        if (!(sitePointer instanceof HTMLElement)) {
+            return;
+        }
+
+        const interactiveTarget = getInteractiveTarget(target);
+
+        sitePointer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
+        sitePointer.dataset.route = interactiveTarget?.dataset.route ?? document.body.dataset.page ?? 'home';
+    };
 
     const updatePointerSurface = () => {
         activeFrame = undefined;
 
         if (!pointerEvent) {
             return;
+        }
+
+        if (sitePointer instanceof HTMLElement) {
+            sitePointer.style.setProperty('--site-pointer-x', `${pointerEvent.clientX}px`);
+            sitePointer.style.setProperty('--site-pointer-y', `${pointerEvent.clientY}px`);
+            document.documentElement.classList.add('has-site-pointer');
         }
 
         const surface = pointerEvent.target instanceof Element
@@ -85,6 +107,18 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
 
         if (finePointer && !reducedMotion) {
             document.addEventListener('pointermove', schedulePointerUpdate, { passive: true });
+
+            document.addEventListener('pointerdown', () => {
+                sitePointer?.classList.add('is-pressed');
+            }, { passive: true });
+
+            document.addEventListener('pointerup', () => {
+                sitePointer?.classList.remove('is-pressed');
+            }, { passive: true });
+
+            window.addEventListener('blur', () => {
+                document.documentElement.classList.remove('has-site-pointer');
+            });
         }
 
         document.addEventListener('pointerover', (event) => {
@@ -102,6 +136,10 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             if (panel instanceof HTMLElement) {
                 setIndexRoute(panel.dataset.route);
             }
+
+            if (finePointer && !reducedMotion) {
+                setPointerIntent(event.target);
+            }
         }, { passive: true });
 
         document.addEventListener('pointerout', (event) => {
@@ -111,6 +149,14 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
 
             if (panel && (!event.relatedTarget || !panel.contains(event.relatedTarget))) {
                 setIndexRoute();
+            }
+
+            if (finePointer && !reducedMotion) {
+                if (!event.relatedTarget) {
+                    document.documentElement.classList.remove('has-site-pointer');
+                }
+
+                setPointerIntent(event.relatedTarget);
             }
         }, { passive: true });
 

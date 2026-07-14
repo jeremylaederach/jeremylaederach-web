@@ -24,6 +24,10 @@
     <body class="route-{{ $currentRoute }}" data-page="{{ $currentRoute }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
+        <div class="site-pointer" data-site-pointer aria-hidden="true">
+            <span class="site-pointer__ring"></span>
+            <span class="site-pointer__dot"></span>
+        </div>
 
         <header class="site-header" data-page-header>
             <div class="site-header__inner">
@@ -53,7 +57,7 @@
                             @endphp
 
                             <a
-                                @class(['is-active' => $isActive])
+                                class="site-header__nav-link site-header__nav-link--{{ $item['route'] }}{{ $isActive ? ' is-active' : '' }}"
                                 href="{{ route($item['route'], ['locale' => $locale]) }}"
                                 data-page-route="{{ $item['route'] }}"
                                 data-route="{{ $item['route'] }}"
@@ -62,7 +66,8 @@
                                 data-interface-sound
                                 @if ($isActive) aria-current="page" @endif
                             >
-                                {{ $item['label'] }}
+                                <span class="site-header__nav-index">0{{ $loop->index }}</span>
+                                <span class="site-header__nav-label">{{ $item['label'] }}</span>
                             </a>
                         @endforeach
 

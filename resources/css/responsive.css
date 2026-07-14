@@ -268,12 +268,6 @@
         gap: 22px;
     }
 
-    .page-hero::before {
-        top: 28%;
-        right: -55%;
-        width: 120%;
-    }
-
     .page-hero__index,
     .page-hero__title,
     .page-hero > p,
