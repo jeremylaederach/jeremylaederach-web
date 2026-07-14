@@ -32,7 +32,7 @@
         align-items: center;
         justify-content: space-between;
         width: var(--shell);
-        min-height: 82px;
+        min-height: 92px;
         margin: 0 auto;
         pointer-events: auto;
     }
@@ -80,14 +80,14 @@
     }
 
     .site-header__controls {
-        gap: 16px;
+        gap: 18px;
     }
 
     .site-header__nav {
         position: relative;
         gap: 0;
         color: rgba(244, 241, 234, 0.64);
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .site-header__nav::after {
@@ -105,19 +105,19 @@
         --nav-accent: var(--violet);
         position: relative;
         display: grid;
-        min-height: 50px;
-        padding: 9px 17px 14px;
-        grid-template-columns: 19px auto;
-        gap: 8px;
+        min-height: 58px;
+        padding: 11px 20px 17px;
+        grid-template-columns: 21px auto;
+        gap: 9px;
         align-items: center;
         transition: color 220ms ease;
     }
 
     .site-header__nav-link::after {
         position: absolute;
-        right: 17px;
+        right: 20px;
         bottom: 0;
-        left: 17px;
+        left: 20px;
         height: 2px;
         background: var(--nav-accent);
         content: '';
@@ -140,7 +140,7 @@
 
     .site-header__nav-index {
         color: var(--quiet);
-        font-size: 9px;
+        font-size: 10px;
         font-variant-numeric: tabular-nums;
         line-height: 1;
         transition: color 220ms ease;
@@ -173,17 +173,17 @@
 
     .site-header__languages {
         display: flex;
-        gap: 9px;
-        padding: 0 0 0 15px;
-        margin-left: 5px;
+        gap: 10px;
+        padding: 0 0 0 18px;
+        margin-left: 6px;
         border-left: 1px solid rgba(244, 241, 234, 0.1);
         color: var(--quiet);
-        font-size: 9px;
+        font-size: 10px;
         line-height: 1;
     }
 
     .site-header__languages a {
-        padding: 15px 0;
+        padding: 18px 0;
         transition: color 200ms ease;
     }
 
@@ -199,8 +199,8 @@
     .site-menu__toggle {
         display: grid;
         place-items: center;
-        width: 42px;
-        height: 42px;
+        width: 46px;
+        height: 46px;
         padding: 0;
         border: 1px solid var(--line);
         border-radius: 50%;
@@ -231,7 +231,7 @@
         display: block;
     }
 
-    .site-pointer {
+    .site-pointer-layer {
         display: none;
     }
 
@@ -241,37 +241,41 @@
             cursor: none !important;
         }
 
-        .site-pointer {
+        .site-pointer-layer {
             --pointer-rgb: 169, 120, 255;
             position: fixed;
             z-index: 90;
-            top: 0;
-            left: 0;
+            inset: 0;
             display: block;
-            width: 0;
-            height: 0;
             opacity: 0;
             pointer-events: none;
-            transform: translate3d(var(--site-pointer-x, -48px), var(--site-pointer-y, -48px), 0);
             transition: opacity 180ms ease;
-            will-change: transform;
         }
 
-        .has-site-pointer .site-pointer {
+        .has-site-pointer .site-pointer-layer {
             opacity: 1;
         }
 
-        .site-pointer[data-route='about'] {
+        .site-pointer-layer[data-route='about'] {
             --pointer-rgb: 126, 200, 255;
         }
 
-        .site-pointer[data-route='contact'] {
+        .site-pointer-layer[data-route='contact'] {
             --pointer-rgb: 255, 142, 170;
         }
 
+        .site-pointer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            transform: translate3d(var(--site-pointer-x, -64px), var(--site-pointer-y, -64px), 0);
+            will-change: transform;
+        }
+
         .site-pointer__ring,
-        .site-pointer__dot,
-        .site-pointer__trail {
+        .site-pointer__dot {
             position: absolute;
             top: 0;
             left: 0;
@@ -279,87 +283,82 @@
         }
 
         .site-pointer__ring {
-            width: 32px;
-            height: 32px;
+            width: 44px;
+            height: 44px;
             border: 1px solid rgba(244, 241, 234, 0.36);
             background: rgba(7, 7, 10, 0.14);
-            box-shadow: 0 0 0 1px rgba(7, 7, 10, 0.18), 0 0 16px rgba(var(--pointer-rgb), 0);
-            transform: translate(-50%, -50%) scale(0.78);
+            box-shadow: 0 0 0 1px rgba(7, 7, 10, 0.18), 0 0 20px rgba(var(--pointer-rgb), 0.08);
+            transform: translate(-50%, -50%);
             transition: border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease, transform 460ms var(--ease-heavy);
         }
 
         .site-pointer__dot {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
             background: var(--ink);
             box-shadow: 0 0 10px rgba(244, 241, 234, 0.5);
             transform: translate(-50%, -50%);
             transition: background-color 220ms ease, transform 420ms var(--ease-heavy);
         }
 
-        .site-pointer__trail {
-            background: rgb(var(--pointer-rgb));
-            box-shadow: 0 0 9px rgba(var(--pointer-rgb), 0.55);
-            opacity: var(--trail-opacity);
-            transform: translate3d(var(--trail-x, 0), var(--trail-y, 0), 0) translate(-50%, -50%);
-            transition: background-color 240ms ease, opacity 280ms ease;
-            will-change: transform;
+        .site-pointer-trail {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
         }
 
-        .site-pointer__trail--1 {
-            width: 4px;
-            height: 4px;
-            --trail-opacity: 0.34;
+        .site-pointer-trail__path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: opacity 260ms ease, stroke-width 420ms var(--ease-heavy);
+            vector-effect: non-scaling-stroke;
         }
 
-        .site-pointer__trail--2 {
-            width: 3px;
-            height: 3px;
-            --trail-opacity: 0.25;
+        .site-pointer-trail__path--outer {
+            stroke-width: 22px;
         }
 
-        .site-pointer__trail--3 {
-            width: 2.5px;
-            height: 2.5px;
-            --trail-opacity: 0.17;
+        .site-pointer-trail__path--core {
+            stroke-width: 9px;
         }
 
-        .site-pointer__trail--4 {
-            width: 2px;
-            height: 2px;
-            --trail-opacity: 0.1;
+        .site-pointer-trail__path--highlight {
+            stroke-width: 2.5px;
         }
 
-        .site-pointer.is-interactive .site-pointer__ring {
+        .site-pointer-trail__stop--accent {
+            stop-color: rgb(var(--pointer-rgb));
+        }
+
+        .site-pointer-trail__stop--highlight {
+            stop-color: var(--ink);
+        }
+
+        .site-pointer-layer.is-interactive .site-pointer__ring {
             border-color: rgba(var(--pointer-rgb), 0.8);
-            background: rgba(var(--pointer-rgb), 0.08);
-            box-shadow: 0 0 0 1px rgba(var(--pointer-rgb), 0.15), 0 0 22px rgba(var(--pointer-rgb), 0.28);
-            transform: translate(-50%, -50%) scale(1.08);
+            background: rgba(var(--pointer-rgb), 0.1);
+            box-shadow: 0 0 0 1px rgba(var(--pointer-rgb), 0.15), 0 0 30px rgba(var(--pointer-rgb), 0.34);
+            transform: translate(-50%, -50%) scale(1.38);
         }
 
-        .site-pointer.is-interactive .site-pointer__dot {
+        .site-pointer-layer.is-interactive .site-pointer__dot {
             background: rgb(var(--pointer-rgb));
-            transform: translate(-50%, -50%) scale(1.5);
+            transform: translate(-50%, -50%) scale(1.65);
         }
 
-        .site-pointer.is-interactive .site-pointer__trail--1 {
-            opacity: 0.46;
+        .site-pointer-layer.is-interactive .site-pointer-trail__path--outer {
+            stroke-width: 26px;
         }
 
-        .site-pointer.is-interactive .site-pointer__trail--2 {
-            opacity: 0.34;
+        .site-pointer-layer.is-interactive .site-pointer-trail__path--core {
+            stroke-width: 11px;
         }
 
-        .site-pointer.is-interactive .site-pointer__trail--3 {
-            opacity: 0.23;
-        }
-
-        .site-pointer.is-interactive .site-pointer__trail--4 {
-            opacity: 0.14;
-        }
-
-        .site-pointer.is-pressed .site-pointer__ring {
-            transform: translate(-50%, -50%) scale(0.82);
+        .site-pointer-layer.is-pressed .site-pointer__ring {
+            transform: translate(-50%, -50%) scale(1.08);
         }
     }
 

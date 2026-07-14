@@ -7,25 +7,96 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
     let pointerEvent;
     let hasPointerPosition = false;
     let isPointerInside = false;
+    const sitePointerLayer = document.querySelector('[data-site-pointer-layer]');
     const sitePointer = document.querySelector('[data-site-pointer]');
-    const trailElements = sitePointer instanceof HTMLElement
-        ? [...sitePointer.querySelectorAll('[data-pointer-trail]')]
-        : [];
-    const trailPoints = trailElements.map(() => ({ x: -48, y: -48 }));
+    const trailPaths = {
+        core: document.querySelector('[data-pointer-path="core"]'),
+        highlight: document.querySelector('[data-pointer-path="highlight"]'),
+        outer: document.querySelector('[data-pointer-path="outer"]'),
+    };
+    const trailGradients = {
+        core: document.querySelector('[data-pointer-gradient="core"]'),
+        highlight: document.querySelector('[data-pointer-gradient="highlight"]'),
+        outer: document.querySelector('[data-pointer-gradient="outer"]'),
+    };
+    const trailPoints = Array.from({ length: 18 }, () => ({ x: -64, y: -64 }));
 
     const getInteractiveTarget = (target) => target instanceof Element
         ? target.closest('a[href], button, input, textarea, select')
         : null;
 
     const setPointerIntent = (target) => {
-        if (!(sitePointer instanceof HTMLElement)) {
+        if (!(sitePointerLayer instanceof HTMLElement)) {
             return;
         }
 
         const interactiveTarget = getInteractiveTarget(target);
 
-        sitePointer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
-        sitePointer.dataset.route = interactiveTarget?.dataset.route ?? document.body.dataset.page ?? 'home';
+        sitePointerLayer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
+        sitePointerLayer.dataset.route = interactiveTarget?.dataset.route ?? document.body.dataset.page ?? 'home';
+    };
+
+    const buildTrailPath = (points) => {
+        if (points.length < 2) {
+            return '';
+        }
+
+        const format = (value) => value.toFixed(2);
+        let path = `M ${format(points[0].x)} ${format(points[0].y)}`;
+
+        for (let index = 0; index < points.length - 1; index += 1) {
+            const previous = points[index - 1] ?? points[index];
+            const current = points[index];
+            const next = points[index + 1];
+            const after = points[index + 2] ?? next;
+            const controlOne = {
+                x: current.x + ((next.x - previous.x) / 6),
+                y: current.y + ((next.y - previous.y) / 6),
+            };
+            const controlTwo = {
+                x: next.x - ((after.x - current.x) / 6),
+                y: next.y - ((after.y - current.y) / 6),
+            };
+
+            path += ` C ${format(controlOne.x)} ${format(controlOne.y)} ${format(controlTwo.x)} ${format(controlTwo.y)} ${format(next.x)} ${format(next.y)}`;
+        }
+
+        return path;
+    };
+
+    const updateGradient = (gradient, points) => {
+        if (!(gradient instanceof SVGLinearGradientElement) || points.length < 2) {
+            return;
+        }
+
+        const start = points[0];
+        const end = points[points.length - 1];
+
+        gradient.setAttribute('x1', start.x);
+        gradient.setAttribute('y1', start.y);
+        gradient.setAttribute('x2', end.x);
+        gradient.setAttribute('y2', end.y);
+    };
+
+    const drawTrail = () => {
+        const orderedPoints = [...trailPoints].reverse();
+        const corePoints = orderedPoints.slice(5);
+        const highlightPoints = orderedPoints.slice(12);
+        const paths = {
+            core: corePoints,
+            highlight: highlightPoints,
+            outer: orderedPoints,
+        };
+
+        Object.entries(paths).forEach(([name, points]) => {
+            const path = trailPaths[name];
+
+            if (path instanceof SVGPathElement) {
+                path.setAttribute('d', buildTrailPath(points));
+            }
+
+            updateGradient(trailGradients[name], points);
+        });
     };
 
     const updatePointerSurface = () => {
@@ -59,8 +130,6 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
 
         const targetX = pointerEvent.clientX;
         const targetY = pointerEvent.clientY;
-        let leaderX = targetX;
-        let leaderY = targetY;
         let remainingDistance = 0;
 
         sitePointer.style.setProperty('--site-pointer-x', `${targetX}px`);
@@ -69,22 +138,23 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             document.documentElement.classList.add('has-site-pointer');
         }
 
-        trailPoints.forEach((point, index) => {
-            const follow = 0.52 - (index * 0.06);
+        trailPoints[0].x = targetX;
+        trailPoints[0].y = targetY;
 
-            point.x += (leaderX - point.x) * follow;
-            point.y += (leaderY - point.y) * follow;
-            leaderX = point.x;
-            leaderY = point.y;
+        trailPoints.slice(1).forEach((point, index) => {
+            const leader = trailPoints[index];
+            const follow = 0.5 - (Math.min(index, 12) * 0.006);
+
+            point.x += (leader.x - point.x) * follow;
+            point.y += (leader.y - point.y) * follow;
             remainingDistance = Math.max(
                 remainingDistance,
-                Math.abs(targetX - point.x),
-                Math.abs(targetY - point.y),
+                Math.abs(leader.x - point.x),
+                Math.abs(leader.y - point.y),
             );
-
-            trailElements[index].style.setProperty('--trail-x', `${point.x - targetX}px`);
-            trailElements[index].style.setProperty('--trail-y', `${point.y - targetY}px`);
         });
+
+        drawTrail();
 
         if (remainingDistance > 0.08) {
             trailFrame = window.requestAnimationFrame(updateSitePointer);
@@ -166,11 +236,11 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             document.addEventListener('pointermove', schedulePointerUpdate, { passive: true });
 
             document.addEventListener('pointerdown', () => {
-                sitePointer?.classList.add('is-pressed');
+                sitePointerLayer?.classList.add('is-pressed');
             }, { passive: true });
 
             document.addEventListener('pointerup', () => {
-                sitePointer?.classList.remove('is-pressed');
+                sitePointerLayer?.classList.remove('is-pressed');
             }, { passive: true });
 
             window.addEventListener('blur', () => {

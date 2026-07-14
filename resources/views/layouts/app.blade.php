@@ -24,13 +24,32 @@
     <body class="route-{{ $currentRoute }}" data-page="{{ $currentRoute }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
-        <div class="site-pointer" data-site-pointer aria-hidden="true">
-            <span class="site-pointer__trail site-pointer__trail--1" data-pointer-trail></span>
-            <span class="site-pointer__trail site-pointer__trail--2" data-pointer-trail></span>
-            <span class="site-pointer__trail site-pointer__trail--3" data-pointer-trail></span>
-            <span class="site-pointer__trail site-pointer__trail--4" data-pointer-trail></span>
-            <span class="site-pointer__ring"></span>
-            <span class="site-pointer__dot"></span>
+        <div class="site-pointer-layer" data-site-pointer-layer aria-hidden="true">
+            <svg class="site-pointer-trail" focusable="false">
+                <defs>
+                    <linearGradient id="pointer-trail-outer" gradientUnits="userSpaceOnUse" data-pointer-gradient="outer">
+                        <stop class="site-pointer-trail__stop--accent" offset="0" stop-opacity="0" />
+                        <stop class="site-pointer-trail__stop--accent" offset="0.64" stop-opacity="0.08" />
+                        <stop class="site-pointer-trail__stop--accent" offset="1" stop-opacity="0.32" />
+                    </linearGradient>
+                    <linearGradient id="pointer-trail-core" gradientUnits="userSpaceOnUse" data-pointer-gradient="core">
+                        <stop class="site-pointer-trail__stop--accent" offset="0" stop-opacity="0" />
+                        <stop class="site-pointer-trail__stop--accent" offset="0.58" stop-opacity="0.24" />
+                        <stop class="site-pointer-trail__stop--accent" offset="1" stop-opacity="0.72" />
+                    </linearGradient>
+                    <linearGradient id="pointer-trail-highlight" gradientUnits="userSpaceOnUse" data-pointer-gradient="highlight">
+                        <stop class="site-pointer-trail__stop--highlight" offset="0" stop-opacity="0" />
+                        <stop class="site-pointer-trail__stop--highlight" offset="1" stop-opacity="0.84" />
+                    </linearGradient>
+                </defs>
+                <path class="site-pointer-trail__path site-pointer-trail__path--outer" data-pointer-path="outer" stroke="url(#pointer-trail-outer)" />
+                <path class="site-pointer-trail__path site-pointer-trail__path--core" data-pointer-path="core" stroke="url(#pointer-trail-core)" />
+                <path class="site-pointer-trail__path site-pointer-trail__path--highlight" data-pointer-path="highlight" stroke="url(#pointer-trail-highlight)" />
+            </svg>
+            <div class="site-pointer" data-site-pointer>
+                <span class="site-pointer__ring"></span>
+                <span class="site-pointer__dot"></span>
+            </div>
         </div>
 
         <header class="site-header" data-page-header>
