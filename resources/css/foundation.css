@@ -48,7 +48,6 @@
     }
 
     html {
-        min-width: 320px;
         background: var(--bg);
         color: var(--ink);
         font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;

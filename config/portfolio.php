@@ -70,7 +70,7 @@ return [
                     ],
                     [
                         'label' => 'About me',
-                        'description' => 'How I work, what I value, and the stack behind it.',
+                        'description' => 'Background, experience, and the tools behind my work.',
                         'route' => 'about',
                     ],
                     [
@@ -84,23 +84,21 @@ return [
                 'eyebrow' => 'Profile',
                 'heading' => 'About me',
                 'intro' => 'I am a software engineer with a foundation in application development and a focus on full-stack systems that connect technology with real business needs.',
+                'story_link' => 'My background',
+                'story_heading' => 'Software with purpose, built from real requirements.',
                 'body' => [
-                    'My path started with an EFZ apprenticeship in application development. Since then, I have continued building experience across backend systems, structured frontend applications, APIs, databases, and practical web delivery.',
+                    'As a passionate software engineer with a solid foundation gained through my apprenticeship as an Application Developer EFZ, I am focused on advancing my full-stack skills and bridging technology with business needs.',
                     'I enjoy analyzing complex requirements and turning them into purposeful, user-centered solutions. Clean architecture, maintainability, and thoughtful design guide the entire development process.',
+                    'Looking ahead, I plan to study Business Informatics to deepen my understanding of how software can create real strategic value in business environments.',
                 ],
                 'technology_heading' => 'Tools I work with',
-                'technology_list' => ['.NET / C#', 'ASP.NET Core', 'Angular', 'TypeScript / JavaScript', 'PostgreSQL / SQL', 'REST APIs', 'Git'],
-                'principles_heading' => 'How I work',
-                'principles' => [
-                    ['title' => 'Understand the problem', 'body' => 'Analyze the requirements and the people behind them before deciding what to build.'],
-                    ['title' => 'Build for change', 'body' => 'Use clear architecture and understandable code so the system can evolve with confidence.'],
-                    ['title' => 'Deliver usable software', 'body' => 'Connect data, logic, and interface into something that works in real-world scenarios.'],
-                ],
-                'facts_heading' => 'At a glance',
-                'facts' => [
-                    ['value' => 'EFZ', 'label' => 'Application development foundation'],
-                    ['value' => '08 / 2024', 'label' => 'Working as a software developer'],
-                    ['value' => '09 / 2026', 'label' => 'Business Informatics at OST'],
+                'technology_intro' => 'A focused toolkit for backend systems, structured interfaces, data, and dependable delivery.',
+                'technology_list' => [
+                    ['name' => '.NET / C#', 'detail' => 'ASP.NET Core · REST APIs', 'icon' => 'dotnet', 'fallback' => '.N', 'color' => '#8b5cf6'],
+                    ['name' => 'Angular', 'detail' => 'Structured frontend applications', 'icon' => 'angular', 'fallback' => 'A', 'color' => '#dd0031'],
+                    ['name' => 'TypeScript', 'detail' => 'Typed interface logic', 'icon' => 'typescript', 'fallback' => 'TS', 'color' => '#3178c6'],
+                    ['name' => 'PostgreSQL', 'detail' => 'Relational data modelling', 'icon' => 'postgresql', 'fallback' => 'PG', 'color' => '#4169e1'],
+                    ['name' => 'Git', 'detail' => 'Version control and delivery', 'icon' => 'git', 'fallback' => 'G', 'color' => '#f05032'],
                 ],
                 'career_heading' => 'Career path',
                 'career' => [
@@ -222,7 +220,7 @@ return [
                     ],
                     [
                         'label' => 'Über mich',
-                        'description' => 'Wie ich arbeite, was mir wichtig ist und mein Stack.',
+                        'description' => 'Hintergrund, Erfahrung und die Tools hinter meiner Arbeit.',
                         'route' => 'about',
                     ],
                     [
@@ -236,23 +234,21 @@ return [
                 'eyebrow' => 'Profil',
                 'heading' => 'Über mich',
                 'intro' => 'Ich bin Softwareentwickler mit einer fundierten Basis in der Applikationsentwicklung und einem Fokus auf Fullstack-Systeme, die Technologie mit echten Geschäftsanforderungen verbinden.',
+                'story_link' => 'Mein Weg',
+                'story_heading' => 'Software mit Zweck, entwickelt aus echten Anforderungen.',
                 'body' => [
-                    'Mein Weg begann mit einer EFZ-Lehre in Applikationsentwicklung. Seither sammle ich Erfahrung mit Backend-Systemen, strukturierten Frontend-Anwendungen, APIs, Datenbanken und praktischer Web-Delivery.',
+                    'Als engagierter Softwareentwickler mit einer soliden Grundlage aus meiner EFZ-Lehre in Applikationsentwicklung entwickle ich meine Fullstack-Kompetenzen laufend weiter und verbinde Technologie mit geschäftlichen Anforderungen.',
                     'Ich analysiere gerne komplexe Anforderungen und übersetze sie in zielgerichtete, nutzerorientierte Lösungen. Klare Architektur, Wartbarkeit und durchdachtes Design begleiten den gesamten Entwicklungsprozess.',
+                    'Mit Blick nach vorn plane ich ein Studium in Wirtschaftsinformatik, um besser zu verstehen, wie Software echten strategischen Mehrwert in Unternehmen schaffen kann.',
                 ],
                 'technology_heading' => 'Tools, mit denen ich arbeite',
-                'technology_list' => ['.NET / C#', 'ASP.NET Core', 'Angular', 'TypeScript / JavaScript', 'PostgreSQL / SQL', 'REST APIs', 'Git'],
-                'principles_heading' => 'Wie ich arbeite',
-                'principles' => [
-                    ['title' => 'Das Problem verstehen', 'body' => 'Anforderungen und die Menschen dahinter analysieren, bevor die Umsetzung beginnt.'],
-                    ['title' => 'Für Veränderung bauen', 'body' => 'Klare Architektur und verständlicher Code schaffen Sicherheit für die Weiterentwicklung.'],
-                    ['title' => 'Nutzbare Software liefern', 'body' => 'Daten, Logik und Oberfläche zu einer Lösung verbinden, die im Alltag funktioniert.'],
-                ],
-                'facts_heading' => 'Auf einen Blick',
-                'facts' => [
-                    ['value' => 'EFZ', 'label' => 'Fundament in Applikationsentwicklung'],
-                    ['value' => '08 / 2024', 'label' => 'Als Softwareentwickler tätig'],
-                    ['value' => '09 / 2026', 'label' => 'Wirtschaftsinformatik an der OST'],
+                'technology_intro' => 'Ein fokussiertes Toolkit für Backend-Systeme, strukturierte Oberflächen, Daten und verlässliche Auslieferung.',
+                'technology_list' => [
+                    ['name' => '.NET / C#', 'detail' => 'ASP.NET Core · REST APIs', 'icon' => 'dotnet', 'fallback' => '.N', 'color' => '#8b5cf6'],
+                    ['name' => 'Angular', 'detail' => 'Strukturierte Frontend-Anwendungen', 'icon' => 'angular', 'fallback' => 'A', 'color' => '#dd0031'],
+                    ['name' => 'TypeScript', 'detail' => 'Typisierte Interface-Logik', 'icon' => 'typescript', 'fallback' => 'TS', 'color' => '#3178c6'],
+                    ['name' => 'PostgreSQL', 'detail' => 'Relationale Datenmodellierung', 'icon' => 'postgresql', 'fallback' => 'PG', 'color' => '#4169e1'],
+                    ['name' => 'Git', 'detail' => 'Versionskontrolle und Auslieferung', 'icon' => 'git', 'fallback' => 'G', 'color' => '#f05032'],
                 ],
                 'career_heading' => 'Werdegang',
                 'career' => [

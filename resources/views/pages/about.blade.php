@@ -15,30 +15,23 @@
             <p>{{ $content['about_page']['intro'] }}</p>
 
             <a class="scroll-cue" href="#story" data-interface-sound data-sound-tone="action">
-                <span>{{ $content['about_page']['principles_heading'] }}</span>
+                <span>{{ $content['about_page']['story_link'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>
         </header>
 
         <section id="story" class="about-story" data-reveal>
-            <p class="section-label">01 / {{ $content['about_page']['facts_heading'] }}</p>
+            <p class="section-label">01 / {{ $content['about_page']['eyebrow'] }}</p>
 
             <div class="about-story__lead">
-                <p>{{ $content['about_page']['body'][0] }}</p>
+                <h2>{{ $content['about_page']['story_heading'] }}</h2>
             </div>
 
             <div class="about-story__body">
-                <p>{{ $content['about_page']['body'][1] }}</p>
-            </div>
-
-            <dl class="about-facts">
-                @foreach ($content['about_page']['facts'] as $fact)
-                    <div>
-                        <dt>{{ $fact['label'] }}</dt>
-                        <dd>{{ $fact['value'] }}</dd>
-                    </div>
+                @foreach ($content['about_page']['body'] as $paragraph)
+                    <p>{{ $paragraph }}</p>
                 @endforeach
-            </dl>
+            </div>
         </section>
 
         <section class="career-section" aria-labelledby="career-title" data-reveal>
@@ -59,38 +52,31 @@
             </ol>
         </section>
 
-        <section class="principles-section" aria-labelledby="principles-title" data-reveal>
-            <header>
-                <p class="section-label">03</p>
-                <h2 id="principles-title">{{ $content['about_page']['principles_heading'] }}</h2>
-            </header>
-
-            <ol class="principles-list">
-                @foreach ($content['about_page']['principles'] as $principle)
-                    <li data-pointer-surface>
-                        <span>0{{ $loop->iteration }}</span>
-                        <h3>{{ $principle['title'] }}</h3>
-                        <p>{{ $principle['body'] }}</p>
-                    </li>
-                @endforeach
-            </ol>
-        </section>
-
         <section id="stack" class="stack-section" aria-labelledby="stack-title" data-reveal>
             <header>
-                <p class="section-label">04</p>
-                <h2 id="stack-title">{{ $content['about_page']['technology_heading'] }}</h2>
+                <p class="section-label">03</p>
+                <div>
+                    <h2 id="stack-title">{{ $content['about_page']['technology_heading'] }}</h2>
+                    <p>{{ $content['about_page']['technology_intro'] }}</p>
+                </div>
             </header>
 
-            <ol>
+            <ul class="technology-grid">
                 @foreach ($content['about_page']['technology_list'] as $technology)
-                    <li data-pointer-surface>
-                        <span>0{{ $loop->iteration }}</span>
-                        <strong>{{ $technology }}</strong>
-                        <x-nav-icon name="arrow-right" />
+                    <li style="--technology-color: {{ $technology['color'] }}">
+                        <span
+                            class="technology-grid__mark"
+                            data-technology-icon="{{ $technology['icon'] }}"
+                            aria-hidden="true"
+                        >
+                            <span>{{ $technology['fallback'] }}</span>
+                        </span>
+                        <span class="technology-grid__index">0{{ $loop->iteration }}</span>
+                        <strong>{{ $technology['name'] }}</strong>
+                        <small>{{ $technology['detail'] }}</small>
                     </li>
                 @endforeach
-            </ol>
+            </ul>
         </section>
 
         <a

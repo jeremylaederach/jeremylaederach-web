@@ -67,10 +67,7 @@
                     data-sound-tone="brand"
                 >
                     <x-brand-mark class="brand-lockup__mark" size="96" />
-                    <span>
-                        <strong>Jeremy Läderach</strong>
-                        <small>{{ $content['ui']['role'] }}</small>
-                    </span>
+                    <strong>Jeremy Läderach</strong>
                 </a>
 
                 <div class="site-header__controls">

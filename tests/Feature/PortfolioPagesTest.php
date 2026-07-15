@@ -65,13 +65,19 @@ class PortfolioPagesTest extends TestCase
 
     public function test_about_and_projects_pages_render_per_locale(): void
     {
-        $this->get('/en/about')
+        $about = $this->get('/en/about');
+
+        $about
             ->assertOk()
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page about-page"', false)
             ->assertSee('class="about-story"', false)
             ->assertSee('class="career-list"', false)
-            ->assertSee('class="principles-list"', false)
+            ->assertSee('class="technology-grid"', false)
+            ->assertSee('Software with purpose, built from real requirements.')
+            ->assertDontSee('class="about-facts"', false)
+            ->assertDontSee('class="principles-list"', false)
+            ->assertDontSee('How I work')
             ->assertSee('Tools I work with')
             ->assertSee('Application Developer EFZ')
             ->assertSee('Business Informatics BSc')
@@ -80,6 +86,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('PostgreSQL')
             ->assertDontSee('page-stage', false)
             ->assertDontSee('data-project-stage', false);
+
+        $this->assertSame(5, substr_count($about->getContent(), 'data-technology-icon='));
 
         $projects = $this->get('/de/projects');
 

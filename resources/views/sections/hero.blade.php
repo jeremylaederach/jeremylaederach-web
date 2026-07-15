@@ -43,7 +43,7 @@
                         @endforeach
                     @elseif ($route['route'] === 'about')
                         @foreach (array_slice($content['about_page']['technology_list'], 0, 3) as $technology)
-                            <span>{{ $technology }}</span>
+                            <span>{{ $technology['name'] }}</span>
                         @endforeach
                     @else
                         <span>{{ config('portfolio.socials.email.display') }}</span>

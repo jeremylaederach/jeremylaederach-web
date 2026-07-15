@@ -41,7 +41,7 @@
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        min-width: 190px;
+        min-width: 170px;
     }
 
     .brand-lockup__mark {
@@ -50,13 +50,7 @@
         object-fit: contain;
     }
 
-    .brand-lockup span {
-        display: grid;
-        gap: 4px;
-    }
-
-    .brand-lockup strong,
-    .brand-lockup small {
+    .brand-lockup strong {
         display: block;
         line-height: 1;
         letter-spacing: 0;
@@ -65,12 +59,6 @@
     .brand-lockup strong {
         font-size: 11px;
         font-weight: 600;
-    }
-
-    .brand-lockup small {
-        color: var(--quiet);
-        font-size: 8px;
-        text-transform: uppercase;
     }
 
     .site-header__controls,

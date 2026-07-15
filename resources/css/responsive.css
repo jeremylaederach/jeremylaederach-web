@@ -62,7 +62,6 @@
         height: 28px;
     }
 
-    .brand-lockup small,
     .site-header__nav {
         display: none;
     }
@@ -142,18 +141,16 @@
         gap: 44px;
     }
 
-    .about-story__lead p {
-        font-size: 34px;
+    .about-story__lead h2 {
+        font-size: 42px;
     }
 
     .career-section > header,
-    .principles-section > header,
     .stack-section > header {
         gap: 44px;
     }
 
     .career-section h2,
-    .principles-section h2,
     .stack-section h2 {
         font-size: 52px;
     }
@@ -167,18 +164,8 @@
         font-size: 23px;
     }
 
-    .principles-list li {
-        min-height: 280px;
-        padding-right: 24px;
-    }
-
-    .principles-list li + li {
-        padding-left: 24px;
-    }
-
-    .principles-list h3 {
-        margin-top: 64px;
-        font-size: 23px;
+    .technology-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .contact-workspace {
@@ -445,41 +432,34 @@
 
     .about-story .section-label,
     .about-story__lead,
-    .about-story__body,
-    .about-facts {
+    .about-story__body {
         grid-column: 1;
     }
 
-    .about-story__lead p {
-        max-width: 20ch;
-        font-size: 31px;
+    .about-story__lead h2 {
+        max-width: 14ch;
+        font-size: 40px;
     }
 
-    .about-facts {
-        margin-top: 24px;
-        grid-template-columns: 1fr;
-    }
-
-    .about-facts div,
-    .about-facts div + div {
-        min-height: 92px;
-        padding: 18px 0;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .career-section > header,
-    .principles-section > header,
-    .stack-section > header {
-        grid-template-columns: 1fr;
-        padding: 70px 0 40px;
+    .about-story__body {
         gap: 18px;
     }
 
+    .about-story__body p:first-child {
+        font-size: 16px;
+    }
+
+    .career-section > header,
+    .stack-section > header {
+        grid-template-columns: 42px minmax(0, 1fr);
+        padding: 70px 0 40px;
+        gap: 16px;
+        align-items: baseline;
+    }
+
     .career-section h2,
-    .principles-section h2,
     .stack-section h2 {
-        font-size: 44px;
+        font-size: 42px;
     }
 
     .career-list li,
@@ -512,33 +492,51 @@
         font-size: 14px;
     }
 
-    .principles-list {
-        padding: 0 20px 72px;
-        grid-template-columns: 1fr;
-    }
-
-    .principles-list li,
-    .principles-list li + li {
-        min-height: auto;
-        padding: 24px 0 38px;
-        border-right: 0;
-    }
-
-    .principles-list h3 {
-        margin: 42px 0 14px;
-    }
-
     .stack-section {
         padding-bottom: 76px;
     }
 
-    .stack-section li {
-        min-height: 72px;
-        grid-template-columns: 54px 1fr 20px;
+    .stack-section > header > div > p {
+        margin-top: 14px;
     }
 
-    .stack-section li strong {
+    .technology-grid {
+        padding: 0 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .technology-grid li {
+        min-height: 220px;
+        padding: 22px;
+    }
+
+    .technology-grid li:last-child {
+        min-height: 180px;
+        grid-column: 1 / -1;
+    }
+
+    .technology-grid__mark {
+        width: 50px;
+        height: 50px;
+    }
+
+    .technology-grid__mark svg {
+        width: 25px;
+        height: 25px;
+    }
+
+    .technology-grid__index {
+        top: 22px;
+        right: 22px;
+    }
+
+    .technology-grid strong {
+        margin-top: 52px;
         font-size: 18px;
+    }
+
+    .technology-grid small {
+        font-size: 12px;
     }
 
     .page-cta {
