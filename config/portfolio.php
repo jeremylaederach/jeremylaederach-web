@@ -239,7 +239,7 @@ return [
                     'Als Nächstes plane ich ein Studium in Wirtschaftsinformatik, um technische Entscheidungen noch stärker mit strategischem Mehrwert für Unternehmen zu verbinden.',
                 ],
                 'technology_heading' => 'Technologien, mit denen ich arbeite',
-                'technology_label' => 'Werkzeuge',
+                'technology_label' => 'Tools',
                 'technology_intro' => 'Eine fokussierte Auswahl für Backend-Systeme, strukturierte Oberflächen, Daten und zuverlässige Auslieferung.',
                 'technology_list' => [
                     ['name' => '.NET / C#', 'detail' => 'ASP.NET Core · REST APIs', 'icon' => 'dotnet', 'fallback' => '.N', 'color' => '#8b5cf6'],

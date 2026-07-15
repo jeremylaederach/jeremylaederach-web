@@ -100,6 +100,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/de/about')
             ->assertOk()
             ->assertSee('Erfahrung')
+            ->assertSee('Tools')
             ->assertSee('Technologien, mit denen ich arbeite')
             ->assertDontSee('Stationen');
 
