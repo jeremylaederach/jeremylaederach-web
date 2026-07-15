@@ -41,9 +41,27 @@
             </dl>
         </section>
 
-        <section class="principles-section" aria-labelledby="principles-title" data-reveal>
+        <section class="career-section" aria-labelledby="career-title" data-reveal>
             <header>
                 <p class="section-label">02</p>
+                <h2 id="career-title">{{ $content['about_page']['career_heading'] }}</h2>
+            </header>
+
+            <ol class="career-list">
+                @foreach ($content['about_page']['career'] as $step)
+                    <li data-pointer-surface>
+                        <span>0{{ $loop->iteration }}</span>
+                        <time>{{ $step['period'] }}</time>
+                        <h3>{{ $step['title'] }}</h3>
+                        <p>{{ $step['body'] }}</p>
+                    </li>
+                @endforeach
+            </ol>
+        </section>
+
+        <section class="principles-section" aria-labelledby="principles-title" data-reveal>
+            <header>
+                <p class="section-label">03</p>
                 <h2 id="principles-title">{{ $content['about_page']['principles_heading'] }}</h2>
             </header>
 
@@ -60,7 +78,7 @@
 
         <section id="stack" class="stack-section" aria-labelledby="stack-title" data-reveal>
             <header>
-                <p class="section-label">03</p>
+                <p class="section-label">04</p>
                 <h2 id="stack-title">{{ $content['about_page']['technology_heading'] }}</h2>
             </header>
 

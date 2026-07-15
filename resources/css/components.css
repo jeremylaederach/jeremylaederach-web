@@ -52,16 +52,16 @@
     .contact-links {
         display: flex;
         flex-wrap: wrap;
-        gap: 24px;
-        padding-top: 28px;
-        margin-top: 34px;
+        gap: 30px;
+        padding-top: 32px;
+        margin-top: 40px;
         border-top: 1px solid var(--line);
     }
 
     .contact-links a {
         display: grid;
         gap: 7px;
-        min-width: 110px;
+        min-width: 132px;
         color: var(--ink-muted);
         transition: color 220ms ease, transform 360ms var(--ease-out);
     }
@@ -74,13 +74,13 @@
 
     .contact-links a span {
         color: var(--route-accent);
-        font-size: 9px;
+        font-size: 10px;
         text-transform: uppercase;
     }
 
     .contact-links a strong {
         overflow-wrap: anywhere;
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 450;
     }
 

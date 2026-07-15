@@ -210,61 +210,41 @@
 
         <footer class="site-footer" data-page-footer>
             <div class="site-footer__inner">
-                <div class="site-footer__lead">
-                    <div class="site-footer__identity">
-                        <x-brand-mark class="site-footer__mark" size="48" />
-                        <span>
-                            <strong>Jeremy Läderach</strong>
-                            <small>{{ $content['ui']['role'] }}</small>
-                        </span>
-                    </div>
-
-                    <p class="site-footer__statement">{{ $content['ui']['footer_statement'] }}</p>
-
-                    <a
-                        class="site-footer__contact"
-                        href="{{ config('portfolio.socials.email.url') }}"
-                        data-interface-sound
-                        data-sound-tone="action"
-                    >
-                        <span>{{ $content['ui']['footer_contact'] }}</span>
-                        <strong>{{ config('portfolio.socials.email.display') }}</strong>
-                        <x-nav-icon name="arrow-up-right" />
-                    </a>
+                <div class="site-footer__identity">
+                    <x-brand-mark class="site-footer__mark" size="40" />
+                    <span>
+                        <strong>Jeremy Läderach</strong>
+                        <small>© {{ date('Y') }} · {{ $content['ui']['role'] }}</small>
+                    </span>
                 </div>
 
-                <div class="site-footer__utility">
-                    <p>© {{ date('Y') }} Jeremy Läderach</p>
-
-                    <nav aria-label="{{ $content['ui']['footer_navigation'] }}">
-                        @foreach (array_slice($content['nav'], 1) as $item)
-                            <a
-                                href="{{ route($item['route'], ['locale' => $locale]) }}"
-                                data-route="{{ $item['route'] }}"
-                                data-route-transition
-                                data-transition-label="{{ $item['label'] }}"
-                                data-interface-sound
-                                data-sound-tone="navigation"
-                            >
-                                {{ $item['label'] }}
-                            </a>
-                        @endforeach
-                    </nav>
-
-                    <div class="footer-links">
+                <nav class="site-footer__nav" aria-label="{{ $content['ui']['footer_navigation'] }}">
+                    @foreach (array_slice($content['nav'], 1) as $item)
                         <a
-                            href="{{ config('portfolio.socials.github.url') }}"
-                            rel="noopener noreferrer"
+                            href="{{ route($item['route'], ['locale' => $locale]) }}"
+                            data-route="{{ $item['route'] }}"
+                            data-route-transition
+                            data-transition-label="{{ $item['label'] }}"
                             data-interface-sound
-                            data-sound-tone="action"
-                        >GitHub</a>
-                        <a
-                            href="{{ route('imprint', ['locale' => $locale]) }}"
-                            data-interface-sound
-                            data-sound-tone="control"
-                        >{{ $content['imprint']['title'] }}</a>
-                    </div>
+                            data-sound-tone="navigation"
+                        >
+                            {{ $item['label'] }}
+                        </a>
+                    @endforeach
+                </nav>
 
+                <div class="site-footer__meta">
+                    <a
+                        href="{{ config('portfolio.socials.github.url') }}"
+                        rel="noopener noreferrer"
+                        data-interface-sound
+                        data-sound-tone="action"
+                    >GitHub</a>
+                    <a
+                        href="{{ route('imprint', ['locale' => $locale]) }}"
+                        data-interface-sound
+                        data-sound-tone="control"
+                    >{{ $content['imprint']['title'] }}</a>
                     <a
                         class="site-footer__top"
                         href="#main"
@@ -274,10 +254,6 @@
                         <span>{{ $content['ui']['back_to_top'] }}</span>
                         <x-nav-icon name="arrow-down" />
                     </a>
-                </div>
-
-                <div class="site-footer__note">
-                    <p>{{ $content['ui']['footer_note'] }}</p>
                 </div>
             </div>
         </footer>

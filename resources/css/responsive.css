@@ -34,18 +34,9 @@
         font-size: 64px;
     }
 
-    .site-footer__lead {
-        grid-template-columns: minmax(150px, 0.52fr) minmax(280px, 1fr) minmax(270px, 0.8fr);
-        gap: 40px;
-    }
-
-    .site-footer__statement {
-        font-size: 38px;
-    }
-
-    .site-footer__utility {
-        grid-template-columns: minmax(150px, 0.52fr) minmax(260px, 1fr) minmax(150px, 0.55fr) auto;
-        gap: 40px;
+    .site-footer__inner {
+        grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1fr);
+        gap: 32px;
     }
 
     .not-found-page__code {
@@ -155,14 +146,25 @@
         font-size: 34px;
     }
 
+    .career-section > header,
     .principles-section > header,
     .stack-section > header {
         gap: 44px;
     }
 
+    .career-section h2,
     .principles-section h2,
     .stack-section h2 {
         font-size: 52px;
+    }
+
+    .career-list li {
+        grid-template-columns: 48px minmax(140px, 0.48fr) minmax(210px, 0.72fr) 1fr;
+        gap: 24px;
+    }
+
+    .career-list h3 {
+        font-size: 23px;
     }
 
     .principles-list li {
@@ -180,36 +182,35 @@
     }
 
     .contact-workspace {
-        gap: 8%;
+        grid-template-columns: minmax(300px, 0.82fr) minmax(390px, 1fr);
+        gap: 7%;
     }
 
     .contact-direct > a span {
-        font-size: 24px;
+        font-size: 30px;
     }
 
-    .site-footer__lead {
+    .site-footer__inner {
         min-height: auto;
-        padding: 60px 0 54px;
-        grid-template-columns: minmax(0, 0.72fr) minmax(320px, 1fr);
-        gap: 44px;
+        padding: 34px 0;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px 44px;
     }
 
     .site-footer__identity {
+        grid-column: 1;
+    }
+
+    .site-footer__nav {
+        grid-column: 2;
+        justify-content: flex-end;
+    }
+
+    .site-footer__meta {
         grid-column: 1 / -1;
-    }
-
-    .site-footer__statement {
-        font-size: 36px;
-    }
-
-    .site-footer__utility {
-        padding: 24px 0;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px 44px;
-    }
-
-    .site-footer__top {
-        justify-self: end;
+        justify-content: flex-end;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
     }
 
     .not-found-page__code {
@@ -467,6 +468,7 @@
         border-bottom: 1px solid var(--line);
     }
 
+    .career-section > header,
     .principles-section > header,
     .stack-section > header {
         grid-template-columns: 1fr;
@@ -474,9 +476,40 @@
         gap: 18px;
     }
 
+    .career-section h2,
     .principles-section h2,
     .stack-section h2 {
         font-size: 44px;
+    }
+
+    .career-list li,
+    .career-list li:hover {
+        min-height: auto;
+        padding: 26px 0 30px;
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 8px 16px;
+    }
+
+    .career-list li > span {
+        grid-row: 1 / 4;
+        grid-column: 1;
+        padding-top: 2px;
+    }
+
+    .career-list time,
+    .career-list h3,
+    .career-list p {
+        grid-column: 2;
+    }
+
+    .career-list h3 {
+        margin-top: 6px;
+        font-size: 22px;
+    }
+
+    .career-list p {
+        margin-top: 8px;
+        font-size: 14px;
     }
 
     .principles-list {
@@ -537,11 +570,29 @@
     }
 
     .contact-direct > a span {
-        font-size: 24px;
+        font-size: 25px;
+    }
+
+    .contact-direct > a {
+        gap: 8px;
+    }
+
+    .contact-direct > a .nav-icon {
+        width: 22px;
+        height: 22px;
     }
 
     .contact-form h2 {
-        font-size: 36px;
+        font-size: 42px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        font-size: 20px;
+    }
+
+    .contact-form button {
+        width: 100%;
     }
 
     .contact-context {
@@ -549,48 +600,25 @@
         gap: 16px;
     }
 
-    .site-footer__lead {
-        padding: 54px 0 46px;
+    .site-footer__inner {
+        padding: 38px 0;
         grid-template-columns: 1fr;
-        gap: 42px;
+        gap: 26px;
     }
 
     .site-footer__identity {
         grid-column: 1;
     }
 
-    .site-footer__statement {
-        max-width: 14ch;
-        font-size: 34px;
+    .site-footer__nav {
+        grid-column: 1;
+        justify-content: flex-start;
     }
 
-    .site-footer__utility {
-        padding: 28px 0;
-        grid-template-columns: 1fr auto;
-        gap: 24px 20px;
-        align-items: start;
-    }
-
-    .site-footer__utility nav {
-        grid-column: 1 / -1;
-        grid-row: 1;
-        gap: 18px;
-    }
-
-    .site-footer__utility > p {
-        grid-row: 2;
-    }
-
-    .site-footer__top {
-        grid-row: 2;
-        grid-column: 2;
-    }
-
-    .footer-links {
-        grid-row: 3;
-        grid-column: 1 / -1;
-        flex-wrap: wrap;
-        gap: 14px 22px;
+    .site-footer__meta {
+        grid-column: 1;
+        justify-content: flex-start;
+        padding-top: 24px;
     }
 
     .not-found-page {

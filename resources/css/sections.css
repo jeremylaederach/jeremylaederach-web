@@ -388,11 +388,14 @@
         font-size: 26px;
     }
 
+    .career-section,
     .principles-section,
     .stack-section {
         border-top: 1px solid var(--line);
     }
 
+    .career-section > header,
+    .career-list,
     .principles-section > header,
     .stack-section > header,
     .stack-section > ol {
@@ -401,6 +404,7 @@
         margin-left: auto;
     }
 
+    .career-section > header,
     .principles-section > header,
     .stack-section > header {
         display: grid;
@@ -410,12 +414,67 @@
         align-items: end;
     }
 
+    .career-section h2,
     .principles-section h2,
     .stack-section h2 {
         margin: 0;
         font-size: 68px;
         font-weight: 420;
         line-height: 0.96;
+    }
+
+    .career-list {
+        padding: 0;
+        list-style: none;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .career-list li {
+        --pointer-x: 50%;
+        --pointer-y: 50%;
+        display: grid;
+        min-height: 156px;
+        grid-template-columns: 64px minmax(170px, 0.52fr) minmax(240px, 0.78fr) minmax(300px, 1fr);
+        gap: 32px;
+        align-items: center;
+        border-top: 1px solid var(--line);
+        background: radial-gradient(420px circle at var(--pointer-x) var(--pointer-y), rgba(var(--route-accent-rgb), 0), transparent 72%);
+        transition: background 420ms ease, padding 520ms var(--ease-out);
+    }
+
+    .career-list li:hover {
+        padding: 0 18px;
+        background: radial-gradient(420px circle at var(--pointer-x) var(--pointer-y), rgba(var(--route-accent-rgb), 0.1), transparent 72%);
+    }
+
+    .career-list li > span,
+    .career-list time {
+        color: var(--quiet);
+        font-size: 11px;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .career-list li > span {
+        color: var(--route-accent);
+    }
+
+    .career-list h3,
+    .career-list p {
+        margin: 0;
+    }
+
+    .career-list h3 {
+        font-size: 27px;
+        font-weight: 440;
+        line-height: 1.1;
+    }
+
+    .career-list p {
+        max-width: 42ch;
+        color: var(--ink-muted);
+        font-size: 15px;
+        line-height: 1.65;
     }
 
     .principles-list {
@@ -520,8 +579,8 @@
         min-height: 82svh;
         margin: 0 auto;
         padding: 112px 0;
-        grid-template-columns: minmax(300px, 0.85fr) minmax(420px, 1fr);
-        gap: 12%;
+        grid-template-columns: minmax(360px, 0.88fr) minmax(480px, 1fr);
+        gap: 10%;
         align-items: start;
         border-top: 1px solid var(--line);
     }
@@ -544,7 +603,7 @@
 
     .contact-direct > a span {
         overflow-wrap: anywhere;
-        font-size: 31px;
+        font-size: 40px;
         font-weight: 430;
         line-height: 1.1;
     }
@@ -567,7 +626,7 @@
         max-width: 36ch;
         margin: 0;
         color: var(--ink-muted);
-        font-size: 14px;
+        font-size: 16px;
         line-height: 1.65;
     }
 
@@ -577,22 +636,22 @@
     }
 
     .contact-form h2 {
-        margin: 0 0 36px;
-        font-size: 42px;
+        margin: 0 0 44px;
+        font-size: 56px;
         font-weight: 420;
         line-height: 1;
     }
 
     .contact-form label {
         display: grid;
-        gap: 12px;
-        padding: 20px 0;
+        gap: 14px;
+        padding: 25px 0;
         border-top: 1px solid var(--line);
     }
 
     .contact-form label > span {
         color: var(--route-accent);
-        font-size: 9px;
+        font-size: 10px;
         text-transform: uppercase;
     }
 
@@ -605,16 +664,16 @@
         outline: 0;
         background: transparent;
         color: var(--ink);
-        font-size: 20px;
+        font-size: 24px;
         line-height: 1.5;
     }
 
     .contact-form input {
-        height: 38px;
+        height: 42px;
     }
 
     .contact-form textarea {
-        min-height: 142px;
+        min-height: 180px;
         resize: vertical;
     }
 
@@ -627,16 +686,16 @@
         align-items: center;
         justify-content: space-between;
         gap: 34px;
-        width: 210px;
-        min-height: 54px;
-        padding: 0 18px;
-        margin-top: 30px;
+        width: 240px;
+        min-height: 62px;
+        padding: 0 20px;
+        margin-top: 34px;
         border: 1px solid rgba(var(--route-accent-rgb), 0.6);
         border-radius: 4px;
         background: transparent;
         color: var(--ink);
         cursor: pointer;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 650;
         text-transform: uppercase;
         transition: background-color 280ms ease, color 280ms ease, transform 420ms var(--ease-out);
