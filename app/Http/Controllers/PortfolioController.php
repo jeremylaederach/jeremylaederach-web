@@ -22,6 +22,20 @@ class PortfolioController extends Controller
         return $this->render('pages.projects', $locale);
     }
 
+    public function quantified(string $locale): View
+    {
+        $content = $this->contentFor($locale);
+
+        return view('pages.quantified', [
+            'locale' => $locale,
+            'content' => $content,
+            'project' => $content['quantified_page'],
+            'scene' => 'projects',
+            'title' => 'Quantified · Jeremy Läderach',
+            'description' => $content['quantified_page']['meta_description'],
+        ]);
+    }
+
     public function contact(string $locale): View
     {
         return $this->render('pages.contact', $locale);

@@ -48,7 +48,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('data-portfolio-chat', false)
             ->assertSee('Quantified')
             ->assertSee('Jay-Jay Web')
-            ->assertSee('Scherer Garten')
+            ->assertSee('SessionDeck')
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
@@ -110,15 +110,47 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('class="portfolio-page projects-page"', false)
             ->assertSee('class="project-cases"', false)
-            ->assertSee('assets/work/jay-jay-home.jpg', false)
-            ->assertSee('assets/work/scherer-garten.jpg', false)
+            ->assertSee('assets/work/jay-jay-home.png', false)
+            ->assertSee('assets/work/sessiondeck-main.png', false)
             ->assertSee('Projekte')
             ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
             ->assertSee('Jay-Jay Web')
-            ->assertSee('Scherer Garten');
+            ->assertSee('Laravel 13')
+            ->assertSee('SessionDeck')
+            ->assertSee('WinUI 3')
+            ->assertSee('href="http://localhost/de/quantified"', false);
 
         $this->assertSame(3, substr_count($projects->getContent(), 'class="project-case project-case--'));
+    }
+
+    public function test_quantified_case_study_renders_in_both_locales(): void
+    {
+        $this->get('/quantified')
+            ->assertRedirect('/en/quantified');
+
+        $english = $this->get('/en/quantified');
+
+        $english
+            ->assertOk()
+            ->assertSee('<title>Quantified', false)
+            ->assertSee('data-page="projects"', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('class="portfolio-page case-study-page quantified-page"', false)
+            ->assertSee('Calendar activity, turned into personal context.')
+            ->assertSee('Google Calendar')
+            ->assertSee('ASP.NET Core')
+            ->assertSee('PostgreSQL')
+            ->assertSee('Angular')
+            ->assertSee('Start a conversation')
+            ->assertSee('href="http://localhost/de/quantified"', false);
+
+        $this->get('/de/quantified')
+            ->assertOk()
+            ->assertSee('Kalenderaktivität wird zu persönlichem Kontext.')
+            ->assertSee('Aktiv in Entwicklung')
+            ->assertSee('Gespräch beginnen')
+            ->assertSee('href="http://localhost/en/quantified"', false);
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void

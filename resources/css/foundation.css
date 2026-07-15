@@ -97,6 +97,10 @@
         outline-offset: 5px;
     }
 
+    [data-page-main] h1[tabindex='-1']:focus {
+        outline: none;
+    }
+
     .sr-only {
         position: absolute;
         width: 1px;

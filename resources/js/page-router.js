@@ -1,4 +1,4 @@
-import { pageRoutes } from './transition-controller.js';
+import { pageRoutes, sceneFromRoute } from './transition-controller.js';
 
 const pageCache = new Map();
 const wait = (duration) => new Promise((resolve) => window.setTimeout(resolve, duration));
@@ -19,7 +19,7 @@ const isEligibleLink = (event, link) => {
 const routeFromUrl = (url) => {
     const route = url.pathname.split('/').filter(Boolean).at(-1);
 
-    return pageRoutes.has(route) ? route : 'home';
+    return sceneFromRoute(route);
 };
 
 const loadPage = async (url) => {
@@ -201,8 +201,10 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
             return;
         }
 
+        const transitionOrigin = link.querySelector('[data-transition-origin]');
+
         navigate(destination, {
-            origin: link,
+            origin: transitionOrigin instanceof Element ? transitionOrigin : link,
             routeHint: link.dataset.route,
             transitionLabel: link.dataset.transitionLabel ?? link.textContent.trim(),
         });

@@ -1,6 +1,14 @@
 export const pageRoutes = new Set(['home', 'projects', 'about', 'contact', 'imprint']);
 
-const normalizedRoute = (route) => pageRoutes.has(route) ? route : 'home';
+const routeScenes = new Map([
+    ['quantified', 'projects'],
+]);
+
+export const sceneFromRoute = (route) => pageRoutes.has(route)
+    ? route
+    : routeScenes.get(route) ?? 'home';
+
+const normalizedRoute = (route) => sceneFromRoute(route);
 
 export const createPageTransitionController = ({ reducedMotion }) => {
     const overlay = document.querySelector('[data-page-transition]');

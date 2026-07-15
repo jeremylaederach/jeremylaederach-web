@@ -1,7 +1,8 @@
 @php
     $pageTitle = $title ?? $content['meta']['title'];
     $description = $description ?? $content['meta']['description'];
-    $currentRoute = $routeName ?? request()->route()?->getName() ?? 'not-found';
+    $currentRoute = request()->route()?->getName() ?? 'not-found';
+    $currentScene = $scene ?? $routeName ?? $currentRoute;
     $currentParams = request()->route()?->parameters() ?? [];
     $languageRoute = \Illuminate\Support\Facades\Route::has($currentRoute) ? $currentRoute : 'home';
     $languageParams = $languageRoute === $currentRoute ? $currentParams : [];
@@ -23,7 +24,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="route-{{ $currentRoute }}" data-page="{{ $currentRoute }}">
+    <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
         <div class="site-pointer-layer" data-site-pointer-layer aria-hidden="true">
@@ -76,7 +77,7 @@
                             @continue($item['route'] === 'home')
 
                             @php
-                                $isActive = $currentRoute === $item['route'];
+                                $isActive = $currentScene === $item['route'];
                             @endphp
 
                             <a
@@ -150,7 +151,7 @@
                                 @foreach ($content['nav'] as $item)
                                     @php
                                         $href = route($item['route'], ['locale' => $locale]);
-                                        $isActive = $currentRoute === $item['route'];
+                                        $isActive = $currentScene === $item['route'];
                                     @endphp
                                     <a
                                         @class(['is-active' => $isActive])
