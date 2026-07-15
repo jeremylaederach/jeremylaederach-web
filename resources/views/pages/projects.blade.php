@@ -2,7 +2,7 @@
 
 @section('content')
     <article class="portfolio-page projects-page">
-        <header class="page-hero page-hero--projects" data-reveal>
+        <header class="page-hero page-hero--projects" data-pointer-surface data-reveal>
             <div class="page-hero__index">
                 <span>01</span>
                 <span>{{ $content['projects_page']['eyebrow'] }}</span>
@@ -87,5 +87,21 @@
                 </article>
             @endforeach
         </section>
+
+        <a
+            class="page-cta page-cta--contact"
+            href="{{ route('contact', ['locale' => $locale]) }}"
+            data-route="contact"
+            data-route-transition
+            data-transition-label="{{ $content['contact_page']['heading'] }}"
+            data-interface-sound
+            data-sound-tone="panel"
+            data-pointer-surface
+            data-reveal
+        >
+            <span>{{ $content['contact_page']['eyebrow'] }}</span>
+            <strong>{{ $content['contact_page']['heading'] }}</strong>
+            <x-nav-icon name="arrow-right" />
+        </a>
     </article>
 @endsection

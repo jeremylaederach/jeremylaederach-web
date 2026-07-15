@@ -2,7 +2,7 @@
 
 @section('content')
     <article class="portfolio-page contact-page">
-        <header class="page-hero page-hero--contact" data-reveal>
+        <header class="page-hero page-hero--contact" data-pointer-surface data-reveal>
             <div class="page-hero__index">
                 <span>03</span>
                 <span>{{ $content['contact_page']['eyebrow'] }}</span>
@@ -28,6 +28,11 @@
                     <x-nav-icon name="arrow-up-right" />
                 </a>
                 <x-social-links />
+
+                <div class="contact-context">
+                    <p class="section-label">{{ $content['contact_page']['context_label'] }}</p>
+                    <p>{{ $content['contact_page']['context'] }}</p>
+                </div>
             </div>
 
             <form

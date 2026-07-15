@@ -24,16 +24,34 @@
     }
 
     .page-hero {
+        --pointer-x: 72%;
+        --pointer-y: 42%;
         position: relative;
+        isolation: isolate;
         display: grid;
         width: var(--shell);
-        min-height: 90svh;
+        min-height: 88svh;
         margin: 0 auto;
         padding: 158px 0 70px;
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-rows: auto 1fr auto;
         gap: 32px;
         align-items: center;
+    }
+
+    .page-hero::before {
+        position: absolute;
+        z-index: -1;
+        inset: 72px -12vw 0;
+        background: radial-gradient(
+            620px circle at var(--pointer-x) var(--pointer-y),
+            rgba(var(--route-accent-rgb), 0.075),
+            transparent 68%
+        );
+        content: '';
+        opacity: 0.72;
+        pointer-events: none;
+        transition: opacity 420ms ease;
     }
 
     .page-hero__index {
@@ -43,8 +61,17 @@
         gap: 18px;
         align-items: center;
         color: var(--quiet);
-        font-size: 10px;
+        font-size: 12px;
+        font-weight: 560;
         text-transform: uppercase;
+    }
+
+    .page-hero__index::after {
+        width: 64px;
+        height: 1px;
+        margin-left: 8px;
+        background: linear-gradient(90deg, rgba(var(--route-accent-rgb), 0.72), transparent);
+        content: '';
     }
 
     .page-hero__index span:first-child {
@@ -72,7 +99,7 @@
         grid-column: 9 / 13;
         align-self: end;
         color: var(--ink-muted);
-        font-size: 18px;
+        font-size: 19px;
         line-height: 1.55;
     }
 
@@ -314,7 +341,7 @@
 
     .about-story__lead p {
         max-width: 24ch;
-        font-size: 38px;
+        font-size: 42px;
         font-weight: 420;
         line-height: 1.08;
     }
@@ -352,13 +379,13 @@
 
     .about-facts dt {
         color: var(--quiet);
-        font-size: 10px;
+        font-size: 11px;
         text-transform: uppercase;
     }
 
     .about-facts dd {
         margin: 0;
-        font-size: 24px;
+        font-size: 26px;
     }
 
     .principles-section,
@@ -386,7 +413,7 @@
     .principles-section h2,
     .stack-section h2 {
         margin: 0;
-        font-size: 62px;
+        font-size: 68px;
         font-weight: 420;
         line-height: 0.96;
     }
@@ -425,12 +452,12 @@
 
     .principles-list li > span {
         color: var(--route-accent);
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .principles-list h3 {
         margin: 92px 0 18px;
-        font-size: 26px;
+        font-size: 29px;
         font-weight: 470;
     }
 
@@ -438,7 +465,7 @@
         max-width: 38ch;
         margin: 0;
         color: var(--ink-muted);
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.65;
     }
 
@@ -454,7 +481,7 @@
 
     .stack-section li {
         display: grid;
-        min-height: 84px;
+        min-height: 92px;
         grid-template-columns: 80px 1fr 24px;
         align-items: center;
         border-top: 1px solid var(--line);
@@ -468,11 +495,11 @@
 
     .stack-section li > span {
         color: var(--route-accent);
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .stack-section li strong {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 440;
     }
 
@@ -482,7 +509,7 @@
         color: var(--route-accent);
     }
 
-    .page-cta--about {
+    .page-cta--contact {
         --route-accent: var(--coral);
         --route-accent-rgb: 255, 142, 170;
     }
@@ -525,6 +552,23 @@
     .contact-direct > a .nav-icon {
         width: 26px;
         height: 26px;
+    }
+
+    .contact-context {
+        display: grid;
+        padding-top: 34px;
+        margin-top: 44px;
+        grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
+        gap: 28px;
+        border-top: 1px solid var(--line);
+    }
+
+    .contact-context > p:last-child {
+        max-width: 36ch;
+        margin: 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+        line-height: 1.65;
     }
 
     .contact-form {

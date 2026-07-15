@@ -2,7 +2,7 @@
 
 @section('content')
     <article class="portfolio-page about-page">
-        <header class="page-hero page-hero--about" data-reveal>
+        <header class="page-hero page-hero--about" data-pointer-surface data-reveal>
             <div class="page-hero__index">
                 <span>02</span>
                 <span>{{ $content['about_page']['eyebrow'] }}</span>
@@ -76,7 +76,7 @@
         </section>
 
         <a
-            class="page-cta page-cta--about"
+            class="page-cta page-cta--contact"
             href="{{ route('contact', ['locale' => $locale]) }}"
             data-route="contact"
             data-route-transition
