@@ -118,6 +118,24 @@ class PortfolioPagesTest extends TestCase
     public function test_unsupported_locale_returns_not_found(): void
     {
         $this->get('/fr')
-            ->assertNotFound();
+            ->assertNotFound()
+            ->assertSee('Page not found')
+            ->assertSee('href="http://localhost/en"', false);
+    }
+
+    public function test_not_found_page_uses_the_requested_supported_locale(): void
+    {
+        $this->get('/en/does-not-exist')
+            ->assertNotFound()
+            ->assertSee('class="not-found-page"', false)
+            ->assertSee('Page not found')
+            ->assertSee('Back to home')
+            ->assertSee('data-page="not-found"', false);
+
+        $this->get('/de/gibt-es-nicht')
+            ->assertNotFound()
+            ->assertSee('Seite nicht gefunden')
+            ->assertSee('Zurück zur Startseite')
+            ->assertSee('href="http://localhost/de"', false);
     }
 }

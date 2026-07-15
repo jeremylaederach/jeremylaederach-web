@@ -1,8 +1,10 @@
 @php
     $pageTitle = $title ?? $content['meta']['title'];
     $description = $description ?? $content['meta']['description'];
-    $currentRoute = request()->route()?->getName() ?? 'home';
+    $currentRoute = $routeName ?? request()->route()?->getName() ?? 'not-found';
     $currentParams = request()->route()?->parameters() ?? [];
+    $languageRoute = \Illuminate\Support\Facades\Route::has($currentRoute) ? $currentRoute : 'home';
+    $languageParams = $languageRoute === $currentRoute ? $currentParams : [];
 @endphp
 
 <!DOCTYPE html>
@@ -99,8 +101,8 @@
                         <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
                             @foreach (config('portfolio.locales') as $code => $localeMeta)
                                 @php
-                                    $targetParams = array_merge($currentParams, ['locale' => $code]);
-                                    $targetUrl = route($currentRoute, $targetParams);
+                                    $targetParams = array_merge($languageParams, ['locale' => $code]);
+                                    $targetUrl = route($languageRoute, $targetParams);
                                 @endphp
                                 <a
                                     @class(['is-active' => $code === $locale])
@@ -175,8 +177,8 @@
                             <nav class="language-switcher" aria-label="{{ $content['ui']['language'] }}">
                                 @foreach (config('portfolio.locales') as $code => $localeMeta)
                                     @php
-                                        $targetParams = array_merge($currentParams, ['locale' => $code]);
-                                        $targetUrl = route($currentRoute, $targetParams);
+                                        $targetParams = array_merge($languageParams, ['locale' => $code]);
+                                        $targetUrl = route($languageRoute, $targetParams);
                                     @endphp
                                     <a
                                         @class(['is-active' => $code === $locale])

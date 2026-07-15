@@ -47,6 +47,14 @@
         grid-template-columns: minmax(150px, 0.52fr) minmax(260px, 1fr) minmax(150px, 0.55fr) auto;
         gap: 40px;
     }
+
+    .not-found-page__code {
+        font-size: 184px;
+    }
+
+    .not-found-page__message h1 {
+        font-size: 52px;
+    }
 }
 
 @media (max-width: 960px) {
@@ -202,6 +210,15 @@
 
     .site-footer__top {
         justify-self: end;
+    }
+
+    .not-found-page__code {
+        grid-column: 1 / 7;
+        font-size: 148px;
+    }
+
+    .not-found-page__message {
+        grid-column: 7 / 13;
     }
 }
 
@@ -574,6 +591,46 @@
         grid-column: 1 / -1;
         flex-wrap: wrap;
         gap: 14px 22px;
+    }
+
+    .not-found-page {
+        min-height: 100svh;
+        padding: 120px 0 64px;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 34px;
+        align-content: center;
+    }
+
+    .not-found-page__index,
+    .not-found-page__code,
+    .not-found-page__message {
+        grid-column: 1;
+    }
+
+    .not-found-page__index {
+        grid-row: 1;
+    }
+
+    .not-found-page__code {
+        grid-row: 2;
+        font-size: 112px;
+    }
+
+    .not-found-page__message {
+        max-width: 100%;
+        grid-row: 3;
+        gap: 20px;
+        align-self: start;
+    }
+
+    .not-found-page__message h1 {
+        max-width: 10ch;
+        font-size: 46px;
+    }
+
+    .not-found-page__message > p {
+        font-size: 14px;
     }
 
     .imprint-page {

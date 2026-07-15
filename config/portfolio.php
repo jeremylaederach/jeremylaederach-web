@@ -148,6 +148,12 @@ return [
                     'submit' => 'Send message',
                 ],
             ],
+            'not_found' => [
+                'eyebrow' => 'Lost route',
+                'heading' => 'Page not found',
+                'intro' => 'The address does not lead anywhere, but the rest of the portfolio is right where it should be.',
+                'action' => 'Back to home',
+            ],
             'imprint' => [
                 'title' => 'Imprint',
                 'intro' => 'Legal and ownership details for this personal portfolio.',
@@ -273,6 +279,12 @@ return [
                     'message' => 'Nachricht',
                     'submit' => 'Nachricht senden',
                 ],
+            ],
+            'not_found' => [
+                'eyebrow' => 'Falscher Weg',
+                'heading' => 'Seite nicht gefunden',
+                'intro' => 'Diese Adresse führt nirgendwohin. Der Rest des Portfolios ist aber genau dort, wo er sein soll.',
+                'action' => 'Zurück zur Startseite',
             ],
             'imprint' => [
                 'title' => 'Impressum',
