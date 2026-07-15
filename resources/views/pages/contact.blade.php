@@ -14,7 +14,7 @@
 
             <p>{{ $content['contact_page']['intro'] }}</p>
 
-            <a class="scroll-cue" href="#contact-workspace" data-interface-sound>
+            <a class="scroll-cue" href="#contact-workspace" data-interface-sound data-sound-tone="action">
                 <span>{{ $content['contact_page']['direct_label'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>
@@ -23,7 +23,7 @@
         <section id="contact-workspace" class="contact-workspace" data-reveal>
             <div class="contact-direct">
                 <p class="section-label">01 / {{ $content['contact_page']['direct_label'] }}</p>
-                <a href="{{ config('portfolio.socials.email.url') }}" data-interface-sound>
+                <a href="{{ config('portfolio.socials.email.url') }}" data-interface-sound data-sound-tone="action">
                     <span>{{ config('portfolio.socials.email.display') }}</span>
                     <x-nav-icon name="arrow-up-right" />
                 </a>
@@ -53,7 +53,7 @@
                     <textarea name="message" rows="5" required></textarea>
                 </label>
 
-                <button type="submit" data-interface-sound>
+                <button type="submit" data-interface-sound data-sound-tone="action">
                     {{ $content['contact_page']['form']['submit'] }}
                     <x-nav-icon name="arrow-right" />
                 </button>

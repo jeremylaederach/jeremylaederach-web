@@ -19,6 +19,26 @@
         align-items: end;
     }
 
+    .kinetic-index__title {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .kinetic-index__number {
+        padding-top: 4px;
+        color: rgba(var(--accent-rgb), 0.9);
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+    }
+
+    .kinetic-index__identity {
+        min-width: 0;
+    }
+
     .kinetic-index__heading {
         margin: 0;
         color: var(--ink);
@@ -39,6 +59,15 @@
     .kinetic-index__intro {
         align-self: end;
         padding-bottom: 5px;
+    }
+
+    .kinetic-index__intro::before {
+        display: block;
+        width: 56px;
+        height: 1px;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0));
+        content: '';
     }
 
     .kinetic-index__eyebrow {

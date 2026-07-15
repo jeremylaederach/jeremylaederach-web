@@ -14,7 +14,7 @@
 
             <p>{{ $content['about_page']['intro'] }}</p>
 
-            <a class="scroll-cue" href="#story" data-interface-sound>
+            <a class="scroll-cue" href="#story" data-interface-sound data-sound-tone="action">
                 <span>{{ $content['about_page']['principles_heading'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>
@@ -82,6 +82,7 @@
             data-route-transition
             data-transition-label="{{ $content['contact_page']['heading'] }}"
             data-interface-sound
+            data-sound-tone="panel"
             data-pointer-surface
             data-reveal
         >

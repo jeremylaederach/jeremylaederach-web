@@ -1,4 +1,13 @@
 const storageKey = 'portfolio:interface-sound-muted';
+const masterLevel = 0.72;
+
+const hoverProfiles = {
+    action: { frequency: 560, endFrequency: 390, overtone: 930 },
+    brand: { frequency: 470, endFrequency: 330, overtone: 820 },
+    control: { frequency: 430, endFrequency: 310, overtone: 760 },
+    navigation: { frequency: 500, endFrequency: 350, overtone: 870 },
+    panel: { frequency: 590, endFrequency: 360, overtone: 980 },
+};
 
 const readMutedPreference = () => {
     try {
@@ -45,7 +54,7 @@ export const createSoundController = ({ finePointer }) => {
 
             context = new AudioContext();
             masterGain = context.createGain();
-            masterGain.gain.value = muted ? 0 : 1;
+            masterGain.gain.value = muted ? 0 : masterLevel;
             masterGain.connect(context.destination);
         }
 
@@ -78,15 +87,30 @@ export const createSoundController = ({ finePointer }) => {
         oscillator.stop(start + duration + 0.02);
     };
 
-    const hover = () => {
+    const hover = (event) => {
         const now = performance.now();
 
-        if (!finePointer || muted || !activated || now - lastHoverAt < 280) {
+        if (!finePointer || muted || !activated || now - lastHoverAt < 110) {
             return;
         }
 
+        const profile = hoverProfiles[event.detail?.tone] ?? hoverProfiles.control;
+
         lastHoverAt = now;
-        tone({ duration: 0.075, endFrequency: 235, frequency: 285, gain: 0.018 });
+        tone({
+            duration: 0.09,
+            endFrequency: profile.endFrequency,
+            frequency: profile.frequency,
+            gain: 0.022,
+        });
+        tone({
+            delay: 0.008,
+            duration: 0.065,
+            endFrequency: profile.overtone * 0.82,
+            frequency: profile.overtone,
+            gain: 0.0055,
+            type: 'triangle',
+        });
     };
 
     const select = () => {
@@ -114,7 +138,7 @@ export const createSoundController = ({ finePointer }) => {
 
         if (!muted) {
             await ensureContext();
-            masterGain?.gain.setTargetAtTime(1, context.currentTime, 0.015);
+            masterGain?.gain.setTargetAtTime(masterLevel, context.currentTime, 0.015);
             complete();
             return;
         }

@@ -4,7 +4,12 @@
 
 <div @class(['contact-links', 'contact-links--large' => $large])>
     @foreach (config('portfolio.socials') as $social)
-        <a href="{{ $social['url'] }}" @if (str_starts_with($social['url'], 'http')) rel="noopener noreferrer" @endif>
+        <a
+            href="{{ $social['url'] }}"
+            data-interface-sound
+            data-sound-tone="action"
+            @if (str_starts_with($social['url'], 'http')) rel="noopener noreferrer" @endif
+        >
             <span>{{ $social['label'] }}</span>
             <strong>{{ $social['display'] }}</strong>
         </a>

@@ -1,4 +1,9 @@
 @media (max-width: 1280px) {
+    .kinetic-index__title {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 24px;
+    }
+
     .kinetic-index__heading {
         font-size: 88px;
     }
@@ -69,6 +74,11 @@
         padding: 112px 0 38px;
         grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
         gap: 38px;
+    }
+
+    .kinetic-index__title {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 22px;
     }
 
     .kinetic-index__heading {
@@ -209,6 +219,25 @@
         grid-template-columns: 1fr;
         gap: 18px;
         align-content: end;
+    }
+
+    .kinetic-index__title {
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .kinetic-index__number {
+        padding-top: 3px;
+        font-size: 9px;
+    }
+
+    .kinetic-index__intro {
+        padding-left: 44px;
+    }
+
+    .kinetic-index__intro::before {
+        width: 42px;
+        margin-bottom: 12px;
     }
 
     .kinetic-index__heading {
@@ -483,7 +512,7 @@
 
 @media (max-width: 380px), (max-height: 700px) and (max-width: 720px) {
     .kinetic-index {
-        grid-template-rows: minmax(230px, 37svh) minmax(390px, 63svh);
+        grid-template-rows: minmax(300px, 47svh) minmax(390px, 63svh);
     }
 
     .kinetic-index__masthead {

@@ -258,7 +258,11 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
                 : null;
 
             if (soundTarget && (!event.relatedTarget || !soundTarget.contains(event.relatedTarget))) {
-                document.dispatchEvent(new CustomEvent('interface-hover'));
+                document.dispatchEvent(new CustomEvent('interface-hover', {
+                    detail: {
+                        tone: soundTarget.dataset.soundTone ?? 'control',
+                    },
+                }));
             }
 
             if (panel instanceof HTMLElement) {
@@ -298,7 +302,11 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
                 : null;
 
             if (target) {
-                document.dispatchEvent(new CustomEvent('interface-hover'));
+                document.dispatchEvent(new CustomEvent('interface-hover', {
+                    detail: {
+                        tone: target.dataset.soundTone ?? 'control',
+                    },
+                }));
             }
 
             if (panel instanceof HTMLElement) {

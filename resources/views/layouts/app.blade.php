@@ -62,6 +62,7 @@
                     data-route-transition
                     data-transition-label="{{ $content['nav'][0]['label'] }}"
                     data-interface-sound
+                    data-sound-tone="brand"
                 >
                     <x-brand-mark class="brand-lockup__mark" size="96" />
                     <span>
@@ -87,6 +88,7 @@
                                 data-route-transition
                                 data-transition-label="{{ $item['label'] }}"
                                 data-interface-sound
+                                data-sound-tone="navigation"
                                 @if ($isActive) aria-current="page" @endif
                             >
                                 <span class="site-header__nav-index">0{{ $loop->index }}</span>
@@ -100,7 +102,13 @@
                                     $targetParams = array_merge($currentParams, ['locale' => $code]);
                                     $targetUrl = route($currentRoute, $targetParams);
                                 @endphp
-                                <a @class(['is-active' => $code === $locale]) href="{{ $targetUrl }}" hreflang="{{ $code }}">
+                                <a
+                                    @class(['is-active' => $code === $locale])
+                                    href="{{ $targetUrl }}"
+                                    hreflang="{{ $code }}"
+                                    data-interface-sound
+                                    data-sound-tone="control"
+                                >
                                     {{ $localeMeta['label'] }}
                                 </a>
                             @endforeach
@@ -114,6 +122,8 @@
                         aria-pressed="false"
                         title="{{ $content['ui']['sound_mute'] }}"
                         data-sound-toggle
+                        data-interface-sound
+                        data-sound-tone="control"
                         data-label-muted="{{ $content['ui']['sound_enable'] }}"
                         data-label-playing="{{ $content['ui']['sound_mute'] }}"
                     >
@@ -129,6 +139,8 @@
                             aria-expanded="false"
                             aria-controls="site-menu-panel"
                             data-menu-toggle
+                            data-interface-sound
+                            data-sound-tone="control"
                         >
                             <span></span>
                             <span></span>
@@ -150,6 +162,7 @@
                                         data-route-transition
                                         data-transition-label="{{ $item['label'] }}"
                                         data-interface-sound
+                                        data-sound-tone="navigation"
                                         style="--menu-index: {{ $loop->index }}"
                                     >
                                         <span>0{{ $loop->iteration }}</span>
@@ -165,7 +178,13 @@
                                         $targetParams = array_merge($currentParams, ['locale' => $code]);
                                         $targetUrl = route($currentRoute, $targetParams);
                                     @endphp
-                                    <a @class(['is-active' => $code === $locale]) href="{{ $targetUrl }}" hreflang="{{ $code }}">
+                                    <a
+                                        @class(['is-active' => $code === $locale])
+                                        href="{{ $targetUrl }}"
+                                        hreflang="{{ $code }}"
+                                        data-interface-sound
+                                        data-sound-tone="control"
+                                    >
                                         {{ $localeMeta['label'] }}
                                     </a>
                                 @endforeach

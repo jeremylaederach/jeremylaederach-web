@@ -1,11 +1,15 @@
 <section class="kinetic-index" aria-labelledby="landing-title" data-index-navigation>
     <header class="kinetic-index__masthead">
         <div class="kinetic-index__title">
-            <p class="kinetic-index__eyebrow">{{ $content['ui']['role'] }}</p>
-            <h1 id="landing-title" class="kinetic-index__heading">
-                <span>Jeremy</span>
-                <span>Läderach<em>.</em></span>
-            </h1>
+            <span class="kinetic-index__number" aria-hidden="true">00</span>
+
+            <div class="kinetic-index__identity">
+                <p class="kinetic-index__eyebrow">{{ $content['ui']['role'] }}</p>
+                <h1 id="landing-title" class="kinetic-index__heading">
+                    <span>Jeremy</span>
+                    <span>Läderach<em>.</em></span>
+                </h1>
+            </div>
         </div>
 
         <div class="kinetic-index__intro">
@@ -24,6 +28,7 @@
                 data-route-transition
                 data-transition-label="{{ $route['label'] }}"
                 data-interface-sound
+                data-sound-tone="panel"
             >
                 <span class="index-panel__number">0{{ $loop->iteration }}</span>
 
