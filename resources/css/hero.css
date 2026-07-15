@@ -44,11 +44,58 @@
         color: var(--ink);
         font-size: 112px;
         font-weight: 430;
-        line-height: 0.88;
+        line-height: 0.94;
+        white-space: nowrap;
     }
 
-    .kinetic-index__heading span {
-        display: block;
+    .kinetic-index__wordmark {
+        display: inline-flex;
+        align-items: baseline;
+    }
+
+    .kinetic-index__letter,
+    .kinetic-index__letter-space {
+        display: inline-block;
+    }
+
+    .kinetic-index__letter {
+        --letter-color: var(--accent);
+        --letter-tilt: -0.8deg;
+        transform-origin: 50% 82%;
+        transition:
+            color 260ms ease,
+            text-shadow 360ms ease,
+            transform 460ms var(--ease-out);
+    }
+
+    .kinetic-index__letter:nth-child(even) {
+        --letter-tilt: 0.8deg;
+    }
+
+    .kinetic-index__letter--tone-1 {
+        --letter-color: var(--violet);
+    }
+
+    .kinetic-index__letter--tone-2 {
+        --letter-color: var(--blue);
+    }
+
+    .kinetic-index__letter--tone-3 {
+        --letter-color: var(--coral);
+    }
+
+    .kinetic-index__letter--tone-4 {
+        --letter-color: var(--green);
+    }
+
+    .kinetic-index__letter:hover {
+        color: var(--letter-color);
+        text-shadow: 0 0 0.32em color-mix(in srgb, var(--letter-color) 28%, transparent);
+        transform: translateY(-0.07em) scale(1.045) rotate(var(--letter-tilt));
+    }
+
+    .kinetic-index__letter-space {
+        width: 0.25em;
     }
 
     .kinetic-index__heading em {
@@ -68,15 +115,6 @@
         margin-bottom: 20px;
         background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0));
         content: '';
-    }
-
-    .kinetic-index__eyebrow {
-        margin: 0 0 18px;
-        color: var(--accent);
-        font-size: 11px;
-        font-weight: 650;
-        line-height: 1;
-        text-transform: uppercase;
     }
 
     .kinetic-index__summary {

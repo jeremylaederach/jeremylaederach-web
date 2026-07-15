@@ -21,48 +21,54 @@
         </header>
 
         <section id="contact-workspace" class="contact-workspace" data-reveal>
-            <div class="contact-direct">
-                <p class="section-label">01 / {{ $content['contact_page']['direct_label'] }}</p>
-                <a href="{{ config('portfolio.socials.email.url') }}" data-interface-sound data-sound-tone="action">
-                    <span>{{ config('portfolio.socials.email.display') }}</span>
-                    <x-nav-icon name="arrow-up-right" />
-                </a>
-                <x-social-links />
+            <header class="contact-workspace__header">
+                <p class="section-label contact-workspace__label">
+                    <span>01</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{{ $content['contact_page']['direct_label'] }}</span>
+                </p>
+                <h2>{{ $content['contact_page']['direct_heading'] }}</h2>
+            </header>
 
-                <div class="contact-context">
+            <a
+                class="contact-email"
+                href="{{ config('portfolio.socials.email.url') }}"
+                data-interface-sound
+                data-sound-tone="action"
+                data-pointer-surface
+            >
+                <span>{{ config('portfolio.socials.email.label') }}</span>
+                <strong>{{ config('portfolio.socials.email.display') }}</strong>
+                <x-nav-icon name="arrow-up-right" />
+            </a>
+
+            <div class="contact-workspace__details">
+                <div class="contact-note">
                     <p class="section-label">{{ $content['contact_page']['context_label'] }}</p>
                     <p>{{ $content['contact_page']['context'] }}</p>
                 </div>
+
+                <nav class="contact-channels" aria-label="{{ $content['contact_page']['channels_label'] }}">
+                    <p class="section-label">{{ $content['contact_page']['channels_label'] }}</p>
+                    <div>
+                        @foreach (config('portfolio.socials') as $key => $social)
+                            @continue($key === 'email')
+
+                            <a
+                                href="{{ $social['url'] }}"
+                                rel="noopener noreferrer"
+                                data-interface-sound
+                                data-sound-tone="action"
+                                data-pointer-surface
+                            >
+                                <span>{{ $social['label'] }}</span>
+                                <strong>{{ $social['display'] }}</strong>
+                                <x-nav-icon name="arrow-up-right" />
+                            </a>
+                        @endforeach
+                    </div>
+                </nav>
             </div>
-
-            <form
-                class="contact-form"
-                action="{{ config('portfolio.socials.email.url') }}"
-                method="post"
-                enctype="text/plain"
-            >
-                <h2>{{ $content['contact_page']['form_heading'] }}</h2>
-
-                <label>
-                    <span>{{ $content['contact_page']['form']['name'] }}</span>
-                    <input type="text" name="name" autocomplete="name" required>
-                </label>
-
-                <label>
-                    <span>{{ $content['contact_page']['form']['email'] }}</span>
-                    <input type="email" name="email" autocomplete="email" required>
-                </label>
-
-                <label>
-                    <span>{{ $content['contact_page']['form']['message'] }}</span>
-                    <textarea name="message" rows="5" required></textarea>
-                </label>
-
-                <button type="submit" data-interface-sound data-sound-tone="action">
-                    {{ $content['contact_page']['form']['submit'] }}
-                    <x-nav-icon name="arrow-right" />
-                </button>
-            </form>
         </section>
     </article>
 @endsection

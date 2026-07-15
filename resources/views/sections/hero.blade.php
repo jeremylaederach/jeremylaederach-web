@@ -4,10 +4,17 @@
             <span class="kinetic-index__number" aria-hidden="true">00</span>
 
             <div class="kinetic-index__identity">
-                <p class="kinetic-index__eyebrow">{{ $content['ui']['role'] }}</p>
-                <h1 id="landing-title" class="kinetic-index__heading">
-                    <span>Jeremy</span>
-                    <span>Läderach<em>.</em></span>
+                <h1 id="landing-title" class="kinetic-index__heading" aria-label="Jeremy Läderach.">
+                    <span class="kinetic-index__wordmark" aria-hidden="true">
+                        @foreach (mb_str_split('Jeremy Läderach') as $letter)
+                            @if ($letter === ' ')
+                                <span class="kinetic-index__letter-space">&nbsp;</span>
+                            @else
+                                <span class="kinetic-index__letter kinetic-index__letter--tone-{{ (($loop->iteration - 1) % 4) + 1 }}">{{ $letter }}</span>
+                            @endif
+                        @endforeach
+                        <em class="kinetic-index__letter kinetic-index__letter--tone-1">.</em>
+                    </span>
                 </h1>
             </div>
         </div>

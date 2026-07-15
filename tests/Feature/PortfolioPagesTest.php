@@ -33,6 +33,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Contact')
             ->assertSee('I build useful digital systems and thoughtful web experiences.')
             ->assertSee('class="kinetic-index"', false)
+            ->assertSee('class="kinetic-index__heading" aria-label="Jeremy Läderach."', false)
+            ->assertSee('class="kinetic-index__wordmark"', false)
+            ->assertDontSee('class="kinetic-index__eyebrow"', false)
             ->assertSee('class="index-navigation"', false)
             ->assertSee('data-index-panel', false)
             ->assertSee('data-page-transition', false)
@@ -50,10 +53,11 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
+        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
 
         $this->get('/de')
             ->assertOk()
-            ->assertSee('Software Engineer')
+            ->assertSee('Softwareentwickler')
             ->assertSee('nützliche digitale Systeme')
             ->assertSee('Profil')
             ->assertSee('Projekte');
@@ -72,6 +76,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page about-page"', false)
             ->assertSee('class="about-story"', false)
+            ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
             ->assertSee('class="technology-grid"', false)
             ->assertSee('Software with purpose, built from real requirements.')
@@ -79,6 +84,8 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('class="principles-list"', false)
             ->assertDontSee('How I work')
             ->assertSee('Tools I work with')
+            ->assertSee('Experience')
+            ->assertSee('Toolkit')
             ->assertSee('Application Developer EFZ')
             ->assertSee('Business Informatics BSc')
             ->assertSee('ASP.NET Core')
@@ -88,6 +95,13 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('data-project-stage', false);
 
         $this->assertSame(5, substr_count($about->getContent(), 'data-technology-icon='));
+        $this->assertSame(3, substr_count($about->getContent(), 'class="section-label about-section-label"'));
+
+        $this->get('/de/about')
+            ->assertOk()
+            ->assertSee('Erfahrung')
+            ->assertSee('Technologien, mit denen ich arbeite')
+            ->assertDontSee('Stationen');
 
         $projects = $this->get('/de/projects');
 
@@ -113,13 +127,14 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Jeremy', false)
             ->assertSee('class="portfolio-page contact-page"', false)
             ->assertSee('class="contact-workspace"', false)
-            ->assertSee('class="contact-form"', false)
-            ->assertSee('Send message')
-            ->assertSee('name="name"', false)
-            ->assertSee('name="email"', false)
-            ->assertSee('name="message"', false)
+            ->assertSee('class="contact-email"', false)
+            ->assertSee('class="contact-channels"', false)
+            ->assertSee('Tell me what you want to build.')
+            ->assertDontSee('class="contact-form"', false)
+            ->assertDontSee('<form', false)
             ->assertSee('info@jeremylaederach.ch')
-            ->assertSee('GitHub');
+            ->assertSee('GitHub')
+            ->assertSee('LinkedIn');
 
         $this->get('/de/imprint')
             ->assertOk()

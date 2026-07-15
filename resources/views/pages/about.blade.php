@@ -3,11 +3,6 @@
 @section('content')
     <article class="portfolio-page about-page">
         <header class="page-hero page-hero--about" data-pointer-surface data-reveal>
-            <div class="page-hero__index">
-                <span>02</span>
-                <span>{{ $content['about_page']['eyebrow'] }}</span>
-            </div>
-
             <div class="page-hero__title">
                 <h1>{{ $content['about_page']['heading'] }}<span class="accent-dot">.</span></h1>
             </div>
@@ -21,7 +16,11 @@
         </header>
 
         <section id="story" class="about-story" data-reveal>
-            <p class="section-label">01 / {{ $content['about_page']['eyebrow'] }}</p>
+            <p class="section-label about-section-label">
+                <span>01</span>
+                <span aria-hidden="true">/</span>
+                <span>{{ $content['about_page']['eyebrow'] }}</span>
+            </p>
 
             <div class="about-story__lead">
                 <h2>{{ $content['about_page']['story_heading'] }}</h2>
@@ -35,9 +34,15 @@
         </section>
 
         <section class="career-section" aria-labelledby="career-title" data-reveal>
-            <header>
-                <p class="section-label">02</p>
-                <h2 id="career-title">{{ $content['about_page']['career_heading'] }}</h2>
+            <header class="about-section-heading">
+                <p class="section-label about-section-label">
+                    <span>02</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{{ $content['about_page']['career_label'] }}</span>
+                </p>
+                <div class="about-section-heading__content">
+                    <h2 id="career-title">{{ $content['about_page']['career_heading'] }}</h2>
+                </div>
             </header>
 
             <ol class="career-list">
@@ -53,9 +58,13 @@
         </section>
 
         <section id="stack" class="stack-section" aria-labelledby="stack-title" data-reveal>
-            <header>
-                <p class="section-label">03</p>
-                <div>
+            <header class="about-section-heading">
+                <p class="section-label about-section-label">
+                    <span>03</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{{ $content['about_page']['technology_label'] }}</span>
+                </p>
+                <div class="about-section-heading__content">
                     <h2 id="stack-title">{{ $content['about_page']['technology_heading'] }}</h2>
                     <p>{{ $content['about_page']['technology_intro'] }}</p>
                 </div>

@@ -92,6 +92,7 @@ return [
                     'Looking ahead, I plan to study Business Informatics to deepen my understanding of how software can create real strategic value in business environments.',
                 ],
                 'technology_heading' => 'Tools I work with',
+                'technology_label' => 'Toolkit',
                 'technology_intro' => 'A focused toolkit for backend systems, structured interfaces, data, and dependable delivery.',
                 'technology_list' => [
                     ['name' => '.NET / C#', 'detail' => 'ASP.NET Core · REST APIs', 'icon' => 'dotnet', 'fallback' => '.N', 'color' => '#8b5cf6'],
@@ -101,6 +102,7 @@ return [
                     ['name' => 'Git', 'detail' => 'Version control and delivery', 'icon' => 'git', 'fallback' => 'G', 'color' => '#f05032'],
                 ],
                 'career_heading' => 'Career path',
+                'career_label' => 'Experience',
                 'career' => [
                     [
                         'period' => '08 / 2019 – 08 / 2023',
@@ -156,15 +158,10 @@ return [
                 'heading' => 'Contact',
                 'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
                 'direct_label' => 'Write directly',
+                'direct_heading' => 'Tell me what you want to build.',
                 'context_label' => 'A useful first note',
-                'context' => 'A short outline of the goal, timing, and relevant links is enough to get started.',
-                'form_heading' => 'Or leave a note',
-                'form' => [
-                    'name' => 'Name',
-                    'email' => 'Email',
-                    'message' => 'Message',
-                    'submit' => 'Send message',
-                ],
+                'context' => 'A short outline of the goal, timing, and relevant links is enough. I will reply with the next useful steps.',
+                'channels_label' => 'Elsewhere',
             ],
             'not_found' => [
                 'eyebrow' => 'Lost route',
@@ -186,14 +183,14 @@ return [
         'de' => [
             'meta' => [
                 'title' => 'Jeremy Läderach',
-                'description' => 'Persönliches Portfolio von Jeremy Läderach, Software Engineer mit Fokus auf praktische Websysteme mit Laravel, .NET und Angular.',
+                'description' => 'Persönliches Portfolio von Jeremy Läderach, einem Softwareentwickler mit Fokus auf praktische Websysteme mit Laravel, .NET und Angular.',
             ],
             'ui' => [
                 'skip' => 'Zum Inhalt springen',
                 'language' => 'Sprache',
                 'menu' => 'Hauptnavigation',
                 'brand' => 'Jeremy Läderach Startseite',
-                'role' => 'Software Engineer',
+                'role' => 'Softwareentwickler',
                 'open' => 'Öffnen',
                 'footer_navigation' => 'Entdecken',
                 'back_to_top' => 'Nach oben',
@@ -220,7 +217,7 @@ return [
                     ],
                     [
                         'label' => 'Über mich',
-                        'description' => 'Hintergrund, Erfahrung und die Tools hinter meiner Arbeit.',
+                        'description' => 'Hintergrund, Erfahrung und die Technologien hinter meiner Arbeit.',
                         'route' => 'about',
                     ],
                     [
@@ -233,24 +230,26 @@ return [
             'about_page' => [
                 'eyebrow' => 'Profil',
                 'heading' => 'Über mich',
-                'intro' => 'Ich bin Softwareentwickler mit einer fundierten Basis in der Applikationsentwicklung und einem Fokus auf Fullstack-Systeme, die Technologie mit echten Geschäftsanforderungen verbinden.',
+                'intro' => 'Ich bin Softwareentwickler mit fundierter Ausbildung in der Applikationsentwicklung. Mein Fokus liegt auf Full-Stack-Systemen, die technische Möglichkeiten mit konkreten Geschäftsanforderungen verbinden.',
                 'story_link' => 'Mein Weg',
-                'story_heading' => 'Software mit Zweck, entwickelt aus echten Anforderungen.',
+                'story_heading' => 'Software mit klarem Zweck, entwickelt aus konkreten Anforderungen.',
                 'body' => [
-                    'Als engagierter Softwareentwickler mit einer soliden Grundlage aus meiner EFZ-Lehre in Applikationsentwicklung entwickle ich meine Fullstack-Kompetenzen laufend weiter und verbinde Technologie mit geschäftlichen Anforderungen.',
-                    'Ich analysiere gerne komplexe Anforderungen und übersetze sie in zielgerichtete, nutzerorientierte Lösungen. Klare Architektur, Wartbarkeit und durchdachtes Design begleiten den gesamten Entwicklungsprozess.',
-                    'Mit Blick nach vorn plane ich ein Studium in Wirtschaftsinformatik, um besser zu verstehen, wie Software echten strategischen Mehrwert in Unternehmen schaffen kann.',
+                    'Durch meine EFZ-Lehre als Applikationsentwickler habe ich eine solide technische Grundlage aufgebaut. Heute vertiefe ich meine Full-Stack-Kompetenzen und verbinde Softwareentwicklung mit wirtschaftlichem Verständnis.',
+                    'Komplexe Anforderungen zerlege ich in klare, nutzerorientierte Lösungen. Saubere Architektur, Wartbarkeit und durchdachtes Design prägen dabei den gesamten Entwicklungsprozess.',
+                    'Als Nächstes plane ich ein Studium in Wirtschaftsinformatik, um technische Entscheidungen noch stärker mit strategischem Mehrwert für Unternehmen zu verbinden.',
                 ],
-                'technology_heading' => 'Tools, mit denen ich arbeite',
-                'technology_intro' => 'Ein fokussiertes Toolkit für Backend-Systeme, strukturierte Oberflächen, Daten und verlässliche Auslieferung.',
+                'technology_heading' => 'Technologien, mit denen ich arbeite',
+                'technology_label' => 'Werkzeuge',
+                'technology_intro' => 'Eine fokussierte Auswahl für Backend-Systeme, strukturierte Oberflächen, Daten und zuverlässige Auslieferung.',
                 'technology_list' => [
                     ['name' => '.NET / C#', 'detail' => 'ASP.NET Core · REST APIs', 'icon' => 'dotnet', 'fallback' => '.N', 'color' => '#8b5cf6'],
                     ['name' => 'Angular', 'detail' => 'Strukturierte Frontend-Anwendungen', 'icon' => 'angular', 'fallback' => 'A', 'color' => '#dd0031'],
-                    ['name' => 'TypeScript', 'detail' => 'Typisierte Interface-Logik', 'icon' => 'typescript', 'fallback' => 'TS', 'color' => '#3178c6'],
+                    ['name' => 'TypeScript', 'detail' => 'Typsichere Frontend-Logik', 'icon' => 'typescript', 'fallback' => 'TS', 'color' => '#3178c6'],
                     ['name' => 'PostgreSQL', 'detail' => 'Relationale Datenmodellierung', 'icon' => 'postgresql', 'fallback' => 'PG', 'color' => '#4169e1'],
                     ['name' => 'Git', 'detail' => 'Versionskontrolle und Auslieferung', 'icon' => 'git', 'fallback' => 'G', 'color' => '#f05032'],
                 ],
                 'career_heading' => 'Werdegang',
+                'career_label' => 'Erfahrung',
                 'career' => [
                     [
                         'period' => '08 / 2019 – 08 / 2023',
@@ -260,12 +259,12 @@ return [
                     [
                         'period' => '08 / 2023 – 08 / 2024',
                         'title' => 'BMS',
-                        'body' => 'Berufsmaturität mit Fokus auf Wirtschaft und betriebswirtschaftliche Grundlagen in Zürich.',
+                        'body' => 'Berufsmaturität mit Schwerpunkt Wirtschaft in Zürich.',
                     ],
                     [
                         'period' => '08 / 2024 – Heute',
                         'title' => 'Softwareentwickler',
-                        'body' => 'Berufserfahrung in der Softwareentwicklung sowie eigene Weblösungen und Softwareprojekte.',
+                        'body' => 'Berufserfahrung in der Softwareentwicklung sowie Arbeit an eigenen Weblösungen und Softwareprojekten.',
                     ],
                     [
                         'period' => '09 / 2026 – 09 / 2030',
@@ -279,23 +278,23 @@ return [
                 'featured_label' => 'Hauptprojekt',
                 'secondary_label' => 'Weitere Arbeiten',
                 'heading' => 'Projekte',
-                'intro' => 'Ein paar Projekte, die die Bandbreite zeigen: Product Engineering, Kundenarbeit und wartbare Web-Fundamente.',
+                'intro' => 'Drei Projekte aus eigener Produktentwicklung, Kundenarbeit und wartbaren Weblösungen.',
                 'items' => [
                     [
                         'name' => 'Quantified',
-                        'type' => 'Persönliches Fullstack-Produkt',
+                        'type' => 'Eigenes Full-Stack-Produkt',
                         'description' => 'Ein persönliches Dashboard für Finanzen, Zeit, Gewohnheiten und wichtige Lebensbereiche.',
                         'tags' => ['.NET', 'Angular', 'PostgreSQL'],
                     ],
                     [
                         'name' => 'Jay-Jay Web',
-                        'type' => 'Web-Solutions-Business',
+                        'type' => 'Webdienstleistungen',
                         'description' => 'Eine ruhige Web-Plattform für Websites, Hosting, Domains und Betreuung.',
                         'tags' => ['Websites', 'Hosting', 'WordPress'],
                     ],
                     [
                         'name' => 'Scherer Garten',
-                        'type' => 'Kundenwebsite und Delivery',
+                        'type' => 'Kundenwebsite und Betreuung',
                         'description' => 'Eine moderne Website mit verlässlichem Hosting für einen Schweizer Garten- und Landschaftsbaubetrieb.',
                         'tags' => ['Webdesign', 'WordPress', 'Hosting'],
                     ],
@@ -304,17 +303,12 @@ return [
             'contact_page' => [
                 'eyebrow' => 'Gespräch beginnen',
                 'heading' => 'Kontakt',
-                'intro' => 'E-Mail ist der beste erste Schritt. Schick das grobe Ziel, Links, Rahmenbedingungen und wie ein gutes Resultat wirken soll.',
+                'intro' => 'E-Mail ist der beste erste Schritt. Schick mir dein Ziel, relevante Links und die wichtigsten Rahmenbedingungen.',
                 'direct_label' => 'Direkt schreiben',
-                'context_label' => 'Eine hilfreiche erste Nachricht',
-                'context' => 'Ein kurzer Überblick über Ziel, Zeitrahmen und relevante Links reicht für den Einstieg.',
-                'form_heading' => 'Oder eine Nachricht hinterlassen',
-                'form' => [
-                    'name' => 'Name',
-                    'email' => 'E-Mail',
-                    'message' => 'Nachricht',
-                    'submit' => 'Nachricht senden',
-                ],
+                'direct_heading' => 'Erzähl mir, was du umsetzen möchtest.',
+                'context_label' => 'Für einen guten Start',
+                'context' => 'Ein kurzer Überblick über Ziel, Zeitrahmen und relevante Links reicht. Ich melde mich mit den nächsten sinnvollen Schritten.',
+                'channels_label' => 'Weitere Profile',
             ],
             'not_found' => [
                 'eyebrow' => 'Falscher Weg',
@@ -328,7 +322,7 @@ return [
                 'sections' => [
                     ['title' => 'Verantwortlich für den Inhalt', 'body' => ['Jeremy Läderach', 'Schweiz']],
                     ['title' => 'Kontakt', 'body' => ['info@jeremylaederach.ch']],
-                    ['title' => 'Hinweis', 'body' => ['Dieser Laravel-Prototyp hält die rechtliche Seite bewusst kompakt. Weitere Geschäftsadresse- oder Datenschutzangaben können vor dem Produktionslaunch ergänzt werden.']],
+                    ['title' => 'Hinweis', 'body' => ['Dieser Laravel-Prototyp hält die rechtliche Seite bewusst kompakt. Angaben zur Geschäftsadresse und zum Datenschutz können vor dem Produktionsstart ergänzt werden.']],
                 ],
             ],
         ],
