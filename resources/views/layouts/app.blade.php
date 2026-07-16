@@ -68,7 +68,7 @@
                     data-sound-tone="brand"
                 >
                     <x-brand-mark class="brand-lockup__mark" size="96" />
-                    <strong>Jeremy Läderach</strong>
+                    <span class="brand-lockup__name">Jeremy Läderach</span>
                 </a>
 
                 <div class="site-header__controls">

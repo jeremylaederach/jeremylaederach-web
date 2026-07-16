@@ -119,7 +119,10 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Laravel 13')
             ->assertSee('SessionDeck')
             ->assertSee('WinUI 3')
-            ->assertSee('href="http://localhost/de/quantified"', false);
+            ->assertSee('href="http://localhost/de/quantified"', false)
+            ->assertSee('href="http://localhost/de/jay-jay"', false)
+            ->assertSee('href="http://localhost/de/session-deck"', false)
+            ->assertDontSee('project-case__action', false);
 
         $this->assertSame(3, substr_count($projects->getContent(), 'class="project-case project-case--'));
     }
@@ -136,7 +139,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Quantified', false)
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
-            ->assertSee('class="portfolio-page case-study-page quantified-page"', false)
+            ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
             ->assertSee('Calendar activity, turned into personal context.')
             ->assertSee('Google Calendar')
             ->assertSee('ASP.NET Core')
@@ -151,6 +154,56 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Aktiv in Entwicklung')
             ->assertSee('Gespräch beginnen')
             ->assertSee('href="http://localhost/en/quantified"', false);
+    }
+
+    public function test_jay_jay_case_study_renders_in_both_locales(): void
+    {
+        $this->get('/jay-jay')
+            ->assertRedirect('/en/jay-jay');
+
+        $this->get('/en/jay-jay')
+            ->assertOk()
+            ->assertSee('<title>Jay-Jay Web', false)
+            ->assertSee('data-page="projects"', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('project-detail--jay-jay-web', false)
+            ->assertSee('Laravel 13')
+            ->assertSee('Static export')
+            ->assertSee('Plesk delivery')
+            ->assertSee('assets/work/jay-jay-home.png', false)
+            ->assertSee('class="page-cta page-cta--contact"', false)
+            ->assertSee('href="http://localhost/de/jay-jay"', false);
+
+        $this->get('/de/jay-jay')
+            ->assertOk()
+            ->assertSee('wartbare Quellanwendung')
+            ->assertSee('Live-Website besuchen')
+            ->assertSee('href="http://localhost/en/jay-jay"', false);
+    }
+
+    public function test_sessiondeck_case_study_renders_in_both_locales(): void
+    {
+        $this->get('/session-deck')
+            ->assertRedirect('/en/session-deck');
+
+        $this->get('/en/session-deck')
+            ->assertOk()
+            ->assertSee('<title>SessionDeck', false)
+            ->assertSee('data-page="projects"', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('project-detail--sessiondeck', false)
+            ->assertSee('WinUI 3')
+            ->assertSee('Functional source-build MVP')
+            ->assertSee('Conservative ownership')
+            ->assertSee('assets/work/sessiondeck-main.png', false)
+            ->assertSee('class="page-cta page-cta--contact"', false)
+            ->assertSee('href="http://localhost/de/session-deck"', false);
+
+        $this->get('/de/session-deck')
+            ->assertOk()
+            ->assertSee('Windows-spezifisches Verhalten')
+            ->assertSee('GitHub-Repository ansehen')
+            ->assertSee('href="http://localhost/en/session-deck"', false);
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void

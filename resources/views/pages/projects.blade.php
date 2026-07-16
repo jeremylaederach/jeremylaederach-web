@@ -22,13 +22,6 @@
 
         <section id="selected-work" class="project-cases" aria-label="{{ $content['projects_page']['heading'] }}">
             @foreach ($content['projects_page']['items'] as $project)
-                @php
-                    $isInternal = isset($project['detail_route']);
-                    $href = $isInternal
-                        ? route($project['detail_route'], ['locale' => $locale])
-                        : $project['url'];
-                @endphp
-
                 <article
                     id="{{ $project['slug'] }}"
                     class="project-case project-case--{{ $loop->iteration }}"
@@ -37,18 +30,13 @@
                 >
                     <a
                         class="project-case__link"
-                        href="{{ $href }}"
-                        aria-label="{{ $project['action'] }}: {{ $project['name'] }}"
+                        href="{{ route($project['detail_route'], ['locale' => $locale]) }}"
+                        aria-label="{{ $content['ui']['open'] }} {{ $project['name'] }}"
                         data-interface-sound
-                        data-sound-tone="{{ $isInternal ? 'panel' : 'action' }}"
-                        @if ($isInternal)
-                            data-route="projects"
-                            data-route-transition
-                            data-transition-label="{{ $project['name'] }}"
-                        @else
-                            target="_blank"
-                            rel="noreferrer"
-                        @endif
+                        data-sound-tone="panel"
+                        data-route="projects"
+                        data-route-transition
+                        data-transition-label="{{ $project['name'] }}"
                     >
                         <header class="project-case__header">
                             <span>0{{ $loop->iteration }}</span>
@@ -63,10 +51,6 @@
                                     <li>{{ $tag }}</li>
                                 @endforeach
                             </ul>
-                            <span class="project-case__action">
-                                {{ $project['action'] }}
-                                <x-nav-icon name="{{ $isInternal ? 'arrow-right' : 'arrow-up-right' }}" />
-                            </span>
                         </div>
 
                         @if ($project['visual'] === 'quantified')
@@ -76,7 +60,10 @@
                                 data-transition-origin
                             />
                         @else
-                            <figure class="project-visual project-visual--image project-visual--{{ $project['slug'] }}">
+                            <figure
+                                class="project-visual project-visual--image project-visual--{{ $project['slug'] }}"
+                                data-transition-origin
+                            >
                                 <img
                                     src="{{ asset($project['image']) }}"
                                     alt="{{ $project['image_alt'] }}"
@@ -90,20 +77,6 @@
             @endforeach
         </section>
 
-        <a
-            class="page-cta page-cta--contact"
-            href="{{ route('contact', ['locale' => $locale]) }}"
-            data-route="contact"
-            data-route-transition
-            data-transition-label="{{ $content['contact_page']['heading'] }}"
-            data-interface-sound
-            data-sound-tone="panel"
-            data-pointer-surface
-            data-reveal
-        >
-            <span>{{ $content['contact_page']['eyebrow'] }}</span>
-            <strong>{{ $content['contact_page']['heading'] }}</strong>
-            <x-nav-icon name="arrow-right" />
-        </a>
+        <x-contact-cta :content="$content" :locale="$locale" />
     </article>
 @endsection

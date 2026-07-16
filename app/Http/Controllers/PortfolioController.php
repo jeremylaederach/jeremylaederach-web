@@ -24,16 +24,17 @@ class PortfolioController extends Controller
 
     public function quantified(string $locale): View
     {
-        $content = $this->contentFor($locale);
+        return $this->renderProject($locale, 'quantified_page');
+    }
 
-        return view('pages.quantified', [
-            'locale' => $locale,
-            'content' => $content,
-            'project' => $content['quantified_page'],
-            'scene' => 'projects',
-            'title' => 'Quantified · Jeremy Läderach',
-            'description' => $content['quantified_page']['meta_description'],
-        ]);
+    public function jayJay(string $locale): View
+    {
+        return $this->renderProject($locale, 'jay_jay_page');
+    }
+
+    public function sessionDeck(string $locale): View
+    {
+        return $this->renderProject($locale, 'sessiondeck_page');
     }
 
     public function contact(string $locale): View
@@ -52,6 +53,24 @@ class PortfolioController extends Controller
             'locale' => $locale,
             'content' => $this->contentFor($locale),
             ...$data,
+        ]);
+    }
+
+    private function renderProject(string $locale, string $contentKey): View
+    {
+        $content = $this->contentFor($locale);
+        $project = $content[$contentKey];
+        $projectSlugs = array_column($content['projects_page']['items'], 'slug');
+        $projectIndex = array_search($project['slug'], $projectSlugs, true);
+
+        return view('pages.project', [
+            'locale' => $locale,
+            'content' => $content,
+            'project' => $project,
+            'projectNumber' => $projectIndex === false ? 1 : $projectIndex + 1,
+            'scene' => 'projects',
+            'title' => "{$project['heading']} · Jeremy Läderach",
+            'description' => $project['meta_description'],
         ]);
     }
 

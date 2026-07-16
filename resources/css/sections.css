@@ -206,37 +206,6 @@
         content: '/';
     }
 
-    .project-case__action {
-        display: inline-flex;
-        width: max-content;
-        margin-top: 34px;
-        align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid rgba(var(--case-accent-rgb), 0.45);
-        color: var(--ink);
-        font-size: 12px;
-        line-height: 2.2;
-        transition: border-color 260ms ease, color 260ms ease;
-    }
-
-    .project-case__action .nav-icon {
-        width: 16px;
-        height: 16px;
-        color: rgba(var(--case-accent-rgb), 0.92);
-        transition: transform 420ms var(--ease-out);
-    }
-
-    .project-case__link:hover .project-case__action,
-    .project-case__link:focus-visible .project-case__action {
-        border-color: rgb(var(--case-accent-rgb));
-        color: rgb(var(--case-accent-rgb));
-    }
-
-    .project-case__link:hover .project-case__action .nav-icon,
-    .project-case__link:focus-visible .project-case__action .nav-icon {
-        transform: translateX(5px);
-    }
-
     .project-visual {
         position: relative;
         overflow: hidden;
@@ -361,6 +330,100 @@
         transform: scaleY(1.04);
     }
 
+    .project-detail {
+        --project-accent: var(--accent-projects);
+        --project-accent-rgb: var(--accent-projects-rgb);
+    }
+
+    .project-detail--jay-jay-web {
+        --project-accent: #72c9ff;
+        --project-accent-rgb: 114, 201, 255;
+    }
+
+    .project-detail--sessiondeck {
+        --project-accent: #ffad42;
+        --project-accent-rgb: 255, 173, 66;
+    }
+
+    .project-detail .accent-dot {
+        color: var(--project-accent);
+    }
+
+    .project-showcase {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(var(--project-accent-rgb), 0.3);
+        border-radius: 7px;
+        background: #0b0b0f;
+        box-shadow:
+            0 48px 130px rgba(0, 0, 0, 0.48),
+            0 0 70px rgba(var(--project-accent-rgb), 0.06);
+    }
+
+    .project-showcase::after {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background:
+            linear-gradient(115deg, rgba(255, 255, 255, 0.065), transparent 18%),
+            linear-gradient(to top, rgba(7, 7, 10, 0.28), transparent 22%);
+        content: '';
+        pointer-events: none;
+    }
+
+    .project-showcase__bar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        min-height: 52px;
+        padding: 0 18px;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        border-bottom: 1px solid rgba(244, 241, 234, 0.08);
+        color: rgba(244, 241, 234, 0.42);
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+
+    .project-showcase__status {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: rgba(244, 241, 234, 0.72);
+    }
+
+    .project-showcase__status i {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--project-accent);
+        box-shadow: 0 0 12px rgba(var(--project-accent-rgb), 0.6);
+    }
+
+    .project-showcase__media {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        margin: 0;
+        background: #09090d;
+    }
+
+    .project-showcase__media img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .project-showcase--jay-jay-web .project-showcase__media img {
+        object-position: center top;
+    }
+
+    .project-showcase--sessiondeck .project-showcase__media img {
+        object-position: center;
+    }
+
     .case-study-hero {
         display: grid;
         width: var(--shell);
@@ -386,7 +449,7 @@
     .case-study-back .nav-icon {
         width: 16px;
         height: 16px;
-        color: var(--route-accent);
+        color: var(--project-accent);
         transform: rotate(180deg);
         transition: transform 420ms var(--ease-out);
     }
@@ -406,7 +469,7 @@
         grid-column: 1 / -1;
         margin-top: 68px;
         gap: 18px;
-        color: var(--route-accent);
+        color: var(--project-accent);
         font-size: 10px;
         text-transform: uppercase;
     }
@@ -510,7 +573,7 @@
 
     .case-study-section .section-label {
         margin: 0;
-        color: var(--route-accent);
+        color: var(--project-accent);
         font-size: 10px;
         text-transform: uppercase;
     }
@@ -579,7 +642,7 @@
 
     .system-flow span,
     .scope-list span {
-        color: var(--route-accent);
+        color: var(--project-accent);
         font-size: 10px;
     }
 
@@ -620,41 +683,35 @@
         margin: 0;
     }
 
-    .case-study-next {
-        display: grid;
-        width: var(--shell);
-        min-height: 320px;
-        padding: 64px 0;
-        margin: 0 auto 96px;
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-        grid-template-columns: minmax(160px, 0.45fr) 1fr 70px;
-        gap: 48px;
+    .case-study-external {
+        display: inline-flex;
+        width: max-content;
+        margin: 52px 0 0 calc((100% + 128px) * 0.25);
+        padding-bottom: 8px;
         align-items: center;
-        background: radial-gradient(circle at var(--pointer-x, 75%) var(--pointer-y, 50%), rgba(var(--route-accent-rgb), 0.12), transparent 35%);
+        gap: 12px;
+        border-bottom: 1px solid rgba(var(--project-accent-rgb), 0.42);
+        color: var(--ink);
+        font-size: 12px;
+        transition: border-color 260ms ease, color 260ms ease;
     }
 
-    .case-study-next > span {
-        color: var(--route-accent);
-        font-size: 10px;
-        text-transform: uppercase;
+    .case-study-external .nav-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--project-accent);
+        transition: transform 420ms var(--ease-out);
     }
 
-    .case-study-next > strong {
-        font-size: 66px;
-        font-weight: 410;
+    .case-study-external:hover,
+    .case-study-external:focus-visible {
+        border-color: var(--project-accent);
+        color: var(--project-accent);
     }
 
-    .case-study-next .nav-icon {
-        width: 34px;
-        height: 34px;
-        color: var(--route-accent);
-        transition: transform 500ms var(--ease-out);
-    }
-
-    .case-study-next:hover .nav-icon,
-    .case-study-next:focus-visible .nav-icon {
-        transform: translateX(8px);
+    .case-study-external:hover .nav-icon,
+    .case-study-external:focus-visible .nav-icon {
+        transform: translate(3px, -3px);
     }
 
     .about-story {

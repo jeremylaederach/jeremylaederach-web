@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <article class="portfolio-page case-study-page quantified-page">
+    <article class="portfolio-page case-study-page project-detail project-detail--{{ $project['slug'] }}">
         <header class="case-study-hero" data-reveal>
             <a
                 class="case-study-back"
-                href="{{ route('projects', ['locale' => $locale]) }}#quantified"
+                href="{{ route('projects', ['locale' => $locale]) }}#{{ $project['slug'] }}"
                 data-route="projects"
                 data-route-transition
                 data-transition-label="{{ $content['projects_page']['heading'] }}"
@@ -17,7 +17,7 @@
             </a>
 
             <div class="case-study-hero__index">
-                <span>01</span>
+                <span>{{ str_pad((string) $projectNumber, 2, '0', STR_PAD_LEFT) }}</span>
                 <span>{{ $project['eyebrow'] }}</span>
             </div>
 
@@ -37,12 +37,16 @@
                 </dl>
             </div>
 
-            <x-quantified-preview
-                class="case-study-hero__visual"
-                :copy="$project['preview']"
-                :label="$project['preview_label']"
-                :expanded="true"
-            />
+            @if ($project['visual_type'] === 'quantified')
+                <x-quantified-preview
+                    class="case-study-hero__visual"
+                    :copy="$project['preview']"
+                    :label="$project['preview_label']"
+                    :expanded="true"
+                />
+            @else
+                <x-project-showcase class="case-study-hero__visual" :project="$project" />
+            @endif
         </header>
 
         <section class="case-study-section case-study-overview" data-reveal>
@@ -88,22 +92,22 @@
                     </li>
                 @endforeach
             </ol>
+
+            @isset($project['external_url'])
+                <a
+                    class="case-study-external"
+                    href="{{ $project['external_url'] }}"
+                    target="_blank"
+                    rel="noreferrer"
+                    data-interface-sound
+                    data-sound-tone="action"
+                >
+                    <span>{{ $project['external_label'] }}</span>
+                    <x-nav-icon name="arrow-up-right" />
+                </a>
+            @endisset
         </section>
 
-        <a
-            class="case-study-next"
-            href="{{ route('contact', ['locale' => $locale]) }}"
-            data-route="contact"
-            data-route-transition
-            data-transition-label="{{ $content['contact_page']['heading'] }}"
-            data-interface-sound
-            data-sound-tone="panel"
-            data-pointer-surface
-            data-reveal
-        >
-            <span>{{ $project['next_label'] }}</span>
-            <strong>{{ $project['next'] }}</strong>
-            <x-nav-icon name="arrow-right" />
-        </a>
+        <x-contact-cta :content="$content" :locale="$locale" />
     </article>
 @endsection

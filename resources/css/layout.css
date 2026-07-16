@@ -38,27 +38,74 @@
     }
 
     .brand-lockup {
-        display: inline-flex;
+        position: relative;
+        display: grid;
+        min-width: 210px;
+        min-height: 64px;
+        padding: 12px 22px 18px 0;
+        grid-template-columns: 40px auto;
         align-items: center;
-        gap: 12px;
-        min-width: 170px;
+        gap: 14px;
+        color: rgba(244, 241, 234, 0.72);
+    }
+
+    .brand-lockup::before,
+    .brand-lockup::after {
+        position: absolute;
+        right: 22px;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        content: '';
+    }
+
+    .brand-lockup::before {
+        background: rgba(244, 241, 234, 0.11);
+    }
+
+    .brand-lockup::after {
+        height: 2px;
+        background: var(--violet);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 440ms var(--ease-heavy);
     }
 
     .brand-lockup__mark {
-        width: 31px;
-        height: 31px;
+        width: 38px;
+        height: 38px;
         object-fit: contain;
+        transition: filter 360ms ease, transform 440ms var(--ease-heavy);
     }
 
-    .brand-lockup strong {
+    .brand-lockup__name {
         display: block;
+        font-size: 15px;
+        font-weight: 480;
         line-height: 1;
         letter-spacing: 0;
+        transition: color 220ms ease, transform 440ms var(--ease-heavy);
     }
 
-    .brand-lockup strong {
-        font-size: 11px;
-        font-weight: 600;
+    .brand-lockup:hover,
+    .brand-lockup:focus-visible {
+        color: var(--ink);
+    }
+
+    .brand-lockup:hover::after,
+    .brand-lockup:focus-visible::after {
+        transform: scaleX(1);
+    }
+
+    .brand-lockup:hover .brand-lockup__mark,
+    .brand-lockup:focus-visible .brand-lockup__mark {
+        filter: drop-shadow(0 0 10px rgba(169, 120, 255, 0.28));
+        transform: translateY(-1px) scale(1.035);
+    }
+
+    .brand-lockup:hover .brand-lockup__name,
+    .brand-lockup:focus-visible .brand-lockup__name {
+        transform: translateX(2px);
     }
 
     .site-header__controls,
