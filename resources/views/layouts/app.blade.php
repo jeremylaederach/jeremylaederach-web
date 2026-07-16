@@ -74,7 +74,7 @@
                                 @if ($letter === ' ')
                                     <span class="brand-lockup__space">&nbsp;</span>
                                 @else
-                                    <span class="brand-lockup__letter" style="--brand-letter-index: {{ $loop->index }}">{{ $letter }}</span>
+                                    <span class="brand-lockup__letter">{{ $letter }}</span>
                                 @endif
                             @endforeach
                         </span>

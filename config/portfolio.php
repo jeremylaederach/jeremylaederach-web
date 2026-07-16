@@ -59,7 +59,7 @@ return [
             'home' => [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
-                'summary' => 'I build useful digital systems and thoughtful web experiences.',
+                'summary' => 'Architecting and engineering software that makes complex ideas feel simple.',
                 'explore' => 'Explore projects',
                 'index_label' => 'Landing',
                 'routes' => [
@@ -384,7 +384,7 @@ return [
             'home' => [
                 'statement' => 'Ich entwickle',
                 'statement_accent' => 'nützliche digitale Systeme.',
-                'summary' => 'Ich entwickle nützliche digitale Systeme und durchdachte Web-Erlebnisse.',
+                'summary' => 'Ich konzipiere und entwickle Software, die komplexe Ideen einfach macht.',
                 'explore' => 'Projekte entdecken',
                 'index_label' => 'Start',
                 'routes' => [

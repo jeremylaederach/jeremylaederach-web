@@ -118,8 +118,8 @@
     }
 
     .page-hero {
-        min-height: 82svh;
-        padding: 132px 0 62px;
+        min-height: 74svh;
+        padding: 132px 0 54px;
     }
 
     .page-hero h1 {
@@ -169,7 +169,7 @@
 
     .case-study-hero > h1 {
         grid-column: 1 / 8;
-        font-size: 92px;
+        font-size: 104px;
     }
 
     .case-study-hero__intro {
@@ -429,8 +429,8 @@
     }
 
     .page-hero {
-        min-height: 84svh;
-        padding: 120px 0 48px;
+        min-height: 78svh;
+        padding: 112px 0 44px;
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr auto auto;
         gap: 22px;

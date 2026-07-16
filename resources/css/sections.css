@@ -30,12 +30,12 @@
         isolation: isolate;
         display: grid;
         width: var(--shell);
-        min-height: 88svh;
+        min-height: 78svh;
         margin: 0 auto;
-        padding: 158px 0 70px;
+        padding: 142px 0 58px;
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-rows: auto 1fr auto;
-        gap: 32px;
+        gap: 26px;
         align-items: center;
     }
 
@@ -84,27 +84,21 @@
         align-self: center;
     }
 
-    .page-hero__title::after {
+    .page-hero > p::before {
         display: block;
-        width: clamp(80px, 8vw, 132px);
+        width: 56px;
         height: 1px;
-        margin-top: 28px;
-        background: linear-gradient(90deg, var(--route-accent), rgba(var(--route-accent-rgb), 0.28) 48%, transparent);
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, var(--route-accent), rgba(var(--route-accent-rgb), 0));
         content: '';
-        transform: scaleX(0);
-        transform-origin: left;
-    }
-
-    .js.is-ready .page-hero__title::after {
-        animation: hero-line-draw 900ms var(--ease-heavy) 240ms both;
     }
 
     .page-hero h1 {
         max-width: 9ch;
         margin: 0;
-        font-size: 112px;
+        font-size: 104px;
         font-weight: 430;
-        line-height: 0.88;
+        line-height: 0.92;
     }
 
     .page-hero > p {
@@ -114,7 +108,7 @@
         grid-column: 9 / 13;
         align-self: end;
         color: var(--ink-muted);
-        font-size: 19px;
+        font-size: 17px;
         line-height: 1.55;
     }
 
@@ -941,12 +935,20 @@
         text-transform: uppercase;
     }
 
+    .case-study-hero__index::after {
+        width: 64px;
+        height: 1px;
+        margin-left: 8px;
+        background: linear-gradient(90deg, rgba(var(--project-accent-rgb), 0.72), transparent);
+        content: '';
+    }
+
     .case-study-hero > h1 {
         grid-column: 1 / 9;
         margin: 16px 0 0;
-        font-size: 150px;
+        font-size: 132px;
         font-weight: 410;
-        line-height: 0.82;
+        line-height: 0.86;
     }
 
     .case-study-hero__intro {
@@ -962,6 +964,15 @@
         color: var(--ink-muted);
         font-size: 18px;
         line-height: 1.6;
+    }
+
+    .case-study-hero__intro > p::before {
+        display: block;
+        width: 56px;
+        height: 1px;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, var(--project-accent), transparent);
+        content: '';
     }
 
     .case-study-hero__intro dl {
@@ -997,7 +1008,7 @@
 
     .case-study-hero__visual {
         grid-column: 1 / -1;
-        margin-top: 72px;
+        margin-top: 54px;
     }
 
     .quantified-visual--expanded {

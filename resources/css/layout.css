@@ -47,6 +47,7 @@
         align-items: center;
         gap: 14px;
         color: rgba(244, 241, 234, 0.72);
+        transition: color 260ms ease;
     }
 
     .brand-lockup::before {
@@ -67,7 +68,7 @@
         height: 38px;
         object-fit: contain;
         transform-origin: 50% 82%;
-        transition: filter 420ms ease, transform 560ms var(--ease-heavy);
+        transition: filter 360ms ease, transform 520ms var(--ease-heavy);
     }
 
     .brand-lockup__name {
@@ -84,6 +85,7 @@
     .brand-lockup__wordmark {
         display: inline-flex;
         align-items: baseline;
+        transition: transform 520ms var(--ease-heavy);
     }
 
     .brand-lockup__letter,
@@ -92,27 +94,11 @@
     }
 
     .brand-lockup__letter {
-        transition:
-            color 260ms ease,
-            text-shadow 360ms ease,
-            transform 520ms var(--ease-out);
-        transition-delay: calc(var(--brand-letter-index) * 9ms);
+        color: inherit;
     }
 
     .brand-lockup__space {
         width: 0.25em;
-    }
-
-    .brand-lockup__name::after {
-        display: inline-block;
-        width: 0.42em;
-        margin-left: 0.12em;
-        color: var(--route-accent);
-        content: '_';
-        opacity: 0;
-        transform: translateX(-0.18em) scaleX(0);
-        transform-origin: left;
-        transition: opacity 220ms ease, transform 440ms var(--ease-heavy);
     }
 
     .brand-lockup:hover,
@@ -122,26 +108,13 @@
 
     .brand-lockup:hover .brand-lockup__mark,
     .brand-lockup:focus-visible .brand-lockup__mark {
-        filter: drop-shadow(0 0 12px rgba(var(--route-accent-rgb), 0.34));
-        transform: translateY(-2px) rotate(-1.8deg) scale(1.065, 0.97);
+        filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.24));
+        transform: translateY(-1px) scale(1.035);
     }
 
-    .brand-lockup:hover .brand-lockup__letter,
-    .brand-lockup:focus-visible .brand-lockup__letter {
-        color: var(--ink);
-        text-shadow: 0 0 12px rgba(var(--route-accent-rgb), 0.18);
-        transform: translateY(-1.5px);
-    }
-
-    .brand-lockup:hover .brand-lockup__letter:nth-child(3n + 2),
-    .brand-lockup:focus-visible .brand-lockup__letter:nth-child(3n + 2) {
-        transform: translateY(-2.5px);
-    }
-
-    .brand-lockup:hover .brand-lockup__name::after,
-    .brand-lockup:focus-visible .brand-lockup__name::after {
-        opacity: 0.86;
-        transform: translateX(0) scaleX(1);
+    .brand-lockup:hover .brand-lockup__wordmark,
+    .brand-lockup:focus-visible .brand-lockup__wordmark {
+        transform: translateX(2px);
     }
 
     .site-header__controls,

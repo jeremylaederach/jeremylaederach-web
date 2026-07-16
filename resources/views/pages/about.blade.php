@@ -3,6 +3,11 @@
 @section('content')
     <article class="portfolio-page about-page">
         <header class="page-hero page-hero--about" data-pointer-surface data-reveal>
+            <div class="page-hero__index">
+                <span>02</span>
+                <span>{{ $content['about_page']['eyebrow'] }}</span>
+            </div>
+
             <div class="page-hero__title">
                 <h1>{{ $content['about_page']['heading'] }}<span class="accent-dot">.</span></h1>
             </div>

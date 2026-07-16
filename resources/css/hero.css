@@ -7,7 +7,7 @@
         display: grid;
         min-height: 100svh;
         overflow: hidden;
-        grid-template-rows: minmax(300px, 42svh) minmax(360px, 1fr);
+        grid-template-rows: minmax(320px, 45svh) minmax(360px, 1fr);
         background: var(--bg);
     }
 
@@ -15,10 +15,10 @@
         display: grid;
         width: var(--shell);
         margin: 0 auto;
-        padding: 116px 0 54px;
+        padding: 142px 0 48px;
         grid-template-columns: minmax(0, 1.75fr) minmax(260px, 0.65fr);
         gap: 64px;
-        align-items: center;
+        align-items: end;
     }
 
     .kinetic-index__title {
@@ -52,17 +52,6 @@
         align-items: baseline;
     }
 
-    .kinetic-index__wordmark::after {
-        width: 2px;
-        height: 0.68em;
-        margin-left: 0.08em;
-        background: var(--accent);
-        box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.44);
-        content: '';
-        opacity: 0;
-        transform: translateY(0.04em);
-    }
-
     .kinetic-index__letter,
     .kinetic-index__letter-space {
         display: inline-block;
@@ -70,6 +59,7 @@
 
     .kinetic-index__letter {
         --letter-tilt: -0.8deg;
+        display: inline-block;
         transform-origin: 50% 82%;
         transition:
             color 260ms ease,
@@ -81,10 +71,35 @@
         --letter-tilt: 0.8deg;
     }
 
+    .kinetic-index__letter--tone-1 {
+        --letter-color: var(--violet);
+    }
+
+    .kinetic-index__letter--tone-2 {
+        --letter-color: var(--blue);
+    }
+
+    .kinetic-index__letter--tone-3 {
+        --letter-color: var(--coral);
+    }
+
+    .kinetic-index__letter--tone-4 {
+        --letter-color: var(--green);
+    }
+
     .kinetic-index__letter:hover {
-        color: color-mix(in srgb, var(--accent) 38%, var(--ink));
-        text-shadow: 0 0 0.3em rgba(var(--accent-rgb), 0.2);
+        color: var(--letter-color);
+        text-shadow: 0 0 0.32em color-mix(in srgb, var(--letter-color) 28%, transparent);
         transform: translateY(-0.07em) scale(1.045) rotate(var(--letter-tilt));
+    }
+
+    .kinetic-index__letter:hover .kinetic-index__letter-glyph {
+        animation: none;
+    }
+
+    .kinetic-index__letter-glyph {
+        display: inline-block;
+        transform-origin: 50% 80%;
     }
 
     .kinetic-index__letter-space {
@@ -96,13 +111,9 @@
         font-style: normal;
     }
 
-    .js.is-ready .kinetic-index__letter {
-        animation: wordmark-signal 8.6s var(--ease-heavy) infinite;
-        animation-delay: calc(1.1s + (var(--letter-index) * 44ms));
-    }
-
-    .js.is-ready .kinetic-index__wordmark::after {
-        animation: wordmark-caret 8.6s steps(1, end) 1.75s infinite;
+    .js.is-ready .kinetic-index__letter-glyph {
+        animation: wordmark-signal 4s ease infinite;
+        animation-delay: calc(700ms + (var(--letter-index) * 46ms));
     }
 
     .kinetic-index__intro {
@@ -360,26 +371,14 @@
     }
 
     @keyframes wordmark-signal {
-        0%, 66%, 78%, 100% {
+        0%, 56%, 78%, 100% {
             color: inherit;
             text-shadow: none;
-            transform: none;
         }
 
-        71% {
-            color: color-mix(in srgb, var(--accent) 32%, var(--ink));
-            text-shadow: 0 0 0.26em rgba(var(--accent-rgb), 0.18);
-            transform: translateY(-0.035em);
-        }
-    }
-
-    @keyframes wordmark-caret {
-        0%, 67%, 71%, 75%, 100% {
-            opacity: 0;
-        }
-
-        69%, 73% {
-            opacity: 0.72;
+        68% {
+            color: color-mix(in srgb, var(--violet) 58%, var(--ink));
+            text-shadow: 0 0 0.26em color-mix(in srgb, var(--violet) 24%, transparent);
         }
     }
 

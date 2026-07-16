@@ -31,7 +31,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSee('I build useful digital systems and thoughtful web experiences.')
+            ->assertSee('Architecting and engineering software that makes complex ideas feel simple.')
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading" aria-label="Jeremy Läderach."', false)
             ->assertSee('class="kinetic-index__wordmark"', false)
@@ -53,12 +53,12 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
-        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter"'));
+        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
 
         $this->get('/de')
             ->assertOk()
             ->assertSee('Softwareentwickler')
-            ->assertSee('nützliche digitale Systeme')
+            ->assertSee('Ich konzipiere und entwickle Software, die komplexe Ideen einfach macht.')
             ->assertSee('Profil')
             ->assertSee('Projekte');
 
@@ -75,6 +75,8 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page about-page"', false)
+            ->assertSee('class="page-hero__index"', false)
+            ->assertSee('<span>02</span>', false)
             ->assertSee('class="about-story"', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
