@@ -63,10 +63,10 @@
                                 :label="$content['quantified_page']['preview_label']"
                                 data-transition-origin
                             />
-                        @elseif ($project['visual'] === 'client-hub')
-                            <x-client-hub-preview
-                                :copy="$content['client_hub_page']['preview']"
-                                :label="$content['client_hub_page']['preview_label']"
+                        @elseif ($project['visual'] === 'jay-jay')
+                            <x-jay-jay-preview
+                                :copy="$content['jay_jay_page']['preview']"
+                                :label="$content['jay_jay_page']['preview_label']"
                                 data-transition-origin
                             />
                         @else

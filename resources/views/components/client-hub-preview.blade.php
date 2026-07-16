@@ -1,14 +1,10 @@
 @props([
     'copy',
     'label',
-    'expanded' => false,
 ])
 
 <div
-    {{ $attributes->class([
-        'project-visual client-hub-visual',
-        'client-hub-visual--expanded' => $expanded,
-    ]) }}
+    {{ $attributes->class('project-visual client-hub-visual') }}
     role="img"
     aria-label="{{ $label }}"
 >

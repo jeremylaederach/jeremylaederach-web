@@ -313,8 +313,7 @@
         gap: 11px;
     }
 
-    .brand-lockup::before,
-    .brand-lockup::after {
+    .brand-lockup::before {
         right: 12px;
     }
 
@@ -372,7 +371,7 @@
     }
 
     .kinetic-index__number {
-        padding-top: 3px;
+        padding-top: 0;
         font-size: 9px;
     }
 
@@ -404,9 +403,9 @@
     }
 
     .index-panel__number {
-        grid-row: 1 / 3;
-        align-self: start;
-        padding-top: 7px;
+        grid-row: 1;
+        align-self: center;
+        padding-top: 0;
     }
 
     .index-panel__title {
@@ -605,6 +604,43 @@
         font-size: 17px;
     }
 
+    .jay-jay-ecosystem {
+        padding: 12px;
+        grid-template-columns: 1fr;
+        align-content: center;
+    }
+
+    .jay-jay-ecosystem__surface--web {
+        width: 88%;
+        height: 64%;
+        align-self: start;
+        transform: translateY(0) rotate(-0.7deg);
+    }
+
+    .jay-jay-ecosystem__surface--hub {
+        width: 76%;
+        height: 68%;
+        margin: -22% 0 0 auto;
+        transform: rotate(0.8deg);
+    }
+
+    .jay-jay-ecosystem__surface-header {
+        min-height: 34px;
+        padding: 0 9px;
+    }
+
+    .jay-jay-ecosystem__surface-header > small {
+        font-size: 6px;
+    }
+
+    .jay-jay-ecosystem__hub-preview .client-hub-visual__workspace {
+        padding: 10px;
+    }
+
+    .jay-jay-ecosystem__hub-preview .client-hub-visual__cards {
+        display: none;
+    }
+
     .case-study-hero {
         min-height: auto;
         padding: 112px 0 72px;
@@ -656,9 +692,31 @@
         aspect-ratio: 4 / 3;
     }
 
-    .project-detail--jay-jay-web .case-study-hero > h1,
+    .project-detail--jay-jay .case-study-hero > h1,
     .project-detail--sessiondeck .case-study-hero > h1 {
         font-size: 54px;
+    }
+
+    .jay-jay-ecosystem--expanded {
+        min-height: 620px;
+        padding: 16px;
+        grid-template-columns: 1fr;
+        align-content: center;
+    }
+
+    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__surface--web {
+        width: 92%;
+        height: 58%;
+    }
+
+    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__surface--hub {
+        width: 84%;
+        height: 62%;
+        margin-top: -18%;
+    }
+
+    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__hub-preview .client-hub-visual__cards {
+        display: grid;
     }
 
     .quantified-visual--expanded {
@@ -712,62 +770,6 @@
         width: 34px;
         height: 34px;
         font-size: 17px;
-    }
-
-    .client-hub-visual--expanded {
-        min-height: 520px;
-        grid-template-columns: 1fr;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__sidebar {
-        padding: 16px 18px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__badge {
-        min-height: 26px;
-        margin: 0 0 0 auto;
-        font-size: 7px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__workspace {
-        padding: 28px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__heading {
-        font-size: 32px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__workspace > p {
-        display: block;
-        font-size: 12px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__cards {
-        margin-top: 24px;
-        grid-template-columns: 1fr;
-        gap: 7px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__cards > span {
-        min-height: 68px;
-        padding: 10px 12px;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 4px 12px;
-        align-items: center;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__cards small {
-        font-size: 9px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__cards strong {
-        grid-row: 1 / 3;
-        grid-column: 2;
-        font-size: 24px;
-    }
-
-    .client-hub-visual--expanded .client-hub-visual__cards em {
-        font-size: 7px;
     }
 
     .case-study-section {

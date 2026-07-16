@@ -44,8 +44,8 @@
                     :label="$project['preview_label']"
                     :expanded="true"
                 />
-            @elseif ($project['visual_type'] === 'client-hub')
-                <x-client-hub-preview
+            @elseif ($project['visual_type'] === 'jay-jay')
+                <x-jay-jay-preview
                     class="case-study-hero__visual"
                     :copy="$project['preview']"
                     :label="$project['preview_label']"

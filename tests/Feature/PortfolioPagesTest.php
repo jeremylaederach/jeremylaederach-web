@@ -47,14 +47,13 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('data-motion-chip', false)
             ->assertDontSee('data-portfolio-chat', false)
             ->assertSee('Quantified')
-            ->assertSee('Jay-Jay Web')
-            ->assertSee('Jay-Jay Client Hub')
+            ->assertSee('Jay-Jay')
             ->assertSee('SessionDeck')
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
-        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
+        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter"'));
 
         $this->get('/de')
             ->assertOk()
@@ -118,35 +117,30 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
             ->assertSee('Persönliches Analyseprodukt')
-            ->assertSee('Jay-Jay Web')
-            ->assertSee('Zweisprachige Service-Website')
+            ->assertSee('Jay-Jay')
+            ->assertSee('Digitales Dienstleistungsunternehmen')
             ->assertSee('Laravel 13')
+            ->assertSee('Client Hub')
             ->assertSee('SessionDeck')
             ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
-            ->assertSee('Jay-Jay Client Hub')
-            ->assertSee('Zweisprachiges Kundenportal')
             ->assertSee('Interaktiver Prototyp')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
-            ->assertSee('href="http://localhost/de/jay-jay-client-hub"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('data-transition-theme="quantified"', false)
             ->assertSee('data-transition-theme="session-deck"', false)
-            ->assertSee('data-transition-theme="client-hub"', false)
             ->assertSee('data-transition-theme="jay-jay"', false)
             ->assertSee('data-pointer-route="quantified"', false)
             ->assertSee('data-pointer-route="session-deck"', false)
-            ->assertSee('data-pointer-route="client-hub"', false)
             ->assertSee('data-pointer-route="jay-jay"', false)
             ->assertDontSee('project-case__action', false);
 
         $projectHtml = $projects->getContent();
 
-        $this->assertSame(4, substr_count($projectHtml, 'class="project-case project-case--'));
-        $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="quantified"'));
-        $this->assertLessThan(strpos($projectHtml, 'id="jay-jay-client-hub"'), strpos($projectHtml, 'id="sessiondeck"'));
-        $this->assertLessThan(strpos($projectHtml, 'id="jay-jay-web"'), strpos($projectHtml, 'id="jay-jay-client-hub"'));
+        $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
+        $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
+        $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }
 
     public function test_quantified_case_study_renders_in_both_locales(): void
@@ -188,21 +182,25 @@ class PortfolioPagesTest extends TestCase
 
         $this->get('/en/jay-jay')
             ->assertOk()
-            ->assertSee('<title>Jay-Jay Web', false)
+            ->assertSee('<title>Jay-Jay', false)
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
-            ->assertSee('project-detail--jay-jay-web', false)
-            ->assertSee('Laravel 13')
-            ->assertSee('Static export')
-            ->assertSee('Plesk delivery')
+            ->assertSee('project-detail--jay-jay', false)
+            ->assertSee('One business, two connected customer experiences.')
+            ->assertSee('Jay-Jay Web')
+            ->assertSee('Client Hub')
+            ->assertSee('Interactive prototype')
+            ->assertSee('class="project-visual jay-jay-ecosystem jay-jay-ecosystem--expanded case-study-hero__visual"', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
+            ->assertSee('assets/work/jay-jay-mark.svg', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 
         $this->get('/de/jay-jay')
             ->assertOk()
-            ->assertSee('wartbare Quellanwendung')
-            ->assertSee('Live-Website besuchen')
+            ->assertSee('Ein Unternehmen, zwei verbundene Kundenerlebnisse.')
+            ->assertSee('Produktökosystem')
+            ->assertSee('Jay-Jay besuchen')
             ->assertSee('href="http://localhost/en/jay-jay"', false);
     }
 
@@ -231,28 +229,18 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/session-deck"', false);
     }
 
-    public function test_client_hub_case_study_renders_in_both_locales(): void
+    public function test_legacy_client_hub_routes_redirect_to_the_jay_jay_case_study(): void
     {
         $this->get('/jay-jay-client-hub')
-            ->assertRedirect('/en/jay-jay-client-hub');
+            ->assertRedirect('/en/jay-jay#client-hub');
 
         $this->get('/en/jay-jay-client-hub')
-            ->assertOk()
-            ->assertSee('<title>Jay-Jay Client Hub', false)
-            ->assertSee('data-page="projects"', false)
-            ->assertSee('project-detail--jay-jay-client-hub', false)
-            ->assertSee('Customer clarity before account complexity.')
-            ->assertSee('Prototype data service')
-            ->assertSee('Project timelines')
-            ->assertSee('assets/work/jay-jay-mark.svg', false)
-            ->assertSee('class="page-cta page-cta--contact"', false)
-            ->assertSee('href="http://localhost/de/jay-jay-client-hub"', false);
+            ->assertMovedPermanently()
+            ->assertRedirect('/en/jay-jay#client-hub');
 
         $this->get('/de/jay-jay-client-hub')
-            ->assertOk()
-            ->assertSee('Klarheit für Kunden vor Account-Komplexität.')
-            ->assertSee('Reale Anwendungsstruktur ohne vorschnelle Infrastruktur.')
-            ->assertSee('href="http://localhost/en/jay-jay-client-hub"', false);
+            ->assertMovedPermanently()
+            ->assertRedirect('/de/jay-jay#client-hub');
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void

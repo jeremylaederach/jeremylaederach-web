@@ -3,7 +3,6 @@ export const pageRoutes = new Set(['home', 'projects', 'about', 'contact', 'impr
 const routeScenes = new Map([
     ['quantified', 'projects'],
     ['jay-jay', 'projects'],
-    ['jay-jay-client-hub', 'projects'],
     ['session-deck', 'projects'],
 ]);
 

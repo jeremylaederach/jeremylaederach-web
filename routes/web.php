@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/'.config('portfolio.default_locale'));
 Route::redirect('/quantified', '/'.config('portfolio.default_locale').'/quantified');
 Route::redirect('/jay-jay', '/'.config('portfolio.default_locale').'/jay-jay');
-Route::redirect('/jay-jay-client-hub', '/'.config('portfolio.default_locale').'/jay-jay-client-hub');
+Route::redirect('/jay-jay-client-hub', '/'.config('portfolio.default_locale').'/jay-jay#client-hub', 301);
 Route::redirect('/session-deck', '/'.config('portfolio.default_locale').'/session-deck');
 
 Route::pattern('locale', implode('|', array_keys(config('portfolio.locales'))));

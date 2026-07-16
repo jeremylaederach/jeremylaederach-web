@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 
 class PortfolioController extends Controller
@@ -32,9 +33,9 @@ class PortfolioController extends Controller
         return $this->renderProject($locale, 'jay_jay_page');
     }
 
-    public function jayJayClientHub(string $locale): View
+    public function jayJayClientHub(string $locale): RedirectResponse
     {
-        return $this->renderProject($locale, 'client_hub_page');
+        return redirect()->to(route('jay-jay', ['locale' => $locale]).'#client-hub', 301);
     }
 
     public function sessionDeck(string $locale): View

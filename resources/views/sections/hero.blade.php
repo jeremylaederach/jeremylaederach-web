@@ -10,13 +10,13 @@
                             <span class="kinetic-index__letter-space">&nbsp;</span>
                         @else
                             <span
-                                class="kinetic-index__letter kinetic-index__letter--tone-{{ (($loop->iteration - 1) % 4) + 1 }}"
+                                class="kinetic-index__letter"
                                 style="--letter-index: {{ $loop->index }}"
                             >{{ $letter }}</span>
                         @endif
                     @endforeach
                     <em
-                        class="kinetic-index__letter kinetic-index__letter--tone-1"
+                        class="kinetic-index__letter"
                         style="--letter-index: {{ mb_strlen('Jeremy Läderach') }}"
                     >.</em>
                 </span>
