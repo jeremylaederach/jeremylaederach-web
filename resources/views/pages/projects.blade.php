@@ -40,25 +40,33 @@
                         data-transition-theme="{{ $project['transition_theme'] }}"
                         data-pointer-route="{{ $project['transition_theme'] }}"
                     >
-                        <header class="project-case__header">
-                            <span>0{{ $loop->iteration }}</span>
-                            <p>{{ $project['type'] }}</p>
-                            <h2>{{ $project['name'] }}</h2>
-                        </header>
+                        <div class="project-case__content">
+                            <header class="project-case__header">
+                                <span>0{{ $loop->iteration }}</span>
+                                <p>{{ $project['type'] }}</p>
+                                <h2>{{ $project['name'] }}</h2>
+                            </header>
 
-                        <div class="project-case__details">
-                            <p>{{ $project['description'] }}</p>
-                            <ul aria-label="{{ $project['name'] }} technologies">
-                                @foreach ($project['tags'] as $tag)
-                                    <li>{{ $tag }}</li>
-                                @endforeach
-                            </ul>
+                            <div class="project-case__details">
+                                <p>{{ $project['description'] }}</p>
+                                <ul aria-label="{{ $project['name'] }} technologies">
+                                    @foreach ($project['tags'] as $tag)
+                                        <li>{{ $tag }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
 
                         @if ($project['visual'] === 'quantified')
                             <x-quantified-preview
                                 :copy="$content['quantified_page']['preview']"
                                 :label="$content['quantified_page']['preview_label']"
+                                data-transition-origin
+                            />
+                        @elseif ($project['visual'] === 'client-hub')
+                            <x-client-hub-preview
+                                :copy="$content['client_hub_page']['preview']"
+                                :label="$content['client_hub_page']['preview_label']"
                                 data-transition-origin
                             />
                         @else

@@ -1,11 +1,13 @@
 @layer components {
     .kinetic-index {
+        --index-column-gap: 32px;
+        --index-number-column: 64px;
         position: relative;
         z-index: 1;
         display: grid;
         min-height: 100svh;
         overflow: hidden;
-        grid-template-rows: minmax(320px, 45svh) minmax(360px, 1fr);
+        grid-template-rows: minmax(300px, 42svh) minmax(360px, 1fr);
         background: var(--bg);
     }
 
@@ -13,17 +15,17 @@
         display: grid;
         width: var(--shell);
         margin: 0 auto;
-        padding: 142px 0 48px;
+        padding: 116px 0 54px;
         grid-template-columns: minmax(0, 1.75fr) minmax(260px, 0.65fr);
         gap: 64px;
-        align-items: end;
+        align-items: center;
     }
 
     .kinetic-index__title {
         display: grid;
         min-width: 0;
-        grid-template-columns: 64px minmax(0, 1fr);
-        gap: 32px;
+        grid-template-columns: var(--index-number-column) minmax(0, 1fr);
+        gap: var(--index-column-gap);
         align-items: start;
     }
 
@@ -33,10 +35,6 @@
         font-size: 11px;
         font-variant-numeric: tabular-nums;
         line-height: 1;
-    }
-
-    .kinetic-index__identity {
-        min-width: 0;
     }
 
     .kinetic-index__heading {
@@ -49,8 +47,20 @@
     }
 
     .kinetic-index__wordmark {
+        position: relative;
         display: inline-flex;
         align-items: baseline;
+    }
+
+    .kinetic-index__wordmark::after {
+        width: 2px;
+        height: 0.68em;
+        margin-left: 0.08em;
+        background: var(--accent);
+        box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.44);
+        content: '';
+        opacity: 0;
+        transform: translateY(0.04em);
     }
 
     .kinetic-index__letter,
@@ -103,6 +113,15 @@
         font-style: normal;
     }
 
+    .js.is-ready .kinetic-index__letter {
+        animation: wordmark-compile 760ms var(--ease-out) backwards;
+        animation-delay: calc(150ms + (var(--letter-index) * 38ms));
+    }
+
+    .js.is-ready .kinetic-index__wordmark::after {
+        animation: code-caret 1700ms steps(1, end) 220ms both;
+    }
+
     .kinetic-index__intro {
         align-self: end;
         padding-bottom: 5px;
@@ -144,8 +163,8 @@
         min-height: 0;
         overflow: hidden;
         flex: 1 1 0;
-        grid-template-columns: 64px minmax(210px, 0.8fr) minmax(280px, 1fr) minmax(220px, 0.8fr) 48px;
-        gap: 32px;
+        grid-template-columns: var(--index-number-column) minmax(210px, 0.8fr) minmax(280px, 1fr) minmax(220px, 0.8fr) 48px;
+        gap: var(--index-column-gap);
         align-items: center;
         padding: 20px max(32px, calc((100vw - 1600px) / 2));
         border-bottom: 1px solid var(--line);
@@ -356,4 +375,34 @@
             transform: translateX(7px);
         }
     }
+
+    @keyframes wordmark-compile {
+        0% {
+            color: var(--letter-color);
+            opacity: 0;
+            transform: translateY(0.16em) scaleY(0.9);
+        }
+
+        58% {
+            color: var(--letter-color);
+            opacity: 1;
+        }
+
+        100% {
+            color: inherit;
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes code-caret {
+        0%, 18%, 38%, 58% {
+            opacity: 1;
+        }
+
+        8%, 28%, 48%, 68%, 100% {
+            opacity: 0;
+        }
+    }
+
 }

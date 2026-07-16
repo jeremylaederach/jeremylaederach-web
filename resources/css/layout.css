@@ -75,16 +75,53 @@
         width: 38px;
         height: 38px;
         object-fit: contain;
-        transition: filter 360ms ease, transform 440ms var(--ease-heavy);
+        transform-origin: 50% 82%;
+        transition: filter 420ms ease, transform 560ms var(--ease-heavy);
     }
 
     .brand-lockup__name {
+        position: relative;
         display: block;
         font-size: 15px;
         font-weight: 480;
         line-height: 1;
         letter-spacing: 0;
-        transition: color 220ms ease, transform 440ms var(--ease-heavy);
+        white-space: nowrap;
+        transition: color 220ms ease;
+    }
+
+    .brand-lockup__wordmark {
+        display: inline-flex;
+        align-items: baseline;
+    }
+
+    .brand-lockup__letter,
+    .brand-lockup__space {
+        display: inline-block;
+    }
+
+    .brand-lockup__letter {
+        transition:
+            color 260ms ease,
+            text-shadow 360ms ease,
+            transform 520ms var(--ease-out);
+        transition-delay: calc(var(--brand-letter-index) * 9ms);
+    }
+
+    .brand-lockup__space {
+        width: 0.25em;
+    }
+
+    .brand-lockup__name::after {
+        display: inline-block;
+        width: 0.42em;
+        margin-left: 0.12em;
+        color: var(--route-accent);
+        content: '_';
+        opacity: 0;
+        transform: translateX(-0.18em) scaleX(0);
+        transform-origin: left;
+        transition: opacity 220ms ease, transform 440ms var(--ease-heavy);
     }
 
     .brand-lockup:hover,
@@ -99,13 +136,26 @@
 
     .brand-lockup:hover .brand-lockup__mark,
     .brand-lockup:focus-visible .brand-lockup__mark {
-        filter: drop-shadow(0 0 10px rgba(169, 120, 255, 0.28));
-        transform: translateY(-1px) scale(1.035);
+        filter: drop-shadow(0 0 12px rgba(var(--route-accent-rgb), 0.34));
+        transform: translateY(-2px) rotate(-1.8deg) scale(1.065, 0.97);
     }
 
-    .brand-lockup:hover .brand-lockup__name,
-    .brand-lockup:focus-visible .brand-lockup__name {
-        transform: translateX(2px);
+    .brand-lockup:hover .brand-lockup__letter,
+    .brand-lockup:focus-visible .brand-lockup__letter {
+        color: var(--ink);
+        text-shadow: 0 0 12px rgba(var(--route-accent-rgb), 0.18);
+        transform: translateY(-1.5px);
+    }
+
+    .brand-lockup:hover .brand-lockup__letter:nth-child(3n + 2),
+    .brand-lockup:focus-visible .brand-lockup__letter:nth-child(3n + 2) {
+        transform: translateY(-2.5px);
+    }
+
+    .brand-lockup:hover .brand-lockup__name::after,
+    .brand-lockup:focus-visible .brand-lockup__name::after {
+        opacity: 0.86;
+        transform: translateX(0) scaleX(1);
     }
 
     .site-header__controls,
@@ -253,8 +303,8 @@
     }
 
     .sound-toggle .nav-icon {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
     }
 
     .sound-toggle__off,
@@ -304,6 +354,10 @@
         }
 
         .site-pointer-layer[data-route='jay-jay'] {
+            --pointer-rgb: 95, 105, 225;
+        }
+
+        .site-pointer-layer[data-route='client-hub'] {
             --pointer-rgb: 95, 105, 225;
         }
 
@@ -415,23 +469,33 @@
     }
 
     .site-menu__toggle {
-        gap: 5px;
+        position: relative;
+        gap: 0;
     }
 
     .site-menu__toggle span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
         display: block;
         width: 16px;
         height: 1px;
         background: currentColor;
+        transform: translate(-50%, -4px);
+        transform-origin: center;
         transition: transform 420ms var(--ease-out);
     }
 
+    .site-menu__toggle span:last-child {
+        transform: translate(-50%, 4px);
+    }
+
     .site-menu__toggle[aria-expanded='true'] span:first-child {
-        transform: translateY(3px) rotate(45deg);
+        transform: translate(-50%, -50%) rotate(45deg);
     }
 
     .site-menu__toggle[aria-expanded='true'] span:last-child {
-        transform: translateY(-3px) rotate(-45deg);
+        transform: translate(-50%, -50%) rotate(-45deg);
     }
 
     .site-menu__panel {
@@ -550,6 +614,10 @@
     }
 
     .page-transition[data-theme='jay-jay'] .page-transition__surface {
+        background: #11132d;
+    }
+
+    .page-transition[data-theme='client-hub'] .page-transition__surface {
         background: #11132d;
     }
 

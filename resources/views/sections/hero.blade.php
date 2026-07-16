@@ -3,20 +3,24 @@
         <div class="kinetic-index__title">
             <span class="kinetic-index__number" aria-hidden="true">00</span>
 
-            <div class="kinetic-index__identity">
-                <h1 id="landing-title" class="kinetic-index__heading" aria-label="Jeremy Läderach.">
-                    <span class="kinetic-index__wordmark" aria-hidden="true">
-                        @foreach (mb_str_split('Jeremy Läderach') as $letter)
-                            @if ($letter === ' ')
-                                <span class="kinetic-index__letter-space">&nbsp;</span>
-                            @else
-                                <span class="kinetic-index__letter kinetic-index__letter--tone-{{ (($loop->iteration - 1) % 4) + 1 }}">{{ $letter }}</span>
-                            @endif
-                        @endforeach
-                        <em class="kinetic-index__letter kinetic-index__letter--tone-1">.</em>
-                    </span>
-                </h1>
-            </div>
+            <h1 id="landing-title" class="kinetic-index__heading" aria-label="Jeremy Läderach.">
+                <span class="kinetic-index__wordmark" aria-hidden="true">
+                    @foreach (mb_str_split('Jeremy Läderach') as $letter)
+                        @if ($letter === ' ')
+                            <span class="kinetic-index__letter-space">&nbsp;</span>
+                        @else
+                            <span
+                                class="kinetic-index__letter kinetic-index__letter--tone-{{ (($loop->iteration - 1) % 4) + 1 }}"
+                                style="--letter-index: {{ $loop->index }}"
+                            >{{ $letter }}</span>
+                        @endif
+                    @endforeach
+                    <em
+                        class="kinetic-index__letter kinetic-index__letter--tone-1"
+                        style="--letter-index: {{ mb_strlen('Jeremy Läderach') }}"
+                    >.</em>
+                </span>
+            </h1>
         </div>
 
         <div class="kinetic-index__intro">

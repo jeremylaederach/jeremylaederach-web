@@ -68,7 +68,17 @@
                     data-sound-tone="brand"
                 >
                     <x-brand-mark class="brand-lockup__mark" size="96" />
-                    <span class="brand-lockup__name">Jeremy Läderach</span>
+                    <span class="brand-lockup__name" aria-label="Jeremy Läderach">
+                        <span class="brand-lockup__wordmark" aria-hidden="true">
+                            @foreach (mb_str_split('Jeremy Läderach') as $letter)
+                                @if ($letter === ' ')
+                                    <span class="brand-lockup__space">&nbsp;</span>
+                                @else
+                                    <span class="brand-lockup__letter" style="--brand-letter-index: {{ $loop->index }}">{{ $letter }}</span>
+                                @endif
+                            @endforeach
+                        </span>
+                    </span>
                 </a>
 
                 <div class="site-header__controls">

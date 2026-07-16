@@ -32,6 +32,11 @@ class PortfolioController extends Controller
         return $this->renderProject($locale, 'jay_jay_page');
     }
 
+    public function jayJayClientHub(string $locale): View
+    {
+        return $this->renderProject($locale, 'client_hub_page');
+    }
+
     public function sessionDeck(string $locale): View
     {
         return $this->renderProject($locale, 'sessiondeck_page');

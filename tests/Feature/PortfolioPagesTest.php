@@ -48,6 +48,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('data-portfolio-chat', false)
             ->assertSee('Quantified')
             ->assertSee('Jay-Jay Web')
+            ->assertSee('Jay-Jay Client Hub')
             ->assertSee('SessionDeck')
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
@@ -112,6 +113,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="project-cases"', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
             ->assertSee('assets/work/sessiondeck-main.png', false)
+            ->assertSee('assets/work/jay-jay-mark.svg', false)
             ->assertSee('Projekte')
             ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
@@ -122,18 +124,29 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('SessionDeck')
             ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
+            ->assertSee('Jay-Jay Client Hub')
+            ->assertSee('Zweisprachiges Kundenportal')
+            ->assertSee('Interaktiver Prototyp')
             ->assertSee('href="http://localhost/de/quantified"', false)
-            ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
+            ->assertSee('href="http://localhost/de/jay-jay-client-hub"', false)
+            ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('data-transition-theme="quantified"', false)
-            ->assertSee('data-transition-theme="jay-jay"', false)
             ->assertSee('data-transition-theme="session-deck"', false)
+            ->assertSee('data-transition-theme="client-hub"', false)
+            ->assertSee('data-transition-theme="jay-jay"', false)
             ->assertSee('data-pointer-route="quantified"', false)
-            ->assertSee('data-pointer-route="jay-jay"', false)
             ->assertSee('data-pointer-route="session-deck"', false)
+            ->assertSee('data-pointer-route="client-hub"', false)
+            ->assertSee('data-pointer-route="jay-jay"', false)
             ->assertDontSee('project-case__action', false);
 
-        $this->assertSame(3, substr_count($projects->getContent(), 'class="project-case project-case--'));
+        $projectHtml = $projects->getContent();
+
+        $this->assertSame(4, substr_count($projectHtml, 'class="project-case project-case--'));
+        $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="quantified"'));
+        $this->assertLessThan(strpos($projectHtml, 'id="jay-jay-client-hub"'), strpos($projectHtml, 'id="sessiondeck"'));
+        $this->assertLessThan(strpos($projectHtml, 'id="jay-jay-web"'), strpos($projectHtml, 'id="jay-jay-client-hub"'));
     }
 
     public function test_quantified_case_study_renders_in_both_locales(): void
@@ -216,6 +229,30 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Windows-spezifisches Verhalten')
             ->assertSee('GitHub-Repository ansehen')
             ->assertSee('href="http://localhost/en/session-deck"', false);
+    }
+
+    public function test_client_hub_case_study_renders_in_both_locales(): void
+    {
+        $this->get('/jay-jay-client-hub')
+            ->assertRedirect('/en/jay-jay-client-hub');
+
+        $this->get('/en/jay-jay-client-hub')
+            ->assertOk()
+            ->assertSee('<title>Jay-Jay Client Hub', false)
+            ->assertSee('data-page="projects"', false)
+            ->assertSee('project-detail--jay-jay-client-hub', false)
+            ->assertSee('Customer clarity before account complexity.')
+            ->assertSee('Prototype data service')
+            ->assertSee('Project timelines')
+            ->assertSee('assets/work/jay-jay-mark.svg', false)
+            ->assertSee('class="page-cta page-cta--contact"', false)
+            ->assertSee('href="http://localhost/de/jay-jay-client-hub"', false);
+
+        $this->get('/de/jay-jay-client-hub')
+            ->assertOk()
+            ->assertSee('Klarheit für Kunden vor Account-Komplexität.')
+            ->assertSee('Reale Anwendungsstruktur ohne vorschnelle Infrastruktur.')
+            ->assertSee('href="http://localhost/en/jay-jay-client-hub"', false);
     }
 
     public function test_contact_and_imprint_pages_render_per_locale(): void
