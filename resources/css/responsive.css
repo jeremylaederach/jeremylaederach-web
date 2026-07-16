@@ -450,7 +450,7 @@
 
     .project-case__link {
         display: grid;
-        padding: 64px 20px;
+        padding: 64px 0;
         grid-template-columns: 1fr;
         gap: 32px;
     }
@@ -478,22 +478,49 @@
     }
 
     .quantified-visual {
-        padding: 16px;
-        gap: 14px;
+        padding: 14px;
+        gap: 12px;
     }
 
-    .quantified-visual__metrics div {
-        min-height: 66px;
-        padding: 10px;
+    .quantified-visual__status {
+        display: none;
     }
 
-    .quantified-visual__metrics strong {
-        font-size: 19px;
+    .quantified-visual__stage {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 11px 12px;
     }
 
-    .quantified-visual__chart {
-        min-height: 82px;
+    .quantified-visual__avatar {
+        width: 42px;
+        height: 42px;
+    }
+
+    .quantified-visual__avatar img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .quantified-visual__copy strong {
+        font-size: 18px;
+    }
+
+    .quantified-visual__copy p {
+        display: none;
+    }
+
+    .quantified-visual__questions {
         gap: 5px;
+    }
+
+    .quantified-visual__questions span {
+        min-height: 46px;
+        padding: 8px;
+        font-size: 8px;
+    }
+
+    .quantified-visual__composer small {
+        display: none;
     }
 
     .case-study-hero {
@@ -553,24 +580,56 @@
     }
 
     .quantified-visual--expanded {
-        min-height: 360px;
+        min-height: 430px;
         padding: 18px;
         gap: 18px;
     }
 
-    .quantified-visual--expanded .quantified-visual__metrics div {
-        min-height: 76px;
-        padding: 12px;
+    .quantified-visual--expanded .quantified-visual__stage {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 16px;
     }
 
-    .quantified-visual--expanded .quantified-visual__metrics strong {
-        font-size: 17px;
+    .quantified-visual--expanded .quantified-visual__avatar {
+        width: 54px;
+        height: 54px;
     }
 
-    .quantified-visual--expanded .quantified-visual__chart {
-        min-height: 140px;
+    .quantified-visual--expanded .quantified-visual__avatar img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__copy strong {
+        font-size: 27px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__copy p {
+        display: block;
+        font-size: 12px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__questions {
+        grid-template-columns: 1fr;
         gap: 6px;
-        padding-inline: 8px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__questions span {
+        min-height: 42px;
+        padding: 10px 12px;
+        font-size: 10px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__composer {
+        min-height: 50px;
+        padding: 7px 7px 7px 12px;
+        font-size: 11px;
+    }
+
+    .quantified-visual--expanded .quantified-visual__composer b {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
     }
 
     .case-study-section {

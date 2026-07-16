@@ -150,9 +150,9 @@
 
     .site-header__nav-link::after {
         position: absolute;
-        right: 24px;
+        right: 8px;
         bottom: 0;
-        left: 24px;
+        left: 8px;
         height: 2px;
         background: var(--nav-accent);
         content: '';
@@ -297,6 +297,18 @@
 
         .site-pointer-layer[data-route='contact'] {
             --pointer-rgb: 255, 142, 170;
+        }
+
+        .site-pointer-layer[data-route='quantified'] {
+            --pointer-rgb: 83, 177, 253;
+        }
+
+        .site-pointer-layer[data-route='jay-jay'] {
+            --pointer-rgb: 95, 105, 225;
+        }
+
+        .site-pointer-layer[data-route='session-deck'] {
+            --pointer-rgb: 255, 138, 0;
         }
 
         .site-pointer {
@@ -531,6 +543,18 @@
 
     .page-transition[data-route='projects'] .page-transition__surface {
         background: #1a102a;
+    }
+
+    .page-transition[data-theme='quantified'] .page-transition__surface {
+        background: #071725;
+    }
+
+    .page-transition[data-theme='jay-jay'] .page-transition__surface {
+        background: #11132d;
+    }
+
+    .page-transition[data-theme='session-deck'] .page-transition__surface {
+        background: #281506;
     }
 
     .page-transition[data-route='about'] .page-transition__surface {

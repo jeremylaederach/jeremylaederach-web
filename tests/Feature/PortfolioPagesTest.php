@@ -115,13 +115,22 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Projekte')
             ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
+            ->assertSee('Persönliches Analyseprodukt')
             ->assertSee('Jay-Jay Web')
+            ->assertSee('Zweisprachige Service-Website')
             ->assertSee('Laravel 13')
             ->assertSee('SessionDeck')
+            ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
+            ->assertSee('data-transition-theme="quantified"', false)
+            ->assertSee('data-transition-theme="jay-jay"', false)
+            ->assertSee('data-transition-theme="session-deck"', false)
+            ->assertSee('data-pointer-route="quantified"', false)
+            ->assertSee('data-pointer-route="jay-jay"', false)
+            ->assertSee('data-pointer-route="session-deck"', false)
             ->assertDontSee('project-case__action', false);
 
         $this->assertSame(3, substr_count($projects->getContent(), 'class="project-case project-case--'));
@@ -141,11 +150,14 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
             ->assertSee('Calendar activity, turned into personal context.')
+            ->assertSee('What would you like to understand?')
+            ->assertSee('How has my sleep changed?')
             ->assertSee('Google Calendar')
             ->assertSee('ASP.NET Core')
             ->assertSee('PostgreSQL')
             ->assertSee('Angular')
             ->assertSee('Start a conversation')
+            ->assertDontSee('quantified-visual__chart', false)
             ->assertSee('href="http://localhost/de/quantified"', false);
 
         $this->get('/de/quantified')

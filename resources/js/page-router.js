@@ -22,6 +22,8 @@ const routeFromUrl = (url) => {
     return sceneFromRoute(route);
 };
 
+const transitionThemeFromUrl = (url) => url.pathname.split('/').filter(Boolean).at(-1) ?? 'home';
+
 const loadPage = async (url) => {
     const cacheKey = url.href;
 
@@ -111,11 +113,16 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
         restoreFocus = true,
         routeHint,
         transitionLabel,
+        transitionTheme,
     } = {}) => {
         const sequence = ++navigationSequence;
         const startedAt = performance.now();
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
-        const timing = transitionController.beginTransition(hintedScene, { origin, transitionLabel });
+        const timing = transitionController.beginTransition(hintedScene, {
+            origin,
+            transitionLabel,
+            transitionTheme: transitionTheme ?? transitionThemeFromUrl(url),
+        });
         const currentMain = document.querySelector('[data-page-main]');
 
         soundController.select();
@@ -207,6 +214,7 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
             origin: transitionOrigin instanceof Element ? transitionOrigin : link,
             routeHint: link.dataset.route,
             transitionLabel: link.dataset.transitionLabel ?? link.textContent.trim(),
+            transitionTheme: link.dataset.transitionTheme,
         });
     });
 

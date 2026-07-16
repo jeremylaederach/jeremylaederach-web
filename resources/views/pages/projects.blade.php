@@ -24,7 +24,7 @@
             @foreach ($content['projects_page']['items'] as $project)
                 <article
                     id="{{ $project['slug'] }}"
-                    class="project-case project-case--{{ $loop->iteration }}"
+                    class="project-case project-case--{{ $loop->iteration }} project-case--{{ $project['slug'] }}"
                     data-reveal
                     data-pointer-surface
                 >
@@ -37,6 +37,8 @@
                         data-route="projects"
                         data-route-transition
                         data-transition-label="{{ $project['name'] }}"
+                        data-transition-theme="{{ $project['transition_theme'] }}"
+                        data-pointer-route="{{ $project['transition_theme'] }}"
                     >
                         <header class="project-case__header">
                             <span>0{{ $loop->iteration }}</span>

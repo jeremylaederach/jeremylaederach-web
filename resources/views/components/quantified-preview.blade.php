@@ -14,23 +14,34 @@
     aria-label="{{ $label }}"
 >
     <div class="quantified-visual__topbar">
-        <img src="{{ asset('assets/work/quantified-mark.png') }}" alt="" width="33" height="36">
-        <span>Quantified</span>
-        <span>Overview</span>
+        <span class="quantified-visual__lockup">
+            <img src="{{ asset('assets/work/quantified-mark.png') }}" alt="" width="36" height="36">
+            <strong>Quantified</strong>
+        </span>
+        <span class="quantified-visual__status"><i></i>{{ $copy['status'] }}</span>
     </div>
 
-    <div class="quantified-visual__metrics">
-        @foreach ($copy as $metric)
-            <div>
-                <span>{{ $metric['label'] }}</span>
-                <strong>{{ $metric['value'] }}</strong>
-            </div>
-        @endforeach
+    <div class="quantified-visual__stage">
+        <span class="quantified-visual__avatar">
+            <img src="{{ asset('assets/work/quantified-mark.png') }}" alt="" width="48" height="48">
+        </span>
+
+        <div class="quantified-visual__copy">
+            <span>{{ $copy['eyebrow'] }}</span>
+            <strong>{{ $copy['heading'] }}</strong>
+            <p>{{ $copy['body'] }}</p>
+        </div>
+
+        <div class="quantified-visual__questions">
+            @foreach ($copy['questions'] as $question)
+                <span>{{ $question }}</span>
+            @endforeach
+        </div>
     </div>
 
-    <div class="quantified-visual__chart" aria-hidden="true">
-        @foreach ([38, 55, 44, 71, 63, 82, 76, 92, 68, 88] as $height)
-            <span style="--bar-height: {{ $height }}%"></span>
-        @endforeach
+    <div class="quantified-visual__composer">
+        <span>{{ $copy['composer'] }}</span>
+        <small><i></i>5 life areas ready</small>
+        <b>&uarr;</b>
     </div>
 </div>

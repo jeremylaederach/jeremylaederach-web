@@ -53,7 +53,7 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         surface.style.setProperty('--origin-radius', `${radius}px`);
     };
 
-    const beginTransition = (scene, { origin, transitionLabel } = {}) => {
+    const beginTransition = (scene, { origin, transitionLabel, transitionTheme } = {}) => {
         const nextScene = normalizedRoute(scene);
         const currentSequence = ++sequence;
 
@@ -66,6 +66,7 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         setOrigin(origin);
         label.textContent = transitionLabel ?? nextScene;
         overlay.dataset.route = nextScene;
+        overlay.dataset.theme = transitionTheme ?? scene ?? nextScene;
         overlay.dataset.phase = 'preparing';
         overlay.setAttribute('aria-hidden', 'true');
 
@@ -99,6 +100,7 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         resetTimer = window.setTimeout(() => {
             overlay.dataset.phase = 'idle';
             delete overlay.dataset.route;
+            delete overlay.dataset.theme;
         }, 760);
     };
 

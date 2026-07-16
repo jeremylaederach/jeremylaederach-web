@@ -33,7 +33,10 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         const interactiveTarget = getInteractiveTarget(target);
 
         sitePointerLayer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
-        sitePointerLayer.dataset.route = interactiveTarget?.dataset.route ?? document.body.dataset.page ?? 'home';
+        sitePointerLayer.dataset.route = interactiveTarget?.dataset.pointerRoute
+            ?? interactiveTarget?.dataset.route
+            ?? document.body.dataset.page
+            ?? 'home';
     };
 
     const buildTrailPath = (points) => {
