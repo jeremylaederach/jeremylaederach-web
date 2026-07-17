@@ -111,7 +111,6 @@
             </div>
         @endforeach
 
-        <span class="project-reel__sheen" aria-hidden="true"></span>
         <span class="project-reel__counter" aria-hidden="true">
             <b data-reel-current>01</b>
             <i></i>

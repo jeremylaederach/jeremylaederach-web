@@ -145,6 +145,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('data-reel-caption', false)
             ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
             ->assertDontSee('project-reel__browser-bar', false)
+            ->assertDontSee('project-reel__sheen', false)
             ->assertDontSee('project-case__action', false);
 
         $projectHtml = $projects->getContent();

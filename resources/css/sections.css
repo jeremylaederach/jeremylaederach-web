@@ -260,24 +260,14 @@
         transition: border-color 420ms ease, transform 720ms var(--ease-heavy);
     }
 
-    .project-case:hover .project-visual {
-        border-color: rgba(var(--case-accent-rgb), 0.46);
-        transform: translateY(-5px);
-    }
-
     .project-visual--image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 1000ms var(--ease-heavy);
     }
 
     .project-visual--sessiondeck {
         aspect-ratio: 16 / 9;
-    }
-
-    .project-case:hover .project-visual--image img {
-        transform: scale(1.018);
     }
 
     .project-visual--sessiondeck::after {
@@ -528,9 +518,7 @@
         aspect-ratio: 16 / 10;
     }
 
-    .project-case:hover .project-reel__viewport,
-    .project-case:focus-within .project-reel__viewport,
-    .project-reel:focus-visible .project-reel__viewport {
+    .project-reel__viewport:focus-visible {
         border-color: rgba(var(--reel-accent-rgb), 0.52);
         box-shadow:
             0 52px 120px rgba(0, 0, 0, 0.5),
@@ -582,36 +570,6 @@
         border-radius: 0;
         box-shadow: none;
         transform: none;
-    }
-
-    .project-case:hover .project-reel .project-visual {
-        border-color: transparent;
-        transform: none;
-    }
-
-    .project-reel__sheen {
-        position: absolute;
-        z-index: 4;
-        inset: 0;
-        border-radius: inherit;
-        background:
-            radial-gradient(
-                420px circle at var(--pointer-x, 72%) var(--pointer-y, 26%),
-                rgba(255, 255, 255, 0.09),
-                rgba(var(--reel-accent-rgb), 0.04) 24%,
-                transparent 58%
-            ),
-            linear-gradient(118deg, rgba(255, 255, 255, 0.055), transparent 18%);
-        content: '';
-        opacity: 0.58;
-        pointer-events: none;
-        transition: opacity 520ms ease;
-    }
-
-    .project-case:hover .project-reel__sheen,
-    .project-case:focus-within .project-reel__sheen,
-    .project-reel--detail:hover .project-reel__sheen {
-        opacity: 0.9;
     }
 
     .project-reel__counter {
