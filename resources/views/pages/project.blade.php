@@ -37,23 +37,12 @@
                 </dl>
             </div>
 
-            @if ($project['visual_type'] === 'quantified')
-                <x-quantified-preview
-                    class="case-study-hero__visual"
-                    :copy="$project['preview']"
-                    :label="$project['preview_label']"
-                    :expanded="true"
-                />
-            @elseif ($project['visual_type'] === 'jay-jay')
-                <x-jay-jay-preview
-                    class="case-study-hero__visual"
-                    :copy="$project['preview']"
-                    :label="$project['preview_label']"
-                    :expanded="true"
-                />
-            @else
-                <x-project-showcase class="case-study-hero__visual" :project="$project" />
-            @endif
+            <x-project-reel
+                class="case-study-hero__visual"
+                :project="$project"
+                :ui="$content['ui']"
+                mode="detail"
+            />
         </header>
 
         <section class="case-study-section case-study-overview" data-reveal>

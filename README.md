@@ -28,16 +28,20 @@ No authentication, production PHP runtime or application database is required.
 
 ## Local Development
 
-Requirements: PHP, Composer, Node.js 22 and npm.
+Requirements: [Laravel Herd](https://herd.laravel.com/) and Node.js 22 with npm. Herd provides the local PHP and web-server environment.
 
 ```powershell
 git clone git@github.com:jeremylaederach/jeremylaederach-web.git
 cd jeremylaederach-web
 composer setup
-composer dev
+herd link jeremylaederach-web --isolate=8.4 --update-env
+herd init
+npm run dev
 ```
 
-Laravel runs at `http://127.0.0.1:8000` while Vite serves and watches frontend assets.
+The link command is required only once per machine. Herd then serves the application at `http://jeremylaederach-web.test`, while Vite watches the frontend assets. Open the English homepage at `http://jeremylaederach-web.test/en/`.
+
+Herd is the recommended local workflow, but it is not a production dependency. Without Herd, `composer dev` starts Laravel's development server and Vite at `http://127.0.0.1:8000`.
 
 ## Project Structure
 

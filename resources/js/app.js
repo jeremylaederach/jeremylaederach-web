@@ -1,5 +1,6 @@
 import { createInteractionController } from './interaction-controller.js';
 import { createPageRouter } from './page-router.js';
+import { createProjectReelController } from './project-reel-controller.js';
 import { createScrollCueController } from './scroll-cue-controller.js';
 import { createSiteMenuController } from './site-menu.js';
 import { createSoundController } from './sound-controller.js';
@@ -14,6 +15,7 @@ root.classList.add('js');
 
 const interactionController = createInteractionController({ finePointer, reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
+const projectReelController = createProjectReelController({ reducedMotion });
 const scrollCueController = createScrollCueController({ reducedMotion });
 const soundController = createSoundController({ finePointer });
 const technologyIconController = createTechnologyIconController();
@@ -22,6 +24,7 @@ const transitionController = createPageTransitionController({ reducedMotion });
 menuController.initialize();
 soundController.initialize();
 interactionController.initialize();
+projectReelController.initialize();
 scrollCueController.initialize();
 technologyIconController.initialize();
 createPageRouter({ reducedMotion, soundController, transitionController });

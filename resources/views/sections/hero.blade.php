@@ -53,8 +53,8 @@
                             <span>{{ $project['name'] }}</span>
                         @endforeach
                     @elseif ($route['route'] === 'about')
-                        @foreach (array_slice($content['about_page']['technology_list'], 0, 3) as $technology)
-                            <span>{{ $technology['name'] }}</span>
+                        @foreach (array_slice($content['about_page']['technology_groups'], 0, 3) as $group)
+                            <span>{{ $group['title'] }}</span>
                         @endforeach
                     @else
                         <span>{{ config('portfolio.socials.email.display') }}</span>

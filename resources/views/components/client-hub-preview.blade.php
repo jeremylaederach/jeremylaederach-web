@@ -1,6 +1,7 @@
 @props([
     'copy',
     'label',
+    'view' => 'overview',
 ])
 
 <div
@@ -28,19 +29,48 @@
         </span>
     </aside>
 
-    <section class="client-hub-visual__workspace">
-        <span class="client-hub-visual__eyebrow">{{ $copy['eyebrow'] }}</span>
-        <strong class="client-hub-visual__heading">{{ $copy['heading'] }}</strong>
-        <p>{{ $copy['body'] }}</p>
-
-        <span class="client-hub-visual__cards">
-            @foreach ($copy['cards'] as $card)
+    <section @class([
+        'client-hub-visual__workspace',
+        'client-hub-visual__workspace--project' => $view === 'project',
+    ])>
+        @if ($view === 'project')
+            <span class="client-hub-visual__project-head">
                 <span>
-                    <small>{{ $card['label'] }}</small>
-                    <strong>{{ $card['value'] }}</strong>
-                    <em>{{ $card['meta'] }}</em>
+                    <small>{{ $copy['project']['reference'] }}</small>
+                    <strong>{{ $copy['project']['heading'] }}</strong>
+                    <em>{{ $copy['project']['body'] }}</em>
                 </span>
-            @endforeach
-        </span>
+                <b>{{ $copy['project']['status'] }}</b>
+            </span>
+
+            <span class="client-hub-visual__milestones">
+                @foreach ($copy['project']['milestones'] as $milestone)
+                    <span>
+                        <i @class(['is-current' => $loop->last])></i>
+                        <strong>{{ $milestone['label'] }}</strong>
+                        <small>{{ $milestone['state'] }}</small>
+                    </span>
+                @endforeach
+            </span>
+
+            <span class="client-hub-visual__next-step">
+                <small>{{ $copy['project']['next_label'] }}</small>
+                <strong>{{ $copy['project']['next'] }}</strong>
+            </span>
+        @else
+            <span class="client-hub-visual__eyebrow">{{ $copy['eyebrow'] }}</span>
+            <strong class="client-hub-visual__heading">{{ $copy['heading'] }}</strong>
+            <p>{{ $copy['body'] }}</p>
+
+            <span class="client-hub-visual__cards">
+                @foreach ($copy['cards'] as $card)
+                    <span>
+                        <small>{{ $card['label'] }}</small>
+                        <strong>{{ $card['value'] }}</strong>
+                        <em>{{ $card['meta'] }}</em>
+                    </span>
+                @endforeach
+            </span>
+        @endif
     </section>
 </div>

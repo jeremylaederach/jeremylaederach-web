@@ -22,6 +22,15 @@
 
         <section id="selected-work" class="project-cases" aria-label="{{ $content['projects_page']['heading'] }}">
             @foreach ($content['projects_page']['items'] as $project)
+                @php
+                    $detailContentKey = match ($project['detail_route']) {
+                        'jay-jay' => 'jay_jay_page',
+                        'session-deck' => 'sessiondeck_page',
+                        default => $project['detail_route'].'_page',
+                    };
+                    $detailProject = $content[$detailContentKey];
+                @endphp
+
                 <article
                     id="{{ $project['slug'] }}"
                     class="project-case project-case--{{ $loop->iteration }} project-case--{{ $project['slug'] }}"
@@ -57,31 +66,12 @@
                             </div>
                         </div>
 
-                        @if ($project['visual'] === 'quantified')
-                            <x-quantified-preview
-                                :copy="$content['quantified_page']['preview']"
-                                :label="$content['quantified_page']['preview_label']"
-                                data-transition-origin
-                            />
-                        @elseif ($project['visual'] === 'jay-jay')
-                            <x-jay-jay-preview
-                                :copy="$content['jay_jay_page']['preview']"
-                                :label="$content['jay_jay_page']['preview_label']"
-                                data-transition-origin
-                            />
-                        @else
-                            <figure
-                                class="project-visual project-visual--image project-visual--{{ $project['slug'] }}"
-                                data-transition-origin
-                            >
-                                <img
-                                    src="{{ asset($project['image']) }}"
-                                    alt="{{ $project['image_alt'] }}"
-                                    loading="lazy"
-                                    decoding="async"
-                                >
-                            </figure>
-                        @endif
+                        <x-project-reel
+                            :project="$detailProject"
+                            :ui="$content['ui']"
+                            mode="teaser"
+                            data-transition-origin
+                        />
                     </a>
                 </article>
             @endforeach

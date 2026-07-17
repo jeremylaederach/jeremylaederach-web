@@ -3,7 +3,6 @@ import {
     siDotnet,
     siGit,
     siPostgresql,
-    siTypescript,
 } from 'simple-icons';
 
 const icons = new Map([
@@ -11,7 +10,6 @@ const icons = new Map([
     ['dotnet', siDotnet],
     ['git', siGit],
     ['postgresql', siPostgresql],
-    ['typescript', siTypescript],
 ]);
 
 const renderIcons = (root) => {

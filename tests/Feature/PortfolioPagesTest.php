@@ -39,6 +39,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-index-panel', false)
             ->assertSee('data-page-transition', false)
             ->assertSee('data-sound-toggle', false)
+            ->assertSee('brand/icons/apple-touch-icon.png', false)
             ->assertSee('data-page-main', false)
             ->assertDontSee('data-project-stage', false)
             ->assertDontSee('data-project-canvas', false)
@@ -78,7 +79,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="about-story"', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
-            ->assertSee('class="technology-grid"', false)
+            ->assertSee('class="technology-groups"', false)
             ->assertSee('Software with purpose, built from real requirements.')
             ->assertDontSee('class="about-facts"', false)
             ->assertDontSee('class="principles-list"', false)
@@ -91,10 +92,12 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('ASP.NET Core')
             ->assertSee('REST APIs')
             ->assertSee('PostgreSQL')
+            ->assertSee('GitHub Actions')
             ->assertDontSee('page-stage', false)
             ->assertDontSee('data-project-stage', false);
 
-        $this->assertSame(5, substr_count($about->getContent(), 'data-technology-icon='));
+        $this->assertSame(4, substr_count($about->getContent(), 'class="technology-group"'));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
         $this->assertSame(3, substr_count($about->getContent(), 'class="section-label about-section-label"'));
 
         $this->get('/de/about')
@@ -111,7 +114,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="portfolio-page projects-page"', false)
             ->assertSee('class="project-cases"', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
-            ->assertSee('assets/work/sessiondeck-main.png', false)
             ->assertSee('assets/work/jay-jay-mark.svg', false)
             ->assertSee('Projekte')
             ->assertSee('Hauptprojekt')
@@ -124,6 +126,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('SessionDeck')
             ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
+            ->assertSee('.NET / C#')
             ->assertSee('Interaktiver Prototyp')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
@@ -134,11 +137,16 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-pointer-route="quantified"', false)
             ->assertSee('data-pointer-route="session-deck"', false)
             ->assertSee('data-pointer-route="jay-jay"', false)
+            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--teaser"', false)
+            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--teaser"', false)
+            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--teaser"', false)
             ->assertDontSee('project-case__action', false);
 
         $projectHtml = $projects->getContent();
 
         $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-reel-autoplay="true"'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-project-reel'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
         $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }
@@ -159,6 +167,11 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Calendar activity, turned into personal context.')
             ->assertSee('What would you like to understand?')
             ->assertSee('How has my sleep changed?')
+            ->assertSee('QCalendar')
+            ->assertSee('QFinances')
+            ->assertSee('aria-roledescription="carousel"', false)
+            ->assertSee('aria-label="Next view"', false)
+            ->assertSee('aria-label="View 3: QFinances"', false)
             ->assertSee('Google Calendar')
             ->assertSee('ASP.NET Core')
             ->assertSee('PostgreSQL')
@@ -190,7 +203,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Jay-Jay Web')
             ->assertSee('Client Hub')
             ->assertSee('Interactive prototype')
-            ->assertSee('class="project-visual jay-jay-ecosystem jay-jay-ecosystem--expanded case-study-hero__visual"', false)
+            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-hero__visual"', false)
+            ->assertSee('aria-label="View 2: Client Hub"', false)
+            ->assertSee('aria-label="View 3: Project workspace"', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
             ->assertSee('assets/work/jay-jay-mark.svg', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
@@ -218,7 +233,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('WinUI 3')
             ->assertSee('Functional source-build MVP')
             ->assertSee('Conservative ownership')
-            ->assertSee('assets/work/sessiondeck-main.png', false)
+            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-hero__visual"', false)
+            ->assertSee('aria-label="View 2: Profile editor"', false)
+            ->assertSee('aria-label="View 3: Session result"', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false);
 

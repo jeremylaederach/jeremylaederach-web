@@ -34,7 +34,7 @@
     }
 
     .case-study-hero > h1 {
-        font-size: 118px;
+        font-size: 98px;
     }
 
     .case-study-section h2 {
@@ -162,21 +162,50 @@
         grid-row: auto;
     }
 
+    .project-reel {
+        aspect-ratio: auto;
+    }
+
+    .project-reel--detail .project-reel__viewport {
+        aspect-ratio: 16 / 10;
+    }
+
     .project-visual {
         grid-column: 1 / -1;
     }
 
+    .case-study-hero {
+        min-height: auto;
+        padding: 118px 0 84px;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 20px;
+    }
+
+    .case-study-back,
+    .case-study-hero__index,
+    .case-study-hero > h1,
+    .case-study-hero__intro,
+    .case-study-hero__visual {
+        grid-row: auto;
+        grid-column: 1;
+    }
+
+    .case-study-hero__index {
+        margin-top: 40px;
+    }
+
     .case-study-hero > h1 {
-        grid-column: 1 / 8;
-        font-size: 104px;
+        font-size: 84px;
     }
 
     .case-study-hero__intro {
-        grid-column: 8 / -1;
+        max-width: 620px;
+        padding-top: 12px;
     }
 
-    .quantified-visual--expanded {
-        min-height: 460px;
+    .case-study-hero__visual {
+        margin-top: 30px;
     }
 
     .case-study-overview,
@@ -235,8 +264,12 @@
         font-size: 23px;
     }
 
-    .technology-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    .technology-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .technology-group {
+        min-height: 350px;
     }
 
     .contact-workspace {
@@ -512,50 +545,66 @@
         aspect-ratio: 4 / 3;
     }
 
-    .quantified-visual {
-        padding: 14px;
-        gap: 12px;
+    .project-reel {
+        aspect-ratio: auto;
     }
 
-    .quantified-visual__status {
+    .project-reel--teaser .project-reel__viewport,
+    .project-reel--detail .project-reel__viewport {
+        aspect-ratio: 16 / 10;
+    }
+
+    .project-reel__counter {
+        top: 12px;
+        right: 12px;
+        min-width: 66px;
+        height: 26px;
+    }
+
+    .project-reel__footer {
+        min-height: 58px;
+        padding-top: 12px;
+        gap: 14px;
+    }
+
+    .project-reel__footer p {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        align-self: center;
+    }
+
+    .project-reel__footer p > span {
         display: none;
     }
 
-    .quantified-visual__stage {
-        grid-template-columns: 42px minmax(0, 1fr);
-        gap: 11px 12px;
+    .project-reel__controls {
+        gap: 6px;
     }
 
-    .quantified-visual__avatar {
-        width: 42px;
-        height: 42px;
+    .project-reel__controls > button {
+        width: 34px;
+        height: 34px;
     }
 
-    .quantified-visual__avatar img {
-        width: 30px;
-        height: 30px;
+    .project-reel__pagination {
+        min-height: 34px;
+        gap: 3px;
     }
 
-    .quantified-visual__copy strong {
-        font-size: 18px;
+    .project-reel__pagination button {
+        width: 23px;
     }
 
-    .quantified-visual__copy p {
-        display: none;
+    .project-reel__browser {
+        grid-template-rows: 31px minmax(0, 1fr);
     }
 
-    .quantified-visual__questions {
-        gap: 5px;
+    .project-reel__browser-bar {
+        padding: 0 10px;
     }
 
-    .quantified-visual__questions span {
-        min-height: 46px;
-        padding: 8px;
-        font-size: 8px;
-    }
-
-    .quantified-visual__composer small {
-        display: none;
+    .project-reel__browser-bar small {
+        font-size: 7px;
     }
 
     .client-hub-visual {
@@ -611,40 +660,229 @@
         font-size: 17px;
     }
 
-    .jay-jay-ecosystem {
-        padding: 12px;
-        grid-template-columns: 1fr;
-        align-content: center;
+    .client-hub-visual__project-head strong {
+        font-size: 17px;
     }
 
-    .jay-jay-ecosystem__surface--web {
-        width: 88%;
-        height: 64%;
-        align-self: start;
-        transform: translateY(0) rotate(-0.7deg);
+    .client-hub-visual__project-head em {
+        display: none;
     }
 
-    .jay-jay-ecosystem__surface--hub {
-        width: 76%;
-        height: 68%;
-        margin: -22% 0 0 auto;
-        transform: rotate(0.8deg);
+    .client-hub-visual__workspace--project {
+        gap: 10px;
     }
 
-    .jay-jay-ecosystem__surface-header {
-        min-height: 34px;
-        padding: 0 9px;
+    .client-hub-visual__milestones {
+        padding-top: 9px;
+        gap: 4px;
     }
 
-    .jay-jay-ecosystem__surface-header > small {
+    .client-hub-visual__milestones > span {
+        min-height: 52px;
+        padding: 7px;
+    }
+
+    .client-hub-visual__next-step {
+        padding: 8px;
+    }
+
+    .quantified-app {
+        grid-template-columns: 84px minmax(0, 1fr);
+    }
+
+    .quantified-app__navigation {
+        padding: 12px 8px;
+    }
+
+    .quantified-app__brand {
+        justify-content: center;
+    }
+
+    .quantified-app__brand strong,
+    .quantified-app__profile,
+    .quantified-app__links > span:nth-child(3),
+    .quantified-app__links > span:last-child {
+        display: none;
+    }
+
+    .quantified-app__links {
+        margin-top: 12px;
+    }
+
+    .quantified-app__links > span {
+        padding: 7px 5px 7px 9px;
         font-size: 6px;
     }
 
-    .jay-jay-ecosystem__hub-preview .client-hub-visual__workspace {
-        padding: 10px;
+    .quantified-app__workspace {
+        padding: 10px 11px 12px;
+        grid-template-rows: 22px minmax(0, 1fr);
+        gap: 8px;
     }
 
-    .jay-jay-ecosystem__hub-preview .client-hub-visual__cards {
+    .quantified-app__toolbar {
+        padding-bottom: 7px;
+        font-size: 6px;
+    }
+
+    .quantified-app__toolbar small {
+        display: none;
+    }
+
+    .quantified-app__overview h3 {
+        font-size: 20px;
+    }
+
+    .quantified-app__overview > p {
+        display: none;
+    }
+
+    .quantified-app__questions {
+        margin-top: 10px;
+        gap: 4px;
+    }
+
+    .quantified-app__questions span {
+        min-height: 42px;
+        padding: 6px;
+        font-size: 6px;
+    }
+
+    .quantified-app__composer {
+        min-height: 30px;
+        padding: 3px 3px 3px 8px;
+        margin-top: 6px;
+    }
+
+    .quantified-app__composer i {
+        display: none;
+    }
+
+    .quantified-app__composer b {
+        width: 24px;
+        height: 24px;
+    }
+
+    .quantified-app__calendar,
+    .quantified-app__finances {
+        gap: 7px;
+    }
+
+    .quantified-app__calendar header strong,
+    .quantified-app__finances header strong {
+        font-size: 13px;
+    }
+
+    .quantified-app__calendar header em,
+    .quantified-app__finances header em {
+        display: none;
+    }
+
+    .quantified-app__calendar-metrics > span,
+    .quantified-app__finance-metrics > span {
+        padding: 6px;
+    }
+
+    .quantified-app__calendar-metrics strong,
+    .quantified-app__finance-metrics strong {
+        font-size: 9px;
+    }
+
+    .quantified-app__timeline > span {
+        grid-template-columns: 24px minmax(0, 1fr);
+        gap: 5px;
+    }
+
+    .quantified-app__timeline i {
+        min-height: 20px;
+        padding: 0 6px;
+    }
+
+    .quantified-app__timeline em,
+    .quantified-app__finance-metrics em {
+        display: none;
+    }
+
+    .sessiondeck-app {
+        padding: 9px;
+        gap: 7px;
+    }
+
+    .sessiondeck-app__brand img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .sessiondeck-app__brand small,
+    .sessiondeck-app__status {
+        display: none;
+    }
+
+    .sessiondeck-app__body {
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 6px;
+    }
+
+    .sessiondeck-app__profiles {
+        padding: 6px;
+    }
+
+    .sessiondeck-app__profiles > span {
+        padding: 6px;
+    }
+
+    .sessiondeck-app__profiles > span:last-child {
+        display: none;
+    }
+
+    .sessiondeck-app__overview {
+        padding: 12px;
+    }
+
+    .sessiondeck-app__overview h3 {
+        font-size: 16px;
+    }
+
+    .sessiondeck-app__overview > p {
+        display: none;
+    }
+
+    .sessiondeck-app__summary {
+        margin-top: 10px;
+        gap: 4px;
+    }
+
+    .sessiondeck-app__summary > span {
+        min-height: 40px;
+        padding: 6px;
+    }
+
+    .sessiondeck-app__summary strong {
+        font-size: 12px;
+    }
+
+    .sessiondeck-app__primary {
+        min-height: 24px;
+        padding: 0 8px;
+        margin-top: 8px;
+    }
+
+    .sessiondeck-app__editor,
+    .sessiondeck-app__result {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .sessiondeck-app__launch-items > span,
+    .sessiondeck-app__results > span {
+        padding: 4px 0;
+    }
+
+    .sessiondeck-app__results > span {
+        grid-template-columns: 8px minmax(0, 1fr) auto;
+    }
+
+    .sessiondeck-app__results small {
         display: none;
     }
 
@@ -660,6 +898,7 @@
     .case-study-hero > h1,
     .case-study-hero__intro,
     .case-study-hero__visual {
+        grid-row: auto;
         grid-column: 1;
     }
 
@@ -686,97 +925,9 @@
         margin-top: 34px;
     }
 
-    .project-showcase__bar {
-        min-height: 44px;
-        padding: 0 13px;
-    }
-
-    .project-showcase__bar > span:last-child {
-        display: none;
-    }
-
-    .project-showcase__media {
-        aspect-ratio: 4 / 3;
-    }
-
     .project-detail--jay-jay .case-study-hero > h1,
     .project-detail--sessiondeck .case-study-hero > h1 {
         font-size: 54px;
-    }
-
-    .jay-jay-ecosystem--expanded {
-        min-height: 620px;
-        padding: 16px;
-        grid-template-columns: 1fr;
-        align-content: center;
-    }
-
-    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__surface--web {
-        width: 92%;
-        height: 58%;
-    }
-
-    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__surface--hub {
-        width: 84%;
-        height: 62%;
-        margin-top: -18%;
-    }
-
-    .jay-jay-ecosystem--expanded .jay-jay-ecosystem__hub-preview .client-hub-visual__cards {
-        display: grid;
-    }
-
-    .quantified-visual--expanded {
-        min-height: 430px;
-        padding: 18px;
-        gap: 18px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__stage {
-        grid-template-columns: 54px minmax(0, 1fr);
-        gap: 16px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__avatar {
-        width: 54px;
-        height: 54px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__avatar img {
-        width: 40px;
-        height: 40px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__copy strong {
-        font-size: 27px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__copy p {
-        display: block;
-        font-size: 12px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__questions {
-        grid-template-columns: 1fr;
-        gap: 6px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__questions span {
-        min-height: 42px;
-        padding: 10px 12px;
-        font-size: 10px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__composer {
-        min-height: 50px;
-        padding: 7px 7px 7px 12px;
-        font-size: 11px;
-    }
-
-    .quantified-visual--expanded .quantified-visual__composer b {
-        width: 34px;
-        height: 34px;
-        font-size: 17px;
     }
 
     .case-study-section {
@@ -909,43 +1060,40 @@
         margin-top: 14px;
     }
 
-    .technology-grid {
-        padding: 0 20px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .technology-groups {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-    .technology-grid li {
-        min-height: 220px;
+    .technology-group {
+        min-height: 300px;
         padding: 22px;
+        grid-template-rows: 88px auto 1fr;
+        gap: 18px;
     }
 
-    .technology-grid li:last-child {
-        min-height: 180px;
-        grid-column: 1 / -1;
+    .technology-group__visual {
+        width: 102px;
+        height: 78px;
     }
 
-    .technology-grid__mark {
-        width: 50px;
-        height: 50px;
+    .technology-group__visual > i {
+        width: 100px;
+        height: 44px;
     }
 
-    .technology-grid__mark svg {
-        width: 25px;
-        height: 25px;
+    .technology-group__visual > i:last-child {
+        width: 92px;
+        height: 58px;
     }
 
-    .technology-grid__index {
-        top: 22px;
-        right: 22px;
+    .technology-group__mark {
+        width: 52px;
+        height: 52px;
     }
 
-    .technology-grid strong {
-        margin-top: 52px;
-        font-size: 18px;
-    }
-
-    .technology-grid small {
-        font-size: 12px;
+    .technology-group h3 {
+        font-size: 21px;
     }
 
     .page-cta {
