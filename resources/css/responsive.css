@@ -45,8 +45,7 @@
         font-size: 64px;
     }
 
-    .site-footer__inner {
-        grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1fr);
+    .site-footer__main {
         gap: 32px;
     }
 
@@ -267,27 +266,35 @@
         gap: 7%;
     }
 
-    .site-footer__inner {
-        min-height: auto;
-        padding: 34px 0;
-        grid-template-columns: 1fr 1fr;
-        gap: 28px 44px;
-    }
-
-    .site-footer__identity {
-        grid-column: 1;
+    .site-footer__main {
+        min-height: 112px;
+        grid-template-columns: minmax(190px, 1fr) auto 44px;
+        gap: 28px;
     }
 
     .site-footer__nav {
-        grid-column: 2;
-        justify-content: flex-end;
+        gap: 24px;
+    }
+
+    .site-footer__base {
+        min-height: 68px;
     }
 
     .site-footer__meta {
-        grid-column: 1 / -1;
         justify-content: flex-end;
-        padding-top: 22px;
-        border-top: 1px solid var(--line);
+    }
+
+    .legal-page__header h1 {
+        grid-column: 4 / 9;
+    }
+
+    .legal-page__header > p:not(.legal-page__eyebrow),
+    .legal-page__header > small {
+        grid-column: 9 / 13;
+    }
+
+    .legal-section__content {
+        grid-column: 3 / 13;
     }
 
     .not-found-page__code {
@@ -1032,25 +1039,41 @@
         font-size: 15px;
     }
 
-    .site-footer__inner {
-        padding: 38px 0;
-        grid-template-columns: 1fr;
-        gap: 26px;
+    .site-footer__main {
+        min-height: auto;
+        padding: 34px 0 30px;
+        grid-template-columns: minmax(0, 1fr) 44px;
+        gap: 26px 18px;
     }
 
     .site-footer__identity {
         grid-column: 1;
+        grid-row: 1;
     }
 
     .site-footer__nav {
-        grid-column: 1;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        gap: 24px;
         justify-content: flex-start;
+    }
+
+    .site-footer__top {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .site-footer__base {
+        min-height: auto;
+        padding: 22px 0 26px;
+        grid-template-columns: 1fr;
+        gap: 18px;
     }
 
     .site-footer__meta {
         grid-column: 1;
+        gap: 18px 22px;
         justify-content: flex-start;
-        padding-top: 24px;
     }
 
     .not-found-page {
@@ -1093,12 +1116,63 @@
         font-size: 14px;
     }
 
-    .imprint-page {
-        padding: 126px 0 76px;
+    .legal-page {
+        padding: 112px 0 76px;
     }
 
-    .imprint-page h1 {
-        font-size: 48px;
+    .legal-page__header {
+        min-height: auto;
+        padding: 42px 0 64px;
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .legal-page__eyebrow,
+    .legal-page__header h1,
+    .legal-page__header > p:not(.legal-page__eyebrow),
+    .legal-page__header > small {
+        grid-column: 1;
+    }
+
+    .legal-page__header h1 {
+        min-width: 0;
+        font-size: 42px;
+        hyphens: auto;
+        overflow-wrap: anywhere;
+    }
+
+    .legal-page__header > p:not(.legal-page__eyebrow) {
+        max-width: 100%;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .legal-page__header > small {
+        margin-top: 4px;
+    }
+
+    .legal-section {
+        min-height: 0;
+        padding: 34px 0 40px;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .legal-section__number {
+        grid-column: 1;
+    }
+
+    .legal-section__content {
+        grid-column: 2;
+    }
+
+    .legal-section h2 {
+        margin-bottom: 18px;
+        font-size: 22px;
+    }
+
+    .legal-section p {
+        font-size: 14px;
     }
 }
 

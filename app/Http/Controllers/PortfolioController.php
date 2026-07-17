@@ -50,7 +50,12 @@ class PortfolioController extends Controller
 
     public function imprint(string $locale): View
     {
-        return $this->render('pages.imprint', $locale);
+        return $this->renderLegalPage($locale, 'imprint');
+    }
+
+    public function privacy(string $locale): View
+    {
+        return $this->renderLegalPage($locale, 'privacy');
     }
 
     private function render(string $view, string $locale, array $data = []): View
@@ -77,6 +82,17 @@ class PortfolioController extends Controller
             'scene' => 'projects',
             'title' => "{$project['heading']} · Jeremy Läderach",
             'description' => $project['meta_description'],
+        ]);
+    }
+
+    private function renderLegalPage(string $locale, string $contentKey): View
+    {
+        $content = $this->contentFor($locale);
+
+        return view('pages.legal', [
+            'locale' => $locale,
+            'content' => $content,
+            'legal' => $content[$contentKey],
         ]);
     }
 

@@ -1,4 +1,4 @@
-export const pageRoutes = new Set(['home', 'projects', 'about', 'contact', 'imprint']);
+export const pageRoutes = new Set(['home', 'projects', 'about', 'contact', 'imprint', 'privacy']);
 
 const routeScenes = new Map([
     ['quantified', 'projects'],

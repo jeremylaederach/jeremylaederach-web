@@ -20,3 +20,4 @@ Route::get('/{locale}/jay-jay-client-hub', [PortfolioController::class, 'jayJayC
 Route::get('/{locale}/session-deck', [PortfolioController::class, 'sessionDeck'])->name('session-deck');
 Route::get('/{locale}/contact', [PortfolioController::class, 'contact'])->name('contact');
 Route::get('/{locale}/imprint', [PortfolioController::class, 'imprint'])->name('imprint');
+Route::get('/{locale}/privacy', [PortfolioController::class, 'privacy'])->name('privacy');

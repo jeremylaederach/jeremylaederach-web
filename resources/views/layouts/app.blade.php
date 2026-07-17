@@ -218,50 +218,81 @@
 
         <footer class="site-footer" data-page-footer>
             <div class="site-footer__inner">
-                <div class="site-footer__identity">
-                    <x-brand-mark class="site-footer__mark" size="40" />
-                    <span>
+                <div class="site-footer__main">
+                    <a
+                        class="site-footer__identity"
+                        href="{{ route('home', ['locale' => $locale]) }}"
+                        data-route="home"
+                        data-route-transition
+                        data-transition-label="{{ $content['nav'][0]['label'] }}"
+                        data-interface-sound
+                        data-sound-tone="brand"
+                    >
+                        <x-brand-mark class="site-footer__mark" size="40" />
                         <strong>Jeremy Läderach</strong>
-                        <small>© {{ date('Y') }} · {{ $content['ui']['role'] }}</small>
-                    </span>
-                </div>
+                    </a>
 
-                <nav class="site-footer__nav" aria-label="{{ $content['ui']['footer_navigation'] }}">
-                    @foreach (array_slice($content['nav'], 1) as $item)
-                        <a
-                            href="{{ route($item['route'], ['locale' => $locale]) }}"
-                            data-route="{{ $item['route'] }}"
-                            data-route-transition
-                            data-transition-label="{{ $item['label'] }}"
-                            data-interface-sound
-                            data-sound-tone="navigation"
-                        >
-                            {{ $item['label'] }}
-                        </a>
-                    @endforeach
-                </nav>
+                    <nav class="site-footer__nav" aria-label="{{ $content['ui']['footer_navigation'] }}">
+                        @foreach (array_slice($content['nav'], 1) as $item)
+                            <a
+                                href="{{ route($item['route'], ['locale' => $locale]) }}"
+                                data-route="{{ $item['route'] }}"
+                                data-route-transition
+                                data-transition-label="{{ $item['label'] }}"
+                                data-interface-sound
+                                data-sound-tone="navigation"
+                            >
+                                {{ $item['label'] }}
+                            </a>
+                        @endforeach
+                    </nav>
 
-                <div class="site-footer__meta">
-                    <a
-                        href="{{ config('portfolio.socials.github.url') }}"
-                        rel="noopener noreferrer"
-                        data-interface-sound
-                        data-sound-tone="action"
-                    >GitHub</a>
-                    <a
-                        href="{{ route('imprint', ['locale' => $locale]) }}"
-                        data-interface-sound
-                        data-sound-tone="control"
-                    >{{ $content['imprint']['title'] }}</a>
                     <a
                         class="site-footer__top"
                         href="#main"
+                        aria-label="{{ $content['ui']['back_to_top'] }}"
+                        title="{{ $content['ui']['back_to_top'] }}"
                         data-interface-sound
                         data-sound-tone="control"
                     >
-                        <span>{{ $content['ui']['back_to_top'] }}</span>
+                        <span class="sr-only">{{ $content['ui']['back_to_top'] }}</span>
                         <x-nav-icon name="arrow-down" />
                     </a>
+                </div>
+
+                <div class="site-footer__base">
+                    <small>© {{ date('Y') }} Jeremy Läderach</small>
+
+                    <nav class="site-footer__meta" aria-label="{{ $content['ui']['legal_navigation'] }}">
+                        <a
+                            href="{{ config('portfolio.socials.github.url') }}"
+                            rel="noopener noreferrer"
+                            data-interface-sound
+                            data-sound-tone="action"
+                        >GitHub</a>
+                        <a
+                            href="{{ config('portfolio.socials.linkedin.url') }}"
+                            rel="noopener noreferrer"
+                            data-interface-sound
+                            data-sound-tone="action"
+                        >LinkedIn</a>
+                        <a
+                            href="{{ route('imprint', ['locale' => $locale]) }}"
+                            data-route="imprint"
+                            data-route-transition
+                            data-transition-label="{{ $content['imprint']['title'] }}"
+                            data-interface-sound
+                            data-sound-tone="control"
+                        >{{ $content['imprint']['title'] }}</a>
+                        <a
+                            href="{{ route('privacy', ['locale' => $locale]) }}"
+                            data-route="privacy"
+                            data-route-transition
+                            data-transition-label="{{ $content['privacy']['title'] }}"
+                            data-interface-sound
+                            data-sound-tone="control"
+                        >{{ $content['privacy']['title'] }}</a>
+                    </nav>
                 </div>
             </div>
         </footer>

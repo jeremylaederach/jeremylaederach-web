@@ -27,7 +27,6 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('<title>Jeremy', false)
             ->assertSee('Jeremy')
-            ->assertSee('Software Engineer')
             ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
@@ -57,7 +56,6 @@ class PortfolioPagesTest extends TestCase
 
         $this->get('/de')
             ->assertOk()
-            ->assertSee('Softwareentwickler')
             ->assertSee('Ich konzipiere und entwickle Software, die komplexe Ideen einfach macht.')
             ->assertSee('Profil')
             ->assertSee('Projekte');
@@ -245,7 +243,7 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/de/jay-jay#client-hub');
     }
 
-    public function test_contact_and_imprint_pages_render_per_locale(): void
+    public function test_contact_footer_and_legal_pages_render_per_locale(): void
     {
         $this->get('/en/contact')
             ->assertOk()
@@ -259,12 +257,37 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('<form', false)
             ->assertSee('info@jeremylaederach.ch')
             ->assertSee('GitHub')
-            ->assertSee('LinkedIn');
+            ->assertSee('LinkedIn')
+            ->assertSee('class="site-footer__main"', false)
+            ->assertSee('class="site-footer__base"', false)
+            ->assertSee('href="http://localhost/en/imprint"', false)
+            ->assertSee('href="http://localhost/en/privacy"', false);
 
         $this->get('/de/imprint')
             ->assertOk()
             ->assertSee('Impressum')
-            ->assertSee('Verantwortlich');
+            ->assertSee('Betreiber')
+            ->assertSee('Inhalte und Urheberrecht')
+            ->assertDontSee('Laravel-Prototyp')
+            ->assertSee('href="http://localhost/en/imprint"', false);
+
+        $this->get('/en/privacy')
+            ->assertOk()
+            ->assertSee('Privacy notice')
+            ->assertSee('Technical access data')
+            ->assertSee('does not use analytics')
+            ->assertSee('local storage')
+            ->assertSee('session and CSRF cookies')
+            ->assertSee('href="http://localhost/de/privacy"', false);
+
+        $this->get('/de/privacy')
+            ->assertOk()
+            ->assertSee('Datenschutzerklärung')
+            ->assertSee('Technische Zugriffsdaten')
+            ->assertSee('keine Analysedienste')
+            ->assertSee('lokalen Speicher')
+            ->assertSee('Session- und CSRF-Cookies')
+            ->assertSee('Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter');
     }
 
     public function test_unsupported_locale_returns_not_found(): void

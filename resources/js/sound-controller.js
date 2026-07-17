@@ -1,5 +1,5 @@
 const storageKey = 'portfolio:interface-sound-muted';
-const masterLevel = 0.72;
+const masterLevel = 0.9;
 
 const hoverProfiles = {
     action: { frequency: 560, endFrequency: 390, overtone: 930 },

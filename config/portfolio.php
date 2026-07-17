@@ -46,6 +46,7 @@ return [
                 'role' => 'Software Engineer',
                 'open' => 'Open',
                 'footer_navigation' => 'Explore',
+                'legal_navigation' => 'Legal and external links',
                 'back_to_top' => 'Back to top',
                 'sound_mute' => 'Mute interface sounds',
                 'sound_enable' => 'Enable interface sounds',
@@ -348,12 +349,67 @@ return [
                 'action' => 'Back to home',
             ],
             'imprint' => [
+                'eyebrow' => 'Legal',
                 'title' => 'Imprint',
-                'intro' => 'Legal and ownership details for this personal portfolio.',
+                'intro' => 'Ownership and contact details for this personal portfolio.',
                 'sections' => [
-                    ['title' => 'Responsible for content', 'body' => ['Jeremy Läderach', 'Switzerland']],
-                    ['title' => 'Contact', 'body' => ['info@jeremylaederach.ch']],
-                    ['title' => 'Note', 'body' => ['This Laravel prototype keeps the legal page intentionally compact. Additional business address or privacy details can be added before production launch.']],
+                    [
+                        'title' => 'Site operator',
+                        'body' => ['Jeremy Läderach operates this personal portfolio from Switzerland and is responsible for its editorial content.'],
+                    ],
+                    [
+                        'title' => 'Contact',
+                        'body' => ['For questions about this website or its content, use the email address below.'],
+                        'links' => [['label' => 'info@jeremylaederach.ch', 'url' => 'mailto:info@jeremylaederach.ch']],
+                    ],
+                    [
+                        'title' => 'Content and copyright',
+                        'body' => ['Unless stated otherwise, the text, code, visual identity, and original presentation on this website belong to Jeremy Läderach. Product names, trademarks, and third-party materials remain the property of their respective owners.'],
+                    ],
+                    [
+                        'title' => 'External links',
+                        'body' => ['Links to external websites are reviewed when published. Their operators remain responsible for their content and data-processing practices.'],
+                    ],
+                ],
+            ],
+            'privacy' => [
+                'eyebrow' => 'Privacy',
+                'title' => 'Privacy notice',
+                'intro' => 'A concise account of the limited data this portfolio processes and why.',
+                'updated' => 'Last updated: July 16, 2026',
+                'sections' => [
+                    [
+                        'title' => 'Who is responsible',
+                        'body' => ['Jeremy Läderach, Switzerland, is responsible for data processing connected with this website.'],
+                        'links' => [['label' => 'info@jeremylaederach.ch', 'url' => 'mailto:info@jeremylaederach.ch']],
+                    ],
+                    [
+                        'title' => 'Technical access data',
+                        'body' => [
+                            'When this website is requested, the hosting infrastructure may process technical data such as the IP address, timestamp, requested page, browser information, and referring address.',
+                            'This data is used only to deliver, secure, and troubleshoot the website. It is retained only for as long as operational and security purposes require.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Local preference and technical cookies',
+                        'body' => [
+                            'The sound control stores one mute preference in your browser\'s local storage. It remains on your device and is not used to identify or track you.',
+                            'The Laravel application sets encrypted session and CSRF cookies for technical request handling. They expire after up to two hours and are not used for analytics or advertising.',
+                            'This portfolio does not use analytics, advertising trackers, marketing cookies, or externally hosted fonts.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Contact and external services',
+                        'body' => [
+                            'If you contact me by email, I process the information you provide to answer your message and continue the conversation. It is kept only while needed for that purpose or applicable obligations.',
+                            'GitHub and LinkedIn receive data only when you choose to follow an external link. Their own privacy terms then apply, and processing may take place outside Switzerland.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Your rights',
+                        'body' => ['Subject to applicable Swiss data-protection law, you may request information, correction, deletion, restriction, or the release of your personal data. Contact me by email to exercise these rights.'],
+                        'links' => [['label' => 'Federal Data Protection and Information Commissioner', 'url' => 'https://www.edoeb.admin.ch/en']],
+                    ],
                 ],
             ],
         ],
@@ -371,6 +427,7 @@ return [
                 'role' => 'Softwareentwickler',
                 'open' => 'Öffnen',
                 'footer_navigation' => 'Entdecken',
+                'legal_navigation' => 'Rechtliches und externe Links',
                 'back_to_top' => 'Nach oben',
                 'sound_mute' => 'Interface-Töne ausschalten',
                 'sound_enable' => 'Interface-Töne einschalten',
@@ -673,12 +730,67 @@ return [
                 'action' => 'Zurück zur Startseite',
             ],
             'imprint' => [
+                'eyebrow' => 'Rechtliches',
                 'title' => 'Impressum',
-                'intro' => 'Rechtliche Angaben zu diesem persönlichen Portfolio.',
+                'intro' => 'Angaben zur Verantwortung und Kontaktmöglichkeit für dieses persönliche Portfolio.',
                 'sections' => [
-                    ['title' => 'Verantwortlich für den Inhalt', 'body' => ['Jeremy Läderach', 'Schweiz']],
-                    ['title' => 'Kontakt', 'body' => ['info@jeremylaederach.ch']],
-                    ['title' => 'Hinweis', 'body' => ['Dieser Laravel-Prototyp hält die rechtliche Seite bewusst kompakt. Angaben zur Geschäftsadresse und zum Datenschutz können vor dem Produktionsstart ergänzt werden.']],
+                    [
+                        'title' => 'Betreiber',
+                        'body' => ['Jeremy Läderach betreibt dieses persönliche Portfolio aus der Schweiz und ist für die redaktionellen Inhalte verantwortlich.'],
+                    ],
+                    [
+                        'title' => 'Kontakt',
+                        'body' => ['Für Fragen zu dieser Website oder ihren Inhalten steht die folgende E-Mail-Adresse zur Verfügung.'],
+                        'links' => [['label' => 'info@jeremylaederach.ch', 'url' => 'mailto:info@jeremylaederach.ch']],
+                    ],
+                    [
+                        'title' => 'Inhalte und Urheberrecht',
+                        'body' => ['Sofern nicht anders angegeben, stammen Texte, Code, visuelle Identität und die eigenständige Präsentation dieser Website von Jeremy Läderach. Produktnamen, Marken und Inhalte Dritter bleiben Eigentum ihrer jeweiligen Rechteinhaber.'],
+                    ],
+                    [
+                        'title' => 'Externe Links',
+                        'body' => ['Verlinkte externe Websites werden bei der Veröffentlichung geprüft. Für deren Inhalte und Datenbearbeitung bleiben die jeweiligen Betreiber verantwortlich.'],
+                    ],
+                ],
+            ],
+            'privacy' => [
+                'eyebrow' => 'Datenschutz',
+                'title' => 'Datenschutzerklärung',
+                'intro' => 'Eine kompakte Übersicht darüber, welche wenigen Daten dieses Portfolio bearbeitet und weshalb.',
+                'updated' => 'Stand: 16. Juli 2026',
+                'sections' => [
+                    [
+                        'title' => 'Verantwortliche Person',
+                        'body' => ['Jeremy Läderach, Schweiz, ist für die Datenbearbeitung im Zusammenhang mit dieser Website verantwortlich.'],
+                        'links' => [['label' => 'info@jeremylaederach.ch', 'url' => 'mailto:info@jeremylaederach.ch']],
+                    ],
+                    [
+                        'title' => 'Technische Zugriffsdaten',
+                        'body' => [
+                            'Beim Aufruf dieser Website kann die Hosting-Infrastruktur technische Daten wie IP-Adresse, Zeitpunkt, aufgerufene Seite, Browserinformationen und verweisende Adresse bearbeiten.',
+                            'Diese Daten dienen ausschliesslich der Auslieferung, Sicherheit und Fehleranalyse. Sie werden nur so lange aufbewahrt, wie es für den Betrieb und die Sicherheit erforderlich ist.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Lokale Einstellung und technische Cookies',
+                        'body' => [
+                            'Die Tonsteuerung speichert eine einzige Stummschaltungs-Einstellung im lokalen Speicher deines Browsers. Sie bleibt auf deinem Gerät und dient weder der Identifikation noch dem Tracking.',
+                            'Die Laravel-Anwendung setzt verschlüsselte Session- und CSRF-Cookies für die technische Verarbeitung von Anfragen. Sie laufen nach spätestens zwei Stunden ab und dienen weder Analyse- noch Werbezwecken.',
+                            'Dieses Portfolio verwendet keine Analysedienste, Werbetracker, Marketing-Cookies oder extern eingebundene Schriftarten.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Kontakt und externe Dienste',
+                        'body' => [
+                            'Wenn du mich per E-Mail kontaktierst, bearbeite ich deine Angaben, um deine Nachricht zu beantworten und die Kommunikation fortzuführen. Die Daten bleiben nur so lange gespeichert, wie es dafür oder für geltende Pflichten erforderlich ist.',
+                            'GitHub und LinkedIn erhalten erst Daten, wenn du einen externen Link aufrufst. Danach gelten die Datenschutzbestimmungen des jeweiligen Anbieters; eine Bearbeitung ausserhalb der Schweiz ist möglich.',
+                        ],
+                    ],
+                    [
+                        'title' => 'Deine Rechte',
+                        'body' => ['Im Rahmen des anwendbaren Schweizer Datenschutzrechts kannst du Auskunft, Berichtigung, Löschung, Einschränkung oder Herausgabe deiner Personendaten verlangen. Wende dich dafür per E-Mail an mich.'],
+                        'links' => [['label' => 'Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter', 'url' => 'https://www.edoeb.admin.ch/de']],
+                    ],
                 ],
             ],
         ],
