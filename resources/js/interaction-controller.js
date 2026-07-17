@@ -2,7 +2,9 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 export const createInteractionController = ({ finePointer, reducedMotion }) => {
     let revealObserver;
-    let activeFrame;
+    let surfaceTargetFrame;
+    let surfaceAnimationFrame;
+    let surfaceAnimationTime;
     let trailFrame;
     let pointerEvent;
     let hasPointerPosition = false;
@@ -20,6 +22,7 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         outer: document.querySelector('[data-pointer-gradient="outer"]'),
     };
     const trailPoints = Array.from({ length: 18 }, () => ({ x: -64, y: -64 }));
+    const surfaceStates = new Map();
 
     const getInteractiveTarget = (target) => target instanceof Element
         ? target.closest('a[href], button, input, textarea, select')
@@ -102,8 +105,76 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         });
     };
 
-    const updatePointerSurface = () => {
-        activeFrame = undefined;
+    const readSurfaceCoordinate = (surface, property, fallback) => {
+        const value = Number.parseFloat(getComputedStyle(surface).getPropertyValue(property));
+
+        return Number.isFinite(value) ? value : fallback;
+    };
+
+    const getSurfaceState = (surface) => {
+        const existingState = surfaceStates.get(surface);
+
+        if (existingState) {
+            return existingState;
+        }
+
+        const state = {
+            x: readSurfaceCoordinate(surface, '--pointer-x', 50),
+            y: readSurfaceCoordinate(surface, '--pointer-y', 50),
+            targetX: 50,
+            targetY: 50,
+        };
+
+        state.targetX = state.x;
+        state.targetY = state.y;
+        surfaceStates.set(surface, state);
+
+        return state;
+    };
+
+    const animatePointerSurfaces = (timestamp) => {
+        const elapsed = surfaceAnimationTime === undefined
+            ? 16
+            : Math.min(timestamp - surfaceAnimationTime, 48);
+        const interpolation = 1 - Math.exp(-elapsed / 135);
+        let hasPendingSurface = false;
+
+        surfaceAnimationTime = timestamp;
+
+        surfaceStates.forEach((state, surface) => {
+            if (!surface.isConnected) {
+                surfaceStates.delete(surface);
+                return;
+            }
+
+            state.x += (state.targetX - state.x) * interpolation;
+            state.y += (state.targetY - state.y) * interpolation;
+
+            surface.style.setProperty('--pointer-x', `${state.x.toFixed(3)}%`);
+            surface.style.setProperty('--pointer-y', `${state.y.toFixed(3)}%`);
+
+            if (Math.abs(state.targetX - state.x) > 0.025 || Math.abs(state.targetY - state.y) > 0.025) {
+                hasPendingSurface = true;
+            }
+        });
+
+        if (hasPendingSurface) {
+            surfaceAnimationFrame = window.requestAnimationFrame(animatePointerSurfaces);
+            return;
+        }
+
+        surfaceAnimationFrame = undefined;
+        surfaceAnimationTime = undefined;
+    };
+
+    const startSurfaceAnimation = () => {
+        if (surfaceAnimationFrame === undefined) {
+            surfaceAnimationFrame = window.requestAnimationFrame(animatePointerSurfaces);
+        }
+    };
+
+    const updatePointerSurfaceTarget = () => {
+        surfaceTargetFrame = undefined;
 
         if (!pointerEvent) {
             return;
@@ -120,9 +191,26 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         const rect = surface.getBoundingClientRect();
         const x = clamp((pointerEvent.clientX - rect.left) / Math.max(rect.width, 1) * 100, 0, 100);
         const y = clamp((pointerEvent.clientY - rect.top) / Math.max(rect.height, 1) * 100, 0, 100);
+        const state = getSurfaceState(surface);
 
-        surface.style.setProperty('--pointer-x', `${x}%`);
-        surface.style.setProperty('--pointer-y', `${y}%`);
+        state.targetX = x;
+        state.targetY = y;
+        startSurfaceAnimation();
+    };
+
+    const resetPointerSurfaces = () => {
+        if (surfaceTargetFrame !== undefined) {
+            window.cancelAnimationFrame(surfaceTargetFrame);
+            surfaceTargetFrame = undefined;
+        }
+
+        if (surfaceAnimationFrame !== undefined) {
+            window.cancelAnimationFrame(surfaceAnimationFrame);
+            surfaceAnimationFrame = undefined;
+        }
+
+        surfaceAnimationTime = undefined;
+        surfaceStates.clear();
     };
 
     const updateSitePointer = () => {
@@ -179,8 +267,8 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             hasPointerPosition = true;
         }
 
-        if (activeFrame === undefined) {
-            activeFrame = window.requestAnimationFrame(updatePointerSurface);
+        if (surfaceTargetFrame === undefined) {
+            surfaceTargetFrame = window.requestAnimationFrame(updatePointerSurfaceTarget);
         }
 
         if (trailFrame === undefined) {
@@ -327,7 +415,10 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             document.body.classList.toggle('has-scrolled', window.scrollY > 24);
         }, { passive: true });
 
-        document.addEventListener('portfolio:page-swapped', initializeReveals);
+        document.addEventListener('portfolio:page-swapped', () => {
+            resetPointerSurfaces();
+            initializeReveals();
+        });
     };
 
     return { initialize, initializeReveals };

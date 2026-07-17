@@ -7,12 +7,6 @@
             "sizes": "256x256",
             "type": "image/png",
             "purpose": "any"
-        },
-        {
-            "src": "/brand/cats/main/cat-loaf-classic-256.png",
-            "sizes": "256x256",
-            "type": "image/png",
-            "purpose": "any"
         }
     ],
     "theme_color": "#05010D",

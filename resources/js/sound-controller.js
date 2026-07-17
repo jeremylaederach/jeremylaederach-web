@@ -1,5 +1,5 @@
 const storageKey = 'portfolio:interface-sound-muted';
-const masterLevel = 0.9;
+const masterLevel = 1;
 
 const hoverProfiles = {
     action: { frequency: 560, endFrequency: 390, overtone: 930 },
@@ -101,14 +101,14 @@ export const createSoundController = ({ finePointer }) => {
             duration: 0.09,
             endFrequency: profile.endFrequency,
             frequency: profile.frequency,
-            gain: 0.022,
+            gain: 0.027,
         });
         tone({
             delay: 0.008,
             duration: 0.065,
             endFrequency: profile.overtone * 0.82,
             frequency: profile.overtone,
-            gain: 0.0055,
+            gain: 0.0068,
             type: 'triangle',
         });
     };
@@ -118,8 +118,8 @@ export const createSoundController = ({ finePointer }) => {
             return;
         }
 
-        tone({ duration: 0.16, endFrequency: 68, frequency: 116, gain: 0.032 });
-        tone({ delay: 0.012, duration: 0.12, endFrequency: 128, frequency: 206, gain: 0.010, type: 'triangle' });
+        tone({ duration: 0.16, endFrequency: 68, frequency: 116, gain: 0.04 });
+        tone({ delay: 0.012, duration: 0.12, endFrequency: 128, frequency: 206, gain: 0.0125, type: 'triangle' });
     };
 
     const complete = () => {
@@ -127,8 +127,8 @@ export const createSoundController = ({ finePointer }) => {
             return;
         }
 
-        tone({ duration: 0.14, endFrequency: 182, frequency: 162, gain: 0.012 });
-        tone({ delay: 0.048, duration: 0.18, endFrequency: 286, frequency: 244, gain: 0.009, type: 'triangle' });
+        tone({ duration: 0.14, endFrequency: 182, frequency: 162, gain: 0.015 });
+        tone({ delay: 0.048, duration: 0.18, endFrequency: 286, frequency: 244, gain: 0.011, type: 'triangle' });
     };
 
     const toggle = async () => {

@@ -112,7 +112,7 @@
     }
 
     .js.is-ready .kinetic-index__letter-glyph {
-        animation: wordmark-signal 4s ease infinite;
+        animation: wordmark-signal 3.5s ease infinite;
         animation-delay: calc(700ms + (var(--letter-index) * 46ms));
     }
 

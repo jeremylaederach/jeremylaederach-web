@@ -187,11 +187,12 @@
             transparent 62%
         );
         content: '';
-        opacity: 0.55;
-        transition: opacity 420ms ease;
+        opacity: 0;
+        transition: opacity 520ms var(--ease-heavy);
     }
 
-    .project-case:hover::before {
+    .project-case:hover::before,
+    .project-case:focus-within::before {
         opacity: 1;
     }
 

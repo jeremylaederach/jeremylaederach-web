@@ -391,11 +391,10 @@ return [
                         ],
                     ],
                     [
-                        'title' => 'Local preference and technical cookies',
+                        'title' => 'Local preference',
                         'body' => [
                             'The sound control stores one mute preference in your browser\'s local storage. It remains on your device and is not used to identify or track you.',
-                            'The Laravel application sets encrypted session and CSRF cookies for technical request handling. They expire after up to two hours and are not used for analytics or advertising.',
-                            'This portfolio does not use analytics, advertising trackers, marketing cookies, or externally hosted fonts.',
+                            'The deployed portfolio is a static website and does not set application, analytics, advertising, or marketing cookies. It also does not use trackers or externally hosted fonts.',
                         ],
                     ],
                     [
@@ -772,11 +771,10 @@ return [
                         ],
                     ],
                     [
-                        'title' => 'Lokale Einstellung und technische Cookies',
+                        'title' => 'Lokale Einstellung',
                         'body' => [
                             'Die Tonsteuerung speichert eine einzige Stummschaltungs-Einstellung im lokalen Speicher deines Browsers. Sie bleibt auf deinem Gerät und dient weder der Identifikation noch dem Tracking.',
-                            'Die Laravel-Anwendung setzt verschlüsselte Session- und CSRF-Cookies für die technische Verarbeitung von Anfragen. Sie laufen nach spätestens zwei Stunden ab und dienen weder Analyse- noch Werbezwecken.',
-                            'Dieses Portfolio verwendet keine Analysedienste, Werbetracker, Marketing-Cookies oder extern eingebundene Schriftarten.',
+                            'Das veröffentlichte Portfolio ist eine statische Website und setzt keine Anwendungs-, Analyse-, Werbe- oder Marketing-Cookies. Es verwendet zudem keine Tracker oder extern eingebundenen Schriftarten.',
                         ],
                     ],
                     [

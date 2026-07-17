@@ -1,22 +1,13 @@
 @props([
     'class' => '',
     'size' => '1024',
-    'variant' => 'cat-loaf',
     'alt' => '',
 ])
 
 @php
-    $variants = [
-        'cat-loaf' => 'brand/cats/main/cat-loaf-classic-256.png',
-        'cat-loaf-main' => 'brand/cats/main/cat-loaf-classic-256.png',
-        'cat-loaf-classic' => 'brand/cats/main/cat-loaf-classic.png',
-        'cat-loaf-legs' => 'brand/cats/main/cat-loaf-main.png',
-    ];
-
-    $src = $variants[$variant] ?? $variants['cat-loaf'];
     $imageAttributes = [
         'class' => $class,
-        'src' => asset($src),
+        'src' => asset('brand/cats/main/cat-loaf-classic-256.png'),
         'alt' => $alt,
         'width' => $size,
         'height' => $size,

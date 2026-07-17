@@ -275,18 +275,20 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Privacy notice')
             ->assertSee('Technical access data')
-            ->assertSee('does not use analytics')
             ->assertSee('local storage')
-            ->assertSee('session and CSRF cookies')
+            ->assertSee('static website')
+            ->assertSee('does not set application')
+            ->assertSee('does not use trackers')
             ->assertSee('href="http://localhost/de/privacy"', false);
 
         $this->get('/de/privacy')
             ->assertOk()
             ->assertSee('Datenschutzerklärung')
             ->assertSee('Technische Zugriffsdaten')
-            ->assertSee('keine Analysedienste')
             ->assertSee('lokalen Speicher')
-            ->assertSee('Session- und CSRF-Cookies')
+            ->assertSee('statische Website')
+            ->assertSee('keine Anwendungs-')
+            ->assertSee('keine Tracker')
             ->assertSee('Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter');
     }
 
