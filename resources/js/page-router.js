@@ -208,10 +208,13 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
             return;
         }
 
-        const transitionOrigin = link.querySelector('[data-transition-origin]');
+        const externalOrigin = link.dataset.transitionOriginId
+            ? document.getElementById(link.dataset.transitionOriginId)
+            : null;
+        const nestedOrigin = link.querySelector('[data-transition-origin]');
 
         navigate(destination, {
-            origin: transitionOrigin instanceof Element ? transitionOrigin : link,
+            origin: externalOrigin ?? (nestedOrigin instanceof Element ? nestedOrigin : link),
             routeHint: link.dataset.route,
             transitionLabel: link.dataset.transitionLabel ?? link.textContent.trim(),
             transitionTheme: link.dataset.transitionTheme,

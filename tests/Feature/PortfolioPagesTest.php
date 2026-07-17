@@ -140,6 +140,11 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--teaser"', false)
             ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--teaser"', false)
             ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--teaser"', false)
+            ->assertSee('class="project-case__content project-case__content-link"', false)
+            ->assertSee('data-transition-origin-id="project-reel-quantified"', false)
+            ->assertDontSee('data-reel-caption', false)
+            ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
+            ->assertDontSee('project-reel__browser-bar', false)
             ->assertDontSee('project-case__action', false);
 
         $projectHtml = $projects->getContent();
@@ -147,6 +152,9 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
         $this->assertSame(3, substr_count($projectHtml, 'data-reel-autoplay="true"'));
         $this->assertSame(3, substr_count($projectHtml, 'data-project-reel'));
+        $this->assertSame(3, substr_count($projectHtml, 'aria-label="Projektansichten"'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-reel-open'));
+        $this->assertSame(9, substr_count($projectHtml, 'data-reel-action="go"'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
         $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }
@@ -169,6 +177,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('How has my sleep changed?')
             ->assertSee('QCalendar')
             ->assertSee('QFinances')
+            ->assertSee('class="quantified-app__navigation"', false)
+            ->assertDontSee('quantified-app__profile', false)
             ->assertSee('aria-roledescription="carousel"', false)
             ->assertSee('aria-label="Next view"', false)
             ->assertSee('aria-label="View 3: QFinances"', false)
@@ -208,6 +218,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('aria-label="View 3: Project workspace"', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
             ->assertSee('assets/work/jay-jay-mark.svg', false)
+            ->assertDontSee('project-reel__browser-bar', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 

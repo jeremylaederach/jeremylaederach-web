@@ -29,6 +29,8 @@
                         default => $project['detail_route'].'_page',
                     };
                     $detailProject = $content[$detailContentKey];
+                    $projectUrl = route($project['detail_route'], ['locale' => $locale]);
+                    $reelId = 'project-reel-'.$project['slug'];
                 @endphp
 
                 <article
@@ -37,19 +39,20 @@
                     data-reveal
                     data-pointer-surface
                 >
-                    <a
-                        class="project-case__link"
-                        href="{{ route($project['detail_route'], ['locale' => $locale]) }}"
-                        aria-label="{{ $content['ui']['open'] }} {{ $project['name'] }}"
-                        data-interface-sound
-                        data-sound-tone="panel"
-                        data-route="projects"
-                        data-route-transition
-                        data-transition-label="{{ $project['name'] }}"
-                        data-transition-theme="{{ $project['transition_theme'] }}"
-                        data-pointer-route="{{ $project['transition_theme'] }}"
-                    >
-                        <div class="project-case__content">
+                    <div class="project-case__link">
+                        <a
+                            class="project-case__content project-case__content-link"
+                            href="{{ $projectUrl }}"
+                            aria-label="{{ $content['ui']['open'] }} {{ $project['name'] }}"
+                            data-interface-sound
+                            data-sound-tone="panel"
+                            data-route="projects"
+                            data-route-transition
+                            data-transition-label="{{ $project['name'] }}"
+                            data-transition-theme="{{ $project['transition_theme'] }}"
+                            data-transition-origin-id="{{ $reelId }}"
+                            data-pointer-route="{{ $project['transition_theme'] }}"
+                        >
                             <header class="project-case__header">
                                 <span>0{{ $loop->iteration }}</span>
                                 <p>{{ $project['type'] }}</p>
@@ -64,15 +67,20 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        </div>
+                        </a>
 
                         <x-project-reel
+                            :id="$reelId"
                             :project="$detailProject"
                             :ui="$content['ui']"
+                            :href="$projectUrl"
+                            route-name="projects"
+                            :transition-theme="$project['transition_theme']"
+                            :transition-label="$project['name']"
+                            :open-label="$content['ui']['open'].' '.$project['name']"
                             mode="teaser"
-                            data-transition-origin
                         />
-                    </a>
+                    </div>
                 </article>
             @endforeach
         </section>

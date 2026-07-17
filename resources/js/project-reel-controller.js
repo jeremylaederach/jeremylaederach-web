@@ -1,5 +1,6 @@
 const autoplayDelay = 6200;
 const swipeThreshold = 44;
+const swipeClickDelay = 480;
 
 export const createProjectReelController = ({ reducedMotion }) => {
     const reels = new Map();
@@ -30,29 +31,53 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         state.timer = window.setTimeout(() => {
-            setActive(state, state.current + 1);
+            setActive(state, state.current + 1, 1);
         }, autoplayDelay);
     };
 
     const normalizeIndex = (state, index) => (index + state.slides.length) % state.slides.length;
 
-    const setActive = (state, requestedIndex) => {
+    const getDirection = (state, index) => {
+        const forward = normalizeIndex(state, index - state.current);
+        const backward = normalizeIndex(state, state.current - index);
+
+        return forward <= backward ? 1 : -1;
+    };
+
+    const setActive = (state, requestedIndex, requestedDirection = 0) => {
         const index = normalizeIndex(state, requestedIndex);
+        const previous = state.current;
+        const initialRender = !state.initialized;
+
+        if (!initialRender && index === previous) {
+            scheduleAutoplay(state);
+            return;
+        }
+
+        const direction = requestedDirection || getDirection(state, index);
 
         state.current = index;
+
+        if (!initialRender) {
+            state.reel.dataset.direction = direction > 0 ? 'next' : 'previous';
+        }
+
         state.slides.forEach((slide, slideIndex) => {
             const active = slideIndex === index;
 
-            slide.dataset.state = active ? 'active' : 'inactive';
+            if (active) {
+                slide.dataset.state = 'active';
+            } else if (!initialRender && slideIndex === previous) {
+                slide.dataset.state = direction > 0 ? 'before' : 'after';
+            } else {
+                slide.dataset.state = direction > 0 ? 'after' : 'before';
+            }
+
             slide.setAttribute('aria-hidden', String(!active));
         });
 
         state.pagination.forEach((button, buttonIndex) => {
             button.setAttribute('aria-current', String(buttonIndex === index));
-        });
-
-        state.progress.forEach((item, itemIndex) => {
-            item.classList.toggle('is-active', itemIndex === index);
         });
 
         const slide = state.slides[index];
@@ -66,11 +91,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             state.label.textContent = slide.dataset.label ?? '';
         }
 
-        if (state.caption) {
-            state.caption.textContent = slide.dataset.caption ?? '';
-        }
-
-        state.reel.style.setProperty('--reel-progress', `${(index + 1) / state.slides.length * 100}%`);
+        state.initialized = true;
         scheduleAutoplay(state);
     };
 
@@ -98,15 +119,15 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
         const state = {
             autoplay: reel.hasAttribute('data-reel-autoplay'),
-            caption: reel.querySelector('[data-reel-caption]'),
             current: 0,
             currentLabel: reel.querySelector('[data-reel-current]'),
+            initialized: false,
             interacting: false,
             label: reel.querySelector('[data-reel-label]'),
             pagination: [...reel.querySelectorAll('[data-reel-index]')],
-            progress: [...reel.querySelectorAll('[data-reel-progress]')],
             reel,
             slides,
+            suppressClickUntil: 0,
             swipeStart: undefined,
             timer: undefined,
             visible: false,
@@ -115,6 +136,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         reels.set(reel, state);
         observer.observe(reel);
         setActive(state, 0);
+        window.requestAnimationFrame(() => reel.classList.add('is-ready'));
     };
 
     const pruneReels = () => {
@@ -153,9 +175,9 @@ export const createProjectReelController = ({ reducedMotion }) => {
         const action = button.dataset.reelAction;
 
         if (action === 'previous') {
-            setActive(state, state.current - 1);
+            setActive(state, state.current - 1, -1);
         } else if (action === 'next') {
-            setActive(state, state.current + 1);
+            setActive(state, state.current + 1, 1);
         } else {
             setActive(state, Number.parseInt(button.dataset.reelIndex ?? '0', 10));
         }
@@ -167,7 +189,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         const reel = event.target instanceof Element
-            ? event.target.closest('.project-reel--detail')
+            ? event.target.closest('[data-project-reel]')
             : null;
         const state = reel ? getState(reel) : undefined;
 
@@ -176,7 +198,10 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         event.preventDefault();
-        setActive(state, state.current + (event.key === 'ArrowRight' ? 1 : -1));
+
+        const direction = event.key === 'ArrowRight' ? 1 : -1;
+
+        setActive(state, state.current + direction, direction);
     };
 
     const handlePointerDown = (event) => {
@@ -185,13 +210,20 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         const reel = event.target instanceof Element
-            ? event.target.closest('.project-reel--detail')
+            ? event.target.closest('[data-project-reel]')
             : null;
         const state = reel ? getState(reel) : undefined;
 
-        if (state) {
-            state.swipeStart = event.clientX;
+        if (!state) {
+            return;
         }
+
+        state.swipeStart = {
+            x: event.clientX,
+            y: event.clientY,
+        };
+        state.interacting = true;
+        clearAutoplay(state);
     };
 
     const handlePointerUp = (event) => {
@@ -200,7 +232,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         const reel = event.target instanceof Element
-            ? event.target.closest('.project-reel--detail')
+            ? event.target.closest('[data-project-reel]')
             : null;
         const state = reel ? getState(reel) : undefined;
 
@@ -208,12 +240,33 @@ export const createProjectReelController = ({ reducedMotion }) => {
             return;
         }
 
-        const distance = event.clientX - state.swipeStart;
+        const distanceX = event.clientX - state.swipeStart.x;
+        const distanceY = event.clientY - state.swipeStart.y;
 
         state.swipeStart = undefined;
+        state.interacting = false;
 
-        if (Math.abs(distance) >= swipeThreshold) {
-            setActive(state, state.current + (distance < 0 ? 1 : -1));
+        if (Math.abs(distanceX) >= swipeThreshold && Math.abs(distanceX) > Math.abs(distanceY)) {
+            const direction = distanceX < 0 ? 1 : -1;
+
+            state.suppressClickUntil = performance.now() + swipeClickDelay;
+            setActive(state, state.current + direction, direction);
+            return;
+        }
+
+        scheduleAutoplay(state);
+    };
+
+    const suppressClickAfterSwipe = (event) => {
+        const link = event.target instanceof Element
+            ? event.target.closest('[data-reel-open]')
+            : null;
+        const reel = link?.closest('[data-project-reel]');
+        const state = reel ? getState(reel) : undefined;
+
+        if (state && performance.now() < state.suppressClickUntil) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
         }
     };
 
@@ -239,6 +292,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         listenersAttached = true;
+        document.addEventListener('click', suppressClickAfterSwipe, true);
         document.addEventListener('click', handleAction);
         document.addEventListener('keydown', handleKeyboard);
         document.addEventListener('pointerdown', handlePointerDown, { passive: true });

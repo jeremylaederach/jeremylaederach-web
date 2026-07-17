@@ -21,7 +21,7 @@
     role="img"
     aria-label="{{ $label }}"
 >
-    <aside class="quantified-app__navigation">
+    <header class="quantified-app__navigation">
         <span class="quantified-app__brand">
             <img src="{{ asset('assets/work/quantified-mark.png') }}" alt="" width="32" height="32">
             <strong>Quantified</strong>
@@ -32,9 +32,7 @@
                 <span @class(['is-active' => $route === $view])>{{ $name }}</span>
             @endforeach
         </span>
-
-        <span class="quantified-app__profile">JL</span>
-    </aside>
+    </header>
 
     <section class="quantified-app__workspace">
         <header class="quantified-app__toolbar">

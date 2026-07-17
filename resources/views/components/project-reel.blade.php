@@ -2,22 +2,31 @@
     'project',
     'ui',
     'mode' => 'teaser',
+    'href' => null,
+    'routeName' => null,
+    'transitionTheme' => null,
+    'transitionLabel' => null,
+    'openLabel' => null,
 ])
 
 @php
     $slides = $project['media'];
     $isDetail = $mode === 'detail';
-    $reelAttributes = $isDetail
-        ? [
-            'role' => 'region',
-            'aria-roledescription' => 'carousel',
-            'aria-label' => $project['preview_label'],
-            'tabindex' => '0',
-        ]
-        : [
-            'aria-hidden' => 'true',
-            'data-reel-autoplay' => 'true',
-        ];
+    $reelAttributes = [
+        'role' => 'region',
+        'aria-roledescription' => 'carousel',
+        'aria-label' => $project['preview_label'],
+    ];
+
+    if ($isDetail) {
+        $reelAttributes['tabindex'] = '0';
+    } else {
+        throw_unless(
+            $href && $routeName && $transitionTheme && $transitionLabel && $openLabel,
+            LogicException::class,
+        );
+        $reelAttributes['data-reel-autoplay'] = 'true';
+    }
 @endphp
 
 <div
@@ -30,14 +39,29 @@
     ])->merge($reelAttributes) }}
     data-project-reel
 >
-    <div class="project-reel__viewport">
+    @if ($isDetail)
+        <div class="project-reel__viewport">
+    @else
+        <a
+            class="project-reel__viewport"
+            href="{{ $href }}"
+            aria-label="{{ $openLabel }}"
+            data-reel-open
+            data-interface-sound
+            data-sound-tone="panel"
+            data-route="{{ $routeName }}"
+            data-route-transition
+            data-transition-label="{{ $transitionLabel }}"
+            data-transition-theme="{{ $transitionTheme }}"
+            data-pointer-route="{{ $transitionTheme }}"
+        >
+    @endif
         @foreach ($slides as $slide)
             <div
                 class="project-reel__slide"
                 data-reel-slide
                 data-state="{{ $loop->first ? 'active' : 'after' }}"
                 data-label="{{ $slide['label'] }}"
-                data-caption="{{ $slide['caption'] }}"
                 aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
             >
                 @switch($slide['type'])
@@ -51,9 +75,6 @@
 
                     @case('jay-jay-web')
                         <figure class="project-reel__surface project-reel__browser">
-                            <span class="project-reel__browser-bar" aria-hidden="true">
-                                <i></i><i></i><i></i><small>jay-jay.ch</small>
-                            </span>
                             <img
                                 src="{{ asset('assets/work/jay-jay-home.png') }}"
                                 alt="{{ $slide['label'] }}"
@@ -96,56 +117,58 @@
             <i></i>
             <span>{{ str_pad((string) count($slides), 2, '0', STR_PAD_LEFT) }}</span>
         </span>
-    </div>
+    @if ($isDetail)
+        </div>
+    @else
+        </a>
+    @endif
 
     <div class="project-reel__footer">
         <p>
             <strong data-reel-label>{{ $slides[0]['label'] }}</strong>
-            <span data-reel-caption>{{ $slides[0]['caption'] }}</span>
         </p>
 
-        @if ($isDetail)
-            <div class="project-reel__controls" role="group" aria-label="{{ $ui['project_media'] }}">
-                <button
-                    type="button"
-                    aria-label="{{ $ui['media_previous'] }}"
-                    data-reel-action="previous"
-                    data-interface-sound
-                    data-sound-tone="control"
-                >
-                    <x-nav-icon name="arrow-right" />
-                </button>
+        <div
+            @class([
+                'project-reel__controls',
+                'project-reel__controls--compact' => ! $isDetail,
+            ])
+            role="group"
+            aria-label="{{ $ui['project_media'] }}"
+        >
+            <button
+                type="button"
+                aria-label="{{ $ui['media_previous'] }}"
+                data-reel-action="previous"
+                data-interface-sound
+                data-sound-tone="control"
+            >
+                <x-nav-icon name="arrow-right" />
+            </button>
 
-                <span class="project-reel__pagination">
-                    @foreach ($slides as $slide)
-                        <button
-                            type="button"
-                            aria-label="{{ $ui['media_view'] }} {{ $loop->iteration }}: {{ $slide['label'] }}"
-                            aria-current="{{ $loop->first ? 'true' : 'false' }}"
-                            data-reel-action="go"
-                            data-reel-index="{{ $loop->index }}"
-                            data-interface-sound
-                            data-sound-tone="control"
-                        ></button>
-                    @endforeach
-                </span>
-
-                <button
-                    type="button"
-                    aria-label="{{ $ui['media_next'] }}"
-                    data-reel-action="next"
-                    data-interface-sound
-                    data-sound-tone="control"
-                >
-                    <x-nav-icon name="arrow-right" />
-                </button>
-            </div>
-        @else
-            <span class="project-reel__progress" aria-hidden="true">
+            <span class="project-reel__pagination">
                 @foreach ($slides as $slide)
-                    <i @class(['is-active' => $loop->first]) data-reel-progress></i>
+                    <button
+                        type="button"
+                        aria-label="{{ $ui['media_view'] }} {{ $loop->iteration }}: {{ $slide['label'] }}"
+                        aria-current="{{ $loop->first ? 'true' : 'false' }}"
+                        data-reel-action="go"
+                        data-reel-index="{{ $loop->index }}"
+                        data-interface-sound
+                        data-sound-tone="control"
+                    ></button>
                 @endforeach
             </span>
-        @endif
+
+            <button
+                type="button"
+                aria-label="{{ $ui['media_next'] }}"
+                data-reel-action="next"
+                data-interface-sound
+                data-sound-tone="control"
+            >
+                <x-nav-icon name="arrow-right" />
+            </button>
+        </div>
     </div>
 </div>

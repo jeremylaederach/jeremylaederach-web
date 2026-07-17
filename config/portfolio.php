@@ -211,19 +211,16 @@ return [
                         'type' => 'quantified-workspace',
                         'view' => 'overview',
                         'label' => 'Analytics workspace',
-                        'caption' => 'Questions connect activity across five life areas.',
                     ],
                     [
                         'type' => 'quantified-workspace',
                         'view' => 'calendar',
                         'label' => 'QCalendar',
-                        'caption' => 'Imported events become a readable category timeline.',
                     ],
                     [
                         'type' => 'quantified-workspace',
                         'view' => 'finances',
                         'label' => 'QFinances',
-                        'caption' => 'A PostgreSQL-backed finance prototype inside the same system.',
                     ],
                 ],
                 'overview' => [
@@ -271,19 +268,16 @@ return [
                     [
                         'type' => 'jay-jay-web',
                         'label' => 'Public website',
-                        'caption' => 'A calm first contact for services and support.',
                     ],
                     [
                         'type' => 'jay-jay-hub',
                         'view' => 'overview',
                         'label' => 'Client Hub',
-                        'caption' => 'Projects and requests in one focused workspace.',
                     ],
                     [
                         'type' => 'jay-jay-hub',
                         'view' => 'project',
                         'label' => 'Project workspace',
-                        'caption' => 'Milestones, updates, and the next step stay connected.',
                     ],
                 ],
                 'preview' => [
@@ -356,17 +350,14 @@ return [
                     [
                         'type' => 'sessiondeck-overview',
                         'label' => 'Profile catalog',
-                        'caption' => 'Reusable Windows workspaces remain visible at a glance.',
                     ],
                     [
                         'type' => 'sessiondeck-editor',
                         'label' => 'Profile editor',
-                        'caption' => 'Ordered launch items stay explicit and editable.',
                     ],
                     [
                         'type' => 'sessiondeck-result',
                         'label' => 'Session result',
-                        'caption' => 'Every launched item reports an honest, separate result.',
                     ],
                 ],
                 'meta_description' => 'SessionDeck is an open-source WinUI 3 workspace launcher for reusable Windows session profiles.',
@@ -668,19 +659,16 @@ return [
                         'type' => 'quantified-workspace',
                         'view' => 'overview',
                         'label' => 'Analytics Workspace',
-                        'caption' => 'Fragen verbinden Aktivitäten aus fünf Lebensbereichen.',
                     ],
                     [
                         'type' => 'quantified-workspace',
                         'view' => 'calendar',
                         'label' => 'QCalendar',
-                        'caption' => 'Importierte Events werden zu einer lesbaren Kategorie-Timeline.',
                     ],
                     [
                         'type' => 'quantified-workspace',
                         'view' => 'finances',
                         'label' => 'QFinances',
-                        'caption' => 'Ein PostgreSQL-basierter Finanzprototyp im selben System.',
                     ],
                 ],
                 'overview' => [
@@ -728,19 +716,16 @@ return [
                     [
                         'type' => 'jay-jay-web',
                         'label' => 'Öffentliche Website',
-                        'caption' => 'Ein ruhiger erster Kontakt für Leistungen und Betreuung.',
                     ],
                     [
                         'type' => 'jay-jay-hub',
                         'view' => 'overview',
                         'label' => 'Client Hub',
-                        'caption' => 'Projekte und Anfragen in einem fokussierten Workspace.',
                     ],
                     [
                         'type' => 'jay-jay-hub',
                         'view' => 'project',
                         'label' => 'Projekt-Workspace',
-                        'caption' => 'Meilensteine, Updates und der nächste Schritt bleiben verbunden.',
                     ],
                 ],
                 'preview' => [
@@ -813,17 +798,14 @@ return [
                     [
                         'type' => 'sessiondeck-overview',
                         'label' => 'Profilübersicht',
-                        'caption' => 'Wiederverwendbare Windows-Workspaces bleiben auf einen Blick sichtbar.',
                     ],
                     [
                         'type' => 'sessiondeck-editor',
                         'label' => 'Profileditor',
-                        'caption' => 'Geordnete Launch Items bleiben explizit und bearbeitbar.',
                     ],
                     [
                         'type' => 'sessiondeck-result',
                         'label' => 'Session-Ergebnis',
-                        'caption' => 'Jedes gestartete Element meldet ein ehrliches, separates Resultat.',
                     ],
                 ],
                 'meta_description' => 'SessionDeck ist ein Open-Source WinUI-3-Workspace-Launcher für wiederverwendbare Windows-Session-Profile.',
