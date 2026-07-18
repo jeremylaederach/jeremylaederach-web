@@ -300,6 +300,11 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('Laravel-Prototyp')
             ->assertSee('href="http://localhost/en/imprint"', false);
 
+        $this->get('/en/imprint')
+            ->assertOk()
+            ->assertSee('Legal notice')
+            ->assertDontSee('>Imprint<', false);
+
         $this->get('/en/privacy')
             ->assertOk()
             ->assertSee('Privacy notice')

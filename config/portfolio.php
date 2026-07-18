@@ -418,7 +418,7 @@ return [
             ],
             'imprint' => [
                 'eyebrow' => 'Legal',
-                'title' => 'Imprint',
+                'title' => 'Legal notice',
                 'intro' => 'Ownership and contact details for this personal portfolio.',
                 'sections' => [
                     [
