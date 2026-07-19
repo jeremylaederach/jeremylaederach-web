@@ -20,14 +20,19 @@
             </a>
         </header>
 
-        <section id="contact-workspace" class="contact-workspace" data-reveal>
+        <section
+            id="contact-workspace"
+            class="contact-workspace"
+            aria-labelledby="contact-workspace-title"
+            data-reveal
+        >
             <header class="contact-workspace__header">
                 <p class="section-label contact-workspace__label">
                     <span>01</span>
                     <span aria-hidden="true">/</span>
                     <span>{{ $content['contact_page']['direct_label'] }}</span>
                 </p>
-                <h2>{{ $content['contact_page']['direct_heading'] }}</h2>
+                <h2 id="contact-workspace-title">{{ $content['contact_page']['direct_heading'] }}</h2>
             </header>
 
             <a
