@@ -52,10 +52,18 @@
 
             <ol class="career-list">
                 @foreach ($content['about_page']['career'] as $step)
-                    <li data-pointer-surface>
+                    <li @class(['career-list__current' => isset($step['status'])]) data-pointer-surface>
                         <span>0{{ $loop->iteration }}</span>
                         <time>{{ $step['period'] }}</time>
-                        <h3>{{ $step['title'] }}</h3>
+                        <h3>
+                            {{ $step['title'] }}
+                            @isset($step['status'])
+                                <span class="career-list__status">
+                                    <i aria-hidden="true"></i>
+                                    {{ $step['status'] }}
+                                </span>
+                            @endisset
+                        </h3>
                         <p>{{ $step['body'] }}</p>
                     </li>
                 @endforeach
@@ -108,6 +116,8 @@
                 @endforeach
             </ul>
         </section>
+
+        <x-about-lab :content="$content" />
 
         <x-contact-cta :content="$content" :locale="$locale" />
     </article>

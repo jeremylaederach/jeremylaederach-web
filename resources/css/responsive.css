@@ -245,14 +245,35 @@
         font-size: 42px;
     }
 
+    .about-lab > header,
     .career-section > header,
     .stack-section > header {
         gap: 44px;
     }
 
+    .about-lab h2,
     .career-section h2,
     .stack-section h2 {
         font-size: 52px;
+    }
+
+    .about-lab__panel {
+        grid-template-columns: minmax(210px, 0.32fr) minmax(0, 1fr);
+    }
+
+    .about-lab__copy {
+        padding: 34px 28px;
+    }
+
+    .about-lab__query {
+        width: 90%;
+        grid-template-columns: minmax(140px, 1fr) 36px minmax(140px, 1fr);
+        gap: 10px;
+    }
+
+    .about-lab__rows span {
+        grid-template-columns: 42px 1fr auto;
+        gap: 8px;
     }
 
     .career-list li {
@@ -1000,6 +1021,7 @@
         font-size: 16px;
     }
 
+    .about-lab > header,
     .career-section > header,
     .stack-section > header {
         grid-template-columns: 1fr;
@@ -1008,9 +1030,152 @@
         align-items: start;
     }
 
+    .about-lab h2,
     .career-section h2,
     .stack-section h2 {
         font-size: 42px;
+    }
+
+    .about-lab,
+    .career-section {
+        padding-bottom: 76px;
+    }
+
+    .about-lab__toolbar {
+        min-height: 48px;
+        padding: 0 14px;
+    }
+
+    .about-lab__file,
+    .about-lab__status {
+        font-size: 8px;
+    }
+
+    .about-lab__tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-lab__tabs button {
+        min-height: 56px;
+        padding: 0 14px;
+    }
+
+    .about-lab__tabs button:nth-child(2) {
+        border-right: 0;
+    }
+
+    .about-lab__tabs button:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+    }
+
+    .about-lab__panel {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 340px 62px;
+    }
+
+    .about-lab__copy {
+        padding: 26px 22px 28px;
+        gap: 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .about-lab__copy h3 {
+        margin-top: 14px;
+        font-size: 28px;
+    }
+
+    .about-lab__stage {
+        min-height: 340px;
+        background-size: 28px 28px;
+    }
+
+    .about-lab__footer {
+        min-width: 0;
+    }
+
+    .about-lab__footer > span {
+        min-width: 0;
+        padding: 0 14px;
+        gap: 10px;
+    }
+
+    .about-lab__footer button {
+        min-width: 154px;
+        padding: 0 14px;
+        gap: 12px;
+    }
+
+    .about-lab__snippet {
+        top: 24px;
+        left: 20px;
+        font-size: 9px;
+    }
+
+    .about-lab__sorter {
+        right: 6%;
+        bottom: 26px;
+        left: 6%;
+        height: 170px;
+        gap: 8px;
+    }
+
+    .about-lab__sorter > span {
+        width: clamp(20px, 10vw, 36px);
+        height: calc(var(--sort-value) * 1.5px);
+        max-height: 145px;
+    }
+
+    .about-lab__layout {
+        width: 88%;
+        height: 260px;
+        grid-template-columns: 78px 1fr;
+    }
+
+    .about-lab__layout main {
+        padding: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .about-lab__layout[data-layout-index='1'] {
+        width: 70%;
+        grid-template-columns: 62px 1fr;
+    }
+
+    .about-lab__layout[data-layout-index='2'] {
+        width: 54%;
+    }
+
+    .about-lab__query {
+        width: 88%;
+        grid-template-columns: 1fr 22px 1fr;
+        gap: 6px;
+    }
+
+    .about-lab__rows span {
+        min-height: 34px;
+        padding: 0 8px;
+        grid-template-columns: 1fr auto;
+        gap: 6px;
+    }
+
+    .about-lab__rows i {
+        display: none;
+    }
+
+    .about-lab__groups span {
+        min-height: 44px;
+        padding: 0 9px;
+    }
+
+    .about-lab__pipeline {
+        width: 92%;
+    }
+
+    .about-lab__pipeline b {
+        font-size: 8px;
     }
 
     .career-list li,
@@ -1362,6 +1527,11 @@
     [data-reveal],
     [data-page-main] {
         transform: none !important;
+    }
+
+    .about-lab__status i,
+    .about-lab__pipeline span.is-running i {
+        animation: none;
     }
 
     .kinetic-index__letter:hover {

@@ -77,16 +77,27 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="page-hero__index"', false)
             ->assertSee('<span>02</span>', false)
             ->assertSee('class="about-story"', false)
+            ->assertSee('class="about-lab"', false)
+            ->assertSee('data-about-lab', false)
+            ->assertSee('data-lab-tab="backend"', false)
+            ->assertSee('data-lab-panel="delivery"', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
+            ->assertSee('class="career-list__current"', false)
             ->assertSee('class="technology-groups"', false)
-            ->assertSee('Software with purpose, built from real requirements.')
+            ->assertSee('Where I am today.')
+            ->assertSee('Small experiments.')
+            ->assertSee('Bubble sort')
+            ->assertSee('Responsive layout')
+            ->assertSee('Calendar query')
+            ->assertSee('Release check')
+            ->assertSee('Today')
             ->assertDontSee('class="about-facts"', false)
             ->assertDontSee('class="principles-list"', false)
-            ->assertDontSee('How I work')
-            ->assertSee('Tools I work with')
+            ->assertDontSee('class="about-system"', false)
+            ->assertSee('Stack')
             ->assertSee('Experience')
-            ->assertSee('Toolkit')
+            ->assertSee('Tools')
             ->assertSee('Application Developer EFZ')
             ->assertSee('Business Informatics BSc')
             ->assertSee('ASP.NET Core')
@@ -98,13 +109,26 @@ class PortfolioPagesTest extends TestCase
 
         $this->assertSame(4, substr_count($about->getContent(), 'class="technology-group"'));
         $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
-        $this->assertSame(3, substr_count($about->getContent(), 'class="section-label about-section-label"'));
+        $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-tab='));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-panel='));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-action='));
+
+        $aboutHtml = $about->getContent();
+
+        $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
+        $this->assertLessThan(strpos($aboutHtml, 'id="stack-title"'), strpos($aboutHtml, 'id="career-title"'));
+        $this->assertLessThan(strpos($aboutHtml, 'id="lab-title"'), strpos($aboutHtml, 'id="stack-title"'));
 
         $this->get('/de/about')
             ->assertOk()
             ->assertSee('Erfahrung')
             ->assertSee('Tools')
-            ->assertSee('Technologien, mit denen ich arbeite')
+            ->assertSee('Wo ich heute stehe.')
+            ->assertSee('Kleine Experimente.')
+            ->assertSee('Sechs Werte, Vergleich für Vergleich sortiert.')
+            ->assertSee('Stack')
+            ->assertSee('Heute')
             ->assertDontSee('Stationen');
 
         $projects = $this->get('/de/projects');

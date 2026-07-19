@@ -1,3 +1,4 @@
+import { createAboutLabController } from './about-lab-controller.js';
 import { createInteractionController } from './interaction-controller.js';
 import { createPageRouter } from './page-router.js';
 import { createProjectReelController } from './project-reel-controller.js';
@@ -13,6 +14,7 @@ const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 root.classList.add('js');
 
+const aboutLabController = createAboutLabController({ reducedMotion });
 const interactionController = createInteractionController({ finePointer, reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
 const projectReelController = createProjectReelController({ reducedMotion });
@@ -24,6 +26,7 @@ const transitionController = createPageTransitionController({ reducedMotion });
 menuController.initialize();
 soundController.initialize();
 interactionController.initialize();
+aboutLabController.initialize();
 projectReelController.initialize();
 scrollCueController.initialize();
 technologyIconController.initialize();
