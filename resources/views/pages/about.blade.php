@@ -32,9 +32,16 @@
             </div>
 
             <div class="about-story__body">
-                @foreach ($content['about_page']['body'] as $paragraph)
-                    <p>{{ $paragraph }}</p>
-                @endforeach
+                <p>{{ $content['about_page']['story_current'] }}</p>
+
+                <dl class="about-story__notes">
+                    @foreach ($content['about_page']['story_notes'] as $note)
+                        <div>
+                            <dt>{{ $note['label'] }}</dt>
+                            <dd>{{ $note['value'] }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
             </div>
         </section>
 
@@ -52,7 +59,11 @@
 
             <ol class="career-list">
                 @foreach ($content['about_page']['career'] as $step)
-                    <li @class(['career-list__current' => isset($step['status'])]) data-pointer-surface>
+                    <li
+                        @class(['career-list__current' => $step['state'] === 'current'])
+                        data-career-state="{{ $step['state'] }}"
+                        data-pointer-surface
+                    >
                         <span>0{{ $loop->iteration }}</span>
                         <time>{{ $step['period'] }}</time>
                         <h3>
@@ -117,7 +128,7 @@
             </ul>
         </section>
 
-        <x-about-lab :content="$content" />
+        <x-about-playground :content="$content" />
 
         <x-contact-cta :content="$content" :locale="$locale" />
     </article>

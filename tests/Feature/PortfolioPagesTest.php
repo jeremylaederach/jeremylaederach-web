@@ -77,21 +77,26 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="page-hero__index"', false)
             ->assertSee('<span>02</span>', false)
             ->assertSee('class="about-story"', false)
-            ->assertSee('class="about-lab"', false)
-            ->assertSee('data-about-lab', false)
-            ->assertSee('data-lab-tab="backend"', false)
-            ->assertSee('data-lab-panel="delivery"', false)
+            ->assertSee('class="about-playground"', false)
+            ->assertSee('data-about-playground', false)
+            ->assertSee('data-sorting-demo', false)
+            ->assertSee('data-network-demo', false)
+            ->assertSee('data-pathfinding-demo', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
             ->assertSee('class="career-list__current"', false)
+            ->assertSee('data-career-state="current"', false)
             ->assertSee('class="technology-groups"', false)
-            ->assertSee('Where I am today.')
-            ->assertSee('Small experiments.')
-            ->assertSee('Bubble sort')
-            ->assertSee('Responsive layout')
-            ->assertSee('Calendar query')
-            ->assertSee('Release check')
+            ->assertSee('Now.')
+            ->assertSee('Foundation')
+            ->assertSee('From September 2026')
+            ->assertSee('Playground.')
+            ->assertSee('Sorting')
+            ->assertSee('Neural network')
+            ->assertSee('Pathfinding')
             ->assertSee('Today')
+            ->assertDontSee('class="about-lab"', false)
+            ->assertDontSee('data-about-lab', false)
             ->assertDontSee('class="about-facts"', false)
             ->assertDontSee('class="principles-list"', false)
             ->assertDontSee('class="about-system"', false)
@@ -110,23 +115,26 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->getContent(), 'class="technology-group"'));
         $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
         $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
-        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-tab='));
-        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-panel='));
-        $this->assertSame(4, substr_count($about->getContent(), 'data-lab-action='));
+        $this->assertSame(3, substr_count($about->getContent(), 'class="playground-demo"'));
+        $this->assertSame(3, substr_count($about->getContent(), '<canvas'));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-career-state='));
 
         $aboutHtml = $about->getContent();
 
         $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
         $this->assertLessThan(strpos($aboutHtml, 'id="stack-title"'), strpos($aboutHtml, 'id="career-title"'));
-        $this->assertLessThan(strpos($aboutHtml, 'id="lab-title"'), strpos($aboutHtml, 'id="stack-title"'));
+        $this->assertLessThan(strpos($aboutHtml, 'id="playground-title"'), strpos($aboutHtml, 'id="stack-title"'));
 
         $this->get('/de/about')
             ->assertOk()
             ->assertSee('Erfahrung')
             ->assertSee('Tools')
-            ->assertSee('Wo ich heute stehe.')
-            ->assertSee('Kleine Experimente.')
-            ->assertSee('Sechs Werte, Vergleich für Vergleich sortiert.')
+            ->assertSee('Aktuell.')
+            ->assertSee('Grundlage')
+            ->assertSee('Playground.')
+            ->assertSee('Sortieren')
+            ->assertSee('Neurales Netz')
+            ->assertSee('Wegsuche')
             ->assertSee('Stack')
             ->assertSee('Heute')
             ->assertDontSee('Stationen');
