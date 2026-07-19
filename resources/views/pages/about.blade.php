@@ -59,22 +59,10 @@
 
             <ol class="career-list">
                 @foreach ($content['about_page']['career'] as $step)
-                    <li
-                        @class(['career-list__current' => $step['state'] === 'current'])
-                        data-career-state="{{ $step['state'] }}"
-                        data-pointer-surface
-                    >
+                    <li data-pointer-surface>
                         <span>0{{ $loop->iteration }}</span>
                         <time>{{ $step['period'] }}</time>
-                        <h3>
-                            {{ $step['title'] }}
-                            @isset($step['status'])
-                                <span class="career-list__status">
-                                    <i aria-hidden="true"></i>
-                                    {{ $step['status'] }}
-                                </span>
-                            @endisset
-                        </h3>
+                        <h3>{{ $step['title'] }}</h3>
                         <p>{{ $step['body'] }}</p>
                     </li>
                 @endforeach

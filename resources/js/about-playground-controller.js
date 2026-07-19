@@ -12,11 +12,9 @@ export const createAboutPlaygroundController = ({ reducedMotion }) => {
                 ['[data-network-demo]', initializeNetworkDemo],
                 ['[data-pathfinding-demo]', initializePathfindingDemo],
             ].forEach(([selector, initializeDemo]) => {
-                const demo = root.querySelector(selector);
-
-                if (demo) {
+                root.querySelectorAll(selector).forEach((demo) => {
                     initializeDemo(demo, reducedMotion);
-                }
+                });
             });
         });
     };

@@ -1,14 +1,14 @@
 import {
     siAngular,
     siDotnet,
-    siGit,
+    siLaravel,
     siPostgresql,
 } from 'simple-icons';
 
 const icons = new Map([
     ['angular', siAngular],
     ['dotnet', siDotnet],
-    ['git', siGit],
+    ['laravel', siLaravel],
     ['postgresql', siPostgresql],
 ]);
 

@@ -1,4 +1,7 @@
-@php($playground = $content['about_page']['playground'])
+@php
+    $playground = $content['about_page']['playground'];
+    $defaultSort = array_key_first($playground['sorting']['algorithms']);
+@endphp
 
 <section class="about-playground" aria-labelledby="playground-title" data-reveal>
     <header class="about-section-heading">
@@ -23,24 +26,29 @@
                 </output>
             </header>
 
-            <canvas
-                width="640"
-                height="360"
-                data-sorting-canvas
+            <div
+                class="playground-demo__stage sorting-stage"
+                data-sorting-stage
                 role="img"
                 aria-label="{{ $playground['sorting']['title'] }}"
-            ></canvas>
+            >
+                <div class="sorting-stage__plot" data-sorting-plot></div>
+            </div>
 
             <footer>
+                <p class="playground-demo__description" data-sorting-description>
+                    {{ $playground['sorting']['algorithms'][$defaultSort]['description'] }}
+                </p>
                 <div class="playground-demo__options" aria-label="{{ $playground['sorting']['title'] }}">
-                    @foreach (['quick' => 'Quick', 'merge' => 'Merge', 'bubble' => 'Bubble'] as $key => $label)
+                    @foreach ($playground['sorting']['algorithms'] as $key => $algorithm)
                         <button
                             type="button"
                             aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
                             data-sorting-algorithm="{{ $key }}"
+                            data-sorting-description="{{ $algorithm['description'] }}"
                             data-interface-sound
                             data-sound-tone="control"
-                        >{{ $label }}</button>
+                        >{{ $algorithm['label'] }}</button>
                     @endforeach
                 </div>
                 <div class="playground-demo__actions">
@@ -68,19 +76,22 @@
                 height="360"
                 data-network-canvas
                 role="img"
-                aria-label="{{ $playground['network']['title'] }}"
+                aria-label="{{ $playground['network']['description'] }}"
             ></canvas>
 
             <footer>
+                <p class="playground-demo__description">
+                    {{ $playground['network']['description'] }}
+                </p>
                 <div class="playground-demo__options" aria-label="{{ $playground['network']['title'] }}">
-                    @foreach (['relu' => 'ReLU', 'sigmoid' => 'Sigmoid'] as $key => $label)
+                    @foreach ($playground['network']['signals'] as $key => $signal)
                         <button
                             type="button"
                             aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
-                            data-network-activation="{{ $key }}"
+                            data-network-signal="{{ $key }}"
                             data-interface-sound
                             data-sound-tone="control"
-                        >{{ $label }}</button>
+                        >{{ $signal['label'] }}</button>
                     @endforeach
                 </div>
                 <div class="playground-demo__actions">
@@ -107,22 +118,15 @@
                 width="640"
                 height="360"
                 data-pathfinding-canvas
+                tabindex="0"
                 role="img"
-                aria-label="{{ $playground['pathfinding']['title'] }}"
+                aria-label="{{ $playground['pathfinding']['description'] }} {{ $playground['pathfinding']['keyboard_hint'] }}"
             ></canvas>
 
             <footer>
-                <div class="playground-demo__options" aria-label="{{ $playground['pathfinding']['title'] }}">
-                    @foreach (['astar' => 'A*', 'dijkstra' => 'Dijkstra'] as $key => $label)
-                        <button
-                            type="button"
-                            aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
-                            data-pathfinding-algorithm="{{ $key }}"
-                            data-interface-sound
-                            data-sound-tone="control"
-                        >{{ $label }}</button>
-                    @endforeach
-                </div>
+                <p class="playground-demo__description">
+                    {{ $playground['pathfinding']['description'] }}
+                </p>
                 <div class="playground-demo__actions">
                     <button type="button" data-pathfinding-run data-interface-sound data-sound-tone="action">
                         {{ $playground['pathfinding']['run'] }}
@@ -131,7 +135,6 @@
                         {{ $playground['pathfinding']['reset'] }}
                     </button>
                 </div>
-                <p>{{ $playground['pathfinding']['hint'] }}</p>
             </footer>
         </article>
     </div>

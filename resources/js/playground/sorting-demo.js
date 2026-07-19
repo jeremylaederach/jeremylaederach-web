@@ -1,7 +1,11 @@
-import { getPalette, selectOption, wait } from './demo-utils.js';
+import { selectOption, wait } from './demo-utils.js';
 
-const createValues = (size = 20) => {
-    const values = Array.from({ length: size }, (_, index) => (index + 2) / (size + 3));
+const itemCount = 12;
+const comparisonDelay = 120;
+const moveDelay = 320;
+
+const createValues = () => {
+    const values = Array.from({ length: itemCount }, (_, index) => index + 1);
 
     for (let index = values.length - 1; index > 0; index -= 1) {
         const target = Math.floor(Math.random() * (index + 1));
@@ -17,11 +21,19 @@ const bubbleFrames = (source) => {
 
     for (let pass = 0; pass < values.length - 1; pass += 1) {
         for (let index = 0; index < values.length - pass - 1; index += 1) {
-            frames.push({ values: [...values], active: [index, index + 1] });
+            frames.push({
+                values: [...values],
+                active: [index, index + 1],
+                type: 'compare',
+            });
 
             if (values[index] > values[index + 1]) {
                 [values[index], values[index + 1]] = [values[index + 1], values[index]];
-                frames.push({ values: [...values], active: [index, index + 1] });
+                frames.push({
+                    values: [...values],
+                    active: [index, index + 1],
+                    type: 'move',
+                });
             }
         }
     }
@@ -42,17 +54,37 @@ const quickFrames = (source) => {
         let boundary = low;
 
         for (let index = low; index < high; index += 1) {
-            frames.push({ values: [...values], active: [index, high] });
+            frames.push({
+                values: [...values],
+                active: [index, high],
+                type: 'compare',
+            });
 
             if (values[index] <= pivot) {
                 [values[index], values[boundary]] = [values[boundary], values[index]];
-                frames.push({ values: [...values], active: [boundary, high] });
+
+                if (index !== boundary) {
+                    frames.push({
+                        values: [...values],
+                        active: [boundary, index],
+                        type: 'move',
+                    });
+                }
+
                 boundary += 1;
             }
         }
 
         [values[boundary], values[high]] = [values[high], values[boundary]];
-        frames.push({ values: [...values], active: [boundary] });
+
+        if (boundary !== high) {
+            frames.push({
+                values: [...values],
+                active: [boundary, high],
+                type: 'move',
+            });
+        }
+
         sort(low, boundary - 1);
         sort(boundary + 1, high);
     };
@@ -75,23 +107,50 @@ const mergeFrames = (source) => {
         sort(start, middle);
         sort(middle, end);
 
+        const leftValues = values.slice(start, middle);
+        const rightValues = values.slice(middle, end);
         const merged = [];
-        let left = start;
-        let right = middle;
+        let left = 0;
+        let right = 0;
 
-        while (left < middle || right < end) {
-            if (right >= end || (left < middle && values[left] <= values[right])) {
-                merged.push(values[left]);
+        while (left < leftValues.length || right < rightValues.length) {
+            if (right >= rightValues.length || (
+                left < leftValues.length
+                && leftValues[left] <= rightValues[right]
+            )) {
+                const leftIndex = values.indexOf(leftValues[left]);
+                const rightIndex = right < rightValues.length
+                    ? values.indexOf(rightValues[right])
+                    : leftIndex;
+
+                frames.push({
+                    values: [...values],
+                    active: [leftIndex, rightIndex],
+                    type: 'compare',
+                });
+                merged.push(leftValues[left]);
                 left += 1;
             } else {
-                merged.push(values[right]);
+                const leftIndex = left < leftValues.length
+                    ? values.indexOf(leftValues[left])
+                    : values.indexOf(rightValues[right]);
+                const rightIndex = values.indexOf(rightValues[right]);
+
+                frames.push({
+                    values: [...values],
+                    active: [leftIndex, rightIndex],
+                    type: 'compare',
+                });
+                merged.push(rightValues[right]);
                 right += 1;
             }
         }
 
-        merged.forEach((value, offset) => {
-            values[start + offset] = value;
-            frames.push({ values: [...values], active: [start + offset] });
+        values.splice(start, end - start, ...merged);
+        frames.push({
+            values: [...values],
+            active: Array.from({ length: end - start }, (_, index) => start + index),
+            type: 'move',
         });
     };
 
@@ -106,34 +165,55 @@ const algorithms = {
     quick: quickFrames,
 };
 
-const draw = (canvas, values, active = []) => {
-    const context = canvas.getContext('2d');
-    const palette = getPalette();
-    const gap = 5;
-    const baseline = canvas.height - 22;
-    const barWidth = (canvas.width - gap * (values.length + 1)) / values.length;
+const createBars = (plot) => {
+    const bars = Array.from({ length: itemCount }, (_, index) => {
+        const value = index + 1;
+        const bar = document.createElement('span');
+        const label = document.createElement('small');
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.strokeStyle = palette.line;
-    context.beginPath();
-    context.moveTo(0, baseline + 0.5);
-    context.lineTo(canvas.width, baseline + 0.5);
-    context.stroke();
+        bar.className = 'sorting-stage__bar';
+        bar.dataset.sortingValue = String(value);
+        bar.style.setProperty('--bar-height', `${18 + (value / itemCount) * 76}%`);
+        label.textContent = String(value);
+        bar.append(label);
 
-    values.forEach((value, index) => {
-        const height = value * (canvas.height - 56);
-        context.fillStyle = active.includes(index) ? palette.ink : palette.accent;
-        context.globalAlpha = active.includes(index) ? 0.95 : 0.56;
-        context.fillRect(gap + index * (barWidth + gap), baseline - height, barWidth, height);
+        return bar;
     });
 
-    context.globalAlpha = 1;
+    plot.replaceChildren(...bars);
+
+    return bars;
+};
+
+const render = (bars, values, active = [], state = 'idle') => {
+    const activeValues = new Set(active.map((index) => values[index]));
+
+    bars.forEach((bar) => {
+        const value = Number(bar.dataset.sortingValue);
+        const position = values.indexOf(value);
+
+        bar.style.left = `calc(${(position / itemCount) * 100}% + 3px)`;
+        bar.classList.toggle('is-active', activeValues.has(value));
+        bar.classList.toggle('is-moving', state === 'move' && activeValues.has(value));
+        bar.classList.toggle('is-sorted', state === 'sorted');
+    });
+};
+
+const frameDelay = (frame) => {
+    if (frame.type === 'move') {
+        return moveDelay;
+    }
+
+    return comparisonDelay;
 };
 
 export const initializeSortingDemo = (root, reducedMotion) => {
-    const canvas = root.querySelector('[data-sorting-canvas]');
+    const stage = root.querySelector('[data-sorting-stage]');
+    const plot = root.querySelector('[data-sorting-plot]');
+    const description = root.querySelector('[data-sorting-description]');
     const output = root.querySelector('[data-sorting-output]');
     const runButton = root.querySelector('[data-sorting-run]');
+    const bars = createBars(plot);
     let algorithm = 'quick';
     let values = createValues();
     let runId = 0;
@@ -143,7 +223,8 @@ export const initializeSortingDemo = (root, reducedMotion) => {
         values = createValues();
         output.textContent = '0';
         runButton.disabled = false;
-        draw(canvas, values);
+        stage.setAttribute('aria-busy', 'false');
+        render(bars, values);
     };
 
     root.addEventListener('click', async (event) => {
@@ -154,9 +235,11 @@ export const initializeSortingDemo = (root, reducedMotion) => {
             runId += 1;
             algorithm = option.dataset.sortingAlgorithm;
             selectOption(root, '[data-sorting-algorithm]', option);
+            description.textContent = option.dataset.sortingDescription;
             output.textContent = '0';
             runButton.disabled = false;
-            draw(canvas, values);
+            stage.setAttribute('aria-busy', 'false');
+            render(bars, values);
             return;
         }
 
@@ -171,24 +254,26 @@ export const initializeSortingDemo = (root, reducedMotion) => {
 
         const currentRun = ++runId;
         const frames = algorithms[algorithm](values);
-        const frameStep = reducedMotion ? frames.length : Math.max(1, Math.ceil(frames.length / 96));
         runButton.disabled = true;
+        stage.setAttribute('aria-busy', 'true');
 
-        for (let index = 0; index < frames.length; index += frameStep) {
-            if (currentRun !== runId || !canvas.isConnected) {
+        for (let index = 0; index < frames.length; index += 1) {
+            if (currentRun !== runId || !stage.isConnected) {
                 return;
             }
 
-            const frame = frames[Math.min(index, frames.length - 1)];
-            draw(canvas, frame.values, frame.active);
-            output.textContent = String(Math.min(index + frameStep, frames.length));
-            await wait(reducedMotion ? 0 : 16);
+            const frame = frames[index];
+            render(bars, frame.values, frame.active, frame.type);
+            output.textContent = String(index + 1);
+            await wait(reducedMotion ? 0 : frameDelay(frame));
         }
 
-        values = [...frames.at(-1).values];
-        draw(canvas, values);
+        values = [...(frames.at(-1)?.values ?? values)];
+        render(bars, values, [], 'sorted');
+        stage.setAttribute('aria-busy', 'false');
         runButton.disabled = false;
     });
 
-    draw(canvas, values);
+    stage.setAttribute('aria-busy', 'false');
+    render(bars, values);
 };

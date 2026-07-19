@@ -82,19 +82,24 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-sorting-demo', false)
             ->assertSee('data-network-demo', false)
             ->assertSee('data-pathfinding-demo', false)
+            ->assertSee('data-network-signal', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
-            ->assertSee('class="career-list__current"', false)
-            ->assertSee('data-career-state="current"', false)
+            ->assertDontSee('class="career-list__current"', false)
+            ->assertDontSee('class="career-list__status"', false)
+            ->assertDontSee('data-career-state', false)
             ->assertSee('class="technology-groups"', false)
-            ->assertSee('Now.')
+            ->assertSee('Where I am today.')
             ->assertSee('Foundation')
             ->assertSee('From September 2026')
             ->assertSee('Playground.')
-            ->assertSee('Sorting')
+            ->assertSee('Sorting values')
+            ->assertSee('Picks one value as a guide')
             ->assertSee('Neural network')
-            ->assertSee('Pathfinding')
-            ->assertSee('Today')
+            ->assertSee('No training, no prediction')
+            ->assertSee('Pathfinder')
+            ->assertSee('Find route')
+            ->assertSee('08 / 2024 – Now')
             ->assertDontSee('class="about-lab"', false)
             ->assertDontSee('data-about-lab', false)
             ->assertDontSee('class="about-facts"', false)
@@ -105,10 +110,13 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Tools')
             ->assertSee('Application Developer EFZ')
             ->assertSee('Business Informatics BSc')
+            ->assertSee('.NET 10 / C#')
             ->assertSee('ASP.NET Core')
-            ->assertSee('REST APIs')
+            ->assertSee('Laravel 13')
             ->assertSee('PostgreSQL')
             ->assertSee('GitHub Actions')
+            ->assertSee('Herd / Plesk')
+            ->assertSee('data-technology-icon="laravel"', false)
             ->assertDontSee('page-stage', false)
             ->assertDontSee('data-project-stage', false);
 
@@ -116,9 +124,8 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
         $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
         $this->assertSame(3, substr_count($about->getContent(), 'class="playground-demo"'));
-        $this->assertSame(3, substr_count($about->getContent(), '<canvas'));
-        $this->assertSame(4, substr_count($about->getContent(), 'data-career-state='));
-
+        $this->assertSame(2, substr_count($about->getContent(), '<canvas'));
+        $this->assertSame(2, substr_count($about->getContent(), 'data-network-signal='));
         $aboutHtml = $about->getContent();
 
         $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
@@ -129,14 +136,17 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Erfahrung')
             ->assertSee('Tools')
-            ->assertSee('Aktuell.')
+            ->assertSee('Wo ich heute stehe.')
             ->assertSee('Grundlage')
             ->assertSee('Playground.')
-            ->assertSee('Sortieren')
+            ->assertSee('Werte sortieren')
+            ->assertSee('Nimmt einen Wert als Orientierung')
             ->assertSee('Neurales Netz')
-            ->assertSee('Wegsuche')
+            ->assertSee('Kein Training, keine Vorhersage')
+            ->assertSee('Pathfinder')
+            ->assertSee('Weg finden')
             ->assertSee('Stack')
-            ->assertSee('Heute')
+            ->assertSee('08 / 2024 – Heute')
             ->assertDontSee('Stationen');
 
         $projects = $this->get('/de/projects');

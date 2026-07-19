@@ -251,7 +251,7 @@
     .about-playground > header,
     .career-section > header,
     .stack-section > header {
-        gap: 44px;
+        gap: 16px;
     }
 
     .about-playground h2,
@@ -992,9 +992,9 @@
     .about-story {
         display: grid;
         min-height: auto;
-        padding: 80px 0;
+        padding: 72px 0 76px;
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 28px;
     }
 
     .about-story .section-label,
@@ -1004,11 +1004,11 @@
     }
 
     .about-story__lead h2 {
-        font-size: 48px;
+        font-size: 46px;
     }
 
     .about-story__body {
-        gap: 44px;
+        gap: 38px;
     }
 
     .about-story__body p {
@@ -1033,20 +1033,25 @@
     .career-section > header,
     .stack-section > header {
         grid-template-columns: 1fr;
-        padding: 70px 0 40px;
-        gap: 20px;
+        padding: 60px 0 36px;
+        gap: 18px;
         align-items: start;
+    }
+
+    .about-section-heading > .about-section-label,
+    .about-section-heading__content {
+        grid-column: 1;
     }
 
     .about-playground h2,
     .career-section h2,
     .stack-section h2 {
-        font-size: 42px;
+        font-size: 40px;
     }
 
     .about-playground,
     .career-section {
-        padding-bottom: 76px;
+        padding-bottom: 64px;
     }
 
     .playground-grid {
@@ -1062,13 +1067,19 @@
         padding: 0 18px;
     }
 
-    .playground-demo canvas {
+    .playground-demo canvas,
+    .playground-demo__stage {
         aspect-ratio: 16 / 9;
+    }
+
+    .playground-demo__stage {
+        padding: 18px 11px 24px;
     }
 
     .playground-demo > footer {
         min-height: 0;
-        padding: 16px 18px 18px;
+        padding: 18px 18px 20px;
+        gap: 14px;
     }
 
     .playground-demo__options,
@@ -1077,8 +1088,12 @@
     }
 
     .playground-demo button {
-        min-height: 32px;
-        padding: 0 10px;
+        min-height: 42px;
+        padding: 0 12px;
+    }
+
+    .playground-demo footer .playground-demo__description {
+        min-height: 0;
     }
 
     .career-list {
@@ -1087,8 +1102,8 @@
 
     .career-list li,
     .career-list li:hover {
-        min-height: 220px;
-        padding: 28px 22px 24px;
+        min-height: 200px;
+        padding: 26px 20px 24px;
         border-right: 0;
         border-bottom: 1px solid var(--line);
     }
@@ -1098,7 +1113,7 @@
     }
 
     .career-list time {
-        margin-top: 54px;
+        margin-top: 36px;
     }
 
     .career-list h3 {
@@ -1108,17 +1123,12 @@
 
     .career-list p {
         margin-top: auto;
-        padding-top: 28px;
+        padding-top: 22px;
         font-size: 13px;
     }
 
-    .career-list__status {
-        top: 24px;
-        right: 20px;
-    }
-
     .stack-section {
-        padding-bottom: 76px;
+        padding-bottom: 64px;
     }
 
     .about-section-heading__content > p {
