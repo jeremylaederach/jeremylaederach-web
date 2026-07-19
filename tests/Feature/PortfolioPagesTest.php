@@ -89,15 +89,18 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('class="career-list__status"', false)
             ->assertDontSee('data-career-state', false)
             ->assertSee('class="technology-groups"', false)
-            ->assertSee('Where I am today.')
+            ->assertSee('In brief.')
             ->assertSee('Foundation')
             ->assertSee('From September 2026')
             ->assertSee('Playground.')
             ->assertSee('Sorting values')
-            ->assertSee('Picks one value as a guide')
+            ->assertSee('O(n log n)')
+            ->assertSee('Insertion')
             ->assertSee('Neural network')
-            ->assertSee('No training, no prediction')
-            ->assertSee('Pathfinder')
+            ->assertSee('visual signal model')
+            ->assertSee('Metro routing')
+            ->assertSee('Fewest stops')
+            ->assertSee('Fewest changes')
             ->assertSee('Find route')
             ->assertSee('08 / 2024 – Now')
             ->assertDontSee('class="about-lab"', false)
@@ -125,7 +128,9 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
         $this->assertSame(3, substr_count($about->getContent(), 'class="playground-demo"'));
         $this->assertSame(2, substr_count($about->getContent(), '<canvas'));
-        $this->assertSame(2, substr_count($about->getContent(), 'data-network-signal='));
+        $this->assertSame(4, substr_count($about->getContent(), 'data-sorting-algorithm='));
+        $this->assertSame(3, substr_count($about->getContent(), 'data-network-signal='));
+        $this->assertSame(2, substr_count($about->getContent(), 'data-pathfinding-mode='));
         $aboutHtml = $about->getContent();
 
         $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
@@ -136,18 +141,21 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Erfahrung')
             ->assertSee('Tools')
-            ->assertSee('Wo ich heute stehe.')
+            ->assertSee('Kurzprofil.')
             ->assertSee('Grundlage')
             ->assertSee('Playground.')
             ->assertSee('Werte sortieren')
-            ->assertSee('Nimmt einen Wert als Orientierung')
+            ->assertSee('O(n log n)')
+            ->assertSee('Insertion')
             ->assertSee('Neurales Netz')
-            ->assertSee('Kein Training, keine Vorhersage')
-            ->assertSee('Pathfinder')
-            ->assertSee('Weg finden')
+            ->assertSee('visuelles Signalmodell')
+            ->assertSee('Metro-Routing')
+            ->assertSee('Wenige Stopps')
+            ->assertSee('Wenig Umsteigen')
+            ->assertSee('Route finden')
             ->assertSee('Stack')
             ->assertSee('08 / 2024 – Heute')
-            ->assertDontSee('Stationen');
+            ->assertDontSee('Pfeiltasten');
 
         $projects = $this->get('/de/projects');
 
@@ -321,6 +329,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Jeremy', false)
             ->assertSee('class="portfolio-page contact-page"', false)
             ->assertSee('class="contact-workspace"', false)
+            ->assertSee('aria-labelledby="contact-workspace-title"', false)
             ->assertSee('class="contact-email"', false)
             ->assertSee('class="contact-channels"', false)
             ->assertSee('Tell me what you want to build.')

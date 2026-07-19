@@ -2010,7 +2010,8 @@
         font-weight: 450;
     }
 
-    .playground-demo output {
+    .playground-demo output,
+    .playground-demo__metric {
         display: grid;
         justify-items: end;
         gap: 5px;
@@ -2019,11 +2020,24 @@
         font-size: 10px;
     }
 
-    .playground-demo output small {
+    .playground-demo output small,
+    .playground-demo__metric small {
         color: var(--quiet);
         font-size: 8px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
+    }
+
+    .playground-demo__metrics {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .playground-demo__metric strong {
+        color: var(--route-accent);
+        font-size: 10px;
+        font-weight: 400;
     }
 
     .playground-demo canvas {
@@ -2040,15 +2054,6 @@
             linear-gradient(rgba(244, 241, 234, 0.025) 1px, transparent 1px),
             linear-gradient(90deg, rgba(244, 241, 234, 0.025) 1px, transparent 1px);
         background-size: 24px 24px;
-    }
-
-    .playground-demo[data-pathfinding-demo] canvas {
-        cursor: crosshair;
-    }
-
-    .playground-demo[data-pathfinding-demo] canvas:focus-visible {
-        outline: 1px solid rgba(var(--route-accent-rgb), 0.72);
-        outline-offset: -3px;
     }
 
     .playground-demo__stage {
@@ -2158,6 +2163,7 @@
     .playground-demo__actions {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 7px;
     }
 
@@ -2196,7 +2202,7 @@
     }
 
     .playground-demo footer .playground-demo__description {
-        min-height: 58px;
+        min-height: 76px;
         margin: 0;
         color: var(--ink-muted);
         font-size: 12px;
@@ -2453,15 +2459,14 @@
 
     .contact-workspace {
         width: var(--shell);
-        min-height: 78svh;
         margin: 0 auto;
-        padding: 112px 0;
+        padding: 104px 0 120px;
         border-top: 1px solid var(--line);
     }
 
     .contact-workspace__header {
         display: grid;
-        padding-bottom: 72px;
+        padding-bottom: 76px;
         grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1.6fr);
         gap: 72px;
         align-items: baseline;
@@ -2497,15 +2502,16 @@
         position: relative;
         isolation: isolate;
         display: grid;
-        min-height: 260px;
+        min-height: 232px;
         overflow: hidden;
-        padding: 48px 0;
+        padding: 40px 34px;
         grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1.6fr) 64px;
         gap: 72px;
         align-items: center;
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-        transition: border-color 360ms ease;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: rgba(244, 241, 234, 0.012);
+        transition: border-color 360ms ease, background 360ms ease;
     }
 
     .contact-email::before {
@@ -2525,6 +2531,7 @@
     .contact-email:hover,
     .contact-email:focus-visible {
         border-color: rgba(var(--route-accent-rgb), 0.58);
+        background: rgba(var(--route-accent-rgb), 0.025);
     }
 
     .contact-email:hover::before,
@@ -2541,7 +2548,7 @@
 
     .contact-email strong {
         overflow-wrap: anywhere;
-        font-size: 62px;
+        font-size: 54px;
         font-weight: 420;
         line-height: 1;
         transition: color 320ms ease, transform 620ms var(--ease-heavy);
@@ -2567,21 +2574,32 @@
 
     .contact-workspace__details {
         display: grid;
-        padding-top: 72px;
+        padding-top: 52px;
+        margin-top: 92px;
         grid-template-columns: minmax(320px, 0.82fr) minmax(460px, 1.18fr);
-        gap: 10%;
+        gap: 0;
+        border-top: 1px solid var(--line);
+    }
+
+    .contact-note {
+        padding-right: 9%;
+    }
+
+    .contact-channels {
+        padding-left: 9%;
+        border-left: 1px solid var(--line);
     }
 
     .contact-note > p:last-child {
         max-width: 42ch;
-        margin: 28px 0 0;
+        margin: 24px 0 0;
         color: var(--ink-muted);
         font-size: 17px;
         line-height: 1.65;
     }
 
     .contact-channels > div {
-        margin-top: 28px;
+        margin-top: 24px;
         border-top: 1px solid var(--line);
     }
 

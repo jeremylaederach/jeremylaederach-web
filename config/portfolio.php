@@ -89,8 +89,8 @@ return [
                 'eyebrow' => 'Profile',
                 'heading' => 'About me',
                 'intro' => 'I\'m Jeremy, a software developer from Zurich. I build products across the full stack—from C# backends to product interfaces and deployment.',
-                'story_link' => 'Where I am today',
-                'story_heading' => 'Where I am today.',
+                'story_link' => 'In brief',
+                'story_heading' => 'In brief.',
                 'story_current' => 'Right now I am building full-stack software and my own products: Quantified with Angular, ASP.NET Core, and PostgreSQL; SessionDeck as a native .NET app; and the Laravel systems behind Jay-Jay.',
                 'story_notes' => [
                     [
@@ -111,24 +111,33 @@ return [
                         'run' => 'Sort',
                         'shuffle' => 'Shuffle',
                         'metric' => 'Steps',
+                        'complexity_label' => 'Growth',
                         'algorithms' => [
                             'quick' => [
                                 'label' => 'Quick',
-                                'description' => 'Picks one value as a guide. Smaller values move left, larger values move right.',
+                                'complexity' => 'Average · O(n log n)',
+                                'description' => 'Picks a pivot and moves smaller values left. Usually O(n log n): even a much longer list stays manageable, unless the pivots are unlucky.',
                             ],
                             'merge' => [
                                 'label' => 'Merge',
-                                'description' => 'Splits the row, sorts small groups, and joins them back together in order.',
+                                'complexity' => 'Always · O(n log n)',
+                                'description' => 'Splits the list, sorts the pieces, and joins them again. O(n log n) every time, with extra memory for the merge.',
+                            ],
+                            'insertion' => [
+                                'label' => 'Insertion',
+                                'complexity' => 'Average · O(n²)',
+                                'description' => 'Builds a sorted left side one value at a time. O(n²) on a messy list, but quick when most values already sit near the right place.',
                             ],
                             'bubble' => [
                                 'label' => 'Bubble',
-                                'description' => 'Moves through the row pair by pair. Easy to follow, but slow when the list gets big.',
+                                'complexity' => 'Average · O(n²)',
+                                'description' => 'Walks through neighbouring pairs until nothing needs swapping. O(n²): twice the values can mean roughly four times the comparisons.',
                             ],
                         ],
                     ],
                     'network' => [
                         'title' => 'Neural network',
-                        'description' => 'A signal moves from left to right. Brighter nodes carry more of it. No training, no prediction—just the calculation in motion.',
+                        'description' => 'Choose an input, then watch the strongest connections carry it through four layers. This is a visual signal model, not a trained prediction.',
                         'run' => 'Send signal',
                         'reset' => 'Rewire network',
                         'metric' => 'Strongest output',
@@ -139,15 +148,27 @@ return [
                             'focused' => [
                                 'label' => 'Focused',
                             ],
+                            'alternating' => [
+                                'label' => 'Alternating',
+                            ],
                         ],
                     ],
                     'pathfinding' => [
-                        'title' => 'Pathfinder',
-                        'description' => 'Start on the left, goal on the right. Click cells open or closed; the search marks what it checked and draws the shortest route it found.',
-                        'keyboard_hint' => 'With the grid focused, use the arrow keys and Space to edit it.',
+                        'title' => 'Metro routing',
+                        'description' => 'A compact metro network inspired by Tokyo. Compare the shortest journey with a route that avoids changing lines.',
                         'run' => 'Find route',
-                        'reset' => 'New map',
-                        'metric' => 'Checked',
+                        'reset' => 'New journey',
+                        'metric' => 'Stops · changes',
+                        'modes' => [
+                            'stops' => [
+                                'label' => 'Fewest stops',
+                                'description' => 'Takes the route with the fewest stations. A transfer counts like any other stop.',
+                            ],
+                            'changes' => [
+                                'label' => 'Fewest changes',
+                                'description' => 'Prefers staying on the same line, even when that adds a stop or two.',
+                            ],
+                        ],
                     ],
                 ],
                 'technology_heading' => 'Stack',
@@ -591,8 +612,8 @@ return [
                 'eyebrow' => 'Profil',
                 'heading' => 'Über mich',
                 'intro' => 'Ich bin Jeremy, Softwareentwickler aus Zürich. Ich entwickle Produkte über den ganzen Stack – vom C#-Backend über das Interface bis zum Deployment.',
-                'story_link' => 'Wo ich heute stehe',
-                'story_heading' => 'Wo ich heute stehe.',
+                'story_link' => 'Kurzprofil',
+                'story_heading' => 'Kurzprofil.',
                 'story_current' => 'Aktuell entwickle ich Full-Stack-Software und eigene Produkte: Quantified mit Angular, ASP.NET Core und PostgreSQL, SessionDeck als native .NET-App und die Laravel-Systeme hinter Jay-Jay.',
                 'story_notes' => [
                     [
@@ -613,24 +634,33 @@ return [
                         'run' => 'Sortieren',
                         'shuffle' => 'Mischen',
                         'metric' => 'Schritte',
+                        'complexity_label' => 'Aufwand',
                         'algorithms' => [
                             'quick' => [
                                 'label' => 'Quick',
-                                'description' => 'Nimmt einen Wert als Orientierung. Kleineres wandert nach links, Grösseres nach rechts.',
+                                'complexity' => 'Meist · O(n log n)',
+                                'description' => 'Wählt einen Pivot und schiebt kleinere Werte nach links. Meist O(n log n): Auch deutlich längere Listen bleiben gut handhabbar – ausser die Pivot-Wahl ist ungünstig.',
                             ],
                             'merge' => [
                                 'label' => 'Merge',
-                                'description' => 'Teilt die Reihe, sortiert kleine Blöcke und setzt sie sauber wieder zusammen.',
+                                'complexity' => 'Immer · O(n log n)',
+                                'description' => 'Teilt die Reihe, sortiert die Stücke und setzt sie wieder zusammen. Immer O(n log n), braucht dafür beim Zusammenführen zusätzlichen Speicher.',
+                            ],
+                            'insertion' => [
+                                'label' => 'Insertion',
+                                'complexity' => 'Meist · O(n²)',
+                                'description' => 'Baut links Wert für Wert eine sortierte Reihe auf. Bei Chaos O(n²), fast fertige Listen sind dagegen schnell erledigt.',
                             ],
                             'bubble' => [
                                 'label' => 'Bubble',
-                                'description' => 'Geht Paar für Paar durch die Reihe. Leicht zu verfolgen, aber bei vielen Werten langsam.',
+                                'complexity' => 'Meist · O(n²)',
+                                'description' => 'Geht Nachbarpaare durch, bis nichts mehr getauscht werden muss. O(n²): Doppelt so viele Werte können ungefähr viermal so viele Vergleiche bedeuten.',
                             ],
                         ],
                     ],
                     'network' => [
                         'title' => 'Neurales Netz',
-                        'description' => 'Ein Signal läuft von links nach rechts. Helle Punkte tragen mehr davon weiter. Kein Training, keine Vorhersage – nur der Rechenweg in Bewegung.',
+                        'description' => 'Wähle einen Input und verfolge, wie die stärksten Verbindungen ihn durch vier Ebenen tragen. Ein visuelles Signalmodell – keine trainierte Vorhersage.',
                         'run' => 'Signal senden',
                         'reset' => 'Netz neu verbinden',
                         'metric' => 'Stärkster Output',
@@ -641,15 +671,27 @@ return [
                             'focused' => [
                                 'label' => 'Fokussiert',
                             ],
+                            'alternating' => [
+                                'label' => 'Abwechselnd',
+                            ],
                         ],
                     ],
                     'pathfinding' => [
-                        'title' => 'Pathfinder',
-                        'description' => 'Start links, Ziel rechts. Klicke Felder auf oder zu; die Suche markiert geprüfte Felder und zeichnet den kürzesten gefundenen Weg.',
-                        'keyboard_hint' => 'Mit Fokus auf dem Raster lässt es sich auch mit Pfeiltasten und Leertaste bearbeiten.',
-                        'run' => 'Weg finden',
-                        'reset' => 'Neue Map',
-                        'metric' => 'Geprüft',
+                        'title' => 'Metro-Routing',
+                        'description' => 'Ein kompaktes Liniennetz nach dem Vorbild Tokios. Vergleiche den kürzesten Weg mit einer Route, die Umsteigen vermeidet.',
+                        'run' => 'Route finden',
+                        'reset' => 'Neue Fahrt',
+                        'metric' => 'Stopps · Wechsel',
+                        'modes' => [
+                            'stops' => [
+                                'label' => 'Wenige Stopps',
+                                'description' => 'Nimmt die Route mit den wenigsten Stationen. Umsteigen zählt dabei wie jeder andere Stopp.',
+                            ],
+                            'changes' => [
+                                'label' => 'Wenig Umsteigen',
+                                'description' => 'Bleibt lieber auf derselben Linie, auch wenn dadurch ein oder zwei Stopps dazukommen.',
+                            ],
+                        ],
                     ],
                 ],
                 'technology_heading' => 'Stack',

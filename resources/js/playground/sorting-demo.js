@@ -159,10 +159,45 @@ const mergeFrames = (source) => {
     return frames;
 };
 
+const insertionFrames = (source) => {
+    const values = [...source];
+    const frames = [];
+
+    for (let index = 1; index < values.length; index += 1) {
+        let position = index;
+
+        while (position > 0) {
+            frames.push({
+                values: [...values],
+                active: [position - 1, position],
+                type: 'compare',
+            });
+
+            if (values[position - 1] <= values[position]) {
+                break;
+            }
+
+            [values[position - 1], values[position]] = [
+                values[position],
+                values[position - 1],
+            ];
+            frames.push({
+                values: [...values],
+                active: [position - 1, position],
+                type: 'move',
+            });
+            position -= 1;
+        }
+    }
+
+    return frames;
+};
+
 const algorithms = {
-    bubble: bubbleFrames,
-    merge: mergeFrames,
     quick: quickFrames,
+    merge: mergeFrames,
+    insertion: insertionFrames,
+    bubble: bubbleFrames,
 };
 
 const createBars = (plot) => {
@@ -211,6 +246,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
     const stage = root.querySelector('[data-sorting-stage]');
     const plot = root.querySelector('[data-sorting-plot]');
     const description = root.querySelector('[data-sorting-description]');
+    const complexity = root.querySelector('[data-sorting-complexity]');
     const output = root.querySelector('[data-sorting-output]');
     const runButton = root.querySelector('[data-sorting-run]');
     const bars = createBars(plot);
@@ -236,6 +272,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
             algorithm = option.dataset.sortingAlgorithm;
             selectOption(root, '[data-sorting-algorithm]', option);
             description.textContent = option.dataset.sortingDescription;
+            complexity.textContent = option.dataset.sortingComplexity;
             output.textContent = '0';
             runButton.disabled = false;
             stage.setAttribute('aria-busy', 'false');

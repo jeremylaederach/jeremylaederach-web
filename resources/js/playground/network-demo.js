@@ -6,7 +6,9 @@ const animationFrameDelay = 34;
 const signalPresets = {
     wide: [0.24, 0.72, 0.46, 0.64],
     focused: [0.94, 0.12, 0.2, 0.08],
+    alternating: [0.86, 0.12, 0.78, 0.18],
 };
+const layerLabels = ['INPUT', '01', '02', 'OUTPUT'];
 
 const randomWeight = () => Math.random() * 2 - 1;
 
@@ -51,6 +53,20 @@ const drawConnection = (context, from, to, color, opacity, progress = 1) => {
     context.stroke();
 };
 
+const drawPulse = (context, from, to, color, opacity, progress) => {
+    context.globalAlpha = opacity;
+    context.fillStyle = color;
+    context.beginPath();
+    context.arc(
+        from.x + (to.x - from.x) * progress,
+        from.y + (to.y - from.y) * progress,
+        2.8,
+        0,
+        Math.PI * 2,
+    );
+    context.fill();
+};
+
 const connectionOpacity = (isActive, isComplete, strength) => {
     if (isActive) {
         return 0.12 + strength * 0.54;
@@ -87,8 +103,28 @@ const draw = (canvas, network, activeLayer = 0, progress = 1) => {
                     connectionOpacity(isActive, isComplete, strength),
                     isActive ? progress : 1,
                 );
+
+                if (isActive && strength > 0.18) {
+                    drawPulse(
+                        context,
+                        from,
+                        to,
+                        weight >= 0 ? palette.ink : palette.accent,
+                        Math.min(0.92, 0.34 + strength * 0.46),
+                        progress,
+                    );
+                }
             });
         });
+    });
+
+    layerLabels.forEach((label, layer) => {
+        context.globalAlpha = layer <= activeLayer ? 0.64 : 0.24;
+        context.fillStyle = palette.ink;
+        context.font = '600 9px ui-monospace, SFMono-Regular, Consolas, monospace';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(label, nodePosition(canvas, layer, 0).x, 22);
     });
 
     network.values.forEach((values, layer) => {

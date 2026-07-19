@@ -1,6 +1,7 @@
 @php
     $playground = $content['about_page']['playground'];
     $defaultSort = array_key_first($playground['sorting']['algorithms']);
+    $defaultPathMode = array_key_first($playground['pathfinding']['modes']);
 @endphp
 
 <section class="about-playground" aria-labelledby="playground-title" data-reveal>
@@ -20,10 +21,18 @@
         <article class="playground-demo" data-sorting-demo>
             <header>
                 <h3>{{ $playground['sorting']['title'] }}</h3>
-                <output aria-live="polite">
-                    <small>{{ $playground['sorting']['metric'] }}</small>
-                    <span data-sorting-output>0</span>
-                </output>
+                <div class="playground-demo__metrics">
+                    <span class="playground-demo__metric">
+                        <small>{{ $playground['sorting']['complexity_label'] }}</small>
+                        <strong data-sorting-complexity>
+                            {{ $playground['sorting']['algorithms'][$defaultSort]['complexity'] }}
+                        </strong>
+                    </span>
+                    <output aria-live="polite">
+                        <small>{{ $playground['sorting']['metric'] }}</small>
+                        <span data-sorting-output>0</span>
+                    </output>
+                </div>
             </header>
 
             <div
@@ -46,6 +55,7 @@
                             aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
                             data-sorting-algorithm="{{ $key }}"
                             data-sorting-description="{{ $algorithm['description'] }}"
+                            data-sorting-complexity="{{ $algorithm['complexity'] }}"
                             data-interface-sound
                             data-sound-tone="control"
                         >{{ $algorithm['label'] }}</button>
@@ -110,7 +120,7 @@
                 <h3>{{ $playground['pathfinding']['title'] }}</h3>
                 <output aria-live="polite">
                     <small>{{ $playground['pathfinding']['metric'] }}</small>
-                    <span data-pathfinding-output>0</span>
+                    <span data-pathfinding-output>—</span>
                 </output>
             </header>
 
@@ -118,15 +128,27 @@
                 width="640"
                 height="360"
                 data-pathfinding-canvas
-                tabindex="0"
                 role="img"
-                aria-label="{{ $playground['pathfinding']['description'] }} {{ $playground['pathfinding']['keyboard_hint'] }}"
+                aria-label="{{ $playground['pathfinding']['description'] }}"
             ></canvas>
 
             <footer>
-                <p class="playground-demo__description">
+                <p class="playground-demo__description" data-pathfinding-description>
                     {{ $playground['pathfinding']['description'] }}
+                    {{ $playground['pathfinding']['modes'][$defaultPathMode]['description'] }}
                 </p>
+                <div class="playground-demo__options" aria-label="{{ $playground['pathfinding']['title'] }}">
+                    @foreach ($playground['pathfinding']['modes'] as $key => $mode)
+                        <button
+                            type="button"
+                            aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
+                            data-pathfinding-mode="{{ $key }}"
+                            data-pathfinding-description="{{ $playground['pathfinding']['description'] }} {{ $mode['description'] }}"
+                            data-interface-sound
+                            data-sound-tone="control"
+                        >{{ $mode['label'] }}</button>
+                    @endforeach
+                </div>
                 <div class="playground-demo__actions">
                     <button type="button" data-pathfinding-run data-interface-sound data-sound-tone="action">
                         {{ $playground['pathfinding']['run'] }}
