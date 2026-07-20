@@ -1916,6 +1916,26 @@
         padding-bottom: 88px;
     }
 
+    .about-playground {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding-bottom: 116px;
+        background:
+            radial-gradient(
+                980px circle at 50% 46%,
+                rgba(var(--route-accent-rgb), 0.045),
+                transparent 68%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(var(--route-accent-rgb), 0.018),
+                transparent 30%,
+                transparent 78%,
+                rgba(var(--route-accent-rgb), 0.014)
+            );
+    }
+
     .about-playground > header,
     .career-section > header,
     .career-list,
@@ -1933,6 +1953,11 @@
         grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: 20px;
         align-items: baseline;
+    }
+
+    .about-playground > header {
+        padding-top: 96px;
+        padding-bottom: 56px;
     }
 
     .about-section-heading > .about-section-label {
@@ -1970,12 +1995,22 @@
         letter-spacing: -0.02em;
     }
 
+    .about-playground h2 {
+        font-size: 72px;
+    }
+
+    .about-playground .about-section-heading__content > p {
+        max-width: 54ch;
+        color: var(--ink);
+        font-size: 16px;
+    }
+
     .playground-grid {
         display: grid;
         width: var(--shell);
         margin: 0 auto;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
+        gap: 14px;
     }
 
     .playground-demo {
@@ -1986,6 +2021,7 @@
         background:
             radial-gradient(circle at 50% 44%, rgba(var(--route-accent-rgb), 0.055), transparent 46%),
             var(--surface);
+        box-shadow: 0 22px 72px rgba(0, 0, 0, 0.14);
         transition: border-color 320ms ease, transform 520ms var(--ease-out);
     }
 
@@ -2261,6 +2297,10 @@
 
     .career-list time {
         margin-top: 58px;
+        color: var(--ink-muted);
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        text-transform: none;
     }
 
     .career-list h3,

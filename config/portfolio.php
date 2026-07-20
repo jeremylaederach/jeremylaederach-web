@@ -104,7 +104,7 @@ return [
                 ],
                 'playground_label' => 'Code',
                 'playground_heading' => 'Playground.',
-                'playground_intro' => 'Three small browser experiments. Pick an input, press start, and watch the code work.',
+                'playground_intro' => 'Three small systems built in plain JavaScript. Change the input and watch each decision unfold.',
                 'playground' => [
                     'sorting' => [
                         'title' => 'Sorting values',
@@ -137,36 +137,36 @@ return [
                     ],
                     'network' => [
                         'title' => 'Neural network',
-                        'description' => 'Choose an input, then watch the strongest connections carry it through four layers. This is a visual signal model, not a trained prediction.',
-                        'run' => 'Send signal',
-                        'reset' => 'Rewire network',
-                        'metric' => 'Strongest output',
+                        'description' => 'Four inputs pass through two hidden layers. Each point combines what reaches it: brighter lines count more, and the strongest final point becomes the result. The connections are generated for this demo, not trained.',
+                        'run' => 'Calculate',
+                        'reset' => 'New connections',
+                        'metric' => 'Result',
                         'signals' => [
                             'wide' => [
-                                'label' => 'Distributed',
+                                'label' => 'Balanced',
                             ],
                             'focused' => [
-                                'label' => 'Focused',
+                                'label' => 'One strong',
                             ],
                             'alternating' => [
-                                'label' => 'Alternating',
+                                'label' => 'Pattern',
                             ],
                         ],
                     ],
                     'pathfinding' => [
-                        'title' => 'Metro routing',
-                        'description' => 'A compact metro network inspired by Tokyo. Compare the shortest journey with a route that avoids changing lines.',
+                        'title' => 'Street routing',
+                        'description' => 'A small city grid seen from above. The search checks intersections between A and B, then draws the route that matches your preference.',
                         'run' => 'Find route',
-                        'reset' => 'New journey',
-                        'metric' => 'Stops · changes',
+                        'reset' => 'New trip',
+                        'metric' => 'Blocks · turns',
                         'modes' => [
-                            'stops' => [
-                                'label' => 'Fewest stops',
-                                'description' => 'Takes the route with the fewest stations. A transfer counts like any other stop.',
+                            'shortest' => [
+                                'label' => 'Shortest',
+                                'description' => 'Uses the fewest street blocks, even when the route changes direction more often.',
                             ],
-                            'changes' => [
-                                'label' => 'Fewest changes',
-                                'description' => 'Prefers staying on the same line, even when that adds a stop or two.',
+                            'turns' => [
+                                'label' => 'Fewer turns',
+                                'description' => 'Prefers a simpler route with fewer direction changes, even when it covers more blocks.',
                             ],
                         ],
                     ],
@@ -212,22 +212,22 @@ return [
                 'career_label' => 'Experience',
                 'career' => [
                     [
-                        'period' => '08 / 2019 – 08 / 2023',
+                        'period' => 'Aug 2019 — Aug 2023',
                         'title' => 'Application Developer EFZ',
                         'body' => 'Four-year apprenticeship at EcoLogic AG in Zurich.',
                     ],
                     [
-                        'period' => '08 / 2023 – 08 / 2024',
+                        'period' => 'Aug 2023 — Aug 2024',
                         'title' => 'Vocational baccalaureate (BMS)',
                         'body' => 'Vocational baccalaureate focused on economics.',
                     ],
                     [
-                        'period' => '08 / 2024 – Now',
+                        'period' => 'Since Aug 2024',
                         'title' => 'Software Developer',
                         'body' => 'Full-stack software, independent products, and client systems.',
                     ],
                     [
-                        'period' => '09 / 2026 – 09 / 2030',
+                        'period' => 'Sep 2026 — Sep 2030',
                         'title' => 'Business Informatics BSc',
                         'body' => 'Studies at OST, starting in September 2026.',
                     ],
@@ -627,7 +627,7 @@ return [
                 ],
                 'playground_label' => 'Code',
                 'playground_heading' => 'Playground.',
-                'playground_intro' => 'Drei kleine Browser-Experimente. Input wählen, starten und dem Code bei der Arbeit zusehen.',
+                'playground_intro' => 'Drei kleine Systeme in purem JavaScript. Input ändern und jede Entscheidung direkt mitverfolgen.',
                 'playground' => [
                     'sorting' => [
                         'title' => 'Werte sortieren',
@@ -660,36 +660,36 @@ return [
                     ],
                     'network' => [
                         'title' => 'Neurales Netz',
-                        'description' => 'Wähle einen Input und verfolge, wie die stärksten Verbindungen ihn durch vier Ebenen tragen. Ein visuelles Signalmodell – keine trainierte Vorhersage.',
-                        'run' => 'Signal senden',
-                        'reset' => 'Netz neu verbinden',
-                        'metric' => 'Stärkster Output',
+                        'description' => 'Vier Inputs laufen durch zwei verborgene Ebenen. Jeder Punkt kombiniert, was bei ihm ankommt: Helle Linien zählen stärker, der stärkste Punkt am Ende wird zum Ergebnis. Die Verbindungen werden für die Demo erzeugt, nicht trainiert.',
+                        'run' => 'Berechnen',
+                        'reset' => 'Neue Verbindungen',
+                        'metric' => 'Ergebnis',
                         'signals' => [
                             'wide' => [
-                                'label' => 'Verteilt',
+                                'label' => 'Ausgeglichen',
                             ],
                             'focused' => [
-                                'label' => 'Fokussiert',
+                                'label' => 'Ein starker',
                             ],
                             'alternating' => [
-                                'label' => 'Abwechselnd',
+                                'label' => 'Muster',
                             ],
                         ],
                     ],
                     'pathfinding' => [
-                        'title' => 'Metro-Routing',
-                        'description' => 'Ein kompaktes Liniennetz nach dem Vorbild Tokios. Vergleiche den kürzesten Weg mit einer Route, die Umsteigen vermeidet.',
+                        'title' => 'Strassen-Routing',
+                        'description' => 'Ein kleines Strassennetz von oben. Die Suche prüft Kreuzungen zwischen A und B und zeichnet danach die Route, die zur Auswahl passt.',
                         'run' => 'Route finden',
-                        'reset' => 'Neue Fahrt',
-                        'metric' => 'Stopps · Wechsel',
+                        'reset' => 'Neue Strecke',
+                        'metric' => 'Blöcke · Kurven',
                         'modes' => [
-                            'stops' => [
-                                'label' => 'Wenige Stopps',
-                                'description' => 'Nimmt die Route mit den wenigsten Stationen. Umsteigen zählt dabei wie jeder andere Stopp.',
+                            'shortest' => [
+                                'label' => 'Kürzester Weg',
+                                'description' => 'Nimmt die wenigsten Strassenblöcke, auch wenn die Route häufiger die Richtung wechselt.',
                             ],
-                            'changes' => [
-                                'label' => 'Wenig Umsteigen',
-                                'description' => 'Bleibt lieber auf derselben Linie, auch wenn dadurch ein oder zwei Stopps dazukommen.',
+                            'turns' => [
+                                'label' => 'Weniger Kurven',
+                                'description' => 'Bevorzugt eine einfachere Route mit weniger Richtungswechseln, auch wenn sie mehr Blöcke umfasst.',
                             ],
                         ],
                     ],
@@ -735,22 +735,22 @@ return [
                 'career_label' => 'Erfahrung',
                 'career' => [
                     [
-                        'period' => '08 / 2019 – 08 / 2023',
+                        'period' => 'Aug. 2019 — Aug. 2023',
                         'title' => 'Applikationsentwickler EFZ',
                         'body' => 'Vierjährige Lehre bei EcoLogic AG in Zürich.',
                     ],
                     [
-                        'period' => '08 / 2023 – 08 / 2024',
+                        'period' => 'Aug. 2023 — Aug. 2024',
                         'title' => 'Berufsmaturität (BMS)',
                         'body' => 'Berufsmaturität mit Schwerpunkt Wirtschaft.',
                     ],
                     [
-                        'period' => '08 / 2024 – Heute',
+                        'period' => 'Seit Aug. 2024',
                         'title' => 'Softwareentwickler',
                         'body' => 'Full-Stack-Software, eigene Produkte und Kundensysteme.',
                     ],
                     [
-                        'period' => '09 / 2026 – 09 / 2030',
+                        'period' => 'Sep. 2026 — Sep. 2030',
                         'title' => 'BSc Wirtschaftsinformatik',
                         'body' => 'Studium an der OST ab September 2026.',
                     ],

@@ -1,122 +1,116 @@
 import { getPalette, selectOption, wait } from './demo-utils.js';
 
-const explorationDelay = 42;
-const routeDelay = 150;
-
-const stations = {
-    shinjuku: { label: 'Shinjuku', x: 62, y: 72, labelX: -3, labelY: -19 },
-    yotsuya: { label: 'Yotsuya', x: 164, y: 112, labelX: 0, labelY: -18 },
-    akasaka: { label: 'Akasaka', x: 266, y: 151, labelX: -10, labelY: -20 },
-    tokyo: { label: 'Tokyo', x: 392, y: 104, labelX: 0, labelY: -20 },
-    ginza: { label: 'Ginza', x: 404, y: 198, labelX: -7, labelY: 24 },
-    shibuya: { label: 'Shibuya', x: 64, y: 292, labelX: 0, labelY: 24 },
-    omotesando: { label: 'Omote-sando', x: 164, y: 252, labelX: 0, labelY: 24 },
-    ueno: { label: 'Ueno', x: 514, y: 122, labelX: 0, labelY: -20 },
-    asakusa: { label: 'Asakusa', x: 584, y: 68, labelX: -5, labelY: -18 },
-    roppongi: { label: 'Roppongi', x: 268, y: 292, labelX: -2, labelY: 25 },
-    akihabara: { label: 'Akihabara', x: 514, y: 244, labelX: 0, labelY: 24 },
-};
-
-const lines = {
-    ginza: {
-        label: 'G',
-        color: '#d6a846',
-        stations: ['shibuya', 'omotesando', 'akasaka', 'ginza', 'ueno', 'asakusa'],
-    },
-    marunouchi: {
-        label: 'M',
-        color: '#d86571',
-        stations: ['shinjuku', 'yotsuya', 'akasaka', 'tokyo', 'ginza'],
-    },
-    hibiya: {
-        label: 'H',
-        color: '#65b4ac',
-        stations: ['roppongi', 'ginza', 'akihabara', 'ueno'],
-    },
-    rapid: {
-        label: 'JR',
-        color: '#5b87bd',
-        stations: ['shinjuku', 'tokyo'],
-    },
-};
-
-const journeys = [
-    { start: 'shinjuku', goal: 'asakusa' },
-    { start: 'shibuya', goal: 'akihabara' },
-    { start: 'roppongi', goal: 'shinjuku' },
+const explorationDelay = 30;
+const routeDelay = 130;
+const xCoordinates = [52, 136, 222, 314, 410, 504, 588];
+const yCoordinates = [54, 118, 181, 246, 309];
+const avenueLabels = ['10 AV', '9 AV', '8 AV', '7 AV', '6 AV', '5 AV', '3 AV'];
+const streetLabels = ['W 52', 'W 42', 'W 34', 'W 23', 'W 14'];
+const broadwayNodes = ['1:4', '2:3', '3:2', '4:1', '5:0'];
+const trips = [
+    { start: '0:4', goal: '6:0' },
+    { start: '0:4', goal: '5:0' },
+    { start: '1:4', goal: '6:1' },
 ];
-const primaryMetricWeight = Object.keys(stations).length + 1;
-const stationLineCounts = Object.fromEntries(
-    Object.keys(stations).map((station) => [
-        station,
-        Object.values(lines).filter((line) => line.stations.includes(station)).length,
-    ]),
+
+const nodeId = (column, row) => `${column}:${row}`;
+const nodes = new Map(
+    xCoordinates.flatMap((x, column) => (
+        yCoordinates.map((y, row) => [
+            nodeId(column, row),
+            { id: nodeId(column, row), x, y },
+        ])
+    )),
 );
 
-const buildGraph = () => {
-    const graph = new Map(Object.keys(stations).map((station) => [station, []]));
+const connect = (graph, from, to, road) => {
+    graph.get(from).push({ node: to, road });
+    graph.get(to).push({ node: from, road });
+};
 
-    Object.entries(lines).forEach(([line, definition]) => {
-        definition.stations.slice(1).forEach((station, index) => {
-            const previous = definition.stations[index];
-            graph.get(previous).push({ station, line });
-            graph.get(station).push({ station: previous, line });
+const buildGraph = () => {
+    const graph = new Map([...nodes.keys()].map((id) => [id, []]));
+
+    yCoordinates.forEach((_, row) => {
+        xCoordinates.slice(1).forEach((__, column) => {
+            connect(
+                graph,
+                nodeId(column, row),
+                nodeId(column + 1, row),
+                `street-${row}`,
+            );
         });
+    });
+
+    xCoordinates.forEach((_, column) => {
+        yCoordinates.slice(1).forEach((__, row) => {
+            connect(
+                graph,
+                nodeId(column, row),
+                nodeId(column, row + 1),
+                `avenue-${column}`,
+            );
+        });
+    });
+
+    broadwayNodes.slice(1).forEach((to, index) => {
+        connect(graph, broadwayNodes[index], to, 'broadway');
     });
 
     return graph;
 };
 
 const graph = buildGraph();
-const stateKey = (station, line = null) => `${station}|${line ?? 'start'}`;
+const primaryMetricWeight = nodes.size + 1;
+const stateKey = (node, road = null) => `${node}|${road ?? 'start'}`;
 
-const routeScore = (mode, stops, changes) => (
-    mode === 'changes'
-        ? changes * primaryMetricWeight + stops
-        : stops * primaryMetricWeight + changes
+const routeScore = (mode, blocks, turns) => (
+    mode === 'turns'
+        ? turns * primaryMetricWeight + blocks
+        : blocks * primaryMetricWeight + turns
 );
 
-const findRoute = (journey, mode) => {
+const findRoute = (trip, mode) => {
     const initialState = {
-        station: journey.start,
-        line: null,
-        stops: 0,
-        changes: 0,
+        node: trip.start,
+        road: null,
+        blocks: 0,
+        turns: 0,
         score: 0,
     };
     const open = [initialState];
-    const distances = new Map([[stateKey(journey.start), 0]]);
+    const distances = new Map([[stateKey(trip.start), 0]]);
     const previous = new Map();
     const explored = [];
-    const exploredStations = new Set();
+    const exploredNodes = new Set();
     let destination = null;
 
     while (open.length > 0) {
         open.sort((left, right) => left.score - right.score);
         const current = open.shift();
-        const currentKey = stateKey(current.station, current.line);
+        const currentKey = stateKey(current.node, current.road);
 
         if (current.score !== distances.get(currentKey)) {
             continue;
         }
 
-        if (!exploredStations.has(current.station)) {
-            exploredStations.add(current.station);
-            explored.push(current.station);
+        if (!exploredNodes.has(current.node)) {
+            exploredNodes.add(current.node);
+            explored.push(current.node);
         }
 
-        if (current.station === journey.goal) {
+        if (current.node === trip.goal) {
             destination = current;
             break;
         }
 
-        graph.get(current.station).forEach((edge) => {
-            const stops = current.stops + 1;
-            const changes = current.changes + Number(
-                current.line !== null && current.line !== edge.line,
+        graph.get(current.node).forEach((edge) => {
+            const blocks = current.blocks + 1;
+            const turns = current.turns + Number(
+                current.road !== null && current.road !== edge.road,
             );
-            const score = routeScore(mode, stops, changes);
-            const nextKey = stateKey(edge.station, edge.line);
+            const score = routeScore(mode, blocks, turns);
+            const nextKey = stateKey(edge.node, edge.road);
 
             if (score >= (distances.get(nextKey) ?? Number.POSITIVE_INFINITY)) {
                 return;
@@ -126,27 +120,27 @@ const findRoute = (journey, mode) => {
             previous.set(nextKey, {
                 state: currentKey,
                 segment: {
-                    from: current.station,
-                    to: edge.station,
-                    line: edge.line,
+                    from: current.node,
+                    to: edge.node,
+                    road: edge.road,
                 },
             });
             open.push({
-                station: edge.station,
-                line: edge.line,
-                stops,
-                changes,
+                node: edge.node,
+                road: edge.road,
+                blocks,
+                turns,
                 score,
             });
         });
     }
 
     if (!destination) {
-        return { explored, segments: [], stops: 0, changes: 0 };
+        return { explored, segments: [], blocks: 0, turns: 0 };
     }
 
     const segments = [];
-    let cursor = stateKey(destination.station, destination.line);
+    let cursor = stateKey(destination.node, destination.road);
 
     while (previous.has(cursor)) {
         const step = previous.get(cursor);
@@ -157,12 +151,12 @@ const findRoute = (journey, mode) => {
     return {
         explored,
         segments,
-        stops: destination.stops,
-        changes: destination.changes,
+        blocks: destination.blocks,
+        turns: destination.turns,
     };
 };
 
-const drawSegment = (context, from, to, color, width, opacity) => {
+const drawLine = (context, from, to, color, width, opacity) => {
     context.globalAlpha = opacity;
     context.strokeStyle = color;
     context.lineWidth = width;
@@ -174,97 +168,149 @@ const drawSegment = (context, from, to, color, width, opacity) => {
     context.stroke();
 };
 
-const drawNetwork = (context) => {
-    Object.values(lines).forEach((line) => {
-        line.stations.slice(1).forEach((station, index) => {
-            drawSegment(
-                context,
-                stations[line.stations[index]],
-                stations[station],
-                line.color,
-                6,
-                0.36,
-            );
-        });
-    });
-};
+const drawCityBlocks = (context) => {
+    for (let column = 0; column < xCoordinates.length - 1; column += 1) {
+        for (let row = 0; row < yCoordinates.length - 1; row += 1) {
+            const left = xCoordinates[column] + 9;
+            const top = yCoordinates[row] + 9;
+            const width = xCoordinates[column + 1] - xCoordinates[column] - 18;
+            const height = yCoordinates[row + 1] - yCoordinates[row] - 18;
 
-const drawLineKey = (context, palette) => {
-    let x = 24;
+            context.globalAlpha = 1;
+            context.fillStyle = (column + row) % 2 === 0
+                ? 'rgba(244, 241, 234, 0.035)'
+                : 'rgba(244, 241, 234, 0.022)';
+            context.strokeStyle = 'rgba(244, 241, 234, 0.055)';
+            context.lineWidth = 1;
+            context.fillRect(left, top, width, height);
+            context.strokeRect(left, top, width, height);
 
-    Object.values(lines).forEach((line) => {
-        context.globalAlpha = 0.82;
-        context.fillStyle = line.color;
-        context.fillRect(x, 20, 14, 3);
-        context.fillStyle = palette.ink;
-        context.font = '600 9px ui-monospace, SFMono-Regular, Consolas, monospace';
-        context.textAlign = 'left';
-        context.textBaseline = 'middle';
-        context.fillText(line.label, x + 20, 22);
-        x += line.label.length > 1 ? 66 : 48;
-    });
-};
-
-const drawStations = (context, palette, journey, explored) => {
-    const exploredSet = new Set(explored);
-
-    Object.entries(stations).forEach(([id, station]) => {
-        const lineCount = stationLineCounts[id];
-        const isStart = id === journey.start;
-        const isGoal = id === journey.goal;
-
-        if (exploredSet.has(id) && !isStart && !isGoal) {
-            context.globalAlpha = 0.2;
-            context.fillStyle = palette.accent;
-            context.beginPath();
-            context.arc(station.x, station.y, 13, 0, Math.PI * 2);
-            context.fill();
+            if (width > 52 && height > 32) {
+                context.fillStyle = 'rgba(244, 241, 234, 0.025)';
+                context.fillRect(
+                    left + width * 0.31,
+                    top + height * 0.3,
+                    width * 0.38,
+                    height * 0.4,
+                );
+            }
         }
+    }
+};
 
-        context.globalAlpha = 1;
-        context.fillStyle = isStart
-            ? palette.accent
-            : isGoal
-                ? palette.ink
-                : '#111116';
-        context.strokeStyle = lineCount > 1 ? palette.ink : 'rgba(244, 241, 234, 0.52)';
-        context.lineWidth = lineCount > 1 ? 2.5 : 1.5;
-        context.beginPath();
-        context.arc(station.x, station.y, isStart || isGoal ? 9 : 6, 0, Math.PI * 2);
-        context.fill();
-        context.stroke();
-
-        context.globalAlpha = isStart || isGoal ? 0.94 : 0.56;
-        context.fillStyle = palette.ink;
-        context.font = `${isStart || isGoal ? '600' : '500'} 9px ui-monospace, SFMono-Regular, Consolas, monospace`;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText(
-            station.label,
-            station.x + station.labelX,
-            station.y + station.labelY,
+const drawStreetGrid = (context, palette) => {
+    yCoordinates.forEach((y) => {
+        drawLine(
+            context,
+            { x: xCoordinates[0], y },
+            { x: xCoordinates.at(-1), y },
+            palette.ink,
+            1,
+            0.15,
         );
     });
+
+    xCoordinates.forEach((x) => {
+        drawLine(
+            context,
+            { x, y: yCoordinates[0] },
+            { x, y: yCoordinates.at(-1) },
+            palette.ink,
+            1,
+            0.15,
+        );
+    });
+
+    broadwayNodes.slice(1).forEach((id, index) => {
+        const from = nodes.get(broadwayNodes[index]);
+        const to = nodes.get(id);
+
+        drawLine(context, from, to, '#07070a', 16, 0.96);
+        drawLine(context, from, to, palette.accent, 1.4, 0.32);
+    });
 };
 
-const draw = (canvas, journey, explored = [], segments = []) => {
+const drawMapLabels = (context, palette) => {
+    context.fillStyle = palette.ink;
+    context.font = '600 7px ui-monospace, SFMono-Regular, Consolas, monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+
+    avenueLabels.forEach((label, index) => {
+        context.globalAlpha = 0.34;
+        context.fillText(label, xCoordinates[index], 25);
+    });
+
+    streetLabels.forEach((label, index) => {
+        context.globalAlpha = 0.34;
+        context.textAlign = 'left';
+        context.fillText(label, 12, yCoordinates[index]);
+    });
+
+    context.globalAlpha = 0.5;
+    context.textAlign = 'center';
+    context.fillText('N', 617, 25);
+    drawLine(context, { x: 617, y: 34 }, { x: 617, y: 47 }, palette.ink, 1, 0.38);
+};
+
+const drawIntersections = (context, palette, explored) => {
+    const exploredSet = new Set(explored);
+
+    nodes.forEach((node, id) => {
+        context.globalAlpha = exploredSet.has(id) ? 0.42 : 0.12;
+        context.fillStyle = exploredSet.has(id) ? palette.accent : palette.ink;
+        context.beginPath();
+        context.arc(node.x, node.y, exploredSet.has(id) ? 3.2 : 1.7, 0, Math.PI * 2);
+        context.fill();
+    });
+};
+
+const drawEndpoints = (context, palette, trip) => {
+    [
+        { id: trip.start, label: 'A', color: palette.accent },
+        { id: trip.goal, label: 'B', color: palette.ink },
+    ].forEach((endpoint) => {
+        const node = nodes.get(endpoint.id);
+
+        context.globalAlpha = 0.2;
+        context.fillStyle = endpoint.color;
+        context.beginPath();
+        context.arc(node.x, node.y, 17, 0, Math.PI * 2);
+        context.fill();
+
+        context.globalAlpha = 1;
+        context.fillStyle = endpoint.color;
+        context.beginPath();
+        context.arc(node.x, node.y, 9, 0, Math.PI * 2);
+        context.fill();
+
+        context.fillStyle = '#07070a';
+        context.font = '700 9px ui-monospace, SFMono-Regular, Consolas, monospace';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(endpoint.label, node.x, node.y + 0.5);
+    });
+};
+
+const draw = (canvas, trip, explored = [], segments = []) => {
     const context = canvas.getContext('2d');
     const palette = getPalette();
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawNetwork(context);
-    drawLineKey(context, palette);
+    drawCityBlocks(context);
+    drawStreetGrid(context, palette);
+    drawMapLabels(context, palette);
+    drawIntersections(context, palette, explored);
 
     segments.forEach((segment) => {
-        const line = lines[segment.line];
-        const from = stations[segment.from];
-        const to = stations[segment.to];
+        const from = nodes.get(segment.from);
+        const to = nodes.get(segment.to);
 
-        drawSegment(context, from, to, line.color, 10, 0.94);
-        drawSegment(context, from, to, palette.ink, 2, 0.72);
+        drawLine(context, from, to, palette.accent, 12, 0.16);
+        drawLine(context, from, to, palette.ink, 4, 0.94);
     });
 
-    drawStations(context, palette, journey, explored);
+    drawEndpoints(context, palette, trip);
     context.globalAlpha = 1;
     context.lineWidth = 1;
 };
@@ -274,24 +320,24 @@ export const initializePathfindingDemo = (root, reducedMotion) => {
     const description = root.querySelector('[data-pathfinding-description]');
     const output = root.querySelector('[data-pathfinding-output]');
     const runButton = root.querySelector('[data-pathfinding-run]');
-    let journeyIndex = 0;
-    let mode = 'stops';
+    let tripIndex = 0;
+    let mode = 'shortest';
     let explored = [];
     let segments = [];
     let runId = 0;
 
-    const resetJourney = ({ next = false } = {}) => {
+    const resetTrip = ({ next = false } = {}) => {
         runId += 1;
 
         if (next) {
-            journeyIndex = (journeyIndex + 1) % journeys.length;
+            tripIndex = (tripIndex + 1) % trips.length;
         }
 
         explored = [];
         segments = [];
         output.textContent = '—';
         runButton.disabled = false;
-        draw(canvas, journeys[journeyIndex]);
+        draw(canvas, trips[tripIndex]);
     };
 
     root.addEventListener('click', async (event) => {
@@ -302,12 +348,12 @@ export const initializePathfindingDemo = (root, reducedMotion) => {
             mode = option.dataset.pathfindingMode;
             description.textContent = option.dataset.pathfindingDescription;
             selectOption(root, '[data-pathfinding-mode]', option);
-            resetJourney();
+            resetTrip();
             return;
         }
 
         if (target?.closest('[data-pathfinding-reset]')) {
-            resetJourney({ next: true });
+            resetTrip({ next: true });
             return;
         }
 
@@ -316,11 +362,11 @@ export const initializePathfindingDemo = (root, reducedMotion) => {
         }
 
         const currentRun = ++runId;
-        const journey = journeys[journeyIndex];
-        const route = findRoute(journey, mode);
+        const trip = trips[tripIndex];
+        const route = findRoute(trip, mode);
         const explorationBatchSize = reducedMotion
             ? Math.max(1, route.explored.length)
-            : 1;
+            : 2;
         runButton.disabled = true;
         explored = [];
         segments = [];
@@ -336,7 +382,7 @@ export const initializePathfindingDemo = (root, reducedMotion) => {
             }
 
             explored.push(...route.explored.slice(index, index + explorationBatchSize));
-            draw(canvas, journey, explored);
+            draw(canvas, trip, explored);
             await wait(reducedMotion ? 0 : explorationDelay);
         }
 
@@ -350,13 +396,13 @@ export const initializePathfindingDemo = (root, reducedMotion) => {
             }
 
             segments.push(...route.segments.slice(index, index + routeBatchSize));
-            draw(canvas, journey, explored, segments);
+            draw(canvas, trip, explored, segments);
             await wait(reducedMotion ? 0 : routeDelay);
         }
 
-        output.textContent = `${route.stops} · ${route.changes}`;
+        output.textContent = `${route.blocks} · ${route.turns}`;
         runButton.disabled = false;
     });
 
-    resetJourney();
+    resetTrip();
 };

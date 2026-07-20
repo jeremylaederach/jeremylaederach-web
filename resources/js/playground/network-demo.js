@@ -4,13 +4,14 @@ const layerSizes = [4, 6, 5, 3];
 const animationFrameCount = 16;
 const animationFrameDelay = 34;
 const signalPresets = {
-    wide: [0.24, 0.72, 0.46, 0.64],
-    focused: [0.94, 0.12, 0.2, 0.08],
-    alternating: [0.86, 0.12, 0.78, 0.18],
+    wide: [0.74, 0.58, 0.68, 0.52],
+    focused: [1, 0.08, 0.12, 0.06],
+    alternating: [0.88, 0.16, 0.82, 0.12],
 };
-const layerLabels = ['INPUT', '01', '02', 'OUTPUT'];
+const layerLabels = ['INPUT', 'MIX 01', 'MIX 02', 'RESULT'];
+const outputLabels = ['A', 'B', 'C'];
 
-const randomWeight = () => Math.random() * 2 - 1;
+const randomWeight = () => 0.12 + Math.random() * 0.88;
 
 const createWeights = () => layerSizes.slice(1).map((size, layer) => (
     Array.from({ length: size }, () => (
@@ -25,25 +26,25 @@ const createNetwork = (signal, weights = createWeights()) => ({
     weights,
 });
 
-const normalizeSignal = (value) => 1 / (1 + Math.exp(-value));
-
 const calculateLayer = (sourceValues, weights) => weights.map((connections) => {
-    const total = connections.reduce(
+    const weightedSignal = connections.reduce(
         (sum, weight, index) => sum + weight * sourceValues[index],
         0,
     );
+    const totalWeight = connections.reduce((sum, weight) => sum + weight, 0);
 
-    return normalizeSignal(total / Math.sqrt(connections.length));
+    return weightedSignal / totalWeight;
 });
 
 const nodePosition = (canvas, layer, index) => ({
-    x: 72 + layer * ((canvas.width - 144) / (layerSizes.length - 1)),
+    x: 82 + layer * ((canvas.width - 164) / (layerSizes.length - 1)),
     y: canvas.height / 2 + (index - (layerSizes[layer] - 1) / 2) * 48,
 });
 
-const drawConnection = (context, from, to, color, opacity, progress = 1) => {
+const drawConnection = (context, from, to, color, opacity, width, progress = 1) => {
     context.globalAlpha = opacity;
     context.strokeStyle = color;
+    context.lineWidth = width;
     context.beginPath();
     context.moveTo(from.x, from.y);
     context.lineTo(
@@ -79,12 +80,31 @@ const connectionOpacity = (isActive, isComplete, strength) => {
     return 0.045;
 };
 
+const strongestOutput = (values) => values.reduce(
+    (strongest, value, index) => (
+        value > strongest.value ? { index, value } : strongest
+    ),
+    { index: 0, value: values[0] },
+);
+
+const drawNodeLabel = (context, palette, label, x, y, opacity) => {
+    context.globalAlpha = opacity;
+    context.fillStyle = palette.ink;
+    context.font = '600 9px ui-monospace, SFMono-Regular, Consolas, monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(label, x, y);
+};
+
 const draw = (canvas, network, activeLayer = 0, progress = 1) => {
     const context = canvas.getContext('2d');
     const palette = getPalette();
+    const outputLayer = layerSizes.length - 1;
+    const winner = activeLayer === outputLayer
+        ? strongestOutput(network.values[outputLayer]).index
+        : -1;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.lineWidth = 1;
 
     network.weights.forEach((matrix, layer) => {
         matrix.forEach((connections, target) => {
@@ -99,8 +119,9 @@ const draw = (canvas, network, activeLayer = 0, progress = 1) => {
                     context,
                     from,
                     to,
-                    weight >= 0 ? palette.accent : palette.muted,
+                    palette.accent,
                     connectionOpacity(isActive, isComplete, strength),
+                    0.55 + strength * 1.65,
                     isActive ? progress : 1,
                 );
 
@@ -109,7 +130,7 @@ const draw = (canvas, network, activeLayer = 0, progress = 1) => {
                         context,
                         from,
                         to,
-                        weight >= 0 ? palette.ink : palette.accent,
+                        palette.ink,
                         Math.min(0.92, 0.34 + strength * 0.46),
                         progress,
                     );
@@ -132,30 +153,50 @@ const draw = (canvas, network, activeLayer = 0, progress = 1) => {
             const position = nodePosition(canvas, layer, index);
             const visibleValue = layer === activeLayer ? value * progress : value;
             const isVisible = layer <= activeLayer;
+            const isWinner = layer === outputLayer && index === winner;
 
             context.globalAlpha = isVisible ? 0.24 + visibleValue * 0.76 : 0.14;
-            context.fillStyle = layer === activeLayer ? palette.ink : palette.accent;
+            context.fillStyle = isWinner || layer === activeLayer
+                ? palette.ink
+                : palette.accent;
             context.beginPath();
             context.arc(position.x, position.y, 8 + visibleValue * 3, 0, Math.PI * 2);
             context.fill();
 
-            context.globalAlpha = isVisible ? 0.38 : 0.1;
+            context.globalAlpha = isWinner ? 0.9 : isVisible ? 0.38 : 0.1;
             context.strokeStyle = palette.accent;
+            context.lineWidth = isWinner ? 2 : 1;
             context.beginPath();
-            context.arc(position.x, position.y, 15, 0, Math.PI * 2);
+            context.arc(position.x, position.y, isWinner ? 19 : 15, 0, Math.PI * 2);
             context.stroke();
+
+            if (layer === 0) {
+                drawNodeLabel(
+                    context,
+                    palette,
+                    String(Math.round(value * 100)),
+                    position.x - 30,
+                    position.y,
+                    0.58,
+                );
+            }
+
+            if (layer === outputLayer) {
+                drawNodeLabel(
+                    context,
+                    palette,
+                    outputLabels[index],
+                    position.x + 29,
+                    position.y,
+                    isWinner ? 0.94 : 0.5,
+                );
+            }
         });
     });
 
     context.globalAlpha = 1;
+    context.lineWidth = 1;
 };
-
-const strongestOutput = (values) => values.reduce(
-    (strongest, value, index) => (
-        value > strongest.value ? { index, value } : strongest
-    ),
-    { index: 0, value: values[0] },
-);
 
 export const initializeNetworkDemo = (root, reducedMotion) => {
     const canvas = root.querySelector('[data-network-canvas]');
@@ -222,7 +263,7 @@ export const initializeNetworkDemo = (root, reducedMotion) => {
         }
 
         const strongest = strongestOutput(network.values.at(-1));
-        output.textContent = `${String(strongest.index + 1).padStart(2, '0')} · ${strongest.value.toFixed(2)}`;
+        output.textContent = `${outputLabels[strongest.index]} · ${Math.round(strongest.value * 100)}%`;
         runButton.disabled = false;
     });
 
