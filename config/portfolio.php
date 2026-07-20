@@ -142,7 +142,7 @@ return [
                         ],
                     ],
                     'network' => [
-                        'title' => 'Neural network',
+                        'title' => 'Neural Network',
                         'description' => 'Draw a 0, 1 or 2. Every square becomes a number; three outputs compare the pattern and the strongest answer wins.',
                         'run' => 'Recognize',
                         'reset' => 'Clear',
@@ -657,7 +657,7 @@ return [
                 'playground_intro' => 'Drei kleine Demos in purem JavaScript. Input ändern und direkt sehen, was im Hintergrund passiert.',
                 'playground' => [
                     'sorting' => [
-                        'title' => 'Sortieren',
+                        'title' => 'Sorting',
                         'run' => 'Starten',
                         'shuffle' => 'Mischen',
                         'metric' => 'Vergleiche',
@@ -692,7 +692,7 @@ return [
                         ],
                     ],
                     'network' => [
-                        'title' => 'Neuronales Netz',
+                        'title' => 'Neural Network',
                         'description' => 'Zeichne eine 0, 1 oder 2. Jedes Feld wird zur Zahl; drei Ausgänge vergleichen das Muster, der stärkste gewinnt.',
                         'run' => 'Erkennen',
                         'reset' => 'Leeren',

@@ -1090,6 +1090,11 @@
         gap: 10px;
     }
 
+    .neural-stage__bridge {
+        width: calc(100% + 20px);
+        margin-inline: -10px;
+    }
+
     .path-stage {
         padding: 14px 18px;
     }
@@ -1108,6 +1113,10 @@
     .playground-demo button {
         min-height: 42px;
         padding: 0 12px;
+    }
+
+    [data-network-demo] .playground-demo__options button {
+        min-height: 46px;
     }
 
     .playground-demo .neural-pixels button,
@@ -1445,6 +1454,56 @@
         width: min(100%, 640px);
         grid-column: auto;
         justify-self: center;
+    }
+}
+
+@media (max-width: 340px) {
+    .neural-stage {
+        min-height: 380px;
+        padding: 20px;
+        aspect-ratio: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 38px auto;
+        gap: 12px;
+    }
+
+    .neural-stage__input,
+    .neural-stage__output {
+        width: min(100%, 180px);
+        gap: 10px;
+        justify-self: center;
+    }
+
+    .neural-stage__input .playground-stage-label,
+    .neural-pixels {
+        width: 148px;
+        justify-self: center;
+    }
+
+    .neural-stage__bridge {
+        width: 72px;
+        height: 38px;
+        margin: 0;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        justify-self: center;
+        transform: none;
+    }
+
+    .neural-stage__bridge span {
+        width: 1px;
+        height: 100%;
+        justify-self: center;
+        background: linear-gradient(180deg, rgba(var(--route-accent-rgb), 0.16), rgba(var(--route-accent-rgb), 0.58));
+        transform-origin: center;
+    }
+
+    .neural-stage__bridge span:first-child {
+        transform: rotate(-12deg);
+    }
+
+    .neural-stage__bridge span:last-child {
+        transform: rotate(12deg);
     }
 }
 

@@ -2150,7 +2150,7 @@
     .playground-stage-label {
         color: var(--ink-muted);
         font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-        font-size: 9px;
+        font-size: 10px;
         letter-spacing: 0.06em;
         line-height: 1;
         text-transform: uppercase;
@@ -2165,15 +2165,16 @@
     .neural-stage__output {
         display: grid;
         width: 100%;
-        gap: 12px;
+        gap: 14px;
         align-content: center;
     }
 
     .neural-pixels {
         display: grid;
-        width: min(100%, 132px);
+        width: min(100%, 148px);
         aspect-ratio: 1;
         gap: 4px;
+        justify-self: end;
     }
 
     .neural-pixels__row {
@@ -2210,9 +2211,11 @@
 
     .neural-stage__bridge {
         display: grid;
-        width: 100%;
-        gap: 17px;
+        width: calc(100% + 28px);
+        margin-inline: -14px;
+        gap: 31px;
         align-content: center;
+        transform: translateY(12px);
     }
 
     .neural-stage__bridge span {
@@ -2238,28 +2241,29 @@
 
     .neural-results {
         display: grid;
-        gap: 10px;
+        gap: 12px;
     }
 
     .neural-result {
         display: grid;
-        grid-template-columns: 13px minmax(0, 1fr) 28px;
-        gap: 7px;
+        min-height: 20px;
+        grid-template-columns: 16px minmax(0, 1fr) 34px;
+        gap: 9px;
         align-items: center;
         color: var(--ink-muted);
         font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .neural-result strong {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 500;
     }
 
     .neural-result i {
         display: block;
         overflow: hidden;
-        height: 3px;
+        height: 5px;
         background: rgba(244, 241, 234, 0.08);
     }
 
@@ -2281,6 +2285,12 @@
 
     .neural-result.is-winner i span {
         background: var(--route-accent);
+    }
+
+    [data-network-demo] .playground-demo__options button {
+        min-width: 54px;
+        min-height: 46px;
+        font-size: 14px;
     }
 
     .path-stage {
