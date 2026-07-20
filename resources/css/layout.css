@@ -703,11 +703,24 @@
     }
 
     .site-footer__nav a {
+        --nav-accent: var(--route-accent);
         position: relative;
         padding: 8px 0;
         color: var(--muted);
         font-size: 13px;
         transition: color 220ms ease;
+    }
+
+    .site-footer__nav a[data-route='projects'] {
+        --nav-accent: var(--accent-projects);
+    }
+
+    .site-footer__nav a[data-route='about'] {
+        --nav-accent: var(--accent-about);
+    }
+
+    .site-footer__nav a[data-route='contact'] {
+        --nav-accent: var(--accent-contact);
     }
 
     .site-footer__nav a::after {
@@ -716,7 +729,7 @@
         bottom: 1px;
         left: 0;
         height: 1px;
-        background: var(--route-accent);
+        background: var(--nav-accent);
         content: '';
         transform: scaleX(0);
         transform-origin: right;
