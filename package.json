@@ -6,7 +6,8 @@
         "build": "vite build",
         "build:static": "npm run build && npm run export:static",
         "dev": "vite",
-        "export:static": "php artisan site:export-static"
+        "export:static": "php artisan site:export-static",
+        "test": "node --test tests/JavaScript/*.test.js"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

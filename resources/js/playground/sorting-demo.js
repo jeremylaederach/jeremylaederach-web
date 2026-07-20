@@ -20,6 +20,8 @@ const bubbleFrames = (source) => {
     const frames = [];
 
     for (let pass = 0; pass < values.length - 1; pass += 1) {
+        let moved = false;
+
         for (let index = 0; index < values.length - pass - 1; index += 1) {
             frames.push({
                 values: [...values],
@@ -29,12 +31,17 @@ const bubbleFrames = (source) => {
 
             if (values[index] > values[index + 1]) {
                 [values[index], values[index + 1]] = [values[index + 1], values[index]];
+                moved = true;
                 frames.push({
                     values: [...values],
                     active: [index, index + 1],
                     type: 'move',
                 });
             }
+        }
+
+        if (!moved) {
+            break;
         }
     }
 
@@ -113,39 +120,29 @@ const mergeFrames = (source) => {
         let left = 0;
         let right = 0;
 
-        while (left < leftValues.length || right < rightValues.length) {
-            if (right >= rightValues.length || (
-                left < leftValues.length
-                && leftValues[left] <= rightValues[right]
-            )) {
-                const leftIndex = values.indexOf(leftValues[left]);
-                const rightIndex = right < rightValues.length
-                    ? values.indexOf(rightValues[right])
-                    : leftIndex;
+        while (left < leftValues.length && right < rightValues.length) {
+            const leftIndex = values.indexOf(leftValues[left]);
+            const rightIndex = values.indexOf(rightValues[right]);
 
-                frames.push({
-                    values: [...values],
-                    active: [leftIndex, rightIndex],
-                    type: 'compare',
-                });
+            frames.push({
+                values: [...values],
+                active: [leftIndex, rightIndex],
+                type: 'compare',
+            });
+
+            if (leftValues[left] <= rightValues[right]) {
                 merged.push(leftValues[left]);
                 left += 1;
             } else {
-                const leftIndex = left < leftValues.length
-                    ? values.indexOf(leftValues[left])
-                    : values.indexOf(rightValues[right]);
-                const rightIndex = values.indexOf(rightValues[right]);
-
-                frames.push({
-                    values: [...values],
-                    active: [leftIndex, rightIndex],
-                    type: 'compare',
-                });
                 merged.push(rightValues[right]);
                 right += 1;
             }
         }
 
+        merged.push(
+            ...leftValues.slice(left),
+            ...rightValues.slice(right),
+        );
         values.splice(start, end - start, ...merged);
         frames.push({
             values: [...values],
@@ -193,7 +190,7 @@ const insertionFrames = (source) => {
     return frames;
 };
 
-const algorithms = {
+export const sortingAlgorithms = {
     quick: quickFrames,
     merge: mergeFrames,
     insertion: insertionFrames,
@@ -248,6 +245,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
     const description = root.querySelector('[data-sorting-description]');
     const complexity = root.querySelector('[data-sorting-complexity]');
     const output = root.querySelector('[data-sorting-output]');
+    const status = root.querySelector('[data-sorting-status]');
     const runButton = root.querySelector('[data-sorting-run]');
     const bars = createBars(plot);
     let algorithm = 'quick';
@@ -258,6 +256,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
         runId += 1;
         values = createValues();
         output.textContent = '0';
+        status.textContent = '';
         runButton.disabled = false;
         stage.setAttribute('aria-busy', 'false');
         render(bars, values);
@@ -274,6 +273,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
             description.textContent = option.dataset.sortingDescription;
             complexity.textContent = option.dataset.sortingComplexity;
             output.textContent = '0';
+            status.textContent = '';
             runButton.disabled = false;
             stage.setAttribute('aria-busy', 'false');
             render(bars, values);
@@ -290,9 +290,26 @@ export const initializeSortingDemo = (root, reducedMotion) => {
         }
 
         const currentRun = ++runId;
-        const frames = algorithms[algorithm](values);
+        const frames = sortingAlgorithms[algorithm](values);
+        const comparisonCount = frames.reduce(
+            (count, frame) => count + Number(frame.type === 'compare'),
+            0,
+        );
         runButton.disabled = true;
         stage.setAttribute('aria-busy', 'true');
+        status.textContent = '';
+
+        if (reducedMotion) {
+            values = [...(frames.at(-1)?.values ?? values)];
+            output.textContent = String(comparisonCount);
+            render(bars, values, [], 'sorted');
+            stage.setAttribute('aria-busy', 'false');
+            runButton.disabled = false;
+            status.textContent = `${status.dataset.completeLabel}: ${comparisonCount}.`;
+            return;
+        }
+
+        let comparisons = 0;
 
         for (let index = 0; index < frames.length; index += 1) {
             if (currentRun !== runId || !stage.isConnected) {
@@ -301,14 +318,20 @@ export const initializeSortingDemo = (root, reducedMotion) => {
 
             const frame = frames[index];
             render(bars, frame.values, frame.active, frame.type);
-            output.textContent = String(index + 1);
-            await wait(reducedMotion ? 0 : frameDelay(frame));
+
+            if (frame.type === 'compare') {
+                comparisons += 1;
+                output.textContent = String(comparisons);
+            }
+
+            await wait(frameDelay(frame));
         }
 
         values = [...(frames.at(-1)?.values ?? values)];
         render(bars, values, [], 'sorted');
         stage.setAttribute('aria-busy', 'false');
         runButton.disabled = false;
+        status.textContent = `${status.dataset.completeLabel}: ${comparisonCount}.`;
     });
 
     stage.setAttribute('aria-busy', 'false');

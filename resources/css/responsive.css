@@ -261,7 +261,13 @@
     }
 
     .playground-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .playground-demo:last-child {
+        width: calc(50% - 6px);
+        grid-column: 1 / -1;
+        justify-self: center;
     }
 
     .career-list {
@@ -1066,22 +1072,40 @@
         gap: 10px;
     }
 
-    .playground-demo:hover {
-        transform: none;
+    .playground-demo > header {
+        display: grid;
+        min-height: 0;
+        padding: 18px;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: start;
     }
 
-    .playground-demo > header {
-        min-height: 70px;
-        padding: 0 18px;
+    .playground-demo > header > output {
+        justify-items: start;
+    }
+
+    .playground-demo__metrics {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .playground-demo__metrics > .playground-demo__metric {
+        justify-items: start;
     }
 
     .playground-demo canvas,
     .playground-demo__stage {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 8 / 5;
     }
 
     .playground-demo__stage {
-        padding: 18px 11px 24px;
+        padding: 18px 14px 24px;
+    }
+
+    .sorting-stage {
+        padding: 22px 16px 30px;
     }
 
     .playground-demo > footer {
@@ -1416,6 +1440,19 @@
 
     .legal-section p {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 680px) {
+    .playground-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .playground-demo,
+    .playground-demo:last-child {
+        width: min(100%, 560px);
+        grid-column: auto;
+        justify-self: center;
     }
 }
 

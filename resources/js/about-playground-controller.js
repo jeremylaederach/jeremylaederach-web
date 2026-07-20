@@ -3,7 +3,12 @@ import { initializePathfindingDemo } from './playground/pathfinding-demo.js';
 import { initializeSortingDemo } from './playground/sorting-demo.js';
 
 export const createAboutPlaygroundController = ({ reducedMotion }) => {
+    let cleanups = [];
+
     const initialize = () => {
+        cleanups.forEach((cleanup) => cleanup());
+        cleanups = [];
+
         document.querySelectorAll('[data-about-playground]:not([data-playground-ready])').forEach((root) => {
             root.dataset.playgroundReady = 'true';
 
@@ -13,7 +18,11 @@ export const createAboutPlaygroundController = ({ reducedMotion }) => {
                 ['[data-pathfinding-demo]', initializePathfindingDemo],
             ].forEach(([selector, initializeDemo]) => {
                 root.querySelectorAll(selector).forEach((demo) => {
-                    initializeDemo(demo, reducedMotion);
+                    const cleanup = initializeDemo(demo, reducedMotion);
+
+                    if (typeof cleanup === 'function') {
+                        cleanups.push(cleanup);
+                    }
                 });
             });
         });

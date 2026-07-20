@@ -53,6 +53,7 @@ resources/views/        Blade pages and reusable components
 resources/css/          Foundation, layout and responsive styles
 resources/js/           Navigation, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage
+tests/JavaScript/        Deterministic Playground logic tests
 ```
 
 ## Quality Checks
@@ -61,6 +62,7 @@ Run the same checks used by GitHub Actions:
 
 ```powershell
 npm run build
+npm test
 composer test
 npm run export:static
 ```

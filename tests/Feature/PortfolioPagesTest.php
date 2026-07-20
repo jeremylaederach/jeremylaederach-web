@@ -82,7 +82,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-sorting-demo', false)
             ->assertSee('data-network-demo', false)
             ->assertSee('data-pathfinding-demo', false)
-            ->assertSee('data-network-signal', false)
+            ->assertSee('data-network-scenario', false)
+            ->assertSee('data-pathfinding-cell-label', false)
+            ->assertSee('data-pathfinding-status', false)
             ->assertSee('class="section-label about-section-label"', false)
             ->assertSee('class="career-list"', false)
             ->assertDontSee('class="career-list__current"', false)
@@ -93,17 +95,27 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Foundation')
             ->assertSee('From September 2026')
             ->assertSee('Playground.')
-            ->assertSee('Sorting values')
+            ->assertSee('Sorting')
+            ->assertSee('n is the number of bars')
+            ->assertSee('Comparisons')
             ->assertSee('O(n log n)')
             ->assertSee('Insertion')
             ->assertSee('Neural network')
-            ->assertSee('brighter lines count more')
-            ->assertSee('Street routing')
-            ->assertSee('Shortest')
-            ->assertSee('Fewer turns')
-            ->assertSee('Find route')
+            ->assertSee('Four details from an email')
+            ->assertSee('photos, recommendations, and language')
+            ->assertSee('connections here are fixed')
+            ->assertSee('Newsletter')
+            ->assertSee('Follow signal')
+            ->assertSee('Result')
+            ->assertSee('Pathfinder')
+            ->assertSee('A starts on the left')
+            ->assertSee('Tap the grid to add or remove walls')
+            ->assertSee('Use the arrow keys to move across the grid')
+            ->assertSee('Find path')
             ->assertSee('Since Aug 2024')
-            ->assertDontSee('Metro routing')
+            ->assertDontSee('Street routing')
+            ->assertDontSee('Fastest')
+            ->assertDontSee('Low traffic')
             ->assertDontSee('class="about-lab"', false)
             ->assertDontSee('data-about-lab', false)
             ->assertDontSee('class="about-facts"', false)
@@ -127,11 +139,11 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->getContent(), 'class="technology-group"'));
         $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
         $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
-        $this->assertSame(3, substr_count($about->getContent(), 'class="playground-demo"'));
+        $this->assertSame(3, substr_count($about->getContent(), '<article class="playground-demo'));
         $this->assertSame(2, substr_count($about->getContent(), '<canvas'));
         $this->assertSame(4, substr_count($about->getContent(), 'data-sorting-algorithm='));
-        $this->assertSame(3, substr_count($about->getContent(), 'data-network-signal='));
-        $this->assertSame(2, substr_count($about->getContent(), 'data-pathfinding-mode='));
+        $this->assertSame(3, substr_count($about->getContent(), 'data-network-scenario='));
+        $this->assertSame(0, substr_count($about->getContent(), 'data-pathfinding-mode='));
         $aboutHtml = $about->getContent();
 
         $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
@@ -145,19 +157,27 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Kurzprofil.')
             ->assertSee('Grundlage')
             ->assertSee('Playground.')
-            ->assertSee('Werte sortieren')
+            ->assertSee('Sortieren')
+            ->assertSee('n ist die Anzahl Balken')
+            ->assertSee('Vergleiche')
             ->assertSee('O(n log n)')
             ->assertSee('Insertion')
-            ->assertSee('Neurales Netz')
-            ->assertSee('Helle Linien zählen stärker')
-            ->assertSee('Strassen-Routing')
-            ->assertSee('Kürzester Weg')
-            ->assertSee('Weniger Kurven')
-            ->assertSee('Route finden')
+            ->assertSee('Neuronales Netz')
+            ->assertSee('Links starten vier Merkmale')
+            ->assertSee('Bilder, Empfehlungen und Sprache')
+            ->assertSee('Verbindungen sind hier festgelegt')
+            ->assertSee('Newsletter')
+            ->assertSee('Signal verfolgen')
+            ->assertSee('Ergebnis')
+            ->assertSee('Pathfinder')
+            ->assertSee('A startet links')
+            ->assertSee('Im Raster Felder sperren')
+            ->assertSee('Mit den Pfeiltasten durch das Raster navigieren')
+            ->assertSee('Weg finden')
             ->assertSee('Stack')
             ->assertSee('Seit Aug. 2024')
-            ->assertDontSee('Metro-Routing')
-            ->assertDontSee('Pfeiltasten');
+            ->assertDontSee('Strassen-Routing')
+            ->assertDontSee('Schnellste');
 
         $projects = $this->get('/de/projects');
 

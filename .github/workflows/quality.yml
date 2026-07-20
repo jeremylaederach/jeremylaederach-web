@@ -53,6 +53,9 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      - name: Test frontend logic
+        run: npm test
+
       - name: Audit dependencies
         run: |
           composer audit --locked --no-interaction
