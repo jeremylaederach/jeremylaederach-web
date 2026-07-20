@@ -56,6 +56,16 @@
     .not-found-page__message h1 {
         font-size: 52px;
     }
+
+    .playground-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .playground-demo:last-child {
+        width: calc(50% - 6px);
+        grid-column: 1 / -1;
+        justify-self: center;
+    }
 }
 
 @media (max-width: 960px) {
@@ -258,16 +268,6 @@
     .career-section h2,
     .stack-section h2 {
         font-size: 52px;
-    }
-
-    .playground-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .playground-demo:last-child {
-        width: calc(50% - 6px);
-        grid-column: 1 / -1;
-        justify-self: center;
     }
 
     .career-list {
@@ -1073,39 +1073,25 @@
     }
 
     .playground-demo > header {
-        display: grid;
-        min-height: 0;
+        padding: 0 18px;
+    }
+
+    .playground-demo__stage {
+        aspect-ratio: 16 / 9;
         padding: 18px;
-        grid-template-columns: 1fr;
-        gap: 16px;
-        align-items: start;
-    }
-
-    .playground-demo > header > output {
-        justify-items: start;
-    }
-
-    .playground-demo__metrics {
-        width: 100%;
-        justify-content: space-between;
-        gap: 12px;
-    }
-
-    .playground-demo__metrics > .playground-demo__metric {
-        justify-items: start;
-    }
-
-    .playground-demo canvas,
-    .playground-demo__stage {
-        aspect-ratio: 8 / 5;
-    }
-
-    .playground-demo__stage {
-        padding: 18px 14px 24px;
     }
 
     .sorting-stage {
-        padding: 22px 16px 30px;
+        padding: 22px 16px 28px;
+    }
+
+    .neural-stage {
+        grid-template-columns: minmax(90px, 0.9fr) 28px minmax(96px, 1fr);
+        gap: 10px;
+    }
+
+    .path-stage {
+        padding: 14px 18px;
     }
 
     .playground-demo > footer {
@@ -1122,6 +1108,12 @@
     .playground-demo button {
         min-height: 42px;
         padding: 0 12px;
+    }
+
+    .playground-demo .neural-pixels button,
+    .playground-demo .path-cell {
+        min-height: 0;
+        padding: 0;
     }
 
     .playground-demo footer .playground-demo__description {
@@ -1443,14 +1435,14 @@
     }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 800px) {
     .playground-grid {
         grid-template-columns: 1fr;
     }
 
     .playground-demo,
     .playground-demo:last-child {
-        width: min(100%, 560px);
+        width: min(100%, 640px);
         grid-column: auto;
         justify-self: center;
     }

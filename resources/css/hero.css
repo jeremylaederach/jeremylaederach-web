@@ -111,9 +111,9 @@
         font-style: normal;
     }
 
-    .js.is-ready .kinetic-index__letter-glyph {
-        animation: wordmark-signal 3.5s ease infinite;
-        animation-delay: calc(700ms + (var(--letter-index) * 46ms));
+    .kinetic-index__heading.is-signalling .kinetic-index__letter-glyph {
+        animation: wordmark-signal 3s ease infinite;
+        animation-delay: calc(var(--letter-index) * 46ms);
     }
 
     .kinetic-index__intro {
@@ -367,18 +367,6 @@
             background: var(--panel-accent);
             color: var(--bg);
             transform: translateX(7px);
-        }
-    }
-
-    @keyframes wordmark-signal {
-        0%, 56%, 78%, 100% {
-            color: inherit;
-            text-shadow: none;
-        }
-
-        68% {
-            color: color-mix(in srgb, var(--violet) 58%, var(--ink));
-            text-shadow: 0 0 0.26em color-mix(in srgb, var(--violet) 24%, transparent);
         }
     }
 

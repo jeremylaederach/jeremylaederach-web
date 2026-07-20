@@ -1,42 +1,204 @@
-import { selectOption, wait } from './demo-utils.js';
+import { delay, setPressed } from './demo-utils.js';
 
-const itemCount = 12;
-const comparisonDelay = 120;
-const moveDelay = 320;
+const itemCount = 9;
+const comparisonDelay = 130;
+const movementDelay = 230;
 
-const createValues = () => {
-    const values = Array.from({ length: itemCount }, (_, index) => index + 1);
-
-    for (let index = values.length - 1; index > 0; index -= 1) {
-        const target = Math.floor(Math.random() * (index + 1));
-        [values[index], values[target]] = [values[target], values[index]];
-    }
-
-    return values;
-};
-
-const bubbleFrames = (source) => {
+const createTrace = (source) => {
     const values = [...source];
     const frames = [];
+    let comparisons = 0;
 
-    for (let pass = 0; pass < values.length - 1; pass += 1) {
+    const record = (type, active) => {
+        frames.push({
+            active: [...active],
+            type,
+            values: [...values],
+        });
+    };
+
+    return {
+        values,
+        compare: (...active) => {
+            comparisons += 1;
+            record('compare', active);
+        },
+        move: (...active) => record('move', active),
+        finish: () => ({
+            comparisons,
+            frames,
+            result: [...values],
+        }),
+    };
+};
+
+const quickSort = (source) => {
+    const trace = createTrace(source);
+
+    const partition = (start, end) => {
+        const pivot = trace.values[end];
+        let boundary = start;
+
+        for (let index = start; index < end; index += 1) {
+            trace.compare(trace.values[index], pivot);
+
+            if (trace.values[index] <= pivot) {
+                if (index !== boundary) {
+                    [trace.values[index], trace.values[boundary]] = [
+                        trace.values[boundary],
+                        trace.values[index],
+                    ];
+                    trace.move(trace.values[index], trace.values[boundary]);
+                }
+
+                boundary += 1;
+            }
+        }
+
+        if (boundary !== end) {
+            [trace.values[boundary], trace.values[end]] = [
+                trace.values[end],
+                trace.values[boundary],
+            ];
+            trace.move(trace.values[boundary], trace.values[end]);
+        }
+
+        return boundary;
+    };
+
+    const sort = (start, end) => {
+        if (start >= end) {
+            return;
+        }
+
+        const pivot = partition(start, end);
+
+        sort(start, pivot - 1);
+        sort(pivot + 1, end);
+    };
+
+    sort(0, trace.values.length - 1);
+
+    return trace.finish();
+};
+
+const mergeSort = (source) => {
+    const trace = createTrace(source);
+
+    const sort = (start, end) => {
+        if (end - start < 2) {
+            return;
+        }
+
+        const middle = Math.floor((start + end) / 2);
+
+        sort(start, middle);
+        sort(middle, end);
+
+        const left = trace.values.slice(start, middle);
+        const right = trace.values.slice(middle, end);
+        const merged = [];
+        let leftIndex = 0;
+        let rightIndex = 0;
+
+        while (leftIndex < left.length && rightIndex < right.length) {
+            trace.compare(left[leftIndex], right[rightIndex]);
+
+            if (left[leftIndex] <= right[rightIndex]) {
+                merged.push(left[leftIndex]);
+                leftIndex += 1;
+            } else {
+                merged.push(right[rightIndex]);
+                rightIndex += 1;
+            }
+        }
+
+        merged.push(...left.slice(leftIndex), ...right.slice(rightIndex));
+
+        merged.forEach((value, offset) => {
+            const target = start + offset;
+            const current = trace.values.indexOf(value, target);
+
+            if (current !== target) {
+                trace.values.splice(current, 1);
+                trace.values.splice(target, 0, value);
+                trace.move(value);
+            }
+        });
+    };
+
+    sort(0, trace.values.length);
+
+    return trace.finish();
+};
+
+const insertionSort = (source) => {
+    const trace = createTrace(source);
+
+    for (let index = 1; index < trace.values.length; index += 1) {
+        let position = index;
+
+        while (position > 0) {
+            const left = trace.values[position - 1];
+            const right = trace.values[position];
+
+            trace.compare(left, right);
+
+            if (left <= right) {
+                break;
+            }
+
+            [trace.values[position - 1], trace.values[position]] = [right, left];
+            trace.move(left, right);
+            position -= 1;
+        }
+    }
+
+    return trace.finish();
+};
+
+const selectionSort = (source) => {
+    const trace = createTrace(source);
+
+    for (let start = 0; start < trace.values.length - 1; start += 1) {
+        let smallest = start;
+
+        for (let index = start + 1; index < trace.values.length; index += 1) {
+            trace.compare(trace.values[smallest], trace.values[index]);
+
+            if (trace.values[index] < trace.values[smallest]) {
+                smallest = index;
+            }
+        }
+
+        if (smallest !== start) {
+            [trace.values[start], trace.values[smallest]] = [
+                trace.values[smallest],
+                trace.values[start],
+            ];
+            trace.move(trace.values[start], trace.values[smallest]);
+        }
+    }
+
+    return trace.finish();
+};
+
+const bubbleSort = (source) => {
+    const trace = createTrace(source);
+
+    for (let end = trace.values.length - 1; end > 0; end -= 1) {
         let moved = false;
 
-        for (let index = 0; index < values.length - pass - 1; index += 1) {
-            frames.push({
-                values: [...values],
-                active: [index, index + 1],
-                type: 'compare',
-            });
+        for (let index = 0; index < end; index += 1) {
+            const left = trace.values[index];
+            const right = trace.values[index + 1];
 
-            if (values[index] > values[index + 1]) {
-                [values[index], values[index + 1]] = [values[index + 1], values[index]];
+            trace.compare(left, right);
+
+            if (left > right) {
+                [trace.values[index], trace.values[index + 1]] = [right, left];
+                trace.move(left, right);
                 moved = true;
-                frames.push({
-                    values: [...values],
-                    active: [index, index + 1],
-                    type: 'move',
-                });
             }
         }
 
@@ -45,156 +207,27 @@ const bubbleFrames = (source) => {
         }
     }
 
-    return frames;
+    return trace.finish();
 };
 
-const quickFrames = (source) => {
-    const values = [...source];
-    const frames = [];
+export const sortingAlgorithms = Object.freeze({
+    quick: quickSort,
+    merge: mergeSort,
+    insertion: insertionSort,
+    selection: selectionSort,
+    bubble: bubbleSort,
+});
 
-    const sort = (low, high) => {
-        if (low >= high) {
-            return;
-        }
+export const createSortingValues = (random = Math.random) => {
+    const values = Array.from({ length: itemCount }, (_, index) => index + 1);
 
-        const pivot = values[high];
-        let boundary = low;
+    for (let index = values.length - 1; index > 0; index -= 1) {
+        const target = Math.floor(random() * (index + 1));
 
-        for (let index = low; index < high; index += 1) {
-            frames.push({
-                values: [...values],
-                active: [index, high],
-                type: 'compare',
-            });
-
-            if (values[index] <= pivot) {
-                [values[index], values[boundary]] = [values[boundary], values[index]];
-
-                if (index !== boundary) {
-                    frames.push({
-                        values: [...values],
-                        active: [boundary, index],
-                        type: 'move',
-                    });
-                }
-
-                boundary += 1;
-            }
-        }
-
-        [values[boundary], values[high]] = [values[high], values[boundary]];
-
-        if (boundary !== high) {
-            frames.push({
-                values: [...values],
-                active: [boundary, high],
-                type: 'move',
-            });
-        }
-
-        sort(low, boundary - 1);
-        sort(boundary + 1, high);
-    };
-
-    sort(0, values.length - 1);
-
-    return frames;
-};
-
-const mergeFrames = (source) => {
-    const values = [...source];
-    const frames = [];
-
-    const sort = (start, end) => {
-        if (end - start < 2) {
-            return;
-        }
-
-        const middle = Math.floor((start + end) / 2);
-        sort(start, middle);
-        sort(middle, end);
-
-        const leftValues = values.slice(start, middle);
-        const rightValues = values.slice(middle, end);
-        const merged = [];
-        let left = 0;
-        let right = 0;
-
-        while (left < leftValues.length && right < rightValues.length) {
-            const leftIndex = values.indexOf(leftValues[left]);
-            const rightIndex = values.indexOf(rightValues[right]);
-
-            frames.push({
-                values: [...values],
-                active: [leftIndex, rightIndex],
-                type: 'compare',
-            });
-
-            if (leftValues[left] <= rightValues[right]) {
-                merged.push(leftValues[left]);
-                left += 1;
-            } else {
-                merged.push(rightValues[right]);
-                right += 1;
-            }
-        }
-
-        merged.push(
-            ...leftValues.slice(left),
-            ...rightValues.slice(right),
-        );
-        values.splice(start, end - start, ...merged);
-        frames.push({
-            values: [...values],
-            active: Array.from({ length: end - start }, (_, index) => start + index),
-            type: 'move',
-        });
-    };
-
-    sort(0, values.length);
-
-    return frames;
-};
-
-const insertionFrames = (source) => {
-    const values = [...source];
-    const frames = [];
-
-    for (let index = 1; index < values.length; index += 1) {
-        let position = index;
-
-        while (position > 0) {
-            frames.push({
-                values: [...values],
-                active: [position - 1, position],
-                type: 'compare',
-            });
-
-            if (values[position - 1] <= values[position]) {
-                break;
-            }
-
-            [values[position - 1], values[position]] = [
-                values[position],
-                values[position - 1],
-            ];
-            frames.push({
-                values: [...values],
-                active: [position - 1, position],
-                type: 'move',
-            });
-            position -= 1;
-        }
+        [values[index], values[target]] = [values[target], values[index]];
     }
 
-    return frames;
-};
-
-export const sortingAlgorithms = {
-    quick: quickFrames,
-    merge: mergeFrames,
-    insertion: insertionFrames,
-    bubble: bubbleFrames,
+    return values;
 };
 
 const createBars = (plot) => {
@@ -205,7 +238,7 @@ const createBars = (plot) => {
 
         bar.className = 'sorting-stage__bar';
         bar.dataset.sortingValue = String(value);
-        bar.style.setProperty('--bar-height', `${18 + (value / itemCount) * 76}%`);
+        bar.style.setProperty('--bar-height', `${16 + (value / itemCount) * 78}%`);
         label.textContent = String(value);
         bar.append(label);
 
@@ -217,123 +250,132 @@ const createBars = (plot) => {
     return bars;
 };
 
-const render = (bars, values, active = [], state = 'idle') => {
-    const activeValues = new Set(active.map((index) => values[index]));
+const renderBars = (bars, values, active = [], state = 'idle') => {
+    const activeValues = new Set(active);
 
     bars.forEach((bar) => {
         const value = Number(bar.dataset.sortingValue);
         const position = values.indexOf(value);
 
-        bar.style.left = `calc(${(position / itemCount) * 100}% + 3px)`;
+        bar.style.setProperty('--bar-left', `${(position / itemCount) * 100}%`);
+        bar.style.setProperty('--bar-width', `${100 / itemCount}%`);
         bar.classList.toggle('is-active', activeValues.has(value));
         bar.classList.toggle('is-moving', state === 'move' && activeValues.has(value));
         bar.classList.toggle('is-sorted', state === 'sorted');
     });
 };
 
-const frameDelay = (frame) => {
-    if (frame.type === 'move') {
-        return moveDelay;
-    }
-
-    return comparisonDelay;
-};
-
 export const initializeSortingDemo = (root, reducedMotion) => {
     const stage = root.querySelector('[data-sorting-stage]');
     const plot = root.querySelector('[data-sorting-plot]');
-    const description = root.querySelector('[data-sorting-description]');
-    const complexity = root.querySelector('[data-sorting-complexity]');
     const output = root.querySelector('[data-sorting-output]');
     const status = root.querySelector('[data-sorting-status]');
+    const description = root.querySelector('[data-sorting-description]');
+    const complexity = root.querySelector('[data-sorting-complexity]');
     const runButton = root.querySelector('[data-sorting-run]');
+    const algorithmButtons = [...root.querySelectorAll('[data-sorting-algorithm]')];
+
+    if (!stage || !plot || !output || !status || !description || !complexity || !runButton) {
+        return () => {};
+    }
+
     const bars = createBars(plot);
-    let algorithm = 'quick';
-    let values = createValues();
+    let algorithm = algorithmButtons[0]?.dataset.sortingAlgorithm ?? 'quick';
+    let values = createSortingValues();
     let runId = 0;
 
-    const shuffle = () => {
+    const cancel = () => {
         runId += 1;
-        values = createValues();
-        output.textContent = '0';
-        status.textContent = '';
         runButton.disabled = false;
         stage.setAttribute('aria-busy', 'false');
-        render(bars, values);
     };
 
-    root.addEventListener('click', async (event) => {
-        const target = event.target instanceof Element ? event.target : null;
-        const option = target?.closest('[data-sorting-algorithm]');
+    const resetResult = () => {
+        output.textContent = '0';
+        status.textContent = '';
+        renderBars(bars, values);
+    };
 
-        if (option instanceof HTMLButtonElement) {
-            runId += 1;
-            algorithm = option.dataset.sortingAlgorithm;
-            selectOption(root, '[data-sorting-algorithm]', option);
-            description.textContent = option.dataset.sortingDescription;
-            complexity.textContent = option.dataset.sortingComplexity;
-            output.textContent = '0';
-            status.textContent = '';
-            runButton.disabled = false;
-            stage.setAttribute('aria-busy', 'false');
-            render(bars, values);
-            return;
-        }
+    const mix = () => {
+        cancel();
+        values = createSortingValues();
+        resetResult();
+    };
 
-        if (target?.closest('[data-sorting-shuffle]')) {
-            shuffle();
-            return;
-        }
-
-        if (!target?.closest('[data-sorting-run]')) {
-            return;
-        }
-
+    const run = async () => {
         const currentRun = ++runId;
-        const frames = sortingAlgorithms[algorithm](values);
-        const comparisonCount = frames.reduce(
-            (count, frame) => count + Number(frame.type === 'compare'),
-            0,
-        );
+        const trace = sortingAlgorithms[algorithm](values);
+
         runButton.disabled = true;
         stage.setAttribute('aria-busy', 'true');
         status.textContent = '';
 
         if (reducedMotion) {
-            values = [...(frames.at(-1)?.values ?? values)];
-            output.textContent = String(comparisonCount);
-            render(bars, values, [], 'sorted');
-            stage.setAttribute('aria-busy', 'false');
-            runButton.disabled = false;
-            status.textContent = `${status.dataset.completeLabel}: ${comparisonCount}.`;
+            values = trace.result;
+            output.textContent = String(trace.comparisons);
+            renderBars(bars, values, [], 'sorted');
+        } else {
+            let comparisons = 0;
+
+            for (const frame of trace.frames) {
+                if (runId !== currentRun || !stage.isConnected) {
+                    return;
+                }
+
+                values = frame.values;
+                renderBars(bars, values, frame.active, frame.type);
+
+                if (frame.type === 'compare') {
+                    comparisons += 1;
+                    output.textContent = String(comparisons);
+                }
+
+                await delay(frame.type === 'move' ? movementDelay : comparisonDelay);
+            }
+
+            values = trace.result;
+            renderBars(bars, values, [], 'sorted');
+        }
+
+        if (runId !== currentRun || !stage.isConnected) {
             return;
         }
 
-        let comparisons = 0;
+        runButton.disabled = false;
+        stage.setAttribute('aria-busy', 'false');
+        status.textContent = `${status.dataset.completeLabel}: ${trace.comparisons}.`;
+    };
 
-        for (let index = 0; index < frames.length; index += 1) {
-            if (currentRun !== runId || !stage.isConnected) {
-                return;
-            }
+    const handleClick = (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        const option = target?.closest('[data-sorting-algorithm]');
 
-            const frame = frames[index];
-            render(bars, frame.values, frame.active, frame.type);
-
-            if (frame.type === 'compare') {
-                comparisons += 1;
-                output.textContent = String(comparisons);
-            }
-
-            await wait(frameDelay(frame));
+        if (option instanceof HTMLButtonElement) {
+            cancel();
+            algorithm = option.dataset.sortingAlgorithm;
+            description.textContent = option.dataset.sortingDescription;
+            complexity.textContent = option.dataset.sortingComplexity;
+            setPressed(algorithmButtons, option);
+            resetResult();
+            return;
         }
 
-        values = [...(frames.at(-1)?.values ?? values)];
-        render(bars, values, [], 'sorted');
-        stage.setAttribute('aria-busy', 'false');
-        runButton.disabled = false;
-        status.textContent = `${status.dataset.completeLabel}: ${comparisonCount}.`;
-    });
+        if (target?.closest('[data-sorting-shuffle]')) {
+            mix();
+            return;
+        }
 
+        if (target?.closest('[data-sorting-run]')) {
+            run();
+        }
+    };
+
+    root.addEventListener('click', handleClick);
     stage.setAttribute('aria-busy', 'false');
-    render(bars, values);
+    renderBars(bars, values);
+
+    return () => {
+        runId += 1;
+        root.removeEventListener('click', handleClick);
+    };
 };

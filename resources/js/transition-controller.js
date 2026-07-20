@@ -11,6 +11,13 @@ export const sceneFromRoute = (route) => pageRoutes.has(route)
     : routeScenes.get(route) ?? 'home';
 
 const normalizedRoute = (route) => sceneFromRoute(route);
+export const transitionFinishedEvent = 'portfolio:transition-finished';
+
+const announceTransitionFinished = (scene) => {
+    document.dispatchEvent(new CustomEvent(transitionFinishedEvent, {
+        detail: { scene },
+    }));
+};
 
 export const createPageTransitionController = ({ reducedMotion }) => {
     const overlay = document.querySelector('[data-page-transition]');
@@ -24,7 +31,10 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         return {
             beginTransition: () => ({ completeDelay: 0, swapDelay: 0 }),
             commitScene: () => {},
-            completeTransition: () => {},
+            completeTransition: (scene) => {
+                currentScene = normalizedRoute(scene);
+                announceTransitionFinished(currentScene);
+            },
             getScene: () => currentScene,
         };
     }
@@ -90,9 +100,11 @@ export const createPageTransitionController = ({ reducedMotion }) => {
 
     const completeTransition = (scene) => {
         currentScene = normalizedRoute(scene);
+        window.clearTimeout(resetTimer);
 
         if (reducedMotion) {
             overlay.dataset.phase = 'idle';
+            announceTransitionFinished(currentScene);
             return;
         }
 
@@ -101,6 +113,7 @@ export const createPageTransitionController = ({ reducedMotion }) => {
             overlay.dataset.phase = 'idle';
             delete overlay.dataset.route;
             delete overlay.dataset.theme;
+            announceTransitionFinished(currentScene);
         }, 760);
     };
 

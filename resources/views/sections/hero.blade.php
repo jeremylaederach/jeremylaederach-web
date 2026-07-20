@@ -3,7 +3,12 @@
         <div class="kinetic-index__title">
             <span class="kinetic-index__number" aria-hidden="true">00</span>
 
-            <h1 id="landing-title" class="kinetic-index__heading" aria-label="Jeremy Läderach.">
+            <h1
+                id="landing-title"
+                class="kinetic-index__heading"
+                aria-label="Jeremy Läderach."
+                data-page-heading-signal
+            >
                 <span class="kinetic-index__wordmark" aria-hidden="true">
                     @foreach (mb_str_split('Jeremy Läderach') as $letter)
                         @if ($letter === ' ')

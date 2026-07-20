@@ -1,46 +1,37 @@
-export const wait = (milliseconds) => new Promise((resolve) => {
+export const delay = (milliseconds) => new Promise((resolve) => {
     window.setTimeout(resolve, milliseconds);
 });
 
-export const getPalette = () => {
-    const styles = window.getComputedStyle(document.body);
-
-    return {
-        accent: styles.getPropertyValue('--route-accent').trim() || '#75c7ff',
-        coral: styles.getPropertyValue('--coral').trim() || '#ff8eaa',
-        ink: styles.getPropertyValue('--ink').trim() || '#f4f1ea',
-    };
+export const setPressed = (buttons, activeButton = null) => {
+    buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button === activeButton));
+    });
 };
 
-export const getCanvasViewport = (canvas) => {
-    const bounds = canvas.getBoundingClientRect();
-    const width = Math.max(1, Math.round(bounds.width));
-    const height = Math.max(1, Math.round(bounds.height));
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-    const renderWidth = Math.round(width * pixelRatio);
-    const renderHeight = Math.round(height * pixelRatio);
+export const setRovingTabStop = (elements, activeElement) => {
+    for (const element of elements) {
+        element.tabIndex = element === activeElement ? 0 : -1;
+    }
+};
 
-    if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
-        canvas.width = renderWidth;
-        canvas.height = renderHeight;
+const gridMovements = Object.freeze({
+    ArrowDown: Object.freeze({ column: 0, row: 1 }),
+    ArrowLeft: Object.freeze({ column: -1, row: 0 }),
+    ArrowRight: Object.freeze({ column: 1, row: 0 }),
+    ArrowUp: Object.freeze({ column: 0, row: -1 }),
+});
+
+export const gridIndexAfterKey = (index, columns, rows, key) => {
+    const movement = gridMovements[key];
+
+    if (!movement) {
+        return null;
     }
 
-    const context = canvas.getContext('2d');
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    const row = Math.floor(index / columns);
+    const column = index % columns;
+    const nextRow = Math.min(rows - 1, Math.max(0, row + movement.row));
+    const nextColumn = Math.min(columns - 1, Math.max(0, column + movement.column));
 
-    return { context, height, width };
-};
-
-export const observeCanvas = (canvas, render) => {
-    const observer = new ResizeObserver(render);
-
-    observer.observe(canvas);
-
-    return () => observer.disconnect();
-};
-
-export const selectOption = (root, selector, selected) => {
-    root.querySelectorAll(selector).forEach((button) => {
-        button.setAttribute('aria-pressed', String(button === selected));
-    });
+    return nextRow * columns + nextColumn;
 };

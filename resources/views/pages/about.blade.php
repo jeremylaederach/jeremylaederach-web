@@ -9,7 +9,7 @@
             </div>
 
             <div class="page-hero__title">
-                <h1>{{ $content['about_page']['heading'] }}<span class="accent-dot">.</span></h1>
+                <x-animated-page-heading :text="$content['about_page']['heading']" />
             </div>
 
             <p>{{ $content['about_page']['intro'] }}</p>

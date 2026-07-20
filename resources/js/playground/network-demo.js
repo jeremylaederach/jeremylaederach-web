@@ -1,347 +1,290 @@
 import {
-    getCanvasViewport,
-    getPalette,
-    observeCanvas,
-    selectOption,
-    wait,
+    delay,
+    gridIndexAfterKey,
+    setPressed,
+    setRovingTabStop,
 } from './demo-utils.js';
-import {
-    evaluateNetwork,
-    networkLayers,
-    networkScenarios,
-    networkShape,
-} from './network-model.js';
 
-const animationFrames = 14;
-const animationDelay = 30;
-const emptyOutput = '\u2014';
-const defaultLabels = {
-    inputs: ['Sender', 'Urgency', 'Link', 'Domain'],
-    layers: ['INPUT', 'PATTERN', 'RESULT'],
-    outputs: ['Safe', 'Review', 'Risk'],
-};
+const gridSize = 5;
+const pixelCount = gridSize * gridSize;
+const signalDelay = 560;
 
-const readLabels = (canvas, key, fallback) => {
-    const labels = canvas.dataset[key]?.split('|').map((label) => label.trim());
+const pattern = (...rows) => Object.freeze(
+    rows.join('').split('').map(Number),
+);
 
-    return labels?.length === fallback.length && labels.every(Boolean)
-        ? labels
-        : fallback;
-};
-
-const getLabels = (canvas) => ({
-    inputs: readLabels(canvas, 'networkInputs', defaultLabels.inputs),
-    layers: readLabels(canvas, 'networkLayers', defaultLabels.layers),
-    outputs: readLabels(canvas, 'networkClasses', defaultLabels.outputs),
+export const digitTemplates = Object.freeze({
+    0: pattern(
+        '01110',
+        '10001',
+        '10001',
+        '10001',
+        '01110',
+    ),
+    1: pattern(
+        '00100',
+        '01100',
+        '00100',
+        '00100',
+        '01110',
+    ),
+    2: pattern(
+        '01110',
+        '00001',
+        '01110',
+        '10000',
+        '11111',
+    ),
 });
 
-const drawText = (
-    context,
-    text,
-    x,
-    y,
-    {
-        align = 'left',
-        color,
-        font = '500 11px ui-sans-serif, system-ui, sans-serif',
-        opacity = 1,
-    } = {},
-) => {
-    context.globalAlpha = opacity;
-    context.fillStyle = color;
-    context.font = font;
-    context.textAlign = align;
-    context.textBaseline = 'middle';
-    context.fillText(text, x, y);
+const softmax = (values) => {
+    const offset = Math.max(...values);
+    const exponentials = values.map((value) => Math.exp(value - offset));
+    const total = exponentials.reduce((sum, value) => sum + value, 0);
+
+    return exponentials.map((value) => value / total);
 };
 
-const createNodeLayout = (width, height) => {
-    const compact = width < 420;
-    const top = compact ? 34 : 38;
-    const bottom = height - (compact ? 18 : 22);
-    const xPositions = [
-        compact ? 78 : 94,
-        width * 0.52,
-        width - (compact ? 72 : 82),
-    ];
-    const nodes = networkShape.map((size, layer) => (
-        Array.from({ length: size }, (_, index) => ({
-            x: xPositions[layer],
-            y: top + ((bottom - top) * index) / Math.max(1, size - 1),
-        }))
+export const recognizeDigit = (pixels) => {
+    if (
+        !Array.isArray(pixels)
+        || pixels.length !== pixelCount
+        || pixels.some((pixel) => pixel !== 0 && pixel !== 1)
+    ) {
+        throw new TypeError(`Digit input must contain ${pixelCount} zeros or ones.`);
+    }
+
+    const inputs = pixels.map((pixel) => (pixel === 1 ? 1 : -1));
+
+    // Each template supplies one output neuron's fixed weights. A trained
+    // network would learn these weights from many handwriting examples.
+    const logits = Object.values(digitTemplates).map((template) => (
+        template.reduce((score, pixel, index) => (
+            score + inputs[index] * (pixel === 1 ? 1 : -1)
+        ), 0) / 4
     ));
+    const probabilities = softmax(logits);
+    const winner = probabilities.reduce(
+        (best, confidence, index) => (
+            confidence > best.confidence ? { confidence, index } : best
+        ),
+        { confidence: probabilities[0], index: 0 },
+    );
 
-    return { compact, nodes };
+    return {
+        confidence: winner.confidence,
+        digit: String(winner.index),
+        probabilities,
+    };
 };
 
-const draw = (canvas, pass, labels, state) => {
-    const { context, height, width } = getCanvasViewport(canvas);
-    const palette = getPalette();
-    const layout = createNodeLayout(width, height);
+const pixelLabel = (button, active) => {
+    const grid = button.closest('[data-network-pixels]');
+    const index = Number(button.dataset.networkPixel);
+    const row = Math.floor(index / gridSize) + 1;
+    const column = (index % gridSize) + 1;
+    const state = active ? grid.dataset.networkOnLabel : grid.dataset.networkOffLabel;
 
-    context.clearRect(0, 0, width, height);
-
-    networkLayers.forEach((layer, layerIndex) => {
-        const sourceValues = pass.layers[layerIndex];
-        const strengths = layer.weights.flatMap((weights) => (
-            weights.map((weight, source) => (
-                Math.abs(weight * sourceValues[source])
-            ))
-        ));
-        const maximum = Math.max(...strengths, 0.01);
-        const isCurrent = state.layer === layerIndex + 1;
-        const isComplete = state.layer > layerIndex + 1
-            || (state.complete && state.layer === layerIndex + 1);
-
-        layer.weights.forEach((weights, target) => {
-            weights.forEach((weight, source) => {
-                const from = layout.nodes[layerIndex][source];
-                const to = layout.nodes[layerIndex + 1][target];
-                const strength = Math.abs(weight * sourceValues[source]) / maximum;
-                const visibleStrength = isCurrent
-                    ? strength * state.progress
-                    : strength;
-
-                context.globalAlpha = isCurrent || isComplete
-                    ? 0.07 + visibleStrength * 0.26
-                    : 0.055 + visibleStrength * 0.06;
-                context.strokeStyle = weight >= 0
-                    ? palette.accent
-                    : palette.ink;
-                context.lineWidth = 0.6 + visibleStrength * 0.75;
-                context.beginPath();
-                context.moveTo(from.x, from.y);
-                context.lineTo(to.x, to.y);
-                context.stroke();
-
-                if (isCurrent && strength > 0.52) {
-                    context.globalAlpha = 0.34 + strength * 0.52;
-                    context.fillStyle = weight >= 0
-                        ? palette.accent
-                        : palette.ink;
-                    context.beginPath();
-                    context.arc(
-                        from.x + (to.x - from.x) * state.progress,
-                        from.y + (to.y - from.y) * state.progress,
-                        layout.compact ? 2.2 : 2.6,
-                        0,
-                        Math.PI * 2,
-                    );
-                    context.fill();
-                }
-            });
-        });
-    });
-
-    labels.layers.forEach((label, layer) => {
-        drawText(context, label.toUpperCase(), layout.nodes[layer][0].x, 15, {
-            align: 'center',
-            color: palette.ink,
-            font: '600 9px ui-monospace, SFMono-Regular, Consolas, monospace',
-            opacity: layer <= state.layer ? 0.54 : 0.24,
-        });
-    });
-
-    layout.nodes.forEach((nodes, layer) => {
-        nodes.forEach((position, index) => {
-            const isVisible = layer <= state.layer;
-            const isCurrent = layer === state.layer && !state.complete;
-            const value = isVisible
-                ? pass.layers[layer][index] * (isCurrent ? state.progress : 1)
-                : 0;
-            const isWinner = state.complete
-                && layer === networkShape.length - 1
-                && index === pass.winner.index;
-            const isRisk = isWinner && index === 2;
-            const radius = layout.compact ? 5 : 6;
-
-            context.globalAlpha = isVisible ? 0.22 + value * 0.72 : 0.15;
-            context.fillStyle = isRisk ? palette.coral : palette.accent;
-            context.beginPath();
-            context.arc(position.x, position.y, radius, 0, Math.PI * 2);
-            context.fill();
-
-            context.globalAlpha = isWinner ? 0.82 : isVisible ? 0.24 : 0.14;
-            context.strokeStyle = isRisk ? palette.coral : palette.ink;
-            context.lineWidth = isWinner ? 1.5 : 1;
-            context.beginPath();
-            context.arc(
-                position.x,
-                position.y,
-                radius + (isWinner ? 5 : 3),
-                0,
-                Math.PI * 2,
-            );
-            context.stroke();
-
-            if (layer === 0) {
-                drawText(context, labels.inputs[index], position.x - 12, position.y, {
-                    align: 'right',
-                    color: palette.ink,
-                    opacity: 0.52 + value * 0.42,
-                });
-            }
-
-            if (layer === networkShape.length - 1) {
-                const confidence = isWinner
-                    ? ` ${Math.round(pass.winner.confidence * 100)}%`
-                    : '';
-
-                drawText(
-                    context,
-                    `${labels.outputs[index]}${confidence}`,
-                    position.x + 12,
-                    position.y,
-                    {
-                        color: isRisk ? palette.coral : palette.ink,
-                        font: isWinner
-                            ? '600 11px ui-sans-serif, system-ui, sans-serif'
-                            : undefined,
-                        opacity: isWinner ? 0.94 : 0.46,
-                    },
-                );
-            }
-        });
-    });
-
-    context.globalAlpha = 1;
-    context.lineWidth = 1;
+    return `${grid.dataset.networkPixelLabel} ${row}, ${column}: ${state}`;
 };
 
-const getScenarioKey = (button) => {
-    const key = button?.dataset.networkScenario;
+const setPixel = (button, active) => {
+    button.setAttribute('aria-selected', String(active));
+    button.setAttribute('aria-label', pixelLabel(button, active));
+    button.classList.toggle('is-active', active);
+};
 
-    return key && Object.hasOwn(networkScenarios, key) ? key : null;
+const createPixelGrid = (grid) => {
+    const buttons = [];
+    const rows = Array.from({ length: gridSize }, (_, rowIndex) => {
+        const row = document.createElement('span');
+
+        row.className = 'neural-pixels__row';
+        row.setAttribute('role', 'row');
+
+        for (let column = 0; column < gridSize; column += 1) {
+            const index = rowIndex * gridSize + column;
+            const button = document.createElement('button');
+
+            button.type = 'button';
+            button.dataset.networkPixel = String(index);
+            button.setAttribute('role', 'gridcell');
+            button.tabIndex = index === 0 ? 0 : -1;
+            button.style.setProperty('--pixel-index', String(index));
+            row.append(button);
+            buttons.push(button);
+        }
+
+        return row;
+    });
+
+    grid.replaceChildren(...rows);
+    buttons.forEach((button) => setPixel(button, false));
+
+    return buttons;
+};
+
+const readPixels = (buttons) => buttons.map(
+    (button) => Number(button.getAttribute('aria-selected') === 'true'),
+);
+
+const movePixelFocus = (buttons, current, key) => {
+    const index = buttons.indexOf(current);
+
+    if (index < 0) {
+        return false;
+    }
+
+    const nextIndex = gridIndexAfterKey(index, gridSize, gridSize, key);
+
+    if (nextIndex === null) {
+        return false;
+    }
+
+    const next = buttons[nextIndex];
+
+    setRovingTabStop(buttons, next);
+    next.focus();
+
+    return true;
 };
 
 export const initializeNetworkDemo = (root, reducedMotion) => {
-    const canvas = root.querySelector('[data-network-canvas]');
+    const stage = root.querySelector('[data-network-stage]');
+    const grid = root.querySelector('[data-network-pixels]');
     const output = root.querySelector('[data-network-output]');
     const runButton = root.querySelector('[data-network-run]');
-    const scenarioButtons = [
-        ...root.querySelectorAll('[data-network-scenario]'),
-    ];
-    const labels = getLabels(canvas);
-    const baseAriaLabel = canvas.getAttribute('aria-label') ?? '';
-    const initialButton = scenarioButtons.find((button) => (
-        button.getAttribute('aria-pressed') === 'true' && getScenarioKey(button)
-    )) ?? scenarioButtons.find(getScenarioKey);
-    let selectedButton = initialButton;
-    let scenario = getScenarioKey(initialButton) ?? 'newsletter';
-    let pass = evaluateNetwork(networkScenarios[scenario]);
-    let state = { complete: false, layer: 0, progress: 1 };
+    const clearButton = root.querySelector('[data-network-clear]');
+    const presetButtons = [...root.querySelectorAll('[data-network-preset]')];
+    const resultRows = [...root.querySelectorAll('[data-network-result]')];
+
+    if (!stage || !grid || !output || !runButton || !clearButton) {
+        return () => {};
+    }
+
+    const pixelButtons = createPixelGrid(grid);
     let runId = 0;
-    let destroyed = false;
 
-    const scenarioLabel = () => selectedButton?.textContent.trim() || scenario;
-    const render = () => draw(canvas, pass, labels, state);
-    const setBusy = (busy) => {
-        root.setAttribute('aria-busy', String(busy));
-        runButton.disabled = busy;
+    const resetResult = () => {
+        output.textContent = '—';
+
+        resultRows.forEach((row) => {
+            row.classList.remove('is-winner');
+            row.style.setProperty('--score', '0%');
+            row.querySelector('small').textContent = '0%';
+        });
     };
-    const reset = () => {
+
+    const cancel = () => {
         runId += 1;
-        pass = evaluateNetwork(networkScenarios[scenario]);
-        state = { complete: false, layer: 0, progress: 1 };
-        output.textContent = emptyOutput;
-        canvas.setAttribute(
-            'aria-label',
-            `${baseAriaLabel} ${scenarioLabel()}.`.trim(),
-        );
-        setBusy(false);
-        render();
-    };
-    const finish = () => {
-        const label = labels.outputs[pass.winner.index];
-        const confidence = Math.round(pass.winner.confidence * 100);
-
-        state = {
-            complete: true,
-            layer: networkShape.length - 1,
-            progress: 1,
-        };
-        output.textContent = `${label} · ${confidence}%`;
-        canvas.setAttribute(
-            'aria-label',
-            `${baseAriaLabel} ${scenarioLabel()}: ${label}, ${confidence}%.`.trim(),
-        );
-        setBusy(false);
-        render();
+        runButton.disabled = false;
+        stage.classList.remove('is-processing');
+        stage.setAttribute('aria-busy', 'false');
     };
 
-    const handleClick = async (event) => {
-        const target = event.target instanceof Element ? event.target : null;
-        const option = target?.closest('[data-network-scenario]');
-        const optionKey = option instanceof HTMLButtonElement
-            ? getScenarioKey(option)
-            : null;
+    const setPixels = (pixels) => {
+        pixelButtons.forEach((button, index) => setPixel(button, pixels[index] === 1));
+        resetResult();
+    };
 
-        if (optionKey) {
-            scenario = optionKey;
-            selectedButton = option;
-            selectOption(root, '[data-network-scenario]', option);
-            reset();
-            return;
-        }
+    const loadPreset = (button) => {
+        cancel();
+        setPixels(digitTemplates[button.dataset.networkPreset]);
+        setPressed(presetButtons, button);
+    };
 
-        if (target?.closest('[data-network-reset]')) {
-            reset();
-            return;
-        }
+    const clear = () => {
+        cancel();
+        setPixels(Array(pixelCount).fill(0));
+        setPressed(presetButtons);
+    };
 
-        if (!target?.closest('[data-network-run]') || runButton.disabled) {
+    const renderResult = (result) => {
+        resultRows.forEach((row, index) => {
+            const score = Math.round(result.probabilities[index] * 100);
+
+            row.classList.toggle('is-winner', row.dataset.networkResult === result.digit);
+            row.style.setProperty('--score', `${score}%`);
+            row.querySelector('small').textContent = `${score}%`;
+        });
+
+        output.textContent = `${result.digit} · ${Math.round(result.confidence * 100)}%`;
+    };
+
+    const run = async () => {
+        const pixels = readPixels(pixelButtons);
+
+        if (!pixels.some(Boolean)) {
+            output.textContent = stage.dataset.networkEmpty;
             return;
         }
 
         const currentRun = ++runId;
 
-        pass = evaluateNetwork(networkScenarios[scenario]);
-        output.textContent = emptyOutput;
-        setBusy(true);
+        resetResult();
+        runButton.disabled = true;
+        stage.classList.add('is-processing');
+        stage.setAttribute('aria-busy', 'true');
 
-        if (reducedMotion) {
-            finish();
+        if (!reducedMotion) {
+            await delay(signalDelay);
+        }
+
+        if (runId !== currentRun || !stage.isConnected) {
             return;
         }
 
-        for (let layer = 1; layer < networkShape.length; layer += 1) {
-            for (let frame = 1; frame <= animationFrames; frame += 1) {
-                if (destroyed || currentRun !== runId || !canvas.isConnected) {
-                    return;
-                }
+        renderResult(recognizeDigit(pixels));
+        runButton.disabled = false;
+        stage.classList.remove('is-processing');
+        stage.setAttribute('aria-busy', 'false');
+    };
 
-                const progress = frame / animationFrames;
+    const handleClick = (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        const pixel = target?.closest('[data-network-pixel]');
+        const preset = target?.closest('[data-network-preset]');
 
-                state = {
-                    complete: false,
-                    layer,
-                    progress: 1 - ((1 - progress) ** 3),
-                };
-                render();
-                await wait(animationDelay);
-            }
+        if (pixel instanceof HTMLButtonElement) {
+            cancel();
+            setRovingTabStop(pixelButtons, pixel);
+            setPixel(pixel, pixel.getAttribute('aria-selected') !== 'true');
+            setPressed(presetButtons);
+            resetResult();
+        } else if (preset instanceof HTMLButtonElement) {
+            loadPreset(preset);
+        } else if (target?.closest('[data-network-clear]')) {
+            clear();
+        } else if (target?.closest('[data-network-run]')) {
+            run();
         }
+    };
 
-        if (!destroyed && currentRun === runId && canvas.isConnected) {
-            finish();
+    const handleKeydown = (event) => {
+        const pixel = event.target instanceof HTMLButtonElement
+            ? event.target.closest('[data-network-pixel]')
+            : null;
+
+        if (pixel && movePixelFocus(pixelButtons, pixel, event.key)) {
+            event.preventDefault();
         }
     };
 
     root.addEventListener('click', handleClick);
+    grid.addEventListener('keydown', handleKeydown);
+    stage.setAttribute('aria-busy', 'false');
 
-    if (selectedButton) {
-        selectOption(root, '[data-network-scenario]', selectedButton);
+    const initialPreset = presetButtons.find(
+        (button) => button.getAttribute('aria-pressed') === 'true',
+    );
+
+    if (initialPreset) {
+        loadPreset(initialPreset);
     }
 
-    const disconnectCanvas = observeCanvas(canvas, render);
-
-    reset();
-
     return () => {
-        destroyed = true;
         runId += 1;
-        setBusy(false);
         root.removeEventListener('click', handleClick);
-        disconnectCanvas();
+        grid.removeEventListener('keydown', handleKeydown);
     };
 };
