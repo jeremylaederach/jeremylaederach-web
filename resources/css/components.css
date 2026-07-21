@@ -21,32 +21,47 @@
         text-transform: uppercase;
     }
 
-    .scroll-cue {
+    .directional-link {
+        --directional-accent: var(--route-accent);
         display: inline-flex;
-        align-items: center;
-        gap: 18px;
         width: max-content;
+        align-items: center;
+        gap: 12px;
         color: var(--ink-muted);
-        font-size: 13px;
-        transition: color 240ms ease, transform 420ms var(--ease-out);
+        font-size: 12px;
+        line-height: 1.2;
+        transition: color 240ms ease;
     }
 
-    .scroll-cue .nav-icon {
+    .directional-link .nav-icon {
         width: 16px;
         height: 16px;
-        color: var(--route-accent);
+        color: var(--directional-accent);
         transition: transform 420ms var(--ease-out);
     }
 
-    .scroll-cue:hover,
-    .scroll-cue:focus-visible {
+    .directional-link:hover,
+    .directional-link:focus-visible {
         color: var(--ink);
-        transform: translateY(2px);
     }
 
-    .scroll-cue:hover .nav-icon,
-    .scroll-cue:focus-visible .nav-icon {
-        transform: translateY(5px);
+    .directional-link--back .nav-icon {
+        transform: rotate(180deg);
+    }
+
+    .directional-link--back:hover .nav-icon,
+    .directional-link--back:focus-visible .nav-icon {
+        transform: translateX(-4px) rotate(180deg);
+    }
+
+    .directional-link--forward:hover .nav-icon,
+    .directional-link--forward:focus-visible .nav-icon {
+        transform: translateX(4px);
+    }
+
+    .directional-link--down:hover .nav-icon,
+    .directional-link--down:focus-visible .nav-icon {
+        transform: translateY(4px);
     }
 
     .contact-links {

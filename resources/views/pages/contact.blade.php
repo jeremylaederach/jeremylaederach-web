@@ -14,7 +14,12 @@
 
             <p>{{ $content['contact_page']['intro'] }}</p>
 
-            <a class="scroll-cue" href="#contact-workspace" data-interface-sound data-sound-tone="action">
+            <a
+                class="scroll-cue directional-link directional-link--down"
+                href="#contact-workspace"
+                data-interface-sound
+                data-sound-tone="action"
+            >
                 <span>{{ $content['contact_page']['direct_label'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>

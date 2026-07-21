@@ -14,7 +14,12 @@
 
             <p>{{ $content['projects_page']['intro'] }}</p>
 
-            <a class="scroll-cue" href="#selected-work" data-interface-sound data-sound-tone="action">
+            <a
+                class="scroll-cue directional-link directional-link--down"
+                href="#selected-work"
+                data-interface-sound
+                data-sound-tone="action"
+            >
                 <span>{{ $content['projects_page']['featured_label'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>

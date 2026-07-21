@@ -262,15 +262,17 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
-            ->assertSee('class="scroll-cue" href="#product"', false)
-            ->assertSee('Quantified turns data from every area of my life into visualizations.')
-            ->assertSee('The data is already there. Quantified makes it readable.')
+            ->assertSee('class="scroll-cue directional-link directional-link--down"', false)
+            ->assertSee('href="#product"', false)
+            ->assertSee('Quantified brings calendar, finance, coding, and local system data into dashboards')
+            ->assertSee('All my data, made visible.')
+            ->assertSee('Current inputs')
             ->assertSee('Your data, one local workspace.')
             ->assertSee('Home workspace')
             ->assertSee('QCalendar')
             ->assertSee('QFinances')
             ->assertSee('class="quantified-app__navigation"', false)
-            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-product__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-hero__reel"', false)
             ->assertDontSee('quantified-app__profile', false)
             ->assertDontSee('What would you like to understand?')
             ->assertDontSee('QInsights')
@@ -281,28 +283,36 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('ASP.NET Core')
             ->assertSee('PostgreSQL')
             ->assertSee('Angular')
+            ->assertSee('Data &amp; integrations', false)
+            ->assertSee('Next project')
+            ->assertSee('class="case-study-next case-study-next--jay-jay directional-link directional-link--forward"', false)
+            ->assertSee('href="http://localhost/en/jay-jay"', false)
             ->assertSee('Start a conversation')
             ->assertDontSee('Current scope')
             ->assertDontSee('quantified-visual__chart', false)
             ->assertSee('href="http://localhost/de/quantified"', false);
 
         $englishHtml = $english->getContent();
+        $viewsPosition = strpos($englishHtml, 'id="views"');
         $productPosition = strpos($englishHtml, 'id="product"');
         $stackPosition = strpos($englishHtml, 'id="stack"');
 
-        $this->assertSame(4, substr_count($englishHtml, 'class="technology-group"'));
+        $this->assertSame(3, substr_count($englishHtml, 'class="technology-group"'));
+        $this->assertNotFalse($viewsPosition);
         $this->assertNotFalse($productPosition);
         $this->assertNotFalse($stackPosition);
+        $this->assertLessThan($productPosition, $viewsPosition);
         $this->assertLessThan($stackPosition, $productPosition);
         $this->assertStringNotContainsString('id="presentation"', $englishHtml);
 
         $this->get('/de/quantified')
             ->assertOk()
-            ->assertSee('Quantified macht aus Daten aller Bereiche meines Lebens Visualisierungen.')
-            ->assertSee('Die Daten sind schon da. Quantified macht sie lesbar.')
-            ->assertSee('Angular vorne, ASP.NET Core dahinter.')
-            ->assertSee('Vergleiche zeigen, wie sich verschiedene Lebensbereiche gemeinsam verändern.')
+            ->assertSee('Quantified bringt Kalender-, Finanz-, Coding- und lokale Systemdaten in Dashboards und Timelines zusammen.')
+            ->assertSee('Alle meine Daten, sichtbar gemacht.')
+            ->assertSee('Angular + .NET.')
+            ->assertSee('Weitere Datenquellen anbinden und Entwicklungen über längere Zeit vergleichen.')
             ->assertSee('Aktiv in Entwicklung')
+            ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('Gespräch beginnen')
             ->assertSee('href="http://localhost/en/quantified"', false);
     }
@@ -312,17 +322,20 @@ class PortfolioPagesTest extends TestCase
         $this->get('/jay-jay')
             ->assertRedirect('/en/jay-jay');
 
-        $this->get('/en/jay-jay')
+        $english = $this->get('/en/jay-jay');
+
+        $english
             ->assertOk()
             ->assertSee('<title>Jay-Jay', false)
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('project-detail--jay-jay', false)
             ->assertSee('A small service business with its own software.')
-            ->assertSee('Two Laravel applications with different jobs.')
+            ->assertSee('Two Laravel apps.')
+            ->assertSee('jay-jay.ch')
             ->assertSee('Client Hub')
             ->assertSee('Development build')
-            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-product__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-hero__reel"', false)
             ->assertSee('aria-label="View 2: Customer overview"', false)
             ->assertSee('aria-label="View 3: Work board"', false)
             ->assertSee('id="client-hub"', false)
@@ -333,14 +346,21 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('tested contact delivery')
             ->assertDontSee('Current scope')
             ->assertDontSee('project-reel__browser-bar', false)
+            ->assertSee('Next project')
+            ->assertSee('class="case-study-next case-study-next--sessiondeck directional-link directional-link--forward"', false)
+            ->assertSee('aria-label="Next project: SessionDeck"', false)
+            ->assertSee('href="http://localhost/en/session-deck"', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
+
+        $this->assertSame(3, substr_count($english->getContent(), 'class="technology-group"'));
 
         $this->get('/de/jay-jay')
             ->assertOk()
             ->assertSee('Ein kleines Dienstleistungsunternehmen mit eigener Software.')
-            ->assertSee('Zwei Laravel-Anwendungen mit unterschiedlichen Aufgaben.')
+            ->assertSee('Zwei Laravel-Apps.')
             ->assertSee('Jay-Jay besuchen')
+            ->assertSee('href="http://localhost/de/session-deck"', false)
             ->assertSee('href="http://localhost/en/jay-jay"', false);
     }
 
@@ -349,7 +369,9 @@ class PortfolioPagesTest extends TestCase
         $this->get('/session-deck')
             ->assertRedirect('/en/session-deck');
 
-        $this->get('/en/session-deck')
+        $english = $this->get('/en/session-deck');
+
+        $english
             ->assertOk()
             ->assertSee('<title>SessionDeck', false)
             ->assertSee('data-page="projects"', false)
@@ -359,18 +381,24 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Functional source-build MVP')
             ->assertSee('Save the setup. Start it as one session.')
             ->assertSee('Safe ownership')
-            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-product__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-hero__reel"', false)
             ->assertSee('aria-label="View 2: Profile editor"', false)
             ->assertSee('aria-label="View 3: Session result"', false)
             ->assertDontSee('Current scope')
+            ->assertSee('Next project')
+            ->assertSee('class="case-study-next case-study-next--quantified directional-link directional-link--forward"', false)
+            ->assertSee('href="http://localhost/en/quantified"', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false);
+
+        $this->assertSame(3, substr_count($english->getContent(), 'class="technology-group"'));
 
         $this->get('/de/session-deck')
             ->assertOk()
             ->assertSee('Setup speichern. Als Session starten.')
-            ->assertSee('WinUI 3 auf einem UI-unabhängigen Core.')
+            ->assertSee('WinUI 3 + .NET.')
             ->assertSee('GitHub-Repository ansehen')
+            ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/en/session-deck"', false);
     }
 

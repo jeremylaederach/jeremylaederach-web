@@ -27,13 +27,10 @@ export const createScrollCueController = ({ reducedMotion }) => {
 
         event.preventDefault();
 
-        const headerHeight = document.querySelector('[data-page-header]')?.getBoundingClientRect().height ?? 0;
-        const targetTop = window.scrollY + target.getBoundingClientRect().top - headerHeight;
-
         window.history.replaceState(window.history.state, '', destination);
-        window.scrollTo({
+        target.scrollIntoView({
             behavior: reducedMotion ? 'auto' : 'smooth',
-            top: Math.max(0, targetTop),
+            block: 'start',
         });
     };
 

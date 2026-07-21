@@ -71,14 +71,18 @@ class PortfolioController extends Controller
     {
         $content = $this->contentFor($locale);
         $project = $content[$contentKey];
-        $projectSlugs = array_column($content['projects_page']['items'], 'slug');
+        $projectItems = $content['projects_page']['items'];
+        $projectSlugs = array_column($projectItems, 'slug');
         $projectIndex = array_search($project['slug'], $projectSlugs, true);
+        $resolvedProjectIndex = $projectIndex === false ? 0 : $projectIndex;
+        $nextProject = $projectItems[($resolvedProjectIndex + 1) % count($projectItems)];
 
         return view('pages.project', [
             'locale' => $locale,
             'content' => $content,
             'project' => $project,
-            'projectNumber' => $projectIndex === false ? 1 : $projectIndex + 1,
+            'projectNumber' => $resolvedProjectIndex + 1,
+            'nextProject' => $nextProject,
             'scene' => 'projects',
             'title' => "{$project['heading']} · Jeremy Läderach",
             'description' => $project['meta_description'],

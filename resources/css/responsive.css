@@ -33,10 +33,6 @@
         font-size: 46px;
     }
 
-    .case-study-hero__title h1 {
-        font-size: min(11vw, 148px);
-    }
-
     .case-study-product h2,
     .case-study-section-heading h2 {
         font-size: 60px;
@@ -196,7 +192,9 @@
     .case-study-back,
     .case-study-hero__index,
     .case-study-hero__title,
-    .case-study-hero__intro,
+    .case-study-hero__summary,
+    .case-study-hero__showcase,
+    .case-study-hero__meta,
     .case-study-hero > .scroll-cue {
         min-width: 0;
         grid-row: auto;
@@ -212,19 +210,33 @@
     }
 
     .case-study-hero__title h1 {
-        font-size: 84px;
+        font-size: 76px;
     }
 
-    .case-study-hero__intro {
+    .case-study-hero__showcase {
+        margin-top: 18px;
+    }
+
+    .case-study-hero__summary {
         max-width: 620px;
-        justify-self: start;
+        margin-top: 0;
     }
 
     .case-study-hero > .scroll-cue {
         margin-top: 30px;
     }
 
-    .case-study-product,
+    .case-study-product {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .case-study-product > .case-study-section-label,
+    .case-study-product__lead,
+    .case-study-product__body {
+        grid-column: 1;
+    }
+
     .case-study-section-heading {
         gap: 16px;
     }
@@ -239,38 +251,6 @@
 
     .case-study-section-heading h2 {
         font-size: 52px;
-    }
-
-    .case-study-product__showcase {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 34px;
-    }
-
-    .case-study-product__reel,
-    .case-study-product__aside {
-        grid-column: 1;
-    }
-
-    .case-study-product__aside {
-        gap: 28px;
-    }
-
-    .case-study-product__notes {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .case-study-product__notes > div {
-        padding: 18px 20px 0 0;
-        border-right: 1px solid var(--line);
-        border-bottom: 0;
-    }
-
-    .case-study-product__notes > div:last-child {
-        border-right: 0;
-    }
-
-    .case-study-product__aside .case-study-external {
-        margin-top: 0;
     }
 
     .about-story {
@@ -315,6 +295,12 @@
 
     .technology-groups {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-technology-groups .technology-group:last-child:nth-child(odd) {
+        width: calc(50% - 5px);
+        grid-column: 1 / -1;
+        justify-self: center;
     }
 
     .technology-group {
@@ -940,7 +926,9 @@
     .case-study-back,
     .case-study-hero__index,
     .case-study-hero__title,
-    .case-study-hero__intro,
+    .case-study-hero__summary,
+    .case-study-hero__showcase,
+    .case-study-hero__meta,
     .case-study-hero > .scroll-cue {
         min-width: 0;
         grid-row: auto;
@@ -956,16 +944,11 @@
     }
 
     .case-study-hero__title h1 {
-        font-size: 58px;
+        font-size: 52px;
         line-height: 0.9;
     }
 
-    .case-study-hero__intro {
-        gap: 30px;
-        width: 100%;
-    }
-
-    .case-study-hero__intro > p {
+    .case-study-hero__summary {
         font-size: 16px;
     }
 
@@ -975,34 +958,25 @@
 
     .project-detail--jay-jay .case-study-hero__title h1,
     .project-detail--sessiondeck .case-study-hero__title h1 {
-        font-size: 54px;
+        font-size: 50px;
     }
 
     .case-study-product h2 {
         font-size: 46px;
     }
 
+    .case-study-product__body {
+        gap: 38px;
+    }
+
     .case-study-product__body > p {
         font-size: 17px;
     }
 
-    .case-study-product__notes {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
     .case-study-product__notes > div {
+        grid-template-columns: minmax(0, 1fr);
         padding: 18px 0;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
         gap: 9px;
-    }
-
-    .case-study-product__aside {
-        gap: 0;
-    }
-
-    .case-study-product__aside .case-study-external {
-        margin-top: 32px;
     }
 
     .case-study-stack {
@@ -1017,21 +991,25 @@
         margin-top: 16px;
     }
 
-    .case-study-product__reel,
-    .case-study-product__reel .project-reel__viewport,
-    .case-study-product__reel .project-reel__slide,
-    .case-study-product__reel .project-reel__surface {
+    .case-study-hero__reel,
+    .case-study-hero__reel .project-reel__viewport,
+    .case-study-hero__reel .project-reel__slide,
+    .case-study-hero__reel .project-reel__surface {
         min-width: 0;
     }
 
-    .case-study-product__reel .project-reel__footer {
+    .case-study-hero__reel .project-reel__footer {
         min-height: 0;
         grid-template-columns: minmax(0, 1fr);
         gap: 16px;
     }
 
-    .case-study-product__reel .project-reel__controls {
+    .case-study-hero__reel .project-reel__controls {
         justify-self: start;
+    }
+
+    .case-study-next-nav {
+        padding-bottom: 64px;
     }
 
     .about-story {
@@ -1060,15 +1038,18 @@
         font-size: 17px;
     }
 
-    .about-story__notes {
+    .about-story__notes,
+    .case-study-hero__meta {
         grid-template-columns: 1fr;
     }
 
-    .about-story__notes > div {
+    .about-story__notes > div,
+    .case-study-hero__meta > div {
         padding: 18px 0 20px;
     }
 
-    .about-story__notes > div + div {
+    .about-story__notes > div + div,
+    .case-study-hero__meta > div + div {
         padding-left: 0;
         border-top: 1px solid var(--line);
         border-left: 0;
@@ -1202,6 +1183,12 @@
     .technology-groups {
         grid-template-columns: 1fr;
         gap: 10px;
+    }
+
+    .project-technology-groups .technology-group:last-child:nth-child(odd) {
+        width: 100%;
+        grid-column: auto;
+        justify-self: stretch;
     }
 
     .technology-group {
@@ -1478,15 +1465,6 @@
 @media (max-width: 800px) {
     .case-study-product {
         padding: 72px 0 76px;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 28px;
-    }
-
-    .case-study-product > .case-study-section-label,
-    .case-study-product__lead,
-    .case-study-product__body,
-    .case-study-product__showcase {
-        grid-column: 1;
     }
 
     .case-study-section-heading {
@@ -1512,7 +1490,7 @@
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 420px) {
     .project-reel--detail .project-reel__viewport {
         aspect-ratio: 1;
     }

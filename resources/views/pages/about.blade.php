@@ -14,7 +14,12 @@
 
             <p>{{ $content['about_page']['intro'] }}</p>
 
-            <a class="scroll-cue" href="#story" data-interface-sound data-sound-tone="action">
+            <a
+                class="scroll-cue directional-link directional-link--down"
+                href="#story"
+                data-interface-sound
+                data-sound-tone="action"
+            >
                 <span>{{ $content['about_page']['story_link'] }}</span>
                 <x-nav-icon name="arrow-down" />
             </a>
