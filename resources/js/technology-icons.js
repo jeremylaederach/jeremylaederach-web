@@ -1,15 +1,25 @@
 import {
     siAngular,
     siDotnet,
+    siGithubactions,
+    siGooglecalendar,
+    siJson,
     siLaravel,
     siPostgresql,
+    siSqlite,
+    siTailwindcss,
 } from 'simple-icons';
 
 const icons = new Map([
     ['angular', siAngular],
     ['dotnet', siDotnet],
+    ['githubactions', siGithubactions],
+    ['googlecalendar', siGooglecalendar],
+    ['json', siJson],
     ['laravel', siLaravel],
     ['postgresql', siPostgresql],
+    ['sqlite', siSqlite],
+    ['tailwindcss', siTailwindcss],
 ]);
 
 const renderIcons = (root) => {

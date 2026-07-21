@@ -91,6 +91,10 @@ export const createProjectReelController = ({ reducedMotion }) => {
             state.label.textContent = slide.dataset.label ?? '';
         }
 
+        if (state.description) {
+            state.description.textContent = slide.dataset.description ?? '';
+        }
+
         state.initialized = true;
         scheduleAutoplay(state);
     };
@@ -121,6 +125,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             autoplay: reel.hasAttribute('data-reel-autoplay'),
             current: 0,
             currentLabel: reel.querySelector('[data-reel-current]'),
+            description: reel.querySelector('[data-reel-description]'),
             initialized: false,
             interacting: false,
             label: reel.querySelector('[data-reel-label]'),

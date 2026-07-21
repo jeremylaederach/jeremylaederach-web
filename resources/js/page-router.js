@@ -104,6 +104,18 @@ const focusPageHeading = (main) => {
     heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
 };
 
+const scrollToDestination = (url) => {
+    const targetId = decodeURIComponent(url.hash.slice(1));
+    const target = targetId ? document.getElementById(targetId) : null;
+
+    if (target instanceof HTMLElement) {
+        target.scrollIntoView({ block: 'start' });
+        return;
+    }
+
+    window.scrollTo(0, 0);
+};
+
 export const createPageRouter = ({ reducedMotion, soundController, transitionController }) => {
     let navigationSequence = 0;
 
@@ -158,6 +170,7 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
             window.scrollTo(0, 0);
             await nextFrame();
             await nextFrame();
+            scrollToDestination(url);
             page.main.classList.remove('is-page-entering');
             document.dispatchEvent(new CustomEvent('portfolio:page-swapped', {
                 detail: { scene },

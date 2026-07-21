@@ -5,10 +5,10 @@
 
 @php
     $navigation = [
-        'overview' => 'Overview',
+        'home' => 'Home',
         'calendar' => 'QCalendar',
-        'insights' => 'QInsights',
         'finances' => 'QFinances',
+        'coding' => 'Coding',
         'settings' => 'Settings',
     ];
 @endphp
@@ -37,8 +37,8 @@
     <section class="quantified-app__workspace">
         <header class="quantified-app__toolbar">
             <span>
-                @if ($view === 'overview')
-                    Personal analytics
+                @if ($view === 'home')
+                    Local workspace
                 @elseif ($view === 'calendar')
                     Calendar timeline
                 @else
@@ -48,23 +48,44 @@
             <small><i></i>Data connected</small>
         </header>
 
-        @if ($view === 'overview')
-            <div class="quantified-app__overview">
-                <span class="quantified-app__eyebrow">Your personal data, connected</span>
-                <h3>What would you like to understand?</h3>
-                <p>Start with Health or explore a pattern across your life.</p>
+        @if ($view === 'home')
+            <div class="quantified-app__home">
+                <header>
+                    <span><small>Home</small><strong>Your data, one local workspace.</strong></span>
+                    <em>July 2026</em>
+                </header>
 
-                <div class="quantified-app__questions">
-                    <span>How has my sleep changed?</span>
-                    <span>What needs my attention?</span>
-                    <span>How am I spending my time?</span>
+                <div class="quantified-app__home-metrics">
+                    <span>
+                        <small>Calendar</small>
+                        <strong>42h 30m</strong>
+                        <em>38 tracked events</em>
+                    </span>
+                    <span>
+                        <small>Finance</small>
+                        <strong>CHF 8,420</strong>
+                        <em>36 transactions</em>
+                    </span>
+                    <span>
+                        <small>Coding</small>
+                        <strong>04 repos</strong>
+                        <em>Local status</em>
+                    </span>
                 </div>
 
-                <span class="quantified-app__composer">
-                    <small>Ask Quantified anything...</small>
-                    <i>5 life areas ready</i>
-                    <b>&uarr;</b>
-                </span>
+                <div class="quantified-app__home-context">
+                    @foreach ([
+                        ['Health', '12h', 54],
+                        ['Business', '18h', 78],
+                        ['Social', '7h', 34],
+                    ] as [$area, $value, $width])
+                        <span>
+                            <small>{{ $area }}</small>
+                            <i><b style="--context-width: {{ $width }}%"></b></i>
+                            <em>{{ $value }}</em>
+                        </span>
+                    @endforeach
+                </div>
             </div>
         @elseif ($view === 'calendar')
             <div class="quantified-app__calendar">

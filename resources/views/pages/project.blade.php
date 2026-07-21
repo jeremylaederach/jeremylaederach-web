@@ -2,7 +2,7 @@
 
 @section('content')
     <article class="portfolio-page case-study-page project-detail project-detail--{{ $project['slug'] }}">
-        <header class="case-study-hero" data-reveal>
+        <header class="case-study-hero" data-pointer-surface data-reveal>
             <a
                 class="case-study-back"
                 href="{{ route('projects', ['locale' => $locale]) }}#{{ $project['slug'] }}"
@@ -21,7 +21,9 @@
                 <span>{{ $project['eyebrow'] }}</span>
             </div>
 
-            <h1>{{ $project['heading'] }}<span class="accent-dot">.</span></h1>
+            <div class="case-study-hero__title">
+                <x-animated-page-heading :text="$project['heading']" />
+            </div>
 
             <div class="case-study-hero__intro">
                 <p>{{ $project['intro'] }}</p>
@@ -37,70 +39,104 @@
                 </dl>
             </div>
 
+            <a class="scroll-cue" href="#product" data-interface-sound data-sound-tone="action">
+                <span>{{ $project['product']['label'] }}</span>
+                <x-nav-icon name="arrow-down" />
+            </a>
+        </header>
+
+        <section
+            id="product"
+            class="case-study-product"
+            aria-labelledby="product-title"
+            data-reveal
+        >
+            <p class="section-label case-study-section-label">
+                <span>01</span>
+                <span aria-hidden="true">/</span>
+                <span>{{ $project['product']['label'] }}</span>
+            </p>
+
+            <div class="case-study-product__lead">
+                <h2 id="product-title">{{ $project['product']['heading'] }}</h2>
+            </div>
+
+            <div class="case-study-product__body">
+                <p>{{ $project['product']['body'] }}</p>
+
+                <dl class="case-study-product__notes">
+                    @foreach ($project['product']['notes'] as $note)
+                        <div>
+                            <dt>{{ $note['label'] }}</dt>
+                            <dd>{{ $note['value'] }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
+            </div>
+        </section>
+
+        <section id="stack" class="case-study-stack" aria-labelledby="project-stack-title" data-reveal>
+            <header class="case-study-section-heading">
+                <p class="section-label case-study-section-label">
+                    <span>02</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{{ $project['stack']['label'] }}</span>
+                </p>
+                <div class="case-study-section-heading__content">
+                    <h2 id="project-stack-title">{{ $project['stack']['heading'] }}</h2>
+                    <p>{{ $project['stack']['intro'] }}</p>
+                </div>
+            </header>
+
+            <x-technology-groups
+                class="project-technology-groups"
+                :groups="$project['stack']['groups']"
+            />
+        </section>
+
+        <section
+            id="presentation"
+            class="case-study-presentation"
+            aria-labelledby="presentation-title"
+            data-reveal
+        >
+            @if ($project['slug'] === 'jay-jay')
+                <span id="client-hub" class="case-study-anchor" aria-hidden="true"></span>
+            @endif
+
+            <header class="case-study-section-heading">
+                <p class="section-label case-study-section-label">
+                    <span>03</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{{ $project['presentation']['label'] }}</span>
+                </p>
+                <div class="case-study-section-heading__content">
+                    <h2 id="presentation-title">{{ $project['presentation']['heading'] }}</h2>
+                    <p>{{ $project['presentation']['intro'] }}</p>
+                </div>
+            </header>
+
             <x-project-reel
-                class="case-study-hero__visual"
+                class="case-study-presentation__reel"
                 :project="$project"
                 :ui="$content['ui']"
                 mode="detail"
             />
-        </header>
-
-        <section class="case-study-section case-study-overview" data-reveal>
-            <p class="section-label">{{ $project['overview']['label'] }}</p>
-            <h2>{{ $project['overview']['heading'] }}</h2>
-            <div class="case-study-copy">
-                @foreach ($project['overview']['body'] as $paragraph)
-                    <p>{{ $paragraph }}</p>
-                @endforeach
-            </div>
-        </section>
-
-        <section class="case-study-section case-study-system" data-reveal>
-            <header>
-                <p class="section-label">{{ $project['architecture']['label'] }}</p>
-                <h2>{{ $project['architecture']['heading'] }}</h2>
-            </header>
-
-            <ol class="system-flow">
-                @foreach ($project['architecture']['items'] as $item)
-                    <li>
-                        <span>0{{ $loop->iteration }}</span>
-                        <h3>{{ $item['title'] }}</h3>
-                        <p>{{ $item['body'] }}</p>
-                    </li>
-                @endforeach
-            </ol>
-        </section>
-
-        <section class="case-study-section case-study-scope" data-reveal>
-            <header>
-                <p class="section-label">{{ $project['scope']['label'] }}</p>
-                <h2>{{ $project['scope']['heading'] }}</h2>
-                <p>{{ $project['scope']['intro'] }}</p>
-            </header>
-
-            <ol class="scope-list">
-                @foreach ($project['scope']['items'] as $item)
-                    <li>
-                        <span>0{{ $loop->iteration }}</span>
-                        <h3>{{ $item['title'] }}</h3>
-                        <p>{{ $item['body'] }}</p>
-                    </li>
-                @endforeach
-            </ol>
 
             @isset($project['external_url'])
-                <a
-                    class="case-study-external"
-                    href="{{ $project['external_url'] }}"
-                    target="_blank"
-                    rel="noreferrer"
-                    data-interface-sound
-                    data-sound-tone="action"
-                >
-                    <span>{{ $project['external_label'] }}</span>
-                    <x-nav-icon name="arrow-up-right" />
-                </a>
+                <div class="case-study-presentation__external">
+                    <a
+                        class="case-study-external"
+                        href="{{ $project['external_url'] }}"
+                        target="_blank"
+                        rel="noreferrer"
+                        data-interface-sound
+                        data-sound-tone="action"
+                    >
+                        <span>{{ $project['external_label'] }}</span>
+                        <x-nav-icon name="arrow-up-right" />
+                    </a>
+                </div>
             @endisset
         </section>
 

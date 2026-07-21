@@ -14,7 +14,7 @@
     $isDetail = $mode === 'detail';
     $reelAttributes = [
         'role' => 'region',
-        'aria-roledescription' => 'carousel',
+        'aria-roledescription' => $ui['carousel'],
         'aria-label' => $project['preview_label'],
     ];
 
@@ -62,13 +62,14 @@
                 data-reel-slide
                 data-state="{{ $loop->first ? 'active' : 'after' }}"
                 data-label="{{ $slide['label'] }}"
+                data-description="{{ $slide['description'] ?? '' }}"
                 aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
             >
                 @switch($slide['type'])
                     @case('quantified-workspace')
                         <x-quantified-workspace-preview
                             class="project-reel__surface"
-                            :label="$project['preview_label']"
+                            :label="$slide['description'] ?? $slide['label']"
                             :view="$slide['view']"
                         />
                         @break
@@ -77,7 +78,7 @@
                         <figure class="project-reel__surface project-reel__browser">
                             <img
                                 src="{{ asset('assets/work/jay-jay-home.png') }}"
-                                alt="{{ $slide['label'] }}"
+                                alt="{{ $slide['description'] ?? $slide['label'] }}"
                                 loading="{{ $isDetail ? 'eager' : 'lazy' }}"
                                 decoding="async"
                             >
@@ -88,7 +89,7 @@
                         <x-client-hub-preview
                             class="project-reel__surface project-reel__client-hub"
                             :copy="$project['preview']['hub']"
-                            :label="$slide['label']"
+                            :label="$slide['description'] ?? $slide['label']"
                             :view="$slide['view']"
                         />
                         @break
@@ -98,7 +99,7 @@
                     @case('sessiondeck-result')
                         <x-sessiondeck-preview
                             class="project-reel__surface"
-                            :label="$slide['label']"
+                            :label="$slide['description'] ?? $slide['label']"
                             :view="str_replace('sessiondeck-', '', $slide['type'])"
                         />
                         @break
@@ -123,8 +124,11 @@
     @endif
 
     <div class="project-reel__footer">
-        <p>
+        <p @if ($isDetail) aria-live="polite" aria-atomic="true" @endif>
             <strong data-reel-label>{{ $slides[0]['label'] }}</strong>
+            @if ($isDetail)
+                <span data-reel-description>{{ $slides[0]['description'] }}</span>
+            @endif
         </p>
 
         <div

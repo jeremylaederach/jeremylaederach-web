@@ -18,8 +18,8 @@
         <span class="client-hub-visual__badge"><i></i>{{ $copy['badge'] }}</span>
 
         <span class="client-hub-visual__navigation">
-            @foreach ($copy['navigation'] as $item)
-                <span @class(['is-active' => $loop->first])>{{ $item }}</span>
+            @foreach ($copy['navigation'] as $route => $item)
+                <span @class(['is-active' => $route === $view])>{{ $item }}</span>
             @endforeach
         </span>
 
@@ -31,31 +31,31 @@
 
     <section @class([
         'client-hub-visual__workspace',
-        'client-hub-visual__workspace--project' => $view === 'project',
+        'client-hub-visual__workspace--board' => $view === 'board',
     ])>
-        @if ($view === 'project')
-            <span class="client-hub-visual__project-head">
+        @if ($view === 'board')
+            <span class="client-hub-visual__board-head">
                 <span>
-                    <small>{{ $copy['project']['reference'] }}</small>
-                    <strong>{{ $copy['project']['heading'] }}</strong>
-                    <em>{{ $copy['project']['body'] }}</em>
+                    <small>{{ $copy['board']['reference'] }}</small>
+                    <strong>{{ $copy['board']['heading'] }}</strong>
+                    <em>{{ $copy['board']['body'] }}</em>
                 </span>
-                <b>{{ $copy['project']['status'] }}</b>
+                <b>{{ $copy['board']['status'] }}</b>
             </span>
 
-            <span class="client-hub-visual__milestones">
-                @foreach ($copy['project']['milestones'] as $milestone)
+            <span class="client-hub-visual__board-columns">
+                @foreach ($copy['board']['columns'] as $column)
                     <span>
-                        <i @class(['is-current' => $loop->last])></i>
-                        <strong>{{ $milestone['label'] }}</strong>
-                        <small>{{ $milestone['state'] }}</small>
+                        <i @class(['is-current' => $column['current'] ?? false])></i>
+                        <strong>{{ $column['label'] }}</strong>
+                        <small>{{ $column['state'] }}</small>
                     </span>
                 @endforeach
             </span>
 
-            <span class="client-hub-visual__next-step">
-                <small>{{ $copy['project']['next_label'] }}</small>
-                <strong>{{ $copy['project']['next'] }}</strong>
+            <span class="client-hub-visual__ticket">
+                <small>{{ $copy['board']['ticket_label'] }}</small>
+                <strong>{{ $copy['board']['ticket'] }}</strong>
             </span>
         @else
             <span class="client-hub-visual__eyebrow">{{ $copy['eyebrow'] }}</span>

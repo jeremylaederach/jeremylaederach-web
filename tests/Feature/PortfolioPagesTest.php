@@ -214,7 +214,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
             ->assertSee('.NET / C#')
-            ->assertSee('Interaktiver Prototyp')
+            ->assertSee('Development-Build')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
@@ -260,13 +260,16 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
-            ->assertSee('Calendar activity, turned into personal context.')
-            ->assertSee('What would you like to understand?')
-            ->assertSee('How has my sleep changed?')
+            ->assertSee('A workspace for my own data.')
+            ->assertSee('Your data, one local workspace.')
+            ->assertSee('Home workspace')
             ->assertSee('QCalendar')
             ->assertSee('QFinances')
             ->assertSee('class="quantified-app__navigation"', false)
+            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-presentation__reel"', false)
             ->assertDontSee('quantified-app__profile', false)
+            ->assertDontSee('What would you like to understand?')
+            ->assertDontSee('QInsights')
             ->assertSee('aria-roledescription="carousel"', false)
             ->assertSee('aria-label="Next view"', false)
             ->assertSee('aria-label="View 3: QFinances"', false)
@@ -275,12 +278,27 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('PostgreSQL')
             ->assertSee('Angular')
             ->assertSee('Start a conversation')
+            ->assertDontSee('Current scope')
             ->assertDontSee('quantified-visual__chart', false)
             ->assertSee('href="http://localhost/de/quantified"', false);
 
+        $englishHtml = $english->getContent();
+        $productPosition = strpos($englishHtml, 'id="product"');
+        $stackPosition = strpos($englishHtml, 'id="stack"');
+        $presentationPosition = strpos($englishHtml, 'id="presentation"');
+
+        $this->assertSame(4, substr_count($englishHtml, 'class="technology-group"'));
+        $this->assertNotFalse($productPosition);
+        $this->assertNotFalse($stackPosition);
+        $this->assertNotFalse($presentationPosition);
+        $this->assertLessThan($stackPosition, $productPosition);
+        $this->assertLessThan($presentationPosition, $stackPosition);
+
         $this->get('/de/quantified')
             ->assertOk()
-            ->assertSee('Kalenderaktivität wird zu persönlichem Kontext.')
+            ->assertSee('Ein Workspace für meine eigenen Daten.')
+            ->assertSee('Angular vorne, ASP.NET Core dahinter.')
+            ->assertSee('Home, Kalender und Finanzen.')
             ->assertSee('Aktiv in Entwicklung')
             ->assertSee('Gespräch beginnen')
             ->assertSee('href="http://localhost/en/quantified"', false);
@@ -297,23 +315,29 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('project-detail--jay-jay', false)
-            ->assertSee('One business, two connected customer experiences.')
-            ->assertSee('Jay-Jay Web')
+            ->assertSee('A small service business with its own software.')
+            ->assertSee('Two Laravel applications with different jobs.')
             ->assertSee('Client Hub')
-            ->assertSee('Interactive prototype')
-            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-hero__visual"', false)
-            ->assertSee('aria-label="View 2: Client Hub"', false)
-            ->assertSee('aria-label="View 3: Project workspace"', false)
+            ->assertSee('Development build')
+            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-presentation__reel"', false)
+            ->assertSee('aria-label="View 2: Customer overview"', false)
+            ->assertSee('aria-label="View 3: Work board"', false)
+            ->assertSee('id="client-hub"', false)
+            ->assertSee('<span class="is-active">Boards</span>', false)
+            ->assertSee('<i class="is-current"></i>', false)
             ->assertSee('assets/work/jay-jay-home.png', false)
             ->assertSee('assets/work/jay-jay-mark.svg', false)
+            ->assertDontSee('tested contact delivery')
+            ->assertDontSee('Current scope')
             ->assertDontSee('project-reel__browser-bar', false)
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 
         $this->get('/de/jay-jay')
             ->assertOk()
-            ->assertSee('Ein Unternehmen, zwei verbundene Kundenerlebnisse.')
-            ->assertSee('Produktökosystem')
+            ->assertSee('Ein kleines Dienstleistungsunternehmen mit eigener Software.')
+            ->assertSee('Zwei Laravel-Anwendungen mit unterschiedlichen Aufgaben.')
+            ->assertSee('Vom Erstkontakt bis zur laufenden Arbeit.')
             ->assertSee('Jay-Jay besuchen')
             ->assertSee('href="http://localhost/en/jay-jay"', false);
     }
@@ -331,16 +355,20 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('project-detail--sessiondeck', false)
             ->assertSee('WinUI 3')
             ->assertSee('Functional source-build MVP')
-            ->assertSee('Conservative ownership')
-            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-hero__visual"', false)
+            ->assertSee('One profile for a recurring Windows setup.')
+            ->assertSee('Safe ownership')
+            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-presentation__reel"', false)
             ->assertSee('aria-label="View 2: Profile editor"', false)
             ->assertSee('aria-label="View 3: Session result"', false)
+            ->assertDontSee('Current scope')
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false);
 
         $this->get('/de/session-deck')
             ->assertOk()
-            ->assertSee('Windows-spezifisches Verhalten')
+            ->assertSee('Ein Profil für wiederkehrende Setups unter Windows.')
+            ->assertSee('WinUI 3 auf einem UI-unabhängigen Core.')
+            ->assertSee('Vom Profil zum Ergebnis.')
             ->assertSee('GitHub-Repository ansehen')
             ->assertSee('href="http://localhost/en/session-deck"', false);
     }
