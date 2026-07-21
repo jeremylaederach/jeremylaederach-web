@@ -1749,6 +1749,7 @@
     }
 
     .case-study-product {
+        position: relative;
         display: grid;
         width: var(--shell);
         padding: 104px 0 112px;
@@ -1787,10 +1788,8 @@
     }
 
     .case-study-product__body {
-        display: grid;
         min-width: 0;
         grid-column: 8 / -1;
-        gap: 48px;
     }
 
     .case-study-product h2,
@@ -1825,8 +1824,8 @@
         display: grid;
         padding: 18px 0;
         border-bottom: 1px solid var(--line);
-        grid-template-columns: 112px minmax(0, 1fr);
-        gap: 24px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
     }
 
     .case-study-product__notes dt {
@@ -1845,16 +1844,62 @@
         line-height: 1.55;
     }
 
-    .case-study-stack,
-    .case-study-presentation {
+    .case-study-product__showcase {
+        display: grid;
+        min-width: 0;
+        margin-top: 52px;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 24px;
+        align-items: start;
+    }
+
+    .case-study-product__reel {
+        width: 100%;
+        min-width: 0;
+        grid-column: 1 / 9;
+    }
+
+    .case-study-product__aside {
+        display: flex;
+        min-width: 0;
+        grid-column: 9 / -1;
+        flex-direction: column;
+    }
+
+    .case-study-product__aside .case-study-external {
+        margin-top: 32px;
+        align-self: flex-start;
+    }
+
+    .case-study-product__reel .project-reel__footer {
+        min-height: 84px;
+        padding-top: 18px;
+        align-items: start;
+    }
+
+    .case-study-product__reel .project-reel__footer p {
+        display: grid;
+        max-width: 72ch;
+        gap: 7px;
+    }
+
+    .case-study-product__reel .project-reel__footer strong {
+        color: var(--ink);
+        font-size: 11px;
+    }
+
+    .case-study-product__reel [data-reel-description] {
+        color: var(--ink-muted);
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .case-study-stack {
         position: relative;
         padding-bottom: 96px;
         border-top: 1px solid var(--line);
         scroll-margin-top: 78px;
-    }
-
-    .case-study-presentation {
-        padding-bottom: 116px;
     }
 
     .case-study-anchor {
@@ -1899,51 +1944,6 @@
         color: var(--ink-muted);
         font-size: 15px;
         line-height: 1.65;
-    }
-
-    .case-study-presentation__reel {
-        width: var(--shell);
-        min-width: 0;
-        margin: 0 auto;
-    }
-
-    .case-study-presentation__reel .project-reel__viewport {
-        border-color: rgba(var(--project-accent-rgb), 0.24);
-        border-radius: 4px;
-        box-shadow: 0 28px 72px rgba(0, 0, 0, 0.34);
-    }
-
-    .case-study-presentation__reel .project-reel__footer {
-        min-height: 84px;
-        padding-top: 18px;
-        align-items: start;
-    }
-
-    .case-study-presentation__reel .project-reel__footer p {
-        display: grid;
-        max-width: 72ch;
-        gap: 7px;
-    }
-
-    .case-study-presentation__reel .project-reel__footer strong {
-        color: var(--ink);
-        font-size: 11px;
-    }
-
-    .case-study-presentation__reel [data-reel-description] {
-        color: var(--ink-muted);
-        font-size: 13px;
-        line-height: 1.55;
-    }
-
-    .case-study-presentation__reel .project-reel__controls > button {
-        border-radius: 4px;
-        background: rgba(10, 10, 15, 0.46);
-    }
-
-    .case-study-presentation__external {
-        width: var(--shell);
-        margin: 0 auto;
     }
 
     .case-study-external {
@@ -2539,21 +2539,6 @@
         color: var(--ink-muted);
         font-size: 12px;
         line-height: 1.55;
-    }
-
-    .playground-demo__complexity {
-        display: flex;
-        margin: -7px 0 0;
-        flex-wrap: wrap;
-        gap: 5px 10px;
-        color: var(--ink-muted);
-        font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-        font-size: 10px;
-        line-height: 1.4;
-    }
-
-    .playground-demo__complexity span:first-child {
-        color: var(--route-accent);
     }
 
     @keyframes neural-pixel-signal {

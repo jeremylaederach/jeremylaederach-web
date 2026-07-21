@@ -55,6 +55,19 @@ test('selection sort compares every remaining pair', () => {
     assert.equal(sortingAlgorithms.selection([4, 1, 3, 2]).comparisons, 6);
 });
 
+test('sorting traces preserve adaptive and fixed comparison behavior', () => {
+    const ordered = [1, 2, 3, 4, 5];
+    const reversed = [...ordered].reverse();
+
+    assert.equal(sortingAlgorithms.insertion(ordered).comparisons, 4);
+    assert.equal(sortingAlgorithms.insertion(reversed).comparisons, 10);
+    assert.equal(sortingAlgorithms.bubble(ordered).comparisons, 4);
+    assert.equal(sortingAlgorithms.bubble(reversed).comparisons, 10);
+    assert.equal(sortingAlgorithms.selection(ordered).comparisons, 10);
+    assert.equal(sortingAlgorithms.selection(reversed).comparisons, 10);
+    assert.equal(sortingAlgorithms.quick(ordered).comparisons, 10);
+});
+
 test('each digit template is recognized with a normalized confidence', () => {
     Object.entries(digitTemplates).forEach(([digit, pixels]) => {
         const result = recognizeDigit([...pixels]);

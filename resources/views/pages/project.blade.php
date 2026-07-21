@@ -51,6 +51,10 @@
             aria-labelledby="product-title"
             data-reveal
         >
+            @if ($project['slug'] === 'jay-jay')
+                <span id="client-hub" class="case-study-anchor" aria-hidden="true"></span>
+            @endif
+
             <p class="section-label case-study-section-label">
                 <span>01</span>
                 <span aria-hidden="true">/</span>
@@ -63,15 +67,40 @@
 
             <div class="case-study-product__body">
                 <p>{{ $project['product']['body'] }}</p>
+            </div>
 
-                <dl class="case-study-product__notes">
-                    @foreach ($project['product']['notes'] as $note)
-                        <div>
-                            <dt>{{ $note['label'] }}</dt>
-                            <dd>{{ $note['value'] }}</dd>
-                        </div>
-                    @endforeach
-                </dl>
+            <div class="case-study-product__showcase">
+                <x-project-reel
+                    class="case-study-product__reel"
+                    :project="$project"
+                    :ui="$content['ui']"
+                    mode="detail"
+                />
+
+                <div class="case-study-product__aside">
+                    <dl class="case-study-product__notes">
+                        @foreach ($project['product']['notes'] as $note)
+                            <div>
+                                <dt>{{ $note['label'] }}</dt>
+                                <dd>{{ $note['value'] }}</dd>
+                            </div>
+                        @endforeach
+                    </dl>
+
+                    @isset($project['external_url'])
+                        <a
+                            class="case-study-external"
+                            href="{{ $project['external_url'] }}"
+                            target="_blank"
+                            rel="noreferrer"
+                            data-interface-sound
+                            data-sound-tone="action"
+                        >
+                            <span>{{ $project['external_label'] }}</span>
+                            <x-nav-icon name="arrow-up-right" />
+                        </a>
+                    @endisset
+                </div>
             </div>
         </section>
 
@@ -92,52 +121,6 @@
                 class="project-technology-groups"
                 :groups="$project['stack']['groups']"
             />
-        </section>
-
-        <section
-            id="presentation"
-            class="case-study-presentation"
-            aria-labelledby="presentation-title"
-            data-reveal
-        >
-            @if ($project['slug'] === 'jay-jay')
-                <span id="client-hub" class="case-study-anchor" aria-hidden="true"></span>
-            @endif
-
-            <header class="case-study-section-heading">
-                <p class="section-label case-study-section-label">
-                    <span>03</span>
-                    <span aria-hidden="true">/</span>
-                    <span>{{ $project['presentation']['label'] }}</span>
-                </p>
-                <div class="case-study-section-heading__content">
-                    <h2 id="presentation-title">{{ $project['presentation']['heading'] }}</h2>
-                    <p>{{ $project['presentation']['intro'] }}</p>
-                </div>
-            </header>
-
-            <x-project-reel
-                class="case-study-presentation__reel"
-                :project="$project"
-                :ui="$content['ui']"
-                mode="detail"
-            />
-
-            @isset($project['external_url'])
-                <div class="case-study-presentation__external">
-                    <a
-                        class="case-study-external"
-                        href="{{ $project['external_url'] }}"
-                        target="_blank"
-                        rel="noreferrer"
-                        data-interface-sound
-                        data-sound-tone="action"
-                    >
-                        <span>{{ $project['external_label'] }}</span>
-                        <x-nav-icon name="arrow-up-right" />
-                    </a>
-                </div>
-            @endisset
         </section>
 
         <x-contact-cta :content="$content" :locale="$locale" />

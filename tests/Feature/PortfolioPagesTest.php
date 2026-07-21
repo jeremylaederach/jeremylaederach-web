@@ -101,9 +101,10 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('From September 2026')
             ->assertSee('Playground.')
             ->assertSee('Sorting')
-            ->assertSee('n = number of bars')
+            ->assertSee('It repeats that split until every group is in order.')
             ->assertSee('Comparisons')
-            ->assertSee('O(n log n)')
+            ->assertDontSee('Typical effort')
+            ->assertDontSee('O notation')
             ->assertSee('Insertion')
             ->assertSee('Selection')
             ->assertSee('Neural Network')
@@ -150,7 +151,7 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(0, substr_count($about->getContent(), '<canvas'));
         $this->assertSame(5, substr_count($about->getContent(), 'data-sorting-algorithm='));
         $this->assertSame(5, substr_count($about->getContent(), 'data-sorting-description='));
-        $this->assertSame(5, substr_count($about->getContent(), 'data-sorting-complexity='));
+        $this->assertSame(0, substr_count($about->getContent(), 'data-sorting-complexity='));
         $this->assertSame(3, substr_count($about->getContent(), 'data-network-preset='));
         $this->assertSame(3, substr_count($about->getContent(), 'data-pathfinding-strategy='));
         $this->assertSame(3, substr_count($about->getContent(), 'data-pathfinding-description='));
@@ -170,9 +171,10 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Grundlage')
             ->assertSee('Playground.')
             ->assertSee('Sorting')
-            ->assertSee('n = Anzahl Balken')
+            ->assertSee('Diese Aufteilung wiederholt sich, bis jede Gruppe sortiert ist.')
             ->assertSee('Vergleiche')
-            ->assertSee('O(n log n)')
+            ->assertDontSee('Typischer Aufwand')
+            ->assertDontSee('O-Notation')
             ->assertSee('Insertion')
             ->assertSee('Selection')
             ->assertSee('Neural Network')
@@ -260,13 +262,15 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-page="projects"', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
-            ->assertSee('A workspace for my own data.')
+            ->assertSee('class="scroll-cue" href="#product"', false)
+            ->assertSee('Quantified turns data from every area of my life into visualizations.')
+            ->assertSee('The data is already there. Quantified makes it readable.')
             ->assertSee('Your data, one local workspace.')
             ->assertSee('Home workspace')
             ->assertSee('QCalendar')
             ->assertSee('QFinances')
             ->assertSee('class="quantified-app__navigation"', false)
-            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-presentation__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-product__reel"', false)
             ->assertDontSee('quantified-app__profile', false)
             ->assertDontSee('What would you like to understand?')
             ->assertDontSee('QInsights')
@@ -285,20 +289,19 @@ class PortfolioPagesTest extends TestCase
         $englishHtml = $english->getContent();
         $productPosition = strpos($englishHtml, 'id="product"');
         $stackPosition = strpos($englishHtml, 'id="stack"');
-        $presentationPosition = strpos($englishHtml, 'id="presentation"');
 
         $this->assertSame(4, substr_count($englishHtml, 'class="technology-group"'));
         $this->assertNotFalse($productPosition);
         $this->assertNotFalse($stackPosition);
-        $this->assertNotFalse($presentationPosition);
         $this->assertLessThan($stackPosition, $productPosition);
-        $this->assertLessThan($presentationPosition, $stackPosition);
+        $this->assertStringNotContainsString('id="presentation"', $englishHtml);
 
         $this->get('/de/quantified')
             ->assertOk()
-            ->assertSee('Ein Workspace für meine eigenen Daten.')
+            ->assertSee('Quantified macht aus Daten aller Bereiche meines Lebens Visualisierungen.')
+            ->assertSee('Die Daten sind schon da. Quantified macht sie lesbar.')
             ->assertSee('Angular vorne, ASP.NET Core dahinter.')
-            ->assertSee('Home, Kalender und Finanzen.')
+            ->assertSee('Vergleiche zeigen, wie sich verschiedene Lebensbereiche gemeinsam verändern.')
             ->assertSee('Aktiv in Entwicklung')
             ->assertSee('Gespräch beginnen')
             ->assertSee('href="http://localhost/en/quantified"', false);
@@ -319,7 +322,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Two Laravel applications with different jobs.')
             ->assertSee('Client Hub')
             ->assertSee('Development build')
-            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-presentation__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-product__reel"', false)
             ->assertSee('aria-label="View 2: Customer overview"', false)
             ->assertSee('aria-label="View 3: Work board"', false)
             ->assertSee('id="client-hub"', false)
@@ -337,7 +340,6 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Ein kleines Dienstleistungsunternehmen mit eigener Software.')
             ->assertSee('Zwei Laravel-Anwendungen mit unterschiedlichen Aufgaben.')
-            ->assertSee('Vom Erstkontakt bis zur laufenden Arbeit.')
             ->assertSee('Jay-Jay besuchen')
             ->assertSee('href="http://localhost/en/jay-jay"', false);
     }
@@ -355,9 +357,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('project-detail--sessiondeck', false)
             ->assertSee('WinUI 3')
             ->assertSee('Functional source-build MVP')
-            ->assertSee('One profile for a recurring Windows setup.')
+            ->assertSee('Save the setup. Start it as one session.')
             ->assertSee('Safe ownership')
-            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-presentation__reel"', false)
+            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-product__reel"', false)
             ->assertSee('aria-label="View 2: Profile editor"', false)
             ->assertSee('aria-label="View 3: Session result"', false)
             ->assertDontSee('Current scope')
@@ -366,9 +368,8 @@ class PortfolioPagesTest extends TestCase
 
         $this->get('/de/session-deck')
             ->assertOk()
-            ->assertSee('Ein Profil für wiederkehrende Setups unter Windows.')
+            ->assertSee('Setup speichern. Als Session starten.')
             ->assertSee('WinUI 3 auf einem UI-unabhängigen Core.')
-            ->assertSee('Vom Profil zum Ergebnis.')
             ->assertSee('GitHub-Repository ansehen')
             ->assertSee('href="http://localhost/en/session-deck"', false);
     }

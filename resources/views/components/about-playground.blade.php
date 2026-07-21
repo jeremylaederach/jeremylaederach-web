@@ -43,12 +43,6 @@
                     aria-live="polite"
                     data-sorting-description
                 >{{ $playground['sorting']['algorithms'][$defaultSort]['description'] }}</p>
-                <p class="playground-demo__complexity">
-                    <span data-sorting-complexity>
-                        {{ $playground['sorting']['algorithms'][$defaultSort]['complexity'] }}
-                    </span>
-                    <span>{{ $playground['sorting']['scale'] }}</span>
-                </p>
                 <div
                     class="playground-demo__options"
                     role="group"
@@ -60,7 +54,6 @@
                             aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
                             data-sorting-algorithm="{{ $key }}"
                             data-sorting-description="{{ $algorithm['description'] }}"
-                            data-sorting-complexity="{{ $algorithm['complexity'] }}"
                             data-interface-sound
                             data-sound-tone="control"
                         >{{ $algorithm['label'] }}</button>

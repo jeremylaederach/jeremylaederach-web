@@ -2,7 +2,7 @@ import { delay, setPressed } from './demo-utils.js';
 
 const itemCount = 9;
 const comparisonDelay = 130;
-const movementDelay = 230;
+const movementDelay = 320;
 
 const createTrace = (source) => {
     const values = [...source];
@@ -271,11 +271,10 @@ export const initializeSortingDemo = (root, reducedMotion) => {
     const output = root.querySelector('[data-sorting-output]');
     const status = root.querySelector('[data-sorting-status]');
     const description = root.querySelector('[data-sorting-description]');
-    const complexity = root.querySelector('[data-sorting-complexity]');
     const runButton = root.querySelector('[data-sorting-run]');
     const algorithmButtons = [...root.querySelectorAll('[data-sorting-algorithm]')];
 
-    if (!stage || !plot || !output || !status || !description || !complexity || !runButton) {
+    if (!stage || !plot || !output || !status || !description || !runButton) {
         return () => {};
     }
 
@@ -354,7 +353,6 @@ export const initializeSortingDemo = (root, reducedMotion) => {
             cancel();
             algorithm = option.dataset.sortingAlgorithm;
             description.textContent = option.dataset.sortingDescription;
-            complexity.textContent = option.dataset.sortingComplexity;
             setPressed(algorithmButtons, option);
             resetResult();
             return;
