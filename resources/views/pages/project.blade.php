@@ -80,7 +80,9 @@
 
             <div class="case-study-product__body">
                 <p>{{ $project['product']['body'] }}</p>
+            </div>
 
+            <div class="case-study-product__details">
                 <dl class="case-study-product__notes">
                     @foreach ($project['product']['notes'] as $note)
                         <div>

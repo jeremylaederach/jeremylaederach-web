@@ -1742,11 +1742,12 @@
         position: relative;
         display: grid;
         width: var(--shell);
-        padding: 104px 0 112px;
+        padding: 88px 0 80px;
         margin: 0 auto;
         border-top: 1px solid var(--line);
         grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 20px;
+        column-gap: 24px;
+        row-gap: 56px;
         align-items: start;
         scroll-margin-top: 96px;
     }
@@ -1778,10 +1779,15 @@
     }
 
     .case-study-product__body {
-        display: grid;
         min-width: 0;
         grid-column: 8 / -1;
-        gap: 40px;
+    }
+
+    .case-study-product__details {
+        display: grid;
+        min-width: 0;
+        grid-column: 3 / -1;
+        gap: 28px;
     }
 
     .case-study-product h2,
@@ -1795,13 +1801,9 @@
         overflow-wrap: break-word;
         font-size: 68px;
         font-weight: 420;
-        hyphens: auto;
+        hyphens: none;
         line-height: 1;
         letter-spacing: -0.02em;
-    }
-
-    .project-detail--quantified .case-study-product h2 {
-        hyphens: none;
     }
 
     .case-study-product__body > p {
@@ -1813,19 +1815,28 @@
 
     .case-study-product__notes {
         display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
     }
 
     .case-study-product__notes > div {
-        display: grid;
-        padding: 18px 0;
-        border-bottom: 1px solid var(--line);
-        grid-template-columns: 112px minmax(0, 1fr);
-        gap: 24px;
+        min-width: 0;
+        padding: 22px 28px 24px 0;
+    }
+
+    .case-study-product__notes > div + div {
+        padding-right: 28px;
+        padding-left: 28px;
+        border-left: 1px solid var(--line);
+    }
+
+    .case-study-product__notes > div:last-child {
+        padding-right: 0;
     }
 
     .case-study-product__notes dt {
-        margin: 0;
+        margin: 0 0 12px;
         color: var(--project-accent);
         font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
         font-size: 9px;
@@ -1865,7 +1876,7 @@
 
     .case-study-stack {
         position: relative;
-        padding-bottom: 96px;
+        padding-bottom: 88px;
         border-top: 1px solid var(--line);
         scroll-margin-top: 96px;
     }
@@ -1880,10 +1891,10 @@
     .case-study-section-heading {
         display: grid;
         width: var(--shell);
-        padding: 80px 0 48px;
+        padding: 72px 0 48px;
         margin: 0 auto;
         grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 20px;
+        gap: 24px;
         align-items: baseline;
     }
 
@@ -1947,7 +1958,7 @@
     .case-study-next-nav {
         display: flex;
         width: var(--shell);
-        padding: 0 0 88px;
+        padding: 0 0 80px;
         margin: 0 auto;
         justify-content: center;
     }

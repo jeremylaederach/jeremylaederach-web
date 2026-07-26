@@ -5,11 +5,14 @@
         <header class="legal-page__header">
             <p class="legal-page__eyebrow">{{ $legal['eyebrow'] }}</p>
             <h1>{{ $legal['title'] }}</h1>
-            <p>{{ $legal['intro'] }}</p>
 
-            @isset($legal['updated'])
-                <small>{{ $legal['updated'] }}</small>
-            @endisset
+            <div class="legal-page__summary">
+                <p>{{ $legal['intro'] }}</p>
+
+                @isset($legal['updated'])
+                    <small>{{ $legal['updated'] }}</small>
+                @endisset
+            </div>
         </header>
 
         <div class="legal-page__sections">
