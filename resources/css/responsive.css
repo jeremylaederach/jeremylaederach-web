@@ -374,7 +374,7 @@
     }
 
     .legal-page__summary {
-        grid-column: 7 / -1;
+        grid-column: 3 / 9;
     }
 
     .legal-section__content {

@@ -1806,6 +1806,10 @@
         letter-spacing: -0.02em;
     }
 
+    .case-study-product h2 > span {
+        display: block;
+    }
+
     .case-study-product__body > p {
         max-width: 52ch;
         color: var(--ink);

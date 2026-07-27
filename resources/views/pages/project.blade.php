@@ -75,7 +75,11 @@
             </p>
 
             <div class="case-study-product__lead">
-                <h2 id="product-title">{{ $project['product']['heading'] }}</h2>
+                <h2 id="product-title">
+                    @foreach ($project['product']['heading_lines'] as $line)
+                        <span>{{ $line }}</span>
+                    @endforeach
+                </h2>
             </div>
 
             <div class="case-study-product__body">

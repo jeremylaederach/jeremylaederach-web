@@ -326,7 +326,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Product',
-                    'heading' => 'All my data, made visible.',
+                    'heading_lines' => ['All my data,', 'made visible.'],
                     'body' => 'The product starts with data I already collect: calendar events, finances, repository activity, and local system information. New modules can follow the same pattern, so the workspace can grow without becoming a set of disconnected apps.',
                     'notes' => [
                         ['label' => 'Current inputs', 'value' => 'Google Calendar, PostgreSQL, Git repositories, and local system checks.'],
@@ -432,7 +432,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Product',
-                    'heading' => 'A small service business with its own software.',
+                    'heading_lines' => ['A small service business', 'with its own software.'],
                     'body' => 'Jay-Jay provides websites, hosting, domains, email, and direct technical support for small Swiss organizations. jay-jay.ch presents the offer and handles contact requests; the Client Hub is being built for boards, tickets, private documents, invoices, and requests.',
                     'notes' => [
                         ['label' => 'jay-jay.ch', 'value' => 'A bilingual Laravel source app exported as a static production build for Plesk.'],
@@ -505,7 +505,7 @@ return [
                 'role' => 'Product design and Windows engineering',
                 'product' => [
                     'label' => 'Product',
-                    'heading' => 'Save the setup. Start it as one session.',
+                    'heading_lines' => ['Save the setup.', 'Start it as one session.'],
                     'body' => 'A profile keeps applications, commands, URLs, and folders in a clear launch order. Before a run, SessionDeck checks paths, dependencies, and local ports, then starts the available items without claiming processes it did not launch.',
                     'notes' => [
                         ['label' => 'Explicit start', 'value' => 'Nothing launches until the user selects Start.'],
@@ -921,7 +921,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Produkt',
-                    'heading' => 'Alle meine Daten, sichtbar gemacht.',
+                    'heading_lines' => ['Alle meine Daten,', 'sichtbar gemacht.'],
                     'body' => 'Die Grundlage sind Daten, die bereits anfallen: Kalender-Events, Finanzen, Repository-Aktivität und lokale Systeminformationen. Weitere Module können demselben Muster folgen, ohne dass daraus wieder einzelne, getrennte Apps werden.',
                     'notes' => [
                         ['label' => 'Aktuelle Quellen', 'value' => 'Google Calendar, PostgreSQL, Git-Repositories und lokale System-Checks.'],
@@ -1027,7 +1027,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Produkt',
-                    'heading' => 'Ein kleines Dienstleistungsunternehmen mit eigener Software.',
+                    'heading_lines' => ['Ein kleines Dienstleistungsunternehmen', 'mit eigener Software.'],
                     'body' => 'Jay-Jay bietet Websites, Hosting, Domains, E-Mail und direkten technischen Support für kleine Schweizer Organisationen. jay-jay.ch stellt das Angebot vor und verarbeitet Kontaktanfragen; der Client Hub entsteht für Boards, Tickets, private Dokumente, Rechnungen und Anfragen.',
                     'notes' => [
                         ['label' => 'jay-jay.ch', 'value' => 'Eine zweisprachige Laravel-Anwendung als Quelle für den statischen Plesk-Build.'],
@@ -1100,7 +1100,7 @@ return [
                 'role' => 'Product Design und Windows-Entwicklung',
                 'product' => [
                     'label' => 'Produkt',
-                    'heading' => 'Setup speichern. Als Session starten.',
+                    'heading_lines' => ['Setup speichern.', 'Als Session starten.'],
                     'body' => 'Ein Profil hält Apps, Commands, URLs und Ordner in einer klaren Startreihenfolge. Vor jedem Lauf prüft SessionDeck Pfade, Abhängigkeiten und lokale Ports und startet danach die verfügbaren Einträge, ohne fremde Prozesse als eigene zu behandeln.',
                     'notes' => [
                         ['label' => 'Bewusster Start', 'value' => 'Nichts startet, bevor der Nutzer Start auswählt.'],
