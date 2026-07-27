@@ -432,7 +432,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Product',
-                    'heading_lines' => ['A small service business', 'with its own software.'],
+                    'heading_lines' => ['A small service business with its own software.'],
                     'body' => 'Jay-Jay provides websites, hosting, domains, email, and direct technical support for small Swiss organizations. jay-jay.ch presents the offer and handles contact requests; the Client Hub is being built for boards, tickets, private documents, invoices, and requests.',
                     'notes' => [
                         ['label' => 'jay-jay.ch', 'value' => 'A bilingual Laravel source app exported as a static production build for Plesk.'],
@@ -1027,7 +1027,7 @@ return [
                 ],
                 'product' => [
                     'label' => 'Produkt',
-                    'heading_lines' => ['Ein kleines Dienstleistungsunternehmen', 'mit eigener Software.'],
+                    'heading_lines' => ['Ein kleines Unternehmen mit eigener Software.'],
                     'body' => 'Jay-Jay bietet Websites, Hosting, Domains, E-Mail und direkten technischen Support für kleine Schweizer Organisationen. jay-jay.ch stellt das Angebot vor und verarbeitet Kontaktanfragen; der Client Hub entsteht für Boards, Tickets, private Dokumente, Rechnungen und Anfragen.',
                     'notes' => [
                         ['label' => 'jay-jay.ch', 'value' => 'Eine zweisprachige Laravel-Anwendung als Quelle für den statischen Plesk-Build.'],
