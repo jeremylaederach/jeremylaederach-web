@@ -43,7 +43,7 @@
         min-width: 210px;
         min-height: 64px;
         padding: 12px 22px 18px 0;
-        grid-template-columns: 40px auto;
+        grid-template-columns: 44px auto;
         align-items: center;
         gap: 14px;
         color: rgba(244, 241, 234, 0.72);
@@ -64,9 +64,10 @@
     }
 
     .brand-lockup__mark {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
         object-fit: contain;
+        filter: saturate(1.06) drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.2));
         transform-origin: 50% 82%;
         transition: filter 360ms ease, transform 520ms var(--ease-heavy);
     }
@@ -108,7 +109,7 @@
 
     .brand-lockup:hover .brand-lockup__mark,
     .brand-lockup:focus-visible .brand-lockup__mark {
-        filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.24));
+        filter: saturate(1.1) drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.32));
         transform: translateY(-1px) scale(1.035);
     }
 
@@ -300,12 +301,16 @@
             opacity: 1;
         }
 
+        .site-pointer-layer[data-route='projects'] {
+            --pointer-rgb: 126, 200, 255;
+        }
+
         .site-pointer-layer[data-route='about'] {
-            --pointer-rgb: 202, 159, 255;
+            --pointer-rgb: 169, 120, 255;
         }
 
         .site-pointer-layer[data-route='contact'] {
-            --pointer-rgb: 151, 101, 255;
+            --pointer-rgb: 255, 142, 170;
         }
 
         .site-pointer-layer[data-route='quantified'] {
@@ -666,10 +671,10 @@
     }
 
     .site-footer__mark {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         object-fit: contain;
-        filter: drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.16));
+        filter: saturate(1.06) drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.18));
         transition: filter 360ms ease, transform 520ms var(--ease-heavy);
     }
 
@@ -681,7 +686,7 @@
 
     .site-footer__identity:hover .site-footer__mark,
     .site-footer__identity:focus-visible .site-footer__mark {
-        filter: drop-shadow(0 0 16px rgba(var(--accent-rgb), 0.28));
+        filter: saturate(1.1) drop-shadow(0 0 16px rgba(var(--accent-rgb), 0.28));
         transform: translateY(-2px) scale(1.035);
     }
 

@@ -2804,8 +2804,8 @@
     }
 
     .page-cta--contact {
-        --route-accent: var(--lavender-deep);
-        --route-accent-rgb: 151, 101, 255;
+        --route-accent: var(--coral);
+        --route-accent-rgb: 255, 142, 170;
     }
 
     .contact-workspace {

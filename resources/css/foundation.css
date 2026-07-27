@@ -1,26 +1,26 @@
 @layer base {
     :root {
-        --bg: #08070d;
-        --surface: #100e16;
-        --surface-strong: #181521;
-        --ink: #f6f3fa;
-        --muted: #aca6b4;
+        --bg: #07070a;
+        --surface: #101014;
+        --surface-strong: #17171d;
+        --ink: #f4f1ea;
+        --muted: #aaa6af;
         --ink-muted: var(--muted);
-        --quiet: #746e7c;
-        --line: rgba(231, 220, 245, 0.14);
-        --line-strong: rgba(231, 220, 245, 0.28);
+        --quiet: #716d78;
+        --line: rgba(244, 241, 234, 0.13);
+        --line-strong: rgba(244, 241, 234, 0.26);
+        --pastel-blue: #7ec8ff;
+        --coral: #ff8eaa;
         --lavender-light: #ca9fff;
-        --lavender-soft: #b285ff;
         --lavender: #a978ff;
-        --lavender-deep: #9765ff;
         --accent: var(--lavender);
         --accent-rgb: 169, 120, 255;
-        --accent-projects: var(--lavender);
-        --accent-projects-rgb: 169, 120, 255;
-        --accent-about: var(--lavender-light);
-        --accent-about-rgb: 202, 159, 255;
-        --accent-contact: var(--lavender-deep);
-        --accent-contact-rgb: 151, 101, 255;
+        --accent-projects: var(--pastel-blue);
+        --accent-projects-rgb: 126, 200, 255;
+        --accent-about: var(--lavender);
+        --accent-about-rgb: 169, 120, 255;
+        --accent-contact: var(--coral);
+        --accent-contact-rgb: 255, 142, 170;
         --route-accent: var(--lavender);
         --route-accent-rgb: 169, 120, 255;
         --shell: min(calc(100% - 64px), 1600px);
@@ -29,18 +29,18 @@
     }
 
     .route-projects {
+        --route-accent: var(--pastel-blue);
+        --route-accent-rgb: 126, 200, 255;
+    }
+
+    .route-about {
         --route-accent: var(--lavender);
         --route-accent-rgb: 169, 120, 255;
     }
 
-    .route-about {
-        --route-accent: var(--lavender-light);
-        --route-accent-rgb: 202, 159, 255;
-    }
-
     .route-contact {
-        --route-accent: var(--lavender-deep);
-        --route-accent-rgb: 151, 101, 255;
+        --route-accent: var(--coral);
+        --route-accent-rgb: 255, 142, 170;
     }
 
     * {

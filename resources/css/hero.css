@@ -72,19 +72,19 @@
     }
 
     .kinetic-index__letter--tone-1 {
-        --letter-color: var(--lavender);
+        --letter-color: var(--pastel-blue);
     }
 
     .kinetic-index__letter--tone-2 {
-        --letter-color: var(--lavender-light);
+        --letter-color: var(--lavender);
     }
 
     .kinetic-index__letter--tone-3 {
-        --letter-color: var(--lavender-soft);
+        --letter-color: var(--coral);
     }
 
     .kinetic-index__letter--tone-4 {
-        --letter-color: var(--lavender-deep);
+        --letter-color: var(--lavender-light);
     }
 
     .kinetic-index__letter:hover {

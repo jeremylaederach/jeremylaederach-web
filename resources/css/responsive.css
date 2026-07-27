@@ -75,8 +75,8 @@
     }
 
     .brand-lockup__mark {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
     }
 
     .site-header__nav {
@@ -400,7 +400,7 @@
         min-width: 0;
         min-height: 48px;
         padding: 4px 12px 6px 0;
-        grid-template-columns: 34px auto;
+        grid-template-columns: 38px auto;
         gap: 11px;
     }
 
