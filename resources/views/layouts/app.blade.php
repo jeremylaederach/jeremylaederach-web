@@ -14,11 +14,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{{ $description }}">
-        <meta name="theme-color" content="#07070a">
+        <meta name="theme-color" content="#08070d">
 
         <title>{{ $pageTitle }}</title>
 
-        <link rel="icon" href="{{ asset('brand/cats/main/cat-loaf-classic-256.png') }}" type="image/png">
+        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/icons/apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 

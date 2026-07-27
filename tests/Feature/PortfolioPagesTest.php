@@ -40,6 +40,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-index-panel', false)
             ->assertSee('data-page-transition', false)
             ->assertSee('data-sound-toggle', false)
+            ->assertSee('brand/jeremy-cat-256.png', false)
             ->assertSee('brand/icons/apple-touch-icon.png', false)
             ->assertSee('data-page-main', false)
             ->assertDontSee('data-project-stage', false)
@@ -55,6 +56,9 @@ class PortfolioPagesTest extends TestCase
 
         $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
         $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
+        $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
+        $this->assertFileExists(public_path('brand/icons/icon-192.png'));
+        $this->assertFileExists(public_path('brand/icons/icon-512.png'));
 
         $this->get('/de')
             ->assertOk()
@@ -65,6 +69,7 @@ class PortfolioPagesTest extends TestCase
         $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-projects.png'));
         $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-about.png'));
         $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-contact.png'));
+        $this->assertFileDoesNotExist(public_path('brand/cats/main/cat-loaf-classic-256.png'));
     }
 
     public function test_about_and_projects_pages_render_per_locale(): void

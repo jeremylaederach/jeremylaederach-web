@@ -7,7 +7,7 @@
 @php
     $imageAttributes = [
         'class' => $class,
-        'src' => asset('brand/cats/main/cat-loaf-classic-256.png'),
+        'src' => asset('brand/jeremy-cat-256.png'),
         'alt' => $alt,
         'width' => $size,
         'height' => $size,

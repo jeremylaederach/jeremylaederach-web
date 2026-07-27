@@ -146,7 +146,7 @@
     }
 
     .site-header__nav-link {
-        --nav-accent: var(--violet);
+        --nav-accent: var(--lavender);
         position: relative;
         display: grid;
         min-height: 64px;
@@ -301,11 +301,11 @@
         }
 
         .site-pointer-layer[data-route='about'] {
-            --pointer-rgb: 126, 200, 255;
+            --pointer-rgb: 202, 159, 255;
         }
 
         .site-pointer-layer[data-route='contact'] {
-            --pointer-rgb: 255, 142, 170;
+            --pointer-rgb: 151, 101, 255;
         }
 
         .site-pointer-layer[data-route='quantified'] {
@@ -687,7 +687,7 @@
 
     .site-footer__identity:hover strong,
     .site-footer__identity:focus-visible strong {
-        color: var(--violet);
+        color: var(--lavender);
         transform: translateX(2px);
     }
 
