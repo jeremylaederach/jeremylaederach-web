@@ -2211,10 +2211,10 @@
         left: calc(var(--bar-left) + 3px);
         width: calc(var(--bar-width) - 6px);
         height: var(--bar-height);
-        border: 1px solid rgba(var(--route-accent-rgb), 0.26);
+        border: 1px solid rgba(var(--route-accent-rgb), 0.42);
         border-radius: 2px 2px 0 0;
-        background: rgba(var(--route-accent-rgb), 0.5);
-        opacity: 0.8;
+        background: rgba(var(--route-accent-rgb), 0.38);
+        opacity: 0.92;
         transition:
             left 300ms var(--ease-out),
             transform 300ms var(--ease-out),
@@ -2257,7 +2257,7 @@
         transform: translateY(-2px);
     }
 
-    .sorting-stage__bar.is-sorted::before {
+    .sorting-stage__bar::before {
         position: absolute;
         right: 3px;
         bottom: 3px;

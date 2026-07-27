@@ -534,6 +534,7 @@
     }
 
     .page-transition {
+        --transition-rgb: var(--accent-rgb);
         position: fixed;
         z-index: 100;
         inset: 0;
@@ -553,7 +554,7 @@
         justify-content: space-between;
         padding: 34px 38px;
         inset: 0;
-        background: #16111e;
+        background: color-mix(in srgb, rgb(var(--transition-rgb)) 12%, var(--bg));
         clip-path: inset(
             var(--origin-top)
             var(--origin-right)
@@ -565,8 +566,8 @@
         will-change: clip-path, transform;
     }
 
-    .page-transition[data-route='projects'] .page-transition__surface {
-        background: #1a102a;
+    .page-transition[data-route='projects'] {
+        --transition-rgb: var(--accent-projects-rgb);
     }
 
     .page-transition[data-theme='quantified'] .page-transition__surface {
@@ -581,12 +582,12 @@
         background: #281506;
     }
 
-    .page-transition[data-route='about'] .page-transition__surface {
-        background: #0c1922;
+    .page-transition[data-route='about'] {
+        --transition-rgb: var(--accent-about-rgb);
     }
 
-    .page-transition[data-route='contact'] .page-transition__surface {
-        background: #241017;
+    .page-transition[data-route='contact'] {
+        --transition-rgb: var(--accent-contact-rgb);
     }
 
     .page-transition__surface span {

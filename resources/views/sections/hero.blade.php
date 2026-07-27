@@ -1,8 +1,6 @@
 <section class="kinetic-index" aria-labelledby="landing-title" data-index-navigation>
     <header class="kinetic-index__masthead">
         <div class="kinetic-index__title">
-            <span class="kinetic-index__number" aria-hidden="true">00</span>
-
             <h1
                 id="landing-title"
                 class="kinetic-index__heading"

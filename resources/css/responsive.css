@@ -461,11 +461,6 @@
         gap: var(--index-column-gap);
     }
 
-    .kinetic-index__number {
-        padding-top: 0;
-        font-size: 9px;
-    }
-
     .kinetic-index__intro {
         padding-left: calc(var(--index-number-column) + var(--index-column-gap));
     }

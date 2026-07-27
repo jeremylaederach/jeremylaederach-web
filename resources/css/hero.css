@@ -29,15 +29,8 @@
         align-items: center;
     }
 
-    .kinetic-index__number {
-        padding-top: 0;
-        color: rgba(var(--accent-rgb), 0.9);
-        font-size: 11px;
-        font-variant-numeric: tabular-nums;
-        line-height: 1;
-    }
-
     .kinetic-index__heading {
+        grid-column: 2;
         margin: 0;
         color: var(--ink);
         font-size: 112px;
@@ -173,13 +166,12 @@
     }
 
     .index-panel:last-child {
-        border-bottom: 0;
+        border-bottom-color: transparent;
     }
 
     .index-panel--projects {
         --panel-accent: var(--accent-projects);
         --panel-accent-rgb: var(--accent-projects-rgb);
-        flex-grow: 1.2;
     }
 
     .index-panel--about {

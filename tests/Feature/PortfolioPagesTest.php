@@ -33,6 +33,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Architecting and engineering software that makes complex ideas feel simple.')
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading"', false)
+            ->assertDontSee('class="kinetic-index__number"', false)
             ->assertSee('data-page-heading-signal', false)
             ->assertSee('class="kinetic-index__wordmark"', false)
             ->assertDontSee('class="kinetic-index__eyebrow"', false)
