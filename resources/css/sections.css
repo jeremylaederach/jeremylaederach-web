@@ -1652,6 +1652,7 @@
         min-width: 0;
         grid-row: 3;
         grid-column: 1 / 7;
+        margin-top: 12px;
     }
 
     .case-study-hero__title h1 {
@@ -1686,7 +1687,7 @@
         max-width: 580px;
         grid-row: 4;
         grid-column: 1 / 7;
-        margin: 28px 0 0;
+        margin: 36px 0 0;
         color: var(--ink-muted);
         font-size: 16px;
         line-height: 1.6;
@@ -1696,7 +1697,7 @@
         display: grid;
         grid-row: 5;
         grid-column: 1 / 7;
-        margin: 12px 0 0;
+        margin: 20px 0 0;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         border-top: 1px solid var(--line);
     }
