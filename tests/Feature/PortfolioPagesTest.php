@@ -73,6 +73,25 @@ class PortfolioPagesTest extends TestCase
         $this->assertFileDoesNotExist(public_path('brand/cats/main/cat-loaf-classic-256.png'));
     }
 
+    public function test_brand_assets_use_the_expected_png_dimensions(): void
+    {
+        $assets = [
+            'favicon.png' => [64, 64],
+            'brand/jeremy-cat-256.png' => [256, 256],
+            'brand/icons/apple-touch-icon.png' => [180, 180],
+            'brand/icons/icon-192.png' => [192, 192],
+            'brand/icons/icon-512.png' => [512, 512],
+        ];
+
+        foreach ($assets as $relativePath => $expectedDimensions) {
+            $imageInfo = getimagesize(public_path($relativePath));
+
+            $this->assertNotFalse($imageInfo, "Unable to read {$relativePath}.");
+            $this->assertSame($expectedDimensions, [$imageInfo[0], $imageInfo[1]]);
+            $this->assertSame(IMAGETYPE_PNG, $imageInfo[2]);
+        }
+    }
+
     public function test_about_and_projects_pages_render_per_locale(): void
     {
         $about = $this->get('/en/about');
