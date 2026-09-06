@@ -13,7 +13,7 @@ const page = (route) => `<!doctype html><html lang="en"><head>
     <main data-page-main><h1>${route}</h1><a href="/en/about" data-route-transition>About</a></main>
     </body></html>`;
 
-const setup = (t) => {
+const setup = (t, { covered = Promise.resolve(), revealed = Promise.resolve() } = {}) => {
     const window = createDom(t, page('projects'), 'https://portfolio.test/en/projects');
     const scrolls = [];
     window.scrollTo = (position) => {
@@ -29,9 +29,13 @@ const setup = (t) => {
     createPageRouter({
         soundController: { select() {}, complete() {} },
         transitionController: {
-            beginTransition: () => ({ swapDelay: 0, completeDelay: 0 }),
+            beginTransition: () => covered,
             commitScene() {},
-            completeTransition: () => document.dispatchEvent(new window.Event('test:finished')),
+            completeTransition: async () => {
+                await revealed;
+                document.dispatchEvent(new window.Event('test:finished'));
+            },
+            reset() {},
         },
     });
 
@@ -64,6 +68,51 @@ test('Back and Forward restore the scroll position of each history entry', { tim
     await done;
     assert.equal(window.location.pathname, '/en/about');
     assert.equal(scrolls.at(-1).top, 640);
+});
+
+test('the page is not swapped before the cover has finished', async (t) => {
+    let finishCover;
+    const covered = new Promise((resolve) => { finishCover = resolve; });
+    const { finished } = setup(t, { covered });
+    const originalMain = document.querySelector('main');
+    const done = finished();
+    document.querySelector('[data-route-transition]').click();
+    await new Promise(setImmediate);
+    assert.equal(document.querySelector('main'), originalMain);
+    assert.equal(originalMain.inert, true);
+    finishCover();
+    await done;
+    assert.notEqual(document.querySelector('main'), originalMain);
+});
+
+test('a repeated click on the pending destination does not restart navigation', async (t) => {
+    let finishCover;
+    const covered = new Promise((resolve) => { finishCover = resolve; });
+    const { window, finished } = setup(t, { covered });
+    const done = finished();
+    const link = document.querySelector('[data-route-transition]');
+    link.click();
+    link.click();
+    finishCover();
+    await done;
+    assert.equal(window.history.length, 2);
+    assert.equal(window.location.pathname, '/en/about');
+});
+
+test('a newer navigation wins while an older request is still waiting for the cover', async (t) => {
+    let finishCover;
+    const covered = new Promise((resolve) => { finishCover = resolve; });
+    const { window, finished } = setup(t, { covered });
+    const done = finished();
+    const link = document.querySelector('[data-route-transition]');
+    link.click();
+    link.href = '/en/contact';
+    link.click();
+    finishCover();
+    await done;
+    assert.equal(window.location.pathname, '/en/contact');
+    assert.equal(document.title, 'contact');
+    assert.equal(window.history.length, 2);
 });
 
 test('fragment-only history preserves the existing page and its interactive state', (t) => {

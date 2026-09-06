@@ -1,7 +1,5 @@
 import { pageRoutes, sceneFromRoute } from './transition-controller.js';
 
-const pageCache = new Map();
-const wait = (duration) => new Promise((resolve) => window.setTimeout(resolve, duration));
 const nextFrame = () => new Promise((resolve) => window.requestAnimationFrame(resolve));
 
 const isEligibleLink = (event, link) => {
@@ -24,11 +22,12 @@ const routeFromUrl = (url) => {
 
 const transitionThemeFromUrl = (url) => url.pathname.split('/').filter(Boolean).at(-1) ?? 'home';
 
-const loadPage = async (url) => {
+const loadPage = async (url, pageCache) => {
     const cacheKey = `${url.origin}${url.pathname}${url.search}`;
 
     if (!pageCache.has(cacheKey)) {
         const request = fetch(cacheKey, {
+            signal: AbortSignal.timeout(10000),
             headers: {
                 'X-Portfolio-Navigation': 'true',
                 'X-Requested-With': 'XMLHttpRequest',
@@ -126,8 +125,10 @@ const scrollToDestination = (url, position) => {
 };
 
 export const createPageRouter = ({ soundController, transitionController }) => {
+    const pageCache = new Map();
     let navigationSequence = 0;
     let renderedUrl = new URL(window.location.href);
+    let pendingUrl;
     let scrollFrame;
 
     const saveScrollPosition = () => {
@@ -155,9 +156,9 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         }
 
         const sequence = ++navigationSequence;
-        const startedAt = performance.now();
+        pendingUrl = url.href;
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
-        const timing = transitionController.beginTransition(hintedScene, {
+        const covered = transitionController.beginTransition(hintedScene, {
             origin,
             transitionLabel,
             transitionTheme: transitionTheme ?? transitionThemeFromUrl(url),
@@ -166,12 +167,14 @@ export const createPageRouter = ({ soundController, transitionController }) => {
 
         soundController.select();
         document.body.classList.add('is-routing');
-        currentMain?.classList.add('is-page-exiting');
+        if (currentMain) {
+            currentMain.inert = true;
+        }
 
         try {
             const [page] = await Promise.all([
-                loadPage(url),
-                wait(timing.swapDelay),
+                loadPage(url, pageCache),
+                covered,
             ]);
 
             if (sequence !== navigationSequence) {
@@ -181,7 +184,6 @@ export const createPageRouter = ({ soundController, transitionController }) => {
             const scene = page.nextDocument.body.dataset.page ?? hintedScene;
 
             transitionController.commitScene(scene);
-            page.main.classList.add('is-page-entering');
             currentMain?.replaceWith(page.main);
 
             document.body.className = page.nextDocument.body.className;
@@ -203,7 +205,6 @@ export const createPageRouter = ({ soundController, transitionController }) => {
             }
 
             scrollToDestination(url, scrollPosition);
-            page.main.classList.remove('is-page-entering');
             document.dispatchEvent(new CustomEvent('portfolio:page-swapped', {
                 detail: { scene },
             }));
@@ -212,15 +213,11 @@ export const createPageRouter = ({ soundController, transitionController }) => {
                 focusPageHeading(page.main);
             }
 
-            const elapsed = performance.now() - startedAt;
-            await wait(Math.max(0, timing.completeDelay - elapsed));
+            await transitionController.completeTransition(scene);
 
-            if (sequence !== navigationSequence) {
-                return;
+            if (sequence === navigationSequence) {
+                soundController.complete();
             }
-
-            transitionController.completeTransition(scene);
-            soundController.complete();
         } catch (error) {
             if (sequence !== navigationSequence) {
                 return;
@@ -232,6 +229,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         } finally {
             if (sequence === navigationSequence) {
                 document.body.classList.remove('is-routing');
+                pendingUrl = undefined;
                 saveScrollPosition();
             }
         }
@@ -250,7 +248,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
 
         event.preventDefault();
 
-        if (destination.href === window.location.href) {
+        if (destination.href === pendingUrl || (destination.href === window.location.href && !pendingUrl)) {
             return;
         }
 
@@ -279,7 +277,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         const destination = new URL(link.href, window.location.href);
 
         if (destination.origin === window.location.origin && destination.href !== window.location.href) {
-            loadPage(destination).catch(() => {});
+            loadPage(destination, pageCache).catch(() => {});
         }
     };
 
@@ -316,9 +314,13 @@ export const createPageRouter = ({ soundController, transitionController }) => {
 
         const scene = document.body.dataset.page ?? 'home';
         navigationSequence += 1;
+        pendingUrl = undefined;
         document.body.classList.remove('is-routing');
-        document.querySelector('[data-page-main]')?.classList.remove('is-page-entering', 'is-page-exiting');
-        transitionController.completeTransition(scene);
+        const main = document.querySelector('[data-page-main]');
+        if (main) {
+            main.inert = false;
+        }
+        transitionController.reset(scene);
     });
 
     window.history.scrollRestoration = 'manual';

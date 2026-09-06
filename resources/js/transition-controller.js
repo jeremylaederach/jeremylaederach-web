@@ -12,6 +12,10 @@ export const sceneFromRoute = (route) => pageRoutes.has(route)
 
 const normalizedRoute = (route) => sceneFromRoute(route);
 export const transitionFinishedEvent = 'portfolio:transition-finished';
+const nextFrame = () => new Promise((resolve) => window.requestAnimationFrame(resolve));
+const finishAnimations = (element) => Promise.allSettled(
+    element.getAnimations().map((animation) => animation.finished),
+);
 
 const announceTransitionFinished = (scene) => {
     document.dispatchEvent(new CustomEvent(transitionFinishedEvent, {
@@ -24,17 +28,17 @@ export const createPageTransitionController = ({ reducedMotion }) => {
     const surface = overlay?.querySelector('[data-transition-surface]');
     const label = overlay?.querySelector('[data-transition-label]');
     let currentScene = normalizedRoute(document.body.dataset.page);
-    let resetTimer;
     let sequence = 0;
 
     if (!(overlay instanceof HTMLElement) || !(surface instanceof HTMLElement) || !(label instanceof HTMLElement)) {
         return {
-            beginTransition: () => ({ completeDelay: 0, swapDelay: 0 }),
-            commitScene: () => {},
+            beginTransition: async () => {},
+            commitScene: (scene) => { currentScene = normalizedRoute(scene); },
             completeTransition: (scene) => {
                 currentScene = normalizedRoute(scene);
                 announceTransitionFinished(currentScene);
             },
+            reset: (scene) => { currentScene = normalizedRoute(scene); },
             getScene: () => currentScene,
         };
     }
@@ -42,8 +46,11 @@ export const createPageTransitionController = ({ reducedMotion }) => {
     const setOrigin = (origin) => {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        const rect = origin instanceof Element
-            ? origin.getBoundingClientRect()
+        const originRect = origin instanceof Element ? origin.getBoundingClientRect() : null;
+        const visible = originRect && originRect.bottom > 0 && originRect.top < viewportHeight
+            && originRect.right > 0 && originRect.left < viewportWidth;
+        const rect = visible
+            ? originRect
             : {
                 bottom: viewportHeight / 2,
                 height: 0,
@@ -63,64 +70,80 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         surface.style.setProperty('--origin-radius', `${radius}px`);
     };
 
-    const beginTransition = (scene, { origin, transitionLabel, transitionTheme } = {}) => {
+    const clearOverlay = () => {
+        overlay.dataset.phase = 'idle';
+        delete overlay.dataset.route;
+        delete overlay.dataset.theme;
+    };
+
+    const beginTransition = async (scene, { origin, transitionLabel, transitionTheme } = {}) => {
         const nextScene = normalizedRoute(scene);
         const currentSequence = ++sequence;
 
-        window.clearTimeout(resetTimer);
-
         if (reducedMotion) {
-            return { completeDelay: 0, swapDelay: 0 };
+            return;
         }
 
-        setOrigin(origin);
+        const interrupted = overlay.dataset.phase && overlay.dataset.phase !== 'idle';
         label.textContent = transitionLabel ?? nextScene;
         overlay.dataset.route = nextScene;
         overlay.dataset.theme = transitionTheme ?? scene ?? nextScene;
-        overlay.dataset.phase = 'preparing';
         overlay.setAttribute('aria-hidden', 'true');
 
-        window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
-                if (sequence === currentSequence) {
-                    overlay.dataset.phase = 'covering';
-                }
-            });
-        });
+        // A newer navigation keeps the page covered instead of reopening the old origin.
+        if (interrupted) {
+            overlay.dataset.phase = 'covered';
+            return;
+        }
 
-        return {
-            completeDelay: 610,
-            swapDelay: 460,
-        };
+        setOrigin(origin);
+        overlay.dataset.phase = 'preparing';
+        await nextFrame();
+        await nextFrame();
+
+        if (sequence !== currentSequence) {
+            return;
+        }
+
+        overlay.dataset.phase = 'covering';
+        await finishAnimations(surface);
+
+        if (sequence === currentSequence) {
+            overlay.dataset.phase = 'covered';
+        }
     };
 
     const commitScene = (scene) => {
         currentScene = normalizedRoute(scene);
     };
 
-    const completeTransition = (scene) => {
+    const completeTransition = async (scene) => {
+        const currentSequence = sequence;
         currentScene = normalizedRoute(scene);
-        window.clearTimeout(resetTimer);
 
-        if (reducedMotion) {
-            overlay.dataset.phase = 'idle';
-            announceTransitionFinished(currentScene);
-            return;
+        if (!reducedMotion) {
+            overlay.dataset.phase = 'revealing';
+            await finishAnimations(surface);
         }
 
-        overlay.dataset.phase = 'revealing';
-        resetTimer = window.setTimeout(() => {
-            overlay.dataset.phase = 'idle';
-            delete overlay.dataset.route;
-            delete overlay.dataset.theme;
+        if (sequence === currentSequence) {
+            clearOverlay();
             announceTransitionFinished(currentScene);
-        }, 760);
+        }
+    };
+
+    const reset = (scene) => {
+        sequence += 1;
+        currentScene = normalizedRoute(scene);
+        clearOverlay();
+        announceTransitionFinished(currentScene);
     };
 
     return {
         beginTransition,
         commitScene,
         completeTransition,
+        reset,
         getScene: () => currentScene,
     };
 };

@@ -605,8 +605,10 @@
 
     .page-transition[data-phase='preparing'],
     .page-transition[data-phase='covering'],
+    .page-transition[data-phase='covered'],
     .page-transition[data-phase='revealing'] {
         visibility: visible;
+        pointer-events: auto;
     }
 
     .page-transition[data-phase='preparing'] .page-transition__surface {
@@ -616,6 +618,12 @@
     .page-transition[data-phase='covering'] .page-transition__surface {
         clip-path: inset(0 0 0 0 round 0);
         transition: clip-path 540ms var(--ease-heavy);
+    }
+
+    .page-transition[data-phase='covered'] .page-transition__surface {
+        clip-path: inset(0 0 0 0 round 0);
+        transform: none;
+        transition: none;
     }
 
     .page-transition[data-phase='revealing'] .page-transition__surface {
