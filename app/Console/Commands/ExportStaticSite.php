@@ -7,6 +7,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
+use RuntimeException;
+use SimpleXMLElement;
 
 class ExportStaticSite extends Command
 {
@@ -42,12 +44,30 @@ class ExportStaticSite extends Command
     {
         $hotFile = public_path('hot');
         $hotFileContents = File::exists($hotFile) ? File::get($hotFile) : null;
+        $stagingDirectory = storage_path('app/static-export');
 
         File::delete($hotFile);
 
         try {
-            return $this->exportSite($kernel);
+            if (! File::isFile(public_path('build/manifest.json'))) {
+                $this->components->error('Build assets first with npm run build:static.');
+
+                return self::FAILURE;
+            }
+
+            File::deleteDirectory($stagingDirectory);
+
+            if ($this->exportSite($kernel, $stagingDirectory) !== self::SUCCESS) {
+                return self::FAILURE;
+            }
+
+            // Windows file watchers can briefly keep renamed directories locked.
+            retry(3, fn () => $this->publishExport($stagingDirectory), 100);
+            $this->components->info('Static portfolio exported to dist-static/.');
+
+            return self::SUCCESS;
         } finally {
+            File::deleteDirectory($stagingDirectory);
             URL::forceRootUrl(config('app.url'));
             URL::forceScheme(null);
 
@@ -57,13 +77,13 @@ class ExportStaticSite extends Command
         }
     }
 
-    private function exportSite(Kernel $kernel): int
+    private function exportSite(Kernel $kernel, string $outputDirectory): int
     {
-        $outputDirectory = base_path('dist-static');
         $siteUrl = 'https://jeremylaederach.ch';
 
-        File::deleteDirectory($outputDirectory);
-        File::copyDirectory(public_path(), $outputDirectory);
+        if (! File::copyDirectory(public_path(), $outputDirectory)) {
+            throw new RuntimeException('Could not copy public assets into the static export.');
+        }
         File::delete([
             $outputDirectory.'/index.php',
             $outputDirectory.'/hot',
@@ -94,10 +114,39 @@ class ExportStaticSite extends Command
         File::put($outputDirectory.'/en/.htaccess', "ErrorDocument 404 /en/404/index.html\n");
         File::put($outputDirectory.'/de/.htaccess', "ErrorDocument 404 /de/404/index.html\n");
         File::put($outputDirectory.'/index.html', $this->rootRedirect());
+        $sitemap = new SimpleXMLElement('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
 
-        $this->components->info('Static portfolio exported to dist-static/.');
+        foreach ($this->pages as $page) {
+            $sitemap->addChild('url')->addChild('loc', $siteUrl.$page.'/');
+        }
+
+        File::put($outputDirectory.'/sitemap.xml', $sitemap->asXML());
 
         return self::SUCCESS;
+    }
+
+    private function publishExport(string $stagingDirectory): void
+    {
+        $outputDirectory = base_path('dist-static');
+        $backupDirectory = storage_path('app/static-export.previous');
+
+        if (File::exists($backupDirectory)) {
+            throw new RuntimeException('A previous export backup exists in storage/app/static-export.previous; inspect it before rebuilding.');
+        }
+
+        if (File::exists($outputDirectory) && ! File::moveDirectory($outputDirectory, $backupDirectory)) {
+            throw new RuntimeException('Could not preserve the previous static export.');
+        }
+
+        if (! File::moveDirectory($stagingDirectory, $outputDirectory)) {
+            if (File::exists($backupDirectory)) {
+                File::moveDirectory($backupDirectory, $outputDirectory);
+            }
+
+            throw new RuntimeException('Could not publish the static export.');
+        }
+
+        File::deleteDirectory($backupDirectory);
     }
 
     private function containsNoPhpFiles(string $outputDirectory): bool
@@ -196,7 +245,16 @@ HTML;
         $outputPath = $outputDirectory.$page.'/index.html';
 
         File::ensureDirectoryExists(dirname($outputPath));
-        File::put($outputPath, str_replace($siteUrl, '', $content));
+        // Navigation and assets work in local previews; discovery metadata stays absolute.
+        $content = preg_replace_callback(
+            '/<(?:a|link|img|script)\b[^>]*>/i',
+            fn (array $tag): string => str_contains($tag[0], 'data-page-meta')
+                ? $tag[0]
+                : str_replace($siteUrl, '', $tag[0]),
+            $content,
+        );
+
+        File::put($outputPath, $content);
         $kernel->terminate($request, $response);
 
         return true;

@@ -13,10 +13,26 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{{ $description }}">
+        <meta name="description" content="{{ $description }}" data-page-meta>
         <meta name="theme-color" content="#07070a">
 
         <title>{{ $pageTitle }}</title>
+
+        @if ($currentScene === 'not-found')
+            <meta name="robots" content="noindex" data-page-meta>
+        @else
+            @php
+                $canonicalUrl = rtrim(route($currentRoute, $currentParams), '/').'/';
+            @endphp
+            <link rel="canonical" href="{{ $canonicalUrl }}" data-page-meta>
+            @foreach (config('portfolio.locales') as $code => $localeMeta)
+                <link rel="alternate" hreflang="{{ $code }}" href="{{ rtrim(route($currentRoute, array_merge($currentParams, ['locale' => $code])), '/').'/' }}" data-page-meta>
+            @endforeach
+            <meta property="og:type" content="website" data-page-meta>
+            <meta property="og:title" content="{{ $pageTitle }}" data-page-meta>
+            <meta property="og:description" content="{{ $description }}" data-page-meta>
+            <meta property="og:url" content="{{ $canonicalUrl }}" data-page-meta>
+        @endif
 
         <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/icons/apple-touch-icon.png') }}">
@@ -156,7 +172,7 @@
                             <span></span>
                         </button>
 
-                        <div id="site-menu-panel" class="site-menu__panel" data-menu-panel aria-hidden="true" hidden>
+                        <div id="site-menu-panel" class="site-menu__panel" data-menu-panel aria-hidden="true" inert hidden>
                             <nav class="primary-nav" aria-label="{{ $content['ui']['menu'] }}">
                                 @foreach ($content['nav'] as $item)
                                     @php

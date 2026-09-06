@@ -48,11 +48,49 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('/build/assets/app-', $englishHome);
             $this->assertStringContainsString('Jeremy', $englishHome);
             $this->assertStringContainsString('Jeremy', $germanHome);
+            $this->assertStringContainsString('rel="canonical" href="https://jeremylaederach.ch/en/"', $englishHome);
+            $this->assertStringContainsString('hreflang="de" href="https://jeremylaederach.ch/de/"', $englishHome);
+            $this->assertStringContainsString('href="/en/about"', $englishHome);
+            $this->assertStringContainsString('Sitemap: https://jeremylaederach.ch/sitemap.xml', File::get(base_path('dist-static/robots.txt')));
+            $sitemap = simplexml_load_file(base_path('dist-static/sitemap.xml'));
+            $this->assertCount(18, $sitemap->url);
+            $this->assertSame('https://jeremylaederach.ch/en/', (string) $sitemap->url[0]->loc);
+            $this->assertDirectoryDoesNotExist(storage_path('app/static-export'));
+            $this->assertDirectoryDoesNotExist(storage_path('app/static-export.previous'));
         } finally {
             if ($existingHotFile === null) {
                 File::delete($hotFile);
             } else {
                 File::put($hotFile, $existingHotFile);
+            }
+        }
+    }
+
+    public function test_a_failed_export_preserves_the_previous_package_and_restores_vite(): void
+    {
+        $this->artisan('site:export-static')->assertSuccessful();
+        $previousHome = File::get(base_path('dist-static/en/index.html'));
+        $probe = public_path('static-export-test.php');
+        $hotFile = public_path('hot');
+        $previousHotFile = File::exists($hotFile) ? File::get($hotFile) : null;
+        $this->assertFileDoesNotExist($probe);
+
+        File::put($probe, '<?php // Static exports must reject server-side files.');
+        File::put($hotFile, 'http://localhost:5173');
+
+        try {
+            $this->artisan('site:export-static')->assertFailed();
+            $this->assertSame($previousHome, File::get(base_path('dist-static/en/index.html')));
+            $this->assertSame('http://localhost:5173', File::get($hotFile));
+            $this->assertFileDoesNotExist(base_path('dist-static/static-export-test.php'));
+            $this->assertDirectoryDoesNotExist(storage_path('app/static-export'));
+        } finally {
+            File::delete($probe);
+
+            if ($previousHotFile === null) {
+                File::delete($hotFile);
+            } else {
+                File::put($hotFile, $previousHotFile);
             }
         }
     }

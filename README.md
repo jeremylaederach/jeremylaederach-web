@@ -12,7 +12,7 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 - Lightweight pointer, glow and original interface-sound systems
 - Detailed case studies for Quantified, Jay-Jay and SessionDeck
 - Static production export with localized 404 pages and hardened response headers
-- PHPUnit feature coverage and Laravel Pint formatting checks
+- PHPUnit feature coverage, JavaScript interaction tests and Laravel Pint formatting checks
 
 ## Stack
 
@@ -28,7 +28,7 @@ No authentication, production PHP runtime or application database is required.
 
 ## Local Development
 
-Requirements: [Laravel Herd](https://herd.laravel.com/) and Node.js 22 with npm. Herd provides the local PHP and web-server environment.
+Requirements: [Laravel Herd](https://herd.laravel.com/) and Node.js 22.22.2+ or 24.15+ with npm. Herd provides the local PHP and web-server environment.
 
 ```powershell
 git clone git@github.com:jeremylaederach/jeremylaederach-web.git
@@ -53,7 +53,7 @@ resources/views/        Blade pages and reusable components
 resources/css/          Foundation, layout and responsive styles
 resources/js/           Navigation, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage
-tests/JavaScript/        Deterministic Playground logic tests
+tests/JavaScript/        Playground logic and DOM interaction tests
 ```
 
 ## Quality Checks
@@ -65,6 +65,8 @@ npm run build
 npm test
 composer test
 npm run export:static
+composer audit --locked
+npm audit
 ```
 
 The production package can be generated in one command:
@@ -84,6 +86,8 @@ Laravel remains the maintainable source project. Production receives only genera
 5. Verify direct page loads, the localized 404 page and browser back/forward navigation.
 
 The generated `.htaccess` provides the security headers and static error handling used by the production site. Never upload the source repository, `.env`, `vendor/`, `node_modules/`, `public/hot` or `public/index.php` to `httpdocs`.
+
+Exports are prepared in `storage/app/static-export` and replace `dist-static` only after every page has rendered successfully. A failed build leaves the last successful package untouched; do not upload it as a new release. The package includes a sitemap, absolute canonical URLs and matching English/German alternate links for `jeremylaederach.ch`.
 
 ## Security
 

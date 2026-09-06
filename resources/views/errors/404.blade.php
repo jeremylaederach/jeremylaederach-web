@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.app', [
+    'title' => $content['not_found']['heading'].' · Jeremy Läderach',
+    'description' => $content['not_found']['intro'],
+])
 
 @section('content')
     <section class="not-found-page" aria-labelledby="not-found-title" data-pointer-surface data-reveal>

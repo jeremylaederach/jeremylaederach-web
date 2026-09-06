@@ -450,7 +450,7 @@ class PortfolioPagesTest extends TestCase
     {
         $this->get('/en/contact')
             ->assertOk()
-            ->assertSee('<title>Jeremy', false)
+            ->assertSee('<title>Contact · Jeremy', false)
             ->assertSee('class="portfolio-page contact-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('aria-label="Contact."', false)

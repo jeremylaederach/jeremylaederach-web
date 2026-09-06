@@ -15,12 +15,12 @@ class PortfolioController extends Controller
 
     public function about(string $locale): View
     {
-        return $this->render('pages.about', $locale);
+        return $this->render('pages.about', $locale, 'about_page');
     }
 
     public function projects(string $locale): View
     {
-        return $this->render('pages.projects', $locale);
+        return $this->render('pages.projects', $locale, 'projects_page');
     }
 
     public function quantified(string $locale): View
@@ -45,7 +45,7 @@ class PortfolioController extends Controller
 
     public function contact(string $locale): View
     {
-        return $this->render('pages.contact', $locale);
+        return $this->render('pages.contact', $locale, 'contact_page');
     }
 
     public function imprint(string $locale): View
@@ -58,12 +58,16 @@ class PortfolioController extends Controller
         return $this->renderLegalPage($locale, 'privacy');
     }
 
-    private function render(string $view, string $locale, array $data = []): View
+    private function render(string $view, string $locale, ?string $contentKey = null): View
     {
+        $content = $this->contentFor($locale);
+        $page = $contentKey === null ? null : $content[$contentKey];
+
         return view($view, [
             'locale' => $locale,
-            'content' => $this->contentFor($locale),
-            ...$data,
+            'content' => $content,
+            'title' => $page === null ? $content['meta']['title'] : "{$page['heading']} · Jeremy Läderach",
+            'description' => $page['intro'] ?? $content['meta']['description'],
         ]);
     }
 
@@ -97,6 +101,8 @@ class PortfolioController extends Controller
             'locale' => $locale,
             'content' => $content,
             'legal' => $content[$contentKey],
+            'title' => "{$content[$contentKey]['title']} · Jeremy Läderach",
+            'description' => $content[$contentKey]['intro'],
         ]);
     }
 
