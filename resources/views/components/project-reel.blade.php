@@ -139,6 +139,21 @@
             role="group"
             aria-label="{{ $ui['project_media'] }}"
         >
+            @unless ($isDetail)
+                <button
+                    type="button"
+                    aria-label="{{ $ui['media_pause'] }}"
+                    data-reel-action="rotation"
+                    data-pause-label="{{ $ui['media_pause'] }}"
+                    data-play-label="{{ $ui['media_play'] }}"
+                    data-interface-sound
+                    data-sound-tone="control"
+                >
+                    <span class="project-reel__pause"><x-nav-icon name="pause" /></span>
+                    <span class="project-reel__play"><x-nav-icon name="play" /></span>
+                </button>
+            @endunless
+
             <button
                 type="button"
                 aria-label="{{ $ui['media_previous'] }}"

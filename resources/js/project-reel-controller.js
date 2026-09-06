@@ -9,6 +9,18 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
     const getState = (reel) => reels.get(reel);
 
+    const updateRotationControl = (state) => {
+        if (!state.rotationControl) {
+            return;
+        }
+
+        state.rotationControl.hidden = reducedMotion;
+        state.rotationControl.dataset.paused = String(!state.autoplay);
+        state.rotationControl.setAttribute('aria-label', state.autoplay
+            ? state.rotationControl.dataset.pauseLabel
+            : state.rotationControl.dataset.playLabel);
+    };
+
     const clearAutoplay = (state) => {
         if (state.timer !== undefined) {
             window.clearTimeout(state.timer);
@@ -131,6 +143,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             label: reel.querySelector('[data-reel-label]'),
             pagination: [...reel.querySelectorAll('[data-reel-index]')],
             reel,
+            rotationControl: reel.querySelector('[data-reel-action="rotation"]'),
             slides,
             suppressClickUntil: 0,
             swipeStart: undefined,
@@ -139,6 +152,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         };
 
         reels.set(reel, state);
+        updateRotationControl(state);
         observer.observe(reel);
         setActive(state, 0);
         window.requestAnimationFrame(() => reel.classList.add('is-ready'));
@@ -179,7 +193,17 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
         const action = button.dataset.reelAction;
 
-        if (action === 'previous') {
+        if (action === 'rotation') {
+            // Pointer focus pauses first; keyboard activation uses the displayed state.
+            const wasPlaying = event.detail > 0
+                ? (state.autoplayOnPointerDown ?? state.autoplay)
+                : state.autoplay;
+
+            state.autoplay = !wasPlaying;
+            state.autoplayOnPointerDown = undefined;
+            updateRotationControl(state);
+            scheduleAutoplay(state);
+        } else if (action === 'previous') {
             setActive(state, state.current - 1, -1);
         } else if (action === 'next') {
             setActive(state, state.current + 1, 1);
@@ -210,6 +234,17 @@ export const createProjectReelController = ({ reducedMotion }) => {
     };
 
     const handlePointerDown = (event) => {
+        const rotationControl = event.target instanceof Element
+            ? event.target.closest('[data-reel-action="rotation"]')
+            : null;
+        const rotationState = rotationControl
+            ? getState(rotationControl.closest('[data-project-reel]'))
+            : undefined;
+
+        if (rotationState) {
+            rotationState.autoplayOnPointerDown = rotationState.autoplay;
+        }
+
         if (event.pointerType !== 'touch') {
             return;
         }
@@ -302,10 +337,30 @@ export const createProjectReelController = ({ reducedMotion }) => {
         document.addEventListener('keydown', handleKeyboard);
         document.addEventListener('pointerdown', handlePointerDown, { passive: true });
         document.addEventListener('pointerup', handlePointerUp, { passive: true });
+        document.addEventListener('pointercancel', () => {
+            reels.forEach((state) => {
+                state.autoplayOnPointerDown = undefined;
+                if (state.swipeStart !== undefined) {
+                    state.swipeStart = undefined;
+                    state.interacting = false;
+                    scheduleAutoplay(state);
+                }
+            });
+        }, { passive: true });
         document.addEventListener('pointerover', (event) => handlePointerBoundary(event, true), { passive: true });
         document.addEventListener('pointerout', (event) => handlePointerBoundary(event, false), { passive: true });
-        document.addEventListener('focusin', (event) => handlePointerBoundary(event, true));
-        document.addEventListener('focusout', (event) => handlePointerBoundary(event, false));
+        document.addEventListener('focusin', (event) => {
+            const reel = event.target instanceof Element
+                ? event.target.closest('[data-project-reel]')
+                : null;
+            const state = reel ? getState(reel) : undefined;
+
+            if (state && !(event.relatedTarget instanceof Node && reel.contains(event.relatedTarget))) {
+                state.autoplay = false;
+                updateRotationControl(state);
+                clearAutoplay(state);
+            }
+        });
         document.addEventListener('portfolio:page-swapped', initializeReels);
         document.addEventListener('visibilitychange', () => {
             reels.forEach(scheduleAutoplay);

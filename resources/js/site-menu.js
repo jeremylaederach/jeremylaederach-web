@@ -14,6 +14,8 @@ export const createSiteMenuController = ({ reducedMotion }) => {
         }
 
         let closeTimer;
+        let openFrame;
+        const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
         const completeClose = () => {
             panel.hidden = true;
             panel.removeAttribute('data-closing');
@@ -21,33 +23,37 @@ export const createSiteMenuController = ({ reducedMotion }) => {
             document.body.classList.remove('is-menu-open');
         };
         const close = ({ restoreFocus = false } = {}) => {
-            if (panel.hidden) {
+            if (!isOpen()) {
                 return;
             }
 
             window.clearTimeout(closeTimer);
+            window.cancelAnimationFrame(openFrame);
             toggle.setAttribute('aria-expanded', 'false');
             panel.removeAttribute('data-open');
             panel.setAttribute('data-closing', '');
-            panel.setAttribute('aria-hidden', 'true');
-            closeTimer = window.setTimeout(completeClose, reducedMotion ? 0 : 540);
-
             if (restoreFocus) {
                 toggle.focus();
             }
+
+            panel.inert = true;
+            panel.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('is-menu-open');
+            closeTimer = window.setTimeout(completeClose, reducedMotion ? 0 : 540);
         };
         const open = () => {
             window.clearTimeout(closeTimer);
             panel.hidden = false;
+            panel.inert = false;
             panel.removeAttribute('data-closing');
             panel.setAttribute('aria-hidden', 'false');
             toggle.setAttribute('aria-expanded', 'true');
             document.body.classList.add('is-menu-open');
-            window.requestAnimationFrame(() => panel.setAttribute('data-open', ''));
+            openFrame = window.requestAnimationFrame(() => panel.setAttribute('data-open', ''));
         };
 
         toggle.addEventListener('click', () => {
-            if (panel.hidden) {
+            if (!isOpen()) {
                 open();
                 return;
             }
@@ -57,18 +63,32 @@ export const createSiteMenuController = ({ reducedMotion }) => {
 
         panel.addEventListener('click', (event) => {
             if (event.target instanceof Element && event.target.closest('a')) {
-                close();
+                close({ restoreFocus: true });
             }
         }, { signal });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' && isOpen()) {
+                event.preventDefault();
                 close({ restoreFocus: true });
+            }
+        }, { signal });
+
+        document.addEventListener('focusin', (event) => {
+            if (isOpen() && event.target !== toggle && !panel.contains(event.target)) {
+                close();
+            }
+        }, { signal });
+
+        window.addEventListener('resize', () => {
+            if (isOpen() && toggle.getClientRects().length === 0) {
+                close();
             }
         }, { signal });
 
         signal.addEventListener('abort', () => {
             window.clearTimeout(closeTimer);
+            window.cancelAnimationFrame(openFrame);
             document.body.classList.remove('is-menu-open');
         }, { once: true });
     };

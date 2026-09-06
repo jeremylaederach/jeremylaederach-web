@@ -33,7 +33,7 @@ aboutPlaygroundController.initialize();
 projectReelController.initialize();
 scrollCueController.initialize();
 technologyIconController.initialize();
-createPageRouter({ reducedMotion, soundController, transitionController });
+createPageRouter({ soundController, transitionController });
 
 window.requestAnimationFrame(() => {
     window.requestAnimationFrame(() => root.classList.add('is-ready'));

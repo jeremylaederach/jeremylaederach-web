@@ -520,7 +520,6 @@
         border-radius: 0;
         background: transparent;
         box-shadow: none;
-        outline: none;
     }
 
     .project-reel__viewport {
@@ -696,8 +695,17 @@
             transform 420ms var(--ease-out);
     }
 
-    .project-reel__controls > button:first-child .nav-icon {
+    .project-reel__controls > [data-reel-action='previous'] .nav-icon {
         transform: rotate(180deg);
+    }
+
+    .project-reel__play,
+    [data-paused='true'] .project-reel__pause {
+        display: none;
+    }
+
+    [data-paused='true'] .project-reel__play {
+        display: block;
     }
 
     .project-reel__controls > button:hover,
@@ -1970,6 +1978,12 @@
 
     .case-study-next {
         --directional-accent: var(--project-accent);
+    }
+
+    .about-story,
+    .stack-section,
+    .contact-workspace {
+        scroll-margin-top: 96px;
     }
 
     .about-story {

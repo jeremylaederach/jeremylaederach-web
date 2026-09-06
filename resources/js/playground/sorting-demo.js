@@ -310,9 +310,7 @@ export const initializeSortingDemo = (root, reducedMotion) => {
         status.textContent = '';
 
         if (reducedMotion) {
-            values = trace.result;
             output.textContent = String(trace.comparisons);
-            renderBars(bars, values, [], 'sorted');
         } else {
             let comparisons = 0;
 
@@ -331,15 +329,14 @@ export const initializeSortingDemo = (root, reducedMotion) => {
 
                 await delay(frame.type === 'move' ? movementDelay : comparisonDelay);
             }
-
-            values = trace.result;
-            renderBars(bars, values, [], 'sorted');
         }
 
         if (runId !== currentRun || !stage.isConnected) {
             return;
         }
 
+        values = trace.result;
+        renderBars(bars, values, [], 'sorted');
         runButton.disabled = false;
         stage.setAttribute('aria-busy', 'false');
         status.textContent = `${status.dataset.completeLabel}: ${trace.comparisons}.`;

@@ -34,8 +34,8 @@
                 <p>Applications, commands, URLs, and folders start from top to bottom.</p>
 
                 <div class="sessiondeck-app__summary">
-                    <span><small>Apps</small><strong>02</strong></span>
-                    <span><small>Commands</small><strong>01</strong></span>
+                    <span><small>Apps</small><strong>01</strong></span>
+                    <span><small>Commands</small><strong>02</strong></span>
                     <span><small>URLs</small><strong>01</strong></span>
                 </div>
 

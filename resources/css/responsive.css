@@ -1504,6 +1504,15 @@
 }
 
 @media (max-width: 420px) {
+    .project-reel--teaser .project-reel__footer {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .project-reel--teaser .project-reel__controls {
+        justify-self: start;
+    }
+
     .legal-section {
         grid-template-columns: minmax(0, 1fr);
         gap: 12px;

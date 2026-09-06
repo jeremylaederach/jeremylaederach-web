@@ -9,7 +9,7 @@ const isEligibleLink = (event, link) => {
         return false;
     }
 
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || (link.target && link.target !== '_self')) {
         return false;
     }
 
@@ -25,7 +25,7 @@ const routeFromUrl = (url) => {
 const transitionThemeFromUrl = (url) => url.pathname.split('/').filter(Boolean).at(-1) ?? 'home';
 
 const loadPage = async (url) => {
-    const cacheKey = url.href;
+    const cacheKey = `${url.origin}${url.pathname}${url.search}`;
 
     if (!pageCache.has(cacheKey)) {
         const request = fetch(cacheKey, {
@@ -59,15 +59,13 @@ const loadPage = async (url) => {
 };
 
 const updateDocumentMetadata = (nextDocument) => {
-    const nextDescription = nextDocument.querySelector('meta[name="description"]')?.getAttribute('content');
-    const description = document.querySelector('meta[name="description"]');
-
     document.title = nextDocument.title;
     document.documentElement.lang = nextDocument.documentElement.lang;
 
-    if (description instanceof HTMLMetaElement && nextDescription) {
-        description.content = nextDescription;
-    }
+    document.head.querySelectorAll('[data-page-meta]').forEach((element) => element.remove());
+    nextDocument.head.querySelectorAll('[data-page-meta]').forEach((element) => {
+        document.head.append(element.cloneNode(true));
+    });
 };
 
 const syncPersistentChrome = (nextDocument, scene) => {
@@ -82,9 +80,9 @@ const syncPersistentChrome = (nextDocument, scene) => {
         }
     });
 
-    document.querySelectorAll('[hreflang]').forEach((link) => {
+    document.querySelectorAll('a[hreflang]').forEach((link) => {
         const language = link.getAttribute('hreflang');
-        const nextLink = nextDocument.querySelector(`[hreflang="${language}"]`);
+        const nextLink = nextDocument.querySelector(`a[hreflang="${language}"]`);
 
         if (nextLink instanceof HTMLAnchorElement) {
             link.href = nextLink.href;
@@ -104,29 +102,58 @@ const focusPageHeading = (main) => {
     heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
 };
 
-const scrollToDestination = (url) => {
-    const targetId = decodeURIComponent(url.hash.slice(1));
-    const target = targetId ? document.getElementById(targetId) : null;
-
-    if (target instanceof HTMLElement) {
-        target.scrollIntoView({ block: 'start' });
+const scrollToDestination = (url, position) => {
+    if (position) {
+        window.scrollTo({ left: position.x, top: position.y, behavior: 'instant' });
         return;
     }
 
-    window.scrollTo(0, 0);
+    let targetId;
+
+    try {
+        targetId = decodeURIComponent(url.hash.slice(1));
+    } catch {
+        targetId = '';
+    }
+    const target = targetId ? document.getElementById(targetId) : null;
+
+    if (target instanceof HTMLElement) {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 };
 
-export const createPageRouter = ({ reducedMotion, soundController, transitionController }) => {
+export const createPageRouter = ({ soundController, transitionController }) => {
     let navigationSequence = 0;
+    let renderedUrl = new URL(window.location.href);
+    let scrollFrame;
+
+    const saveScrollPosition = () => {
+        if (document.body.classList.contains('is-routing')) {
+            return;
+        }
+
+        window.history.replaceState({
+            ...window.history.state,
+            portfolioScroll: { x: window.scrollX, y: window.scrollY },
+        }, '');
+    };
 
     const navigate = async (url, {
         historyMode = 'push',
         origin,
         restoreFocus = true,
+        scrollPosition,
         routeHint,
         transitionLabel,
         transitionTheme,
     } = {}) => {
+        if (historyMode === 'push') {
+            saveScrollPosition();
+        }
+
         const sequence = ++navigationSequence;
         const startedAt = performance.now();
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
@@ -167,10 +194,15 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
                 window.history.pushState({ portfolioNavigation: true }, '', url);
             }
 
-            window.scrollTo(0, 0);
+            renderedUrl = url;
             await nextFrame();
             await nextFrame();
-            scrollToDestination(url);
+
+            if (sequence !== navigationSequence) {
+                return;
+            }
+
+            scrollToDestination(url, scrollPosition);
             page.main.classList.remove('is-page-entering');
             document.dispatchEvent(new CustomEvent('portfolio:page-swapped', {
                 detail: { scene },
@@ -200,6 +232,7 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
         } finally {
             if (sequence === navigationSequence) {
                 document.body.classList.remove('is-routing');
+                saveScrollPosition();
             }
         }
     };
@@ -252,10 +285,28 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
 
     document.addEventListener('pointerover', prefetch, { passive: true });
     document.addEventListener('focusin', prefetch);
-    window.addEventListener('popstate', () => {
-        navigate(new URL(window.location.href), {
+    window.addEventListener('scroll', () => {
+        window.cancelAnimationFrame(scrollFrame);
+        scrollFrame = window.requestAnimationFrame(saveScrollPosition);
+    }, { passive: true });
+    window.addEventListener('pagehide', saveScrollPosition);
+    window.addEventListener('popstate', (event) => {
+        const destination = new URL(window.location.href);
+        const scrollPosition = event.state?.portfolioScroll;
+
+        if (
+            !document.body.classList.contains('is-routing')
+            && destination.pathname === renderedUrl.pathname
+            && destination.search === renderedUrl.search
+        ) {
+            scrollToDestination(destination, scrollPosition);
+            return;
+        }
+
+        navigate(destination, {
             historyMode: 'pop',
             restoreFocus: false,
+            scrollPosition,
         });
     });
     window.addEventListener('pageshow', (event) => {
@@ -271,5 +322,11 @@ export const createPageRouter = ({ reducedMotion, soundController, transitionCon
     });
 
     window.history.scrollRestoration = 'manual';
-    window.history.replaceState({ portfolioNavigation: true }, '', window.location.href);
+    window.history.replaceState({ ...window.history.state, portfolioNavigation: true }, '');
+
+    const initialPosition = window.history.state?.portfolioScroll;
+
+    if (initialPosition) {
+        window.requestAnimationFrame(() => scrollToDestination(renderedUrl, initialPosition));
+    }
 };

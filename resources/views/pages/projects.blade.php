@@ -66,7 +66,7 @@
 
                             <div class="project-case__details">
                                 <p>{{ $project['description'] }}</p>
-                                <ul aria-label="{{ $project['name'] }} technologies">
+                                <ul aria-label="{{ $project['name'] }} · {{ $detailProject['stack']['label'] }}">
                                     @foreach ($project['tags'] as $tag)
                                         <li>{{ $tag }}</li>
                                     @endforeach
