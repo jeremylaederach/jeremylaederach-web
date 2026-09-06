@@ -32,6 +32,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
         && state.autoplay
         && state.visible
         && !state.interacting
+        && !state.swipeStart
         && !document.hidden
         && state.slides.length > 1;
 
@@ -43,20 +44,13 @@ export const createProjectReelController = ({ reducedMotion }) => {
         }
 
         state.timer = window.setTimeout(() => {
-            setActive(state, state.current + 1, 1);
+            setActive(state, state.current + 1);
         }, autoplayDelay);
     };
 
     const normalizeIndex = (state, index) => (index + state.slides.length) % state.slides.length;
 
-    const getDirection = (state, index) => {
-        const forward = normalizeIndex(state, index - state.current);
-        const backward = normalizeIndex(state, state.current - index);
-
-        return forward <= backward ? 1 : -1;
-    };
-
-    const setActive = (state, requestedIndex, requestedDirection = 0) => {
+    const setActive = (state, requestedIndex) => {
         const index = normalizeIndex(state, requestedIndex);
         const previous = state.current;
         const initialRender = !state.initialized;
@@ -66,25 +60,13 @@ export const createProjectReelController = ({ reducedMotion }) => {
             return;
         }
 
-        const direction = requestedDirection || getDirection(state, index);
-
         state.current = index;
-
-        if (!initialRender) {
-            state.reel.dataset.direction = direction > 0 ? 'next' : 'previous';
-        }
 
         state.slides.forEach((slide, slideIndex) => {
             const active = slideIndex === index;
 
-            if (active) {
-                slide.dataset.state = 'active';
-            } else if (!initialRender && slideIndex === previous) {
-                slide.dataset.state = direction > 0 ? 'before' : 'after';
-            } else {
-                slide.dataset.state = direction > 0 ? 'after' : 'before';
-            }
-
+            slide.dataset.state = active ? 'active' : 'inactive';
+            slide.inert = !active;
             slide.setAttribute('aria-hidden', String(!active));
         });
 
@@ -99,12 +81,12 @@ export const createProjectReelController = ({ reducedMotion }) => {
             state.currentLabel.textContent = number;
         }
 
-        if (state.label) {
-            state.label.textContent = slide.dataset.label ?? '';
-        }
+        state.captions.forEach((caption, captionIndex) => {
+            caption.setAttribute('aria-hidden', String(captionIndex !== index));
+        });
 
-        if (state.description) {
-            state.description.textContent = slide.dataset.description ?? '';
+        if (state.kind) {
+            state.kind.textContent = slide.dataset.kind ?? '';
         }
 
         state.initialized = true;
@@ -135,12 +117,12 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
         const state = {
             autoplay: reel.hasAttribute('data-reel-autoplay'),
+            captions: [...reel.querySelectorAll('[data-reel-caption]')],
             current: 0,
             currentLabel: reel.querySelector('[data-reel-current]'),
-            description: reel.querySelector('[data-reel-description]'),
             initialized: false,
             interacting: false,
-            label: reel.querySelector('[data-reel-label]'),
+            kind: reel.querySelector('[data-reel-kind]'),
             pagination: [...reel.querySelectorAll('[data-reel-index]')],
             reel,
             rotationControl: reel.querySelector('[data-reel-action="rotation"]'),
@@ -155,7 +137,6 @@ export const createProjectReelController = ({ reducedMotion }) => {
         updateRotationControl(state);
         observer.observe(reel);
         setActive(state, 0);
-        window.requestAnimationFrame(() => reel.classList.add('is-ready'));
     };
 
     const pruneReels = () => {
@@ -204,9 +185,9 @@ export const createProjectReelController = ({ reducedMotion }) => {
             updateRotationControl(state);
             scheduleAutoplay(state);
         } else if (action === 'previous') {
-            setActive(state, state.current - 1, -1);
+            setActive(state, state.current - 1);
         } else if (action === 'next') {
-            setActive(state, state.current + 1, 1);
+            setActive(state, state.current + 1);
         } else {
             setActive(state, Number.parseInt(button.dataset.reelIndex ?? '0', 10));
         }
@@ -230,7 +211,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
         const direction = event.key === 'ArrowRight' ? 1 : -1;
 
-        setActive(state, state.current + direction, direction);
+        setActive(state, state.current + direction);
     };
 
     const handlePointerDown = (event) => {
@@ -249,16 +230,18 @@ export const createProjectReelController = ({ reducedMotion }) => {
             return;
         }
 
-        const reel = event.target instanceof Element
-            ? event.target.closest('[data-project-reel]')
+        const viewport = event.target instanceof Element
+            ? event.target.closest('.project-reel__viewport')
             : null;
-        const state = reel ? getState(reel) : undefined;
+        const state = viewport ? getState(viewport.closest('[data-project-reel]')) : undefined;
 
-        if (!state) {
+        if (!state || !event.isPrimary) {
             return;
         }
 
+        viewport.setPointerCapture(event.pointerId);
         state.swipeStart = {
+            pointerId: event.pointerId,
             x: event.clientX,
             y: event.clientY,
         };
@@ -276,7 +259,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             : null;
         const state = reel ? getState(reel) : undefined;
 
-        if (!state || state.swipeStart === undefined) {
+        if (!state || state.swipeStart?.pointerId !== event.pointerId) {
             return;
         }
 
@@ -290,7 +273,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             const direction = distanceX < 0 ? 1 : -1;
 
             state.suppressClickUntil = performance.now() + swipeClickDelay;
-            setActive(state, state.current + direction, direction);
+            setActive(state, state.current + direction);
             return;
         }
 

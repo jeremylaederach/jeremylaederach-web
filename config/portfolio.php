@@ -57,6 +57,8 @@ return [
                 'media_pause' => 'Pause slideshow',
                 'media_play' => 'Play slideshow',
                 'media_view' => 'View',
+                'media_preview' => 'Interface preview',
+                'media_screenshot' => 'Screenshot',
                 'next_project' => 'Next project',
             ],
             'nav' => [
@@ -68,13 +70,13 @@ return [
             'home' => [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
-                'summary' => 'Architecting and engineering software that makes complex ideas feel simple.',
+                'summary' => 'Web products, client websites, and Windows tools—built from the backend to the interface.',
                 'explore' => 'Explore projects',
                 'index_label' => 'Landing',
                 'routes' => [
                     [
                         'label' => 'Projects',
-                        'description' => 'Products, migrations, and client work.',
+                        'description' => 'Personal products and client work.',
                         'route' => 'projects',
                     ],
                     [
@@ -84,7 +86,7 @@ return [
                     ],
                     [
                         'label' => 'Contact',
-                        'description' => 'A direct line for focused collaboration.',
+                        'description' => 'Have a project or a question? Get in touch.',
                         'route' => 'contact',
                     ],
                 ],
@@ -99,11 +101,11 @@ return [
                 'story_notes' => [
                     [
                         'label' => 'Foundation',
-                        'value' => 'My foundation is a four-year apprenticeship as an Application Developer EFZ at EcoLogic AG. It taught me to turn requirements into software that stays clear and maintainable in everyday use.',
+                        'value' => 'I completed my four-year Application Developer EFZ apprenticeship at EcoLogic AG. Alongside writing code, I learned to work through customer requirements and maintain existing software.',
                     ],
                     [
                         'label' => 'From September 2026',
-                        'value' => 'I start the BSc in Business Informatics at OST—the next step between software, product, and business.',
+                        'value' => 'I start the BSc in Business Informatics at OST to learn more about the business decisions behind software projects.',
                     ],
                 ],
                 'playground_label' => 'Code',
@@ -141,7 +143,7 @@ return [
                     ],
                     'network' => [
                         'title' => 'Neural Network',
-                        'description' => 'Draw a 0, 1 or 2. Every square becomes a number; three outputs compare the pattern and the strongest answer wins.',
+                        'description' => 'Draw a 0, 1 or 2. Three output neurons score your pixels against fixed patterns. This small demo compares them; it does not learn from your drawings.',
                         'run' => 'Recognize',
                         'reset' => 'Clear',
                         'metric' => 'Guess',
@@ -198,7 +200,7 @@ return [
                 ],
                 'technology_heading' => 'Stack',
                 'technology_label' => 'Tools',
-                'technology_intro' => 'The stack I actually work with—not every technology I have ever touched.',
+                'technology_intro' => 'The tools I use across my products and client projects.',
                 'technology_groups' => [
                     [
                         'title' => '.NET & C#',
@@ -263,7 +265,7 @@ return [
                 'featured_label' => 'Featured build',
                 'secondary_label' => 'Additional work',
                 'heading' => 'Projects',
-                'intro' => 'Three current projects across product engineering, independent business, and native desktop software.',
+                'intro' => 'A personal analytics app, my web business, and a Windows workspace launcher.',
                 'items' => [
                     [
                         'slug' => 'quantified',
@@ -323,7 +325,7 @@ return [
                         'type' => 'quantified-workspace',
                         'view' => 'finances',
                         'label' => 'QFinances',
-                        'description' => 'Accounts and transactions shown in a focused local finance view.',
+                        'description' => 'Accounts, balances, and transactions in one local finance view.',
                     ],
                 ],
                 'product' => [
@@ -445,7 +447,7 @@ return [
                 'stack' => [
                     'label' => 'Stack',
                     'heading' => 'Two Laravel apps.',
-                    'intro' => 'Jay-Jay Web is exported as a static site for Plesk. The Client Hub runs separately with a database and login because private customer data does not belong in the same static build.',
+                    'intro' => 'Jay-Jay Web is exported as a static site for Plesk. The Client Hub is a separate Laravel app with its own database, login, and private document storage.',
                     'groups' => [
                         [
                             'title' => 'Jay-Jay Web',
@@ -502,17 +504,17 @@ return [
                 'heading' => 'SessionDeck',
                 'intro' => 'A native Windows tool that saves applications, commands, URLs, and folders as reusable profiles, then starts them in order.',
                 'status_label' => 'Status',
-                'status' => 'Functional source-build MVP',
+                'status' => 'Working prototype · Build from source',
                 'role_label' => 'Role',
                 'role' => 'Product design and Windows engineering',
                 'product' => [
                     'label' => 'Product',
                     'heading_lines' => ['Save the setup.', 'Start it as one session.'],
-                    'body' => 'A profile keeps applications, commands, URLs, and folders in a clear launch order. Before a run, SessionDeck checks paths, dependencies, and local ports, then starts the available items without claiming processes it did not launch.',
+                    'body' => 'Save the apps, commands, URLs, and folders you need for a task in a profile. SessionDeck checks paths, dependencies, and local ports before starting them in order. Afterwards, you can see what started and what needs attention.',
                     'notes' => [
                         ['label' => 'Explicit start', 'value' => 'Nothing launches until the user selects Start.'],
                         ['label' => 'Local by design', 'value' => 'No account, cloud service, telemetry, or administrator access is required.'],
-                        ['label' => 'Safe ownership', 'value' => 'Only directly tracked processes from the current in-memory run can be stopped.'],
+                        ['label' => 'Process control', 'value' => 'Stopping a session only affects processes that SessionDeck started and still tracks in that run.'],
                     ],
                 ],
                 'stack' => [
@@ -552,11 +554,11 @@ return [
             'contact_page' => [
                 'eyebrow' => 'Start a conversation',
                 'heading' => 'Contact',
-                'intro' => 'Email is the best first step. Send the rough goal, links, constraints, and what a good outcome should feel like.',
+                'intro' => 'Have a project in mind, a role to discuss, or a question about my work? Send me an email.',
                 'direct_label' => 'Write directly',
                 'direct_heading' => 'Tell me what you want to build.',
                 'context_label' => 'A useful first note',
-                'context' => 'A short outline of the goal, timing, and relevant links is enough. I will reply with the next useful steps.',
+                'context' => 'A few sentences are enough. For a project, include what you need, your timing, and any useful links.',
                 'channels_label' => 'Elsewhere',
             ],
             'not_found' => [
@@ -654,6 +656,8 @@ return [
                 'media_pause' => 'Diashow pausieren',
                 'media_play' => 'Diashow abspielen',
                 'media_view' => 'Ansicht',
+                'media_preview' => 'Oberflächenvorschau',
+                'media_screenshot' => 'Screenshot',
                 'next_project' => 'Nächstes Projekt',
             ],
             'nav' => [
@@ -665,13 +669,13 @@ return [
             'home' => [
                 'statement' => 'Ich entwickle',
                 'statement_accent' => 'nützliche digitale Systeme.',
-                'summary' => 'Ich konzipiere und entwickle Software, die komplexe Ideen einfach macht.',
+                'summary' => 'Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.',
                 'explore' => 'Projekte entdecken',
                 'index_label' => 'Start',
                 'routes' => [
                     [
                         'label' => 'Projekte',
-                        'description' => 'Produkte, Migrationen und Kundenprojekte.',
+                        'description' => 'Eigene Produkte und Kundenprojekte.',
                         'route' => 'projects',
                     ],
                     [
@@ -681,7 +685,7 @@ return [
                     ],
                     [
                         'label' => 'Kontakt',
-                        'description' => 'Der direkte Weg für eine fokussierte Zusammenarbeit.',
+                        'description' => 'Ein Projekt oder eine Frage? Schreib mir.',
                         'route' => 'contact',
                     ],
                 ],
@@ -696,11 +700,11 @@ return [
                 'story_notes' => [
                     [
                         'label' => 'Grundlage',
-                        'value' => 'Meine Grundlage ist die vierjährige EFZ-Lehre als Applikationsentwickler bei EcoLogic AG. Dort habe ich gelernt, Anforderungen in Software zu übersetzen, die im Alltag verständlich und wartbar bleibt.',
+                        'value' => 'Meine vierjährige Lehre als Applikationsentwickler EFZ habe ich bei EcoLogic AG abgeschlossen. Neben dem Programmieren gehörten Kundenanforderungen und die Weiterentwicklung bestehender Software zum Alltag.',
                     ],
                     [
                         'label' => 'Ab September 2026',
-                        'value' => 'Ich starte den BSc Wirtschaftsinformatik an der OST – als nächsten Schritt zwischen Software, Produkt und Business.',
+                        'value' => 'Ich starte den BSc Wirtschaftsinformatik an der OST, um die wirtschaftlichen Entscheidungen hinter Softwareprojekten besser zu verstehen.',
                     ],
                 ],
                 'playground_label' => 'Code',
@@ -738,7 +742,7 @@ return [
                     ],
                     'network' => [
                         'title' => 'Neural Network',
-                        'description' => 'Zeichne eine 0, 1 oder 2. Jedes Feld wird zur Zahl; drei Ausgänge vergleichen das Muster, der stärkste gewinnt.',
+                        'description' => 'Zeichne eine 0, 1 oder 2. Drei Ausgabe-Neuronen bewerten deine Pixel anhand fester Muster. Diese kleine Demo vergleicht sie; sie lernt nicht aus deinen Zeichnungen.',
                         'run' => 'Erkennen',
                         'reset' => 'Leeren',
                         'metric' => 'Erkannt',
@@ -795,7 +799,7 @@ return [
                 ],
                 'technology_heading' => 'Stack',
                 'technology_label' => 'Tools',
-                'technology_intro' => 'Der Stack, mit dem ich tatsächlich arbeite – nicht jede Technologie, die ich einmal ausprobiert habe.',
+                'technology_intro' => 'Diese Werkzeuge nutze ich für meine Produkte und Kundenprojekte.',
                 'technology_groups' => [
                     [
                         'title' => '.NET & C#',
@@ -860,7 +864,7 @@ return [
                 'featured_label' => 'Hauptprojekt',
                 'secondary_label' => 'Weitere Arbeiten',
                 'heading' => 'Projekte',
-                'intro' => 'Drei aktuelle Projekte aus Produktentwicklung, eigenem Unternehmen und nativer Desktop-Software.',
+                'intro' => 'Eine persönliche Analyse-App, mein Webunternehmen und ein Workspace-Launcher für Windows.',
                 'items' => [
                     [
                         'slug' => 'quantified',
@@ -920,7 +924,7 @@ return [
                         'type' => 'quantified-workspace',
                         'view' => 'finances',
                         'label' => 'QFinances',
-                        'description' => 'Konten und Transaktionen in einer fokussierten lokalen Finanzansicht.',
+                        'description' => 'Konten, Kontostände und Transaktionen in einer lokalen Finanzansicht.',
                     ],
                 ],
                 'product' => [
@@ -1042,7 +1046,7 @@ return [
                 'stack' => [
                     'label' => 'Stack',
                     'heading' => 'Zwei Laravel-Apps.',
-                    'intro' => 'Jay-Jay Web wird als statische Website für Plesk exportiert. Der Client Hub läuft separat mit Datenbank und Login, weil private Kundendaten nicht in denselben statischen Build gehören.',
+                    'intro' => 'Jay-Jay Web wird als statische Website für Plesk exportiert. Der Client Hub ist eine separate Laravel-App mit eigener Datenbank, Login und geschützter Dokumentenablage.',
                     'groups' => [
                         [
                             'title' => 'Jay-Jay Web',
@@ -1099,17 +1103,17 @@ return [
                 'heading' => 'SessionDeck',
                 'intro' => 'Ein natives Windows-Tool, das Apps, Commands, URLs und Ordner als wiederverwendbare Profile speichert und der Reihe nach startet.',
                 'status_label' => 'Status',
-                'status' => 'Funktionaler Source-Build-MVP',
+                'status' => 'Funktionsfähiger Prototyp · Aus Quellcode bauen',
                 'role_label' => 'Rolle',
                 'role' => 'Product Design und Windows-Entwicklung',
                 'product' => [
                     'label' => 'Produkt',
                     'heading_lines' => ['Setup speichern.', 'Als Session starten.'],
-                    'body' => 'Ein Profil hält Apps, Commands, URLs und Ordner in einer klaren Startreihenfolge. Vor jedem Lauf prüft SessionDeck Pfade, Abhängigkeiten und lokale Ports und startet danach die verfügbaren Einträge, ohne fremde Prozesse als eigene zu behandeln.',
+                    'body' => 'Speichere die Apps, Befehle, URLs und Ordner für eine Aufgabe in einem Profil. SessionDeck prüft Pfade, Abhängigkeiten und lokale Ports und startet die Einträge der Reihe nach. Anschliessend siehst du, was gestartet wurde und wo es noch hakt.',
                     'notes' => [
                         ['label' => 'Bewusster Start', 'value' => 'Nichts startet, bevor der Nutzer Start auswählt.'],
                         ['label' => 'Konsequent lokal', 'value' => 'Accounts, Cloud-Dienste, Telemetrie und Administratorrechte sind nicht nötig.'],
-                        ['label' => 'Kontrollierte Prozesse', 'value' => 'Gestoppt werden können nur Prozesse, die im aktuellen Lauf direkt erfasst wurden.'],
+                        ['label' => 'Prozesssteuerung', 'value' => 'Beim Beenden einer Session stoppt SessionDeck nur Prozesse, die es in diesem Lauf selbst gestartet hat und noch erfasst.'],
                     ],
                 ],
                 'stack' => [
@@ -1149,11 +1153,11 @@ return [
             'contact_page' => [
                 'eyebrow' => 'Gespräch beginnen',
                 'heading' => 'Kontakt',
-                'intro' => 'E-Mail ist der beste erste Schritt. Schick mir dein Ziel, relevante Links und die wichtigsten Rahmenbedingungen.',
+                'intro' => 'Eine Projektidee, eine offene Stelle oder eine Frage zu meiner Arbeit? Schreib mir eine E-Mail.',
                 'direct_label' => 'Direkt schreiben',
                 'direct_heading' => 'Erzähl mir, was du umsetzen möchtest.',
                 'context_label' => 'Für einen guten Start',
-                'context' => 'Ein kurzer Überblick über Ziel, Zeitrahmen und relevante Links reicht. Ich melde mich mit den nächsten sinnvollen Schritten.',
+                'context' => 'Ein paar Sätze reichen. Bei einem Projekt helfen mir dein Vorhaben, der Zeitrahmen und relevante Links.',
                 'channels_label' => 'Weitere Profile',
             ],
             'not_found' => [

@@ -56,6 +56,10 @@ tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Playground logic and DOM interaction tests
 ```
 
+Project galleries share one Blade component, interaction controller and stylesheet (`project-reel.css`). The gallery distinguishes screenshots from HTML interface previews; previews use illustrative data and are not live product embeds. Detail pages use manual navigation, while project-list previews can be paused and stop rotating when keyboard focus enters.
+
+The router waits for the transition surface's CSS animations to finish before swapping content, then reveals the new page. Timing belongs to CSS rather than a second set of JavaScript delays. Reduced-motion navigation skips the cover entirely.
+
 ## Quality Checks
 
 Run the same checks used by GitHub Actions:

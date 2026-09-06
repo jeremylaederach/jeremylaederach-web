@@ -603,13 +603,6 @@
         aspect-ratio: 4 / 3;
     }
 
-    .project-reel__counter {
-        top: 12px;
-        right: 12px;
-        min-width: 66px;
-        height: 26px;
-    }
-
     .project-reel__footer {
         min-height: 50px;
         padding-top: 10px;
@@ -634,7 +627,7 @@
         gap: 3px;
     }
 
-    .project-reel__pagination button {
+    .project-reel--teaser .project-reel__pagination button {
         width: 23px;
     }
 
@@ -778,8 +771,7 @@
     }
 
     .quantified-app__home header em,
-    .quantified-app__home-metrics em,
-    .quantified-app__home-context {
+    .quantified-app__home-metrics em {
         display: none;
     }
 
@@ -993,12 +985,11 @@
 
     .case-study-hero__reel .project-reel__footer {
         min-height: 0;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 16px;
+        gap: 16px 8px;
     }
 
-    .case-study-hero__reel .project-reel__controls {
-        justify-self: start;
+    .project-reel--detail .project-reel__pagination button {
+        padding: 10px 8px;
     }
 
     .case-study-next-nav {
@@ -1523,9 +1514,6 @@
         grid-column: 1;
     }
 
-    .project-reel--detail .project-reel__viewport {
-        aspect-ratio: 1;
-    }
 }
 
 @media (max-width: 340px) {

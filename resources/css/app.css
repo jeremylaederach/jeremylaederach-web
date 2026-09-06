@@ -4,6 +4,7 @@
 @import './hero.css';
 @import './components.css';
 @import './sections.css';
+@import './project-reel.css';
 @import './responsive.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
