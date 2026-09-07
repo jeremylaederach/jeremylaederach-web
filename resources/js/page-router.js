@@ -157,6 +157,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
 
         const sequence = ++navigationSequence;
         pendingUrl = url.href;
+        document.dispatchEvent(new CustomEvent('portfolio:before-navigation'));
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
         const covered = transitionController.beginTransition(hintedScene, {
             origin,

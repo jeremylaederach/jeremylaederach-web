@@ -13,7 +13,7 @@ const page = (route) => `<!doctype html><html lang="en"><head>
     <main data-page-main><h1>${route}</h1><a href="/en/about" data-route-transition>About</a></main>
     </body></html>`;
 
-const setup = (t, { covered = Promise.resolve(), revealed = Promise.resolve() } = {}) => {
+const setup = (t, { covered = Promise.resolve(), revealed = Promise.resolve(), onBegin = () => {} } = {}) => {
     const window = createDom(t, page('projects'), 'https://portfolio.test/en/projects');
     const scrolls = [];
     window.scrollTo = (position) => {
@@ -29,7 +29,7 @@ const setup = (t, { covered = Promise.resolve(), revealed = Promise.resolve() } 
     createPageRouter({
         soundController: { select() {}, complete() {} },
         transitionController: {
-            beginTransition: () => covered,
+            beginTransition: () => { onBegin(); return covered; },
             commitScene() {},
             completeTransition: async () => {
                 await revealed;
@@ -83,6 +83,16 @@ test('the page is not swapped before the cover has finished', async (t) => {
     finishCover();
     await done;
     assert.notEqual(document.querySelector('main'), originalMain);
+});
+
+test('navigation dismisses top-layer UI before beginning the page cover', async (t) => {
+    let dismissed = false;
+    const { finished } = setup(t, { onBegin: () => assert.equal(dismissed, true) });
+    document.addEventListener('portfolio:before-navigation', () => { dismissed = true; });
+    const done = finished();
+    document.querySelector('[data-route-transition]').click();
+    await done;
+    assert.equal(dismissed, true);
 });
 
 test('a repeated click on the pending destination does not restart navigation', async (t) => {

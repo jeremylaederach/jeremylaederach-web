@@ -38,16 +38,22 @@
         'project-reel--teaser' => ! $isDetail,
     ])->merge($reelAttributes) }}
     data-project-reel
+    data-transition-origin="compact"
 >
     <div class="project-reel__frame">
-        <div class="project-reel__chrome" aria-hidden="true">
-            <span class="project-reel__lights"><i></i><i></i><i></i></span>
+        <div class="project-reel__chrome">
             <span data-reel-kind>{{ $slides[0]['type'] === 'jay-jay-web' ? $ui['media_screenshot'] : $ui['media_preview'] }}</span>
-            <span class="project-reel__counter">
+            <span class="project-reel__counter" aria-hidden="true">
                 <b data-reel-current>01</b>
                 <span>/</span>
                 <span>{{ str_pad((string) count($slides), 2, '0', STR_PAD_LEFT) }}</span>
             </span>
+            @if ($isDetail)
+                <button type="button" class="project-reel__expand" data-reel-action="expand">
+                    <span>{{ $ui['media_expand'] }}</span>
+                    <x-nav-icon name="expand" />
+                </button>
+            @endif
         </div>
         @if ($isDetail)
             <div class="project-reel__viewport">
@@ -57,6 +63,7 @@
                 href="{{ $href }}"
                 aria-label="{{ $openLabel }}"
                 data-reel-open
+                data-transition-origin="compact"
                 data-interface-sound
                 data-sound-tone="panel"
                 data-route="{{ $routeName }}"
@@ -201,4 +208,16 @@
             </button>
         </div>
     </div>
+
+    @if ($isDetail)
+        <dialog class="project-reel__dialog" data-reel-dialog aria-label="{{ $project['heading'] }} · {{ $ui['project_media'] }}">
+            <div class="project-reel__dialog-heading">
+                <strong>{{ $project['heading'] }}</strong>
+                <button type="button" data-reel-action="close" aria-label="{{ $ui['media_close'] }}" autofocus>
+                    <x-nav-icon name="close" />
+                </button>
+            </div>
+            <div data-reel-expanded></div>
+        </dialog>
+    @endif
 </div>

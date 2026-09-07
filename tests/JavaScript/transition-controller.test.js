@@ -74,3 +74,32 @@ test('reduced motion swaps without a cover animation', async (t) => {
     assert.equal(overlay.dataset.phase, 'idle');
     assert.deepEqual(finished, ['about']);
 });
+
+test('image origins start from a compact line within the visible part of the preview', async (t) => {
+    const { controller, overlay, cover } = setup(t);
+    const origin = document.createElement('a');
+    origin.dataset.transitionOrigin = 'compact';
+    origin.getBoundingClientRect = () => ({ top: -100, bottom: 500, left: 200, right: 900 });
+    cover.resolve();
+    await controller.beginTransition('projects', { origin });
+    const style = document.querySelector('[data-transition-surface]').style;
+    assert.equal(overlay.dataset.origin, 'compact');
+    assert.equal(style.getPropertyValue('--origin-top'), '250px');
+    assert.equal(style.getPropertyValue('--origin-bottom'), `${window.innerHeight - 250}px`);
+    assert.equal(style.getPropertyValue('--origin-left'), '518px');
+    assert.equal(style.getPropertyValue('--origin-right'), `${window.innerWidth - 582}px`);
+    controller.reset('projects');
+    assert.equal(overlay.dataset.origin, undefined);
+});
+
+test('small navigation links retain their original transition bounds', async (t) => {
+    const { controller, overlay, cover } = setup(t);
+    const origin = document.createElement('a');
+    origin.getBoundingClientRect = () => ({ top: 20, bottom: 60, left: 100, right: 180 });
+    cover.resolve();
+    await controller.beginTransition('about', { origin });
+    const style = document.querySelector('[data-transition-surface]').style;
+    assert.equal(overlay.dataset.origin, 'element');
+    assert.equal(style.getPropertyValue('--origin-top'), '20px');
+    assert.equal(style.getPropertyValue('--origin-left'), '100px');
+});

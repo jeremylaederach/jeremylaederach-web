@@ -173,10 +173,6 @@
         aspect-ratio: auto;
     }
 
-    .project-reel--detail .project-reel__viewport {
-        aspect-ratio: 16 / 10;
-    }
-
     .project-visual {
         grid-column: 1 / -1;
     }
@@ -595,11 +591,7 @@
         aspect-ratio: auto;
     }
 
-    .project-reel--teaser .project-reel__viewport {
-        aspect-ratio: 16 / 10;
-    }
-
-    .project-reel--detail .project-reel__viewport {
+    .project-reel__viewport {
         aspect-ratio: 4 / 3;
     }
 
@@ -989,7 +981,7 @@
     }
 
     .project-reel--detail .project-reel__pagination button {
-        padding: 10px 8px;
+        padding: 12px 0 8px;
     }
 
     .case-study-next-nav {

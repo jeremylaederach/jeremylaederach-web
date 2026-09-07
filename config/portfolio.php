@@ -59,6 +59,8 @@ return [
                 'media_view' => 'View',
                 'media_preview' => 'Interface preview',
                 'media_screenshot' => 'Screenshot',
+                'media_expand' => 'Enlarge',
+                'media_close' => 'Close enlarged view',
                 'next_project' => 'Next project',
             ],
             'nav' => [
@@ -658,6 +660,8 @@ return [
                 'media_view' => 'Ansicht',
                 'media_preview' => 'Oberflächenvorschau',
                 'media_screenshot' => 'Screenshot',
+                'media_expand' => 'Vergrössern',
+                'media_close' => 'Vergrösserte Ansicht schliessen',
                 'next_project' => 'Nächstes Projekt',
             ],
             'nav' => [

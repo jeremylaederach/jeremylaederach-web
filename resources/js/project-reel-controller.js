@@ -1,3 +1,5 @@
+import { createProjectViewer } from './project-viewer.js';
+
 const autoplayDelay = 6200;
 const swipeThreshold = 44;
 const swipeClickDelay = 480;
@@ -131,6 +133,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             swipeStart: undefined,
             timer: undefined,
             visible: false,
+            viewer: createProjectViewer(reel),
         };
 
         reels.set(reel, state);
@@ -146,6 +149,7 @@ export const createProjectReelController = ({ reducedMotion }) => {
             }
 
             clearAutoplay(state);
+            state.viewer?.destroy();
             observer.unobserve(reel);
             reels.delete(reel);
         });
@@ -174,7 +178,11 @@ export const createProjectReelController = ({ reducedMotion }) => {
 
         const action = button.dataset.reelAction;
 
-        if (action === 'rotation') {
+        if (action === 'expand') {
+            state.viewer?.open();
+        } else if (action === 'close') {
+            state.viewer?.close();
+        } else if (action === 'rotation') {
             // Pointer focus pauses first; keyboard activation uses the displayed state.
             const wasPlaying = event.detail > 0
                 ? (state.autoplayOnPointerDown ?? state.autoplay)
@@ -345,6 +353,9 @@ export const createProjectReelController = ({ reducedMotion }) => {
             }
         });
         document.addEventListener('portfolio:page-swapped', initializeReels);
+        document.addEventListener('portfolio:before-navigation', () => {
+            reels.forEach((state) => state.viewer?.close());
+        });
         document.addEventListener('visibilitychange', () => {
             reels.forEach(scheduleAutoplay);
         });

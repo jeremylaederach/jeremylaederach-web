@@ -43,7 +43,7 @@ export const createPageTransitionController = ({ reducedMotion }) => {
         };
     }
 
-    const setOrigin = (origin) => {
+    const setOrigin = (origin, compact) => {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         const originRect = origin instanceof Element ? origin.getBoundingClientRect() : null;
@@ -63,17 +63,34 @@ export const createPageTransitionController = ({ reducedMotion }) => {
             ? Math.min(Number.parseFloat(window.getComputedStyle(origin).borderRadius) || 0, 24)
             : 0;
 
-        surface.style.setProperty('--origin-top', `${Math.max(0, rect.top)}px`);
-        surface.style.setProperty('--origin-right', `${Math.max(0, viewportWidth - rect.right)}px`);
-        surface.style.setProperty('--origin-bottom', `${Math.max(0, viewportHeight - rect.bottom)}px`);
-        surface.style.setProperty('--origin-left', `${Math.max(0, rect.left)}px`);
-        surface.style.setProperty('--origin-radius', `${radius}px`);
+        const insets = {
+            top: Math.max(0, rect.top),
+            right: Math.max(0, viewportWidth - rect.right),
+            bottom: Math.max(0, viewportHeight - rect.bottom),
+            left: Math.max(0, rect.left),
+        };
+
+        // Large previews open from a small centre line, not a solid image-sized block.
+        if (compact) {
+            const x = (insets.left + viewportWidth - insets.right) / 2;
+            const y = (insets.top + viewportHeight - insets.bottom) / 2;
+            insets.top = y;
+            insets.bottom = viewportHeight - y;
+            insets.left = Math.max(0, x - 32);
+            insets.right = Math.max(0, viewportWidth - x - 32);
+        }
+
+        Object.entries(insets).forEach(([edge, value]) => {
+            surface.style.setProperty(`--origin-${edge}`, `${value}px`);
+        });
+        surface.style.setProperty('--origin-radius', `${compact ? 0 : radius}px`);
     };
 
     const clearOverlay = () => {
         overlay.dataset.phase = 'idle';
         delete overlay.dataset.route;
         delete overlay.dataset.theme;
+        delete overlay.dataset.origin;
     };
 
     const beginTransition = async (scene, { origin, transitionLabel, transitionTheme } = {}) => {
@@ -96,7 +113,9 @@ export const createPageTransitionController = ({ reducedMotion }) => {
             return;
         }
 
-        setOrigin(origin);
+        const compact = origin instanceof Element && origin.getAttribute('data-transition-origin') === 'compact';
+        overlay.dataset.origin = compact ? 'compact' : 'element';
+        setOrigin(origin, compact);
         overlay.dataset.phase = 'preparing';
         await nextFrame();
         await nextFrame();
