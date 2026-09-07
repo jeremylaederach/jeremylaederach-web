@@ -66,7 +66,11 @@ class PortfolioController extends Controller
         return view($view, [
             'locale' => $locale,
             'content' => $content,
-            'title' => $page === null ? $content['meta']['title'] : "{$page['heading']} · Jeremy Läderach",
+            'title' => match ($contentKey) {
+                null => $content['meta']['title'],
+                'about_page' => $page['heading'],
+                default => "{$page['heading']} · Jeremy Läderach",
+            },
             'description' => $page['intro'] ?? $content['meta']['description'],
         ]);
     }

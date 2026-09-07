@@ -6,6 +6,18 @@ use Tests\TestCase;
 
 class PageMetadataTest extends TestCase
 {
+    public function test_about_page_uses_only_its_localized_heading_as_the_tab_title(): void
+    {
+        $this->withoutVite();
+
+        foreach (['en' => 'About me', 'de' => 'Über mich'] as $locale => $title) {
+            $this->get("/{$locale}/about")
+                ->assertOk()
+                ->assertSee('<title>'.$title.'</title>', false)
+                ->assertSee('property="og:title" content="'.$title.'"', false);
+        }
+    }
+
     public function test_each_localized_page_has_a_distinct_title_and_matching_language_links(): void
     {
         $this->withoutVite();
