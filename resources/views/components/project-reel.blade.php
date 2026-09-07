@@ -25,7 +25,6 @@
             $href && $routeName && $transitionTheme && $transitionLabel && $openLabel,
             LogicException::class,
         );
-        $reelAttributes['data-reel-autoplay'] = 'true';
     }
 @endphp
 
@@ -43,11 +42,6 @@
     <div class="project-reel__frame">
         <div class="project-reel__chrome">
             <span data-reel-kind>{{ $slides[0]['type'] === 'jay-jay-web' ? $ui['media_screenshot'] : $ui['media_preview'] }}</span>
-            <span class="project-reel__counter" aria-hidden="true">
-                <b data-reel-current>01</b>
-                <span>/</span>
-                <span>{{ str_pad((string) count($slides), 2, '0', STR_PAD_LEFT) }}</span>
-            </span>
             @if ($isDetail)
                 <button type="button" class="project-reel__expand" data-reel-action="expand">
                     <span>{{ $ui['media_expand'] }}</span>
@@ -136,7 +130,7 @@
     </div>
 
     <div class="project-reel__footer">
-        <div class="project-reel__captions" @if ($isDetail) aria-live="polite" aria-atomic="true" @endif>
+        <div class="project-reel__captions" aria-live="polite" aria-atomic="true">
             @foreach ($slides as $slide)
                 <p data-reel-caption aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
                     <strong>{{ $slide['label'] }}</strong>
@@ -155,21 +149,6 @@
             role="group"
             aria-label="{{ $ui['project_media'] }}"
         >
-            @unless ($isDetail)
-                <button
-                    type="button"
-                    aria-label="{{ $ui['media_pause'] }}"
-                    data-reel-action="rotation"
-                    data-pause-label="{{ $ui['media_pause'] }}"
-                    data-play-label="{{ $ui['media_play'] }}"
-                    data-interface-sound
-                    data-sound-tone="control"
-                >
-                    <span class="project-reel__pause"><x-nav-icon name="pause" /></span>
-                    <span class="project-reel__play"><x-nav-icon name="play" /></span>
-                </button>
-            @endunless
-
             <button
                 type="button"
                 aria-label="{{ $ui['media_previous'] }}"
@@ -180,21 +159,10 @@
                 <x-nav-icon name="arrow-right" />
             </button>
 
-            <span class="project-reel__pagination">
-                @foreach ($slides as $slide)
-                    <button
-                        type="button"
-                        aria-label="{{ $ui['media_view'] }} {{ $loop->iteration }}: {{ $slide['label'] }}"
-                        aria-current="{{ $loop->first ? 'true' : 'false' }}"
-                        data-reel-action="go"
-                        data-reel-index="{{ $loop->index }}"
-                        data-interface-sound
-                        data-sound-tone="control"
-                    >
-                        <span class="project-reel__view-number" aria-hidden="true">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                        <span class="project-reel__view-label">{{ $slide['label'] }}</span>
-                    </button>
-                @endforeach
+            <span class="project-reel__counter" aria-hidden="true">
+                <b data-reel-current>01</b>
+                <span>/</span>
+                <span>{{ str_pad((string) count($slides), 2, '0', STR_PAD_LEFT) }}</span>
             </span>
 
             <button

@@ -14,8 +14,6 @@
         'plus' => '<path d="M12 5v14" /><path d="M5 12h14" />',
         'expand' => '<path d="M14 4h6v6M10 20H4v-6M20 4l-6 6M4 20l6-6" />',
         'close' => '<path d="m6 6 12 12M6 18 18 6" />',
-        'pause' => '<path d="M9 5v14" /><path d="M15 5v14" />',
-        'play' => '<path d="m8 5 11 7-11 7Z" />',
         'sound-on' => '<path d="M5 10v4h3l4 3V7L8 10H5Z" /><path d="M15 9.5a4 4 0 0 1 0 5" /><path d="M17.5 7a7.4 7.4 0 0 1 0 10" />',
         'sound-off' => '<path d="M5 10v4h3l4 3V7L8 10H5Z" /><path d="m16 10 5 5" /><path d="m21 10-5 5" />',
     ];

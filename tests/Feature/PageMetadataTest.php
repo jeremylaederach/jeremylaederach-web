@@ -32,6 +32,13 @@ class PageMetadataTest extends TestCase
                 preg_match('/<title>(.*?)<\/title>/', $html, $matches);
                 $titles[] = $matches[1];
 
+                if ($page === 'home') {
+                    $this->assertSame('Jeremy Läderach', $matches[1]);
+                } else {
+                    $this->assertStringNotContainsString('Jeremy', $matches[1]);
+                }
+                $this->assertStringContainsString('property="og:title" content="'.$matches[1].'"', $html);
+
                 $this->assertStringContainsString('rel="canonical" href="'.$url.'/"', $html);
                 $this->assertStringContainsString('property="og:url" content="'.$url.'/"', $html);
                 $this->assertStringNotContainsString('name="robots" content="noindex"', $html);
@@ -53,7 +60,7 @@ class PageMetadataTest extends TestCase
         foreach (['en', 'de'] as $locale) {
             $this->get("/{$locale}/missing")
                 ->assertNotFound()
-                ->assertSee(config("portfolio.content.{$locale}.not_found.heading").' · Jeremy Läderach')
+                ->assertSee('<title>'.config("portfolio.content.{$locale}.not_found.heading").'</title>', false)
                 ->assertSee('name="robots" content="noindex"', false)
                 ->assertDontSee('rel="canonical"', false)
                 ->assertDontSee('rel="alternate"', false);

@@ -614,15 +614,6 @@
         height: 34px;
     }
 
-    .project-reel__pagination {
-        min-height: 34px;
-        gap: 3px;
-    }
-
-    .project-reel--teaser .project-reel__pagination button {
-        width: 23px;
-    }
-
     .client-hub-visual {
         grid-template-columns: 1fr;
     }
@@ -978,10 +969,6 @@
     .case-study-hero__reel .project-reel__footer {
         min-height: 0;
         gap: 16px 8px;
-    }
-
-    .project-reel--detail .project-reel__pagination button {
-        padding: 12px 0 8px;
     }
 
     .case-study-next-nav {

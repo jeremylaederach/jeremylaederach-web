@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'title' => $content['not_found']['heading'].' · Jeremy Läderach',
+    'title' => $content['not_found']['heading'],
     'description' => $content['not_found']['intro'],
 ])
 

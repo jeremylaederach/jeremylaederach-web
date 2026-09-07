@@ -256,7 +256,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--teaser"', false)
             ->assertSee('class="project-case__content project-case__content-link"', false)
             ->assertSee('data-transition-origin-id="project-reel-quantified"', false)
-            ->assertSee('class="project-reel__captions"', false)
+            ->assertSee('class="project-reel__captions" aria-live="polite"', false)
             ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
             ->assertDontSee('project-reel__browser-bar', false)
             ->assertDontSee('project-reel__sheen', false)
@@ -265,11 +265,13 @@ class PortfolioPagesTest extends TestCase
         $projectHtml = $projects->getContent();
 
         $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
-        $this->assertSame(3, substr_count($projectHtml, 'data-reel-autoplay="true"'));
+        $this->assertStringNotContainsString('data-reel-autoplay', $projectHtml);
+        $this->assertStringNotContainsString('data-reel-action="rotation"', $projectHtml);
         $this->assertSame(3, substr_count($projectHtml, 'data-project-reel'));
         $this->assertSame(3, substr_count($projectHtml, 'aria-label="Projektansichten"'));
         $this->assertSame(3, substr_count($projectHtml, 'data-reel-open'));
-        $this->assertSame(9, substr_count($projectHtml, 'data-reel-action="go"'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-reel-action="next"'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-reel-action="previous"'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
         $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }
@@ -305,7 +307,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('QInsights')
             ->assertSee('aria-roledescription="carousel"', false)
             ->assertSee('aria-label="Next view"', false)
-            ->assertSee('aria-label="View 3: QFinances"', false)
+            ->assertSee('<strong>QFinances</strong>', false)
             ->assertSee('Google Calendar')
             ->assertSee('ASP.NET Core')
             ->assertSee('PostgreSQL')
@@ -364,8 +366,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Client Hub')
             ->assertSee('Development build')
             ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-hero__reel"', false)
-            ->assertSee('aria-label="View 2: Customer overview"', false)
-            ->assertSee('aria-label="View 3: Work board"', false)
+            ->assertSee('<strong>Customer overview</strong>', false)
+            ->assertSee('<strong>Work board</strong>', false)
             ->assertSee('id="client-hub"', false)
             ->assertSee('<span class="is-active">Boards</span>', false)
             ->assertSee('<i class="is-current"></i>', false)
@@ -411,8 +413,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Start it as one session.')
             ->assertSee('Process control')
             ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-hero__reel"', false)
-            ->assertSee('aria-label="View 2: Profile editor"', false)
-            ->assertSee('aria-label="View 3: Session result"', false)
+            ->assertSee('<strong>Profile editor</strong>', false)
+            ->assertSee('<strong>Session result</strong>', false)
             ->assertDontSee('Current scope')
             ->assertSee('Next project')
             ->assertSee('class="case-study-next case-study-next--quantified directional-link directional-link--forward"', false)
@@ -450,7 +452,7 @@ class PortfolioPagesTest extends TestCase
     {
         $this->get('/en/contact')
             ->assertOk()
-            ->assertSee('<title>Contact · Jeremy', false)
+            ->assertSee('<title>Contact</title>', false)
             ->assertSee('class="portfolio-page contact-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('aria-label="Contact."', false)

@@ -66,11 +66,7 @@ class PortfolioController extends Controller
         return view($view, [
             'locale' => $locale,
             'content' => $content,
-            'title' => match ($contentKey) {
-                null => $content['meta']['title'],
-                'about_page' => $page['heading'],
-                default => "{$page['heading']} · Jeremy Läderach",
-            },
+            'title' => $page['heading'] ?? $content['meta']['title'],
             'description' => $page['intro'] ?? $content['meta']['description'],
         ]);
     }
@@ -92,7 +88,7 @@ class PortfolioController extends Controller
             'projectNumber' => $resolvedProjectIndex + 1,
             'nextProject' => $nextProject,
             'scene' => 'projects',
-            'title' => "{$project['heading']} · Jeremy Läderach",
+            'title' => $project['heading'],
             'description' => $project['meta_description'],
         ]);
     }
@@ -105,7 +101,7 @@ class PortfolioController extends Controller
             'locale' => $locale,
             'content' => $content,
             'legal' => $content[$contentKey],
-            'title' => "{$content[$contentKey]['title']} · Jeremy Läderach",
+            'title' => $content[$contentKey]['title'],
             'description' => $content[$contentKey]['intro'],
         ]);
     }

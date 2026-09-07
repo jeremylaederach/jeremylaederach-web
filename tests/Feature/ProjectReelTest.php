@@ -28,7 +28,10 @@ class ProjectReelTest extends TestCase
 
                 $html = $response->getContent();
                 $this->assertSame(3, substr_count($html, 'data-reel-slide'));
-                $this->assertSame(3, substr_count($html, 'data-reel-index='));
+                $this->assertStringNotContainsString('data-reel-index', $html);
+                $this->assertSame(1, substr_count($html, 'data-reel-current'));
+                $this->assertSame(1, substr_count($html, 'data-reel-action="previous"'));
+                $this->assertSame(1, substr_count($html, 'data-reel-action="next"'));
                 $this->assertSame(1, substr_count($html, 'data-state="active"'));
                 $this->assertSame(2, preg_match_all('/data-state="inactive"[^>]+\binert\b/s', $html));
 

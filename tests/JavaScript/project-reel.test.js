@@ -3,8 +3,8 @@ import test from 'node:test';
 import { createProjectReelController } from '../../resources/js/project-reel-controller.js';
 import { createDom } from './dom.js';
 
-const setup = (t, reducedMotion = false) => {
-    const window = createDom(t, `<div data-project-reel data-reel-autoplay>
+const setup = (t) => {
+    const window = createDom(t, `<div data-project-reel>
         <a class="project-reel__viewport" href="#project" data-reel-open>
             <div data-reel-slide data-label="One" data-kind="Screenshot"></div>
             <div data-reel-slide data-label="Two" data-kind="Interface preview"></div>
@@ -12,10 +12,7 @@ const setup = (t, reducedMotion = false) => {
         <p data-reel-caption>One</p><p data-reel-caption>Two</p>
         <span data-reel-current></span>
         <span data-reel-kind></span>
-        <button data-reel-action="rotation" data-play-label="Play slideshow" data-pause-label="Pause slideshow"></button>
         <button data-reel-action="previous">Previous</button>
-        <button data-reel-action="go" data-reel-index="0">One</button>
-        <button data-reel-action="go" data-reel-index="1">Two</button>
         <button data-reel-action="next">Next</button>
     </div><button id="outside">Outside</button>`);
     const timers = new Map();
@@ -25,62 +22,40 @@ const setup = (t, reducedMotion = false) => {
         return timerId;
     });
     t.mock.method(window, 'clearTimeout', (id) => timers.delete(id));
-    const previousObserver = globalThis.IntersectionObserver;
-    globalThis.IntersectionObserver = class {
-        constructor(callback) { this.callback = callback; }
-        observe(target) { this.callback([{ target, isIntersecting: true, intersectionRatio: 1 }]); }
-        unobserve() {}
-    };
-    t.after(() => {
-        if (previousObserver) {
-            globalThis.IntersectionObserver = previousObserver;
-        } else {
-            delete globalThis.IntersectionObserver;
-        }
-    });
-    createProjectReelController({ reducedMotion }).initialize();
+    const controller = createProjectReelController();
+    controller.initialize();
 
-    return { window, timers, rotation: document.querySelector('[data-reel-action="rotation"]') };
+    return { window, timers, controller };
 };
 
-test('keyboard focus pauses the slideshow until it is explicitly restarted', (t) => {
-    const { timers, rotation } = setup(t);
-    assert.equal(timers.size, 1);
+test('galleries never schedule automatic slide changes', (t) => {
+    const { window, timers } = setup(t);
     document.querySelector('[data-reel-open]').focus();
-    assert.equal(timers.size, 0);
-    assert.equal(rotation.getAttribute('aria-label'), 'Play slideshow');
-    document.querySelector('#outside').focus();
-    assert.equal(timers.size, 0);
-    rotation.focus();
-    rotation.click();
-    assert.equal(timers.size, 1);
-    assert.equal(rotation.getAttribute('aria-label'), 'Pause slideshow');
-});
-
-test('clicking Pause still pauses when pointer focus enters the slideshow', (t) => {
-    const { window, timers, rotation } = setup(t);
-    rotation.dispatchEvent(new window.MouseEvent('pointerdown', { bubbles: true }));
-    rotation.focus();
-    rotation.dispatchEvent(new window.MouseEvent('click', { bubbles: true, detail: 1 }));
-    assert.equal(timers.size, 0);
-    assert.equal(rotation.getAttribute('aria-label'), 'Play slideshow');
-});
-
-test('an abandoned pointer press does not override a later keyboard activation', (t) => {
-    const { window, timers, rotation } = setup(t);
-    rotation.dispatchEvent(new window.MouseEvent('pointerdown', { bubbles: true }));
-    rotation.focus();
-    rotation.click();
-    assert.equal(timers.size, 1);
-    assert.equal(rotation.getAttribute('aria-label'), 'Pause slideshow');
-});
-
-test('reduced motion disables automatic rotation without removing manual controls', (t) => {
-    const { timers, rotation } = setup(t, true);
-    assert.equal(timers.size, 0);
-    assert.equal(rotation.hidden, true);
     document.querySelector('[data-reel-action="next"]').click();
+    document.querySelector('#outside').focus();
+    document.dispatchEvent(new window.Event('visibilitychange'));
+    assert.equal(timers.size, 0);
     assert.equal(document.querySelector('[data-reel-caption][aria-hidden="false"]').textContent, 'Two');
+});
+
+test('arrow keys navigate manually and wrap in both directions', (t) => {
+    const { window } = setup(t);
+    const link = document.querySelector('[data-reel-open]');
+    for (const [key, expected] of [['ArrowLeft', '02'], ['ArrowRight', '01']]) {
+        const event = new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        link.dispatchEvent(event);
+        assert.equal(event.defaultPrevented, true);
+        assert.equal(document.querySelector('[data-reel-current]').textContent, expected);
+    }
+});
+
+test('reinitialization preserves selection without duplicating listeners', (t) => {
+    const { controller } = setup(t);
+    document.querySelector('[data-reel-action="next"]').click();
+    controller.initialize();
+    assert.equal(document.querySelector('[data-reel-current]').textContent, '02');
+    document.querySelector('[data-reel-action="next"]').click();
+    assert.equal(document.querySelector('[data-reel-current]').textContent, '01');
 });
 
 test('rapid navigation keeps exactly one active, accessible slide and matching labels', (t) => {
@@ -95,7 +70,6 @@ test('rapid navigation keeps exactly one active, accessible slide and matching l
     assert.equal(document.querySelector('[data-reel-current]').textContent, '02');
     assert.equal(document.querySelector('[data-reel-kind]').textContent, 'Interface preview');
     assert.equal(document.querySelector('[data-reel-caption][aria-hidden="false"]').textContent, 'Two');
-    assert.equal(document.querySelector('[data-reel-index="1"]').getAttribute('aria-current'), 'true');
 });
 
 const touch = (window, target, type, x, y = 20) => {
@@ -109,15 +83,13 @@ const touch = (window, target, type, x, y = 20) => {
 };
 
 test('swiping captures the pointer, changes the view and suppresses the following link click', (t) => {
-    const { window, timers } = setup(t);
+    const { window } = setup(t);
     const viewport = document.querySelector('[data-reel-open]');
     viewport.setPointerCapture = t.mock.fn();
     touch(window, viewport, 'pointerdown', 200);
     assert.equal(viewport.setPointerCapture.mock.calls[0].arguments[0], 1);
-    assert.equal(timers.size, 0);
     touch(window, viewport, 'pointerup', 50);
     assert.equal(document.querySelector('[data-reel-caption][aria-hidden="false"]').textContent, 'Two');
-    assert.equal(timers.size, 1);
     const click = new window.MouseEvent('click', { bubbles: true, cancelable: true });
     viewport.dispatchEvent(click);
     assert.equal(click.defaultPrevented, true);
@@ -135,14 +107,12 @@ test('touching controls or scrolling vertically does not change slides', (t) => 
     assert.equal(document.querySelector('[data-reel-caption][aria-hidden="false"]').textContent, 'One');
 });
 
-test('cancelled touch gestures release the autoplay pause', (t) => {
-    const { window, timers } = setup(t);
+test('cancelled touch gestures cannot advance a slide', (t) => {
+    const { window } = setup(t);
     const viewport = document.querySelector('[data-reel-open]');
     viewport.setPointerCapture = t.mock.fn();
     touch(window, viewport, 'pointerdown', 200);
-    assert.equal(timers.size, 0);
     touch(window, viewport, 'pointercancel', 200);
-    assert.equal(timers.size, 1);
     touch(window, viewport, 'pointerup', 50);
     assert.equal(document.querySelector('[data-reel-caption][aria-hidden="false"]').textContent, 'One');
 });

@@ -33,25 +33,19 @@
         display: block;
         isolation: isolate;
         overflow: hidden;
-        aspect-ratio: 16 / 11;
-        border: 1px solid rgba(244, 241, 234, 0.06);
-        border-radius: 10px;
-        background:
-            radial-gradient(ellipse at 50% 110%, rgba(var(--reel-accent-rgb), 0.16), transparent 65%),
-            linear-gradient(150deg, #15151b, #0a0a0e 60%);
+        aspect-ratio: 16 / 10;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
         touch-action: pan-y;
         color: inherit;
         text-decoration: none;
     }
 
-    .project-reel__viewport:focus-visible {
-        border-color: rgba(var(--reel-accent-rgb), 0.52);
-    }
-
     .project-reel__slide {
         position: absolute;
         z-index: 1;
-        inset: clamp(10px, 1.5vw, 24px);
+        inset: 0;
         opacity: 0;
         pointer-events: none;
         transform: translateY(12px) scale(0.98);
@@ -73,15 +67,15 @@
         min-height: 0;
         aspect-ratio: auto;
         overflow: hidden;
-        border: 1px solid rgba(var(--reel-accent-rgb), 0.2);
+        border: 0;
         border-radius: 7px;
-        box-shadow: 0 18px 32px rgba(0, 0, 0, 0.45);
+        box-shadow: none;
         transform: none;
     }
 
     .project-reel__counter {
         display: flex;
-        margin-left: auto;
+        font-variant-numeric: tabular-nums;
         align-items: center;
         gap: 8px;
         color: var(--quiet);
@@ -97,9 +91,9 @@
     .project-reel__expand {
         display: inline-flex;
         min-height: 32px;
-        padding-left: 14px;
+        margin-left: auto;
+        padding: 0;
         border: 0;
-        border-left: 1px solid var(--line);
         align-items: center;
         gap: 10px;
         color: var(--ink-muted);
@@ -153,13 +147,9 @@
         white-space: nowrap;
     }
 
-    .project-reel__controls,
-    .project-reel__pagination {
+    .project-reel__controls {
         display: flex;
         align-items: center;
-    }
-
-    .project-reel__controls {
         gap: 10px;
     }
 
@@ -186,15 +176,6 @@
         transform: rotate(180deg);
     }
 
-    .project-reel__play,
-    [data-paused='true'] .project-reel__pause {
-        display: none;
-    }
-
-    [data-paused='true'] .project-reel__play {
-        display: block;
-    }
-
     .project-reel__controls > button:hover,
     .project-reel__controls > button:focus-visible {
         border-color: rgba(var(--reel-accent-rgb), 0.66);
@@ -212,55 +193,11 @@
         height: 34px;
     }
 
-    .project-reel__controls--compact .project-reel__pagination {
-        min-height: 34px;
-        gap: 3px;
-    }
-
-    .project-reel__controls--compact .project-reel__pagination button {
-        width: 24px;
-    }
-
-    .project-reel__pagination {
-        min-height: 38px;
-        padding: 0 4px;
-        gap: 6px;
-    }
-
-    .project-reel__pagination button {
-        position: relative;
-        width: 30px;
-        height: 32px;
-        border: 0;
-        background: transparent;
-    }
-
-    .project-reel__pagination button::before {
-        position: absolute;
-        right: 0;
-        left: 0;
-        top: 15px;
-        height: 2px;
-        background: rgba(244, 241, 234, 0.14);
-        content: '';
-        transition: background-color 280ms ease, transform 360ms var(--ease-out);
-    }
-
-    .project-reel__pagination button[aria-current='true']::before {
-        background: var(--reel-accent);
-        transform: scaleX(1.08);
-    }
-
-    .project-reel--teaser .project-reel__view-number,
-    .project-reel--teaser .project-reel__view-label {
-        display: none;
-    }
-
     .project-reel--detail .project-reel__footer {
         min-height: 84px;
         padding-top: 18px;
-        grid-template-columns: minmax(0, 1fr) 38px 38px;
-        gap: 18px 8px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
         align-items: start;
     }
 
@@ -284,69 +221,6 @@
         color: var(--ink-muted);
         font-size: 13px;
         line-height: 1.55;
-    }
-
-    .project-reel--detail .project-reel__controls {
-        display: contents;
-    }
-
-    .project-reel--detail [data-reel-action='previous'] {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .project-reel--detail [data-reel-action='next'] {
-        grid-column: 3;
-        grid-row: 1;
-    }
-
-    .project-reel--detail .project-reel__pagination {
-        display: grid;
-        padding: 0;
-        grid-column: 1 / -1;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(0, 1fr);
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    .project-reel--detail .project-reel__pagination button {
-        display: grid;
-        width: 100%;
-        height: auto;
-        min-height: 62px;
-        padding: 14px 0 8px;
-        border: 0;
-        border-top: 1px solid var(--line);
-        border-radius: 0;
-        gap: 8px;
-        align-content: start;
-        text-align: left;
-        color: var(--muted);
-        transition: border-color 220ms ease, color 220ms ease;
-    }
-
-    .project-reel--detail .project-reel__pagination button::before {
-        content: none;
-    }
-
-    .project-reel--detail .project-reel__pagination button:hover,
-    .project-reel--detail .project-reel__pagination button[aria-current='true'] {
-        border-color: var(--reel-accent);
-        color: var(--ink);
-    }
-
-    .project-reel__view-number {
-        color: var(--reel-accent);
-        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-        font-size: 9px;
-    }
-
-    .project-reel__view-label {
-        font-size: 11px;
-        line-height: 1.35;
-        overflow-wrap: anywhere;
-        hyphens: auto;
     }
 
     .project-reel__browser {
@@ -429,41 +303,13 @@
 
     .project-reel__dialog .project-reel__footer {
         padding-top: 44px;
-        grid-template-columns: 38px 38px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         gap: 24px 8px;
     }
 
     .project-reel__dialog .project-reel__captions {
         grid-column: 1 / -1;
         padding: 0;
-    }
-
-    .project-reel__dialog [data-reel-action='previous'] {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    .project-reel__dialog [data-reel-action='next'] {
-        grid-column: 2;
-        grid-row: 2;
-    }
-
-    .project-reel__dialog .project-reel__pagination {
-        grid-auto-flow: row;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 0;
-    }
-
-    .project-reel__dialog .project-reel__view-label {
-        font-size: 13px;
-    }
-
-    .project-reel__dialog .project-reel__slide {
-        inset: 0;
-    }
-
-    .project-reel__dialog .project-reel__surface {
-        box-shadow: none;
     }
 
     html:has(.project-reel__dialog[open]) {
@@ -497,27 +343,17 @@
 
         .project-reel__dialog .project-reel__footer {
             padding-top: 18px;
-            grid-template-columns: minmax(0, 1fr) 38px 38px;
+            grid-template-columns: minmax(0, 1fr) auto;
         }
 
         .project-reel__dialog .project-reel__captions {
             grid-column: 1;
         }
+    }
 
-        .project-reel__dialog [data-reel-action='previous'] {
-            grid-column: 2;
-            grid-row: 1;
-        }
-
-        .project-reel__dialog [data-reel-action='next'] {
-            grid-column: 3;
-            grid-row: 1;
-        }
-
-        .project-reel__dialog .project-reel__pagination {
-            grid-auto-flow: column;
-            grid-template-columns: none;
-            gap: 8px;
+    @media (max-width: 420px) {
+        .project-reel--detail .project-reel__footer {
+            grid-template-columns: minmax(0, 1fr);
         }
     }
 }
