@@ -34,6 +34,23 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         }
 
         const interactiveTarget = getInteractiveTarget(target);
+        const bounds = interactiveTarget?.matches('a[href], button:not(:disabled)')
+            ? interactiveTarget.getBoundingClientRect()
+            : null;
+        const sticky = pointerEvent && bounds && bounds.width > 0 && bounds.height > 0
+            && bounds.width <= 240 && bounds.height <= 72;
+
+        // Borrow Tschau's gentle pull towards the control; keep the dot at the click position.
+        const offsetX = sticky ? (bounds.left + bounds.width / 2 - pointerEvent.clientX) * 0.88 : 0;
+        const offsetY = sticky ? (bounds.top + bounds.height / 2 - pointerEvent.clientY) * 0.88 : 0;
+
+        sitePointerLayer.style.setProperty('--pointer-ring-x', `${offsetX}px`);
+        sitePointerLayer.style.setProperty('--pointer-ring-y', `${offsetY}px`);
+        sitePointerLayer.style.setProperty('--pointer-ring-width', sticky ? `${bounds.width + 8}px` : '36px');
+        sitePointerLayer.style.setProperty('--pointer-ring-height', sticky ? `${bounds.height + 8}px` : '36px');
+        sitePointerLayer.style.setProperty('--pointer-ring-radius', sticky
+            ? `max(8px, ${getComputedStyle(interactiveTarget).borderTopLeftRadius})`
+            : '50%');
 
         sitePointerLayer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
         sitePointerLayer.dataset.route = interactiveTarget?.dataset.pointerRoute
@@ -179,6 +196,8 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         if (!pointerEvent) {
             return;
         }
+
+        setPointerIntent(document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY));
 
         const surface = pointerEvent.target instanceof Element
             ? pointerEvent.target.closest('[data-pointer-surface]')
@@ -415,9 +434,19 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
             document.body.classList.toggle('has-scrolled', window.scrollY > 24);
         }, { passive: true });
 
+        const refreshPointerIntent = () => {
+            if (finePointer && !reducedMotion && isPointerInside && surfaceTargetFrame === undefined) {
+                surfaceTargetFrame = window.requestAnimationFrame(updatePointerSurfaceTarget);
+            }
+        };
+
+        window.addEventListener('scroll', refreshPointerIntent, { passive: true, capture: true });
+        window.addEventListener('resize', refreshPointerIntent, { passive: true });
+
         document.addEventListener('portfolio:page-swapped', () => {
             resetPointerSurfaces();
             initializeReveals();
+            refreshPointerIntent();
         });
     };
 
