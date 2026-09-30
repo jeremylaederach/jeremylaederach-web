@@ -83,6 +83,12 @@ npm run build:static
 
 Laravel remains the maintainable source project. Production receives only generated HTML, CSS, JavaScript and public media.
 
+GitHub Actions provides a ready-to-upload ZIP after all quality checks and the static export succeed. Open the successful **Quality checks** run for the desired commit, then download its **hosttech-<commit>** artifact. The workflow also supports **Run workflow** to rebuild a package without a new commit. Artifacts remain available for 14 days and include the required `.htaccess` files. This prepares the package; uploading to Hosttech is still manual.
+
+In the Plesk file manager for `jeremylaederach.ch`, back up the existing website, upload the ZIP into the domain's `httpdocs/` directory, and extract it there with replacement enabled. `index.html`, `.htaccess`, `en/`, `de/` and `build/` must sit directly inside `httpdocs/`, without an extra `dist-static/` folder. Preserve `.well-known/` and other Plesk-managed files, remove the uploaded ZIP afterwards, and verify the pages as described below.
+
+To build the same package locally:
+
 1. Run `npm run build:static` from a clean checkout.
 2. Preserve Plesk-managed content such as `httpdocs/.well-known/`.
 3. Replace the remaining contents of `httpdocs/` with the **contents** of `dist-static/`.
