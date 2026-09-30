@@ -1603,7 +1603,8 @@
         transform: none !important;
     }
 
-    .kinetic-index__letter:hover {
+    .has-mouse-input .kinetic-index__letter:hover,
+    .has-mouse-input .kinetic-index__letter:hover .kinetic-index__letter-glyph {
         text-shadow: none;
         transform: none;
     }

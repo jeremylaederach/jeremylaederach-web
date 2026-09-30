@@ -53,11 +53,9 @@
     .kinetic-index__letter {
         --letter-tilt: -0.8deg;
         display: inline-block;
-        transform-origin: 50% 82%;
         transition:
             color 260ms ease,
-            text-shadow 360ms ease,
-            transform 460ms var(--ease-out);
+            text-shadow 360ms ease;
     }
 
     .kinetic-index__letter:nth-child(even) {
@@ -80,19 +78,21 @@
         --letter-color: var(--lavender-light);
     }
 
-    .kinetic-index__letter:hover {
+    .has-mouse-input .kinetic-index__letter:hover {
         color: var(--letter-color);
         text-shadow: 0 0 0.32em color-mix(in srgb, var(--letter-color) 28%, transparent);
-        transform: translateY(-0.07em) scale(1.045) rotate(var(--letter-tilt));
     }
 
-    .kinetic-index__letter:hover .kinetic-index__letter-glyph {
+    .has-mouse-input .kinetic-index__letter:hover .kinetic-index__letter-glyph {
         animation: none;
+        transform: translateY(-0.07em) scale(1.045) rotate(var(--letter-tilt));
     }
 
     .kinetic-index__letter-glyph {
         display: inline-block;
         transform-origin: 50% 80%;
+        pointer-events: none;
+        transition: transform 460ms var(--ease-out);
     }
 
     .kinetic-index__letter-space {
@@ -159,7 +159,6 @@
         color: var(--ink);
         text-decoration: none;
         transition:
-            flex-grow 720ms var(--ease-heavy),
             background-color 480ms ease,
             color 320ms ease,
             opacity 420ms ease;
@@ -290,76 +289,69 @@
     .js.is-ready .index-panel > * {
         opacity: 1;
         transform: none;
-        transition: opacity 500ms ease, transform 760ms var(--ease-heavy);
+        animation: index-panel-enter 760ms var(--ease-heavy) backwards;
     }
 
     .js.is-ready .index-panel:nth-child(1) > * {
-        transition-delay: 260ms;
+        animation-delay: 260ms;
     }
 
     .js.is-ready .index-panel:nth-child(2) > * {
-        transition-delay: 340ms;
+        animation-delay: 340ms;
     }
 
     .js.is-ready .index-panel:nth-child(3) > * {
-        transition-delay: 420ms;
+        animation-delay: 420ms;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        .index-navigation:has(.index-panel:hover) .index-panel {
-            flex-grow: 0.76;
-            opacity: 0.58;
+    @keyframes index-panel-enter {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
         }
 
-        .index-navigation[data-active-route] .index-panel {
-            flex-grow: 0.76;
-            opacity: 0.58;
-        }
-
-        .index-navigation:has(.index-panel:hover) .index-panel:hover {
-            flex-grow: 1.75;
+        to {
             opacity: 1;
+            transform: none;
         }
+    }
 
-        .index-navigation[data-active-route='projects'] .index-panel--projects,
-        .index-navigation[data-active-route='about'] .index-panel--about,
-        .index-navigation[data-active-route='contact'] .index-panel--contact {
-            flex-grow: 1.75;
-            opacity: 1;
-        }
+    .has-mouse-input .index-navigation:has(.index-panel:hover) .index-panel:not(:hover, :focus-visible),
+    .index-navigation:has(.index-panel:focus-visible) .index-panel:not(:focus-visible, :hover) {
+        opacity: 0.58;
+    }
 
-        .index-panel:hover::before,
-        .index-panel:focus-visible::before {
-            opacity: 1;
-        }
+    .has-mouse-input .index-panel:hover::before,
+    .index-panel:focus-visible::before {
+        opacity: 1;
+    }
 
-        .index-panel:hover::after,
-        .index-panel:focus-visible::after {
-            opacity: 1;
-            transform: scaleX(1);
-        }
+    .has-mouse-input .index-panel:hover::after,
+    .index-panel:focus-visible::after {
+        opacity: 1;
+        transform: scaleX(1);
+    }
 
-        .index-panel:hover .index-panel__title,
-        .index-panel:focus-visible .index-panel__title {
-            color: var(--panel-accent);
-            transform: translateX(8px);
-        }
+    .has-mouse-input .index-panel:hover .index-panel__title,
+    .index-panel:focus-visible .index-panel__title {
+        color: var(--panel-accent);
+        transform: translateX(8px);
+    }
 
-        .index-panel:hover .index-panel__description,
-        .index-panel:hover .index-panel__preview,
-        .index-panel:focus-visible .index-panel__description,
-        .index-panel:focus-visible .index-panel__preview {
-            color: rgba(248, 246, 250, 0.78);
-            transform: translateX(5px);
-        }
+    .has-mouse-input .index-panel:hover .index-panel__description,
+    .has-mouse-input .index-panel:hover .index-panel__preview,
+    .index-panel:focus-visible .index-panel__description,
+    .index-panel:focus-visible .index-panel__preview {
+        color: rgba(248, 246, 250, 0.78);
+        transform: translateX(5px);
+    }
 
-        .index-panel:hover .index-panel__arrow,
-        .index-panel:focus-visible .index-panel__arrow {
-            border-color: var(--panel-accent);
-            background: var(--panel-accent);
-            color: var(--bg);
-            transform: translateX(7px);
-        }
+    .has-mouse-input .index-panel:hover .index-panel__arrow,
+    .index-panel:focus-visible .index-panel__arrow {
+        border-color: var(--panel-accent);
+        background: var(--panel-accent);
+        color: var(--bg);
+        transform: translateX(7px);
     }
 
 }

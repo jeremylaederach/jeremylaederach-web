@@ -30,6 +30,7 @@ const setup = (t, reducedMotion = false) => {
     document.elementFromPoint = () => button;
     const frames = new Map();
     let frameId = 0;
+    let timestamp = 0;
     t.mock.method(window, 'requestAnimationFrame', callback => {
         frames.set(++frameId, callback);
         return frameId;
@@ -38,7 +39,8 @@ const setup = (t, reducedMotion = false) => {
     const frame = () => {
         const pending = [...frames.values()];
         frames.clear();
-        pending.forEach(callback => callback(16));
+        timestamp += 16;
+        pending.forEach(callback => callback(timestamp));
     };
     const pointer = (type, pointerType, x = 40) => {
         const event = new window.MouseEvent(type, { bubbles: true, clientX: x, clientY: 40 });
@@ -56,6 +58,7 @@ test('mouse input enables the sticky cursor on a touch-first device', t => {
     pointer('pointermove', 'mouse');
     frame();
     assert.equal(document.documentElement.classList.contains('has-site-pointer'), true);
+    assert.equal(document.documentElement.classList.contains('has-mouse-input'), true);
     assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '40px');
     const layer = document.querySelector('[data-site-pointer-layer]');
     assert.equal(layer.dataset.route, 'projects');
@@ -73,6 +76,7 @@ test('touch and pen input hide the cursor, cancel pending frames and allow a mou
         frame();
         assert.equal(frames.size, 0);
         assert.equal(document.documentElement.classList.contains('has-site-pointer'), false);
+        assert.equal(document.documentElement.classList.contains('has-mouse-input'), false);
     }
     pointer('pointermove', 'mouse', 120);
     frame();
@@ -86,6 +90,42 @@ test('reduced motion leaves the native cursor active', t => {
     frame();
     assert.equal(frames.size, 0);
     assert.equal(document.documentElement.classList.contains('has-site-pointer'), false);
+    assert.equal(document.documentElement.classList.contains('has-mouse-input'), true);
+});
+
+test('the sticky ring moves only slightly within the same control while the dot follows the mouse', t => {
+    const { pointer, frame } = setup(t);
+    const layer = document.querySelector('[data-site-pointer-layer]');
+    pointer('pointermove', 'mouse', 40);
+    frame();
+    const before = Number.parseFloat(layer.style.getPropertyValue('--pointer-ring-x'));
+    pointer('pointermove', 'mouse', 80);
+    frame();
+    const after = Number.parseFloat(layer.style.getPropertyValue('--pointer-ring-x'));
+    assert.ok(after > before && after - before < 10);
+    assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '80px');
+});
+
+test('settled glow surfaces stop receiving updates when the mouse moves elsewhere', t => {
+    const { pointer, frame, frames } = setup(t);
+    const surfaces = [document.createElement('div'), document.createElement('div')];
+    surfaces.forEach(surface => {
+        surface.dataset.pointerSurface = '';
+        surface.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 100 });
+        document.body.append(surface);
+    });
+    const writes = t.mock.method(surfaces[0].style, 'setProperty');
+    document.elementFromPoint = () => surfaces[0];
+    pointer('pointermove', 'mouse', 40);
+    for (let i = 0; i < 200 && frames.size; i++) frame();
+    assert.equal(frames.size, 0);
+    const settledWrites = writes.mock.callCount();
+    assert.ok(settledWrites > 0);
+    document.elementFromPoint = () => surfaces[1];
+    pointer('pointermove', 'mouse', 80);
+    for (let i = 0; i < 200 && frames.size; i++) frame();
+    assert.equal(frames.size, 0);
+    assert.equal(writes.mock.callCount(), settledWrites);
 });
 
 test('losing window focus cancels queued cursor updates', t => {

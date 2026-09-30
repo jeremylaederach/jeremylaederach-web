@@ -331,8 +331,6 @@
             left: 0;
             width: 0;
             height: 0;
-            transform: translate3d(var(--site-pointer-x, -64px), var(--site-pointer-y, -64px), 0);
-            will-change: transform;
         }
 
         .site-pointer__ring,
@@ -341,6 +339,8 @@
             top: 0;
             left: 0;
             border-radius: 50%;
+            translate: var(--site-pointer-x, -64px) var(--site-pointer-y, -64px);
+            will-change: translate;
         }
 
         .site-pointer__ring {
@@ -349,8 +349,9 @@
             border: 1px solid rgba(244, 241, 234, 0.36);
             background: rgba(7, 7, 10, 0.14);
             box-shadow: 0 0 0 1px rgba(7, 7, 10, 0.18), 0 0 20px rgba(var(--pointer-rgb), 0.08);
+            translate: var(--pointer-ring-x, -64px) var(--pointer-ring-y, -64px);
             transform: translate(-50%, -50%);
-            transition: width 180ms ease, height 180ms ease, border-radius 180ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease, transform 180ms ease;
+            transition: width 180ms ease, height 180ms ease, border-radius 180ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease, translate 120ms ease;
         }
 
         .site-pointer__dot {
@@ -405,7 +406,6 @@
             border-color: rgba(var(--pointer-rgb), 0.6);
             background: rgba(var(--pointer-rgb), 0.04);
             box-shadow: 0 0 16px rgba(var(--pointer-rgb), 0.12);
-            transform: translate(-50%, -50%) translate(var(--pointer-ring-x, 0px), var(--pointer-ring-y, 0px));
         }
 
         .site-pointer-layer.is-interactive .site-pointer__dot {

@@ -43,14 +43,13 @@ export const createInteractionController = ({ reducedMotion }) => {
         // Borrow Tschau's gentle pull towards the control; keep the dot at the click position.
         const offsetX = sticky ? (bounds.left + bounds.width / 2 - pointerEvent.clientX) * 0.88 : 0;
         const offsetY = sticky ? (bounds.top + bounds.height / 2 - pointerEvent.clientY) * 0.88 : 0;
+        const radius = sticky ? `max(8px, ${getComputedStyle(interactiveTarget).borderTopLeftRadius})` : '50%';
 
-        sitePointerLayer.style.setProperty('--pointer-ring-x', `${offsetX}px`);
-        sitePointerLayer.style.setProperty('--pointer-ring-y', `${offsetY}px`);
+        sitePointerLayer.style.setProperty('--pointer-ring-x', `${(pointerEvent?.clientX ?? -64) + offsetX}px`);
+        sitePointerLayer.style.setProperty('--pointer-ring-y', `${(pointerEvent?.clientY ?? -64) + offsetY}px`);
         sitePointerLayer.style.setProperty('--pointer-ring-width', sticky ? `${bounds.width + 8}px` : '36px');
         sitePointerLayer.style.setProperty('--pointer-ring-height', sticky ? `${bounds.height + 8}px` : '36px');
-        sitePointerLayer.style.setProperty('--pointer-ring-radius', sticky
-            ? `max(8px, ${getComputedStyle(interactiveTarget).borderTopLeftRadius})`
-            : '50%');
+        sitePointerLayer.style.setProperty('--pointer-ring-radius', radius);
 
         sitePointerLayer.classList.toggle('is-interactive', interactiveTarget instanceof HTMLElement);
         sitePointerLayer.dataset.route = interactiveTarget?.dataset.pointerRoute
@@ -172,6 +171,8 @@ export const createInteractionController = ({ reducedMotion }) => {
 
             if (Math.abs(state.targetX - state.x) > 0.025 || Math.abs(state.targetY - state.y) > 0.025) {
                 hasPendingSurface = true;
+            } else {
+                surfaceStates.delete(surface);
             }
         });
 
@@ -197,10 +198,11 @@ export const createInteractionController = ({ reducedMotion }) => {
             return;
         }
 
-        setPointerIntent(document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY));
+        const target = document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY);
+        setPointerIntent(target);
 
-        const surface = pointerEvent.target instanceof Element
-            ? pointerEvent.target.closest('[data-pointer-surface]')
+        const surface = target instanceof Element
+            ? target.closest('[data-pointer-surface]')
             : null;
 
         if (!(surface instanceof HTMLElement)) {
@@ -287,8 +289,13 @@ export const createInteractionController = ({ reducedMotion }) => {
 
     const schedulePointerUpdate = (event) => {
         // Use the actual input, including mice attached to touch-first devices.
+        document.documentElement.classList.toggle('has-mouse-input', event.pointerType === 'mouse');
         if (event.pointerType !== 'mouse') {
             hidePointer();
+            return;
+        }
+
+        if (reducedMotion) {
             return;
         }
 
@@ -341,36 +348,24 @@ export const createInteractionController = ({ reducedMotion }) => {
         document.querySelectorAll('[data-reveal]').forEach((element) => revealObserver.observe(element));
     };
 
-    const setIndexRoute = (route) => {
-        const index = document.querySelector('[data-index-navigation]');
-
-        if (!(index instanceof HTMLElement)) {
-            return;
-        }
-
-        if (route) {
-            index.dataset.activeRoute = route;
-            return;
-        }
-
-        delete index.dataset.activeRoute;
-    };
-
     const initialize = () => {
         initializeReveals();
 
-        if (!reducedMotion) {
-            document.addEventListener('pointermove', schedulePointerUpdate, { passive: true });
+        document.addEventListener('pointermove', schedulePointerUpdate, { passive: true });
 
-            document.addEventListener('pointerdown', (event) => {
-                if (event.pointerType !== 'mouse') {
-                    hidePointer();
-                    return;
-                }
+        document.addEventListener('pointerdown', (event) => {
+            document.documentElement.classList.toggle('has-mouse-input', event.pointerType === 'mouse');
+            if (event.pointerType !== 'mouse') {
+                hidePointer();
+                return;
+            }
 
+            if (!reducedMotion) {
                 sitePointerLayer?.classList.add('is-pressed');
-            }, { passive: true });
+            }
+        }, { passive: true });
 
+        if (!reducedMotion) {
             document.addEventListener('pointerup', () => {
                 sitePointerLayer?.classList.remove('is-pressed');
             }, { passive: true });
@@ -383,9 +378,6 @@ export const createInteractionController = ({ reducedMotion }) => {
             const soundTarget = event.target instanceof Element
                 ? event.target.closest('[data-interface-sound]')
                 : null;
-            const panel = event.target instanceof Element
-                ? event.target.closest('[data-index-panel]')
-                : null;
 
             if (soundTarget && (!event.relatedTarget || !soundTarget.contains(event.relatedTarget))) {
                 document.dispatchEvent(new CustomEvent('interface-hover', {
@@ -394,40 +386,17 @@ export const createInteractionController = ({ reducedMotion }) => {
                     },
                 }));
             }
-
-            if (panel instanceof HTMLElement) {
-                setIndexRoute(panel.dataset.route);
-            }
-
-            if (event.pointerType === 'mouse' && !reducedMotion) {
-                setPointerIntent(event.target);
-            }
         }, { passive: true });
 
         document.addEventListener('pointerout', (event) => {
-            const panel = event.target instanceof Element
-                ? event.target.closest('[data-index-panel]')
-                : null;
-
-            if (panel && (!event.relatedTarget || !panel.contains(event.relatedTarget))) {
-                setIndexRoute();
-            }
-
-            if (event.pointerType === 'mouse' && !reducedMotion) {
-                if (!event.relatedTarget) {
-                    hidePointer();
-                }
-
-                setPointerIntent(event.relatedTarget);
+            if (event.pointerType === 'mouse' && !reducedMotion && !event.relatedTarget) {
+                hidePointer();
             }
         }, { passive: true });
 
         document.addEventListener('focusin', (event) => {
             const target = event.target instanceof Element
                 ? event.target.closest('[data-interface-sound]')
-                : null;
-            const panel = event.target instanceof Element
-                ? event.target.closest('[data-index-panel]')
                 : null;
 
             if (target) {
@@ -436,16 +405,6 @@ export const createInteractionController = ({ reducedMotion }) => {
                         tone: target.dataset.soundTone ?? 'control',
                     },
                 }));
-            }
-
-            if (panel instanceof HTMLElement) {
-                setIndexRoute(panel.dataset.route);
-            }
-        });
-
-        document.addEventListener('focusout', (event) => {
-            if (event.target instanceof Element && event.target.closest('[data-index-panel]')) {
-                setIndexRoute();
             }
         });
 
