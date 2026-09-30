@@ -1,4 +1,4 @@
-<section class="kinetic-index" aria-labelledby="landing-title" data-index-navigation>
+<section class="kinetic-index" aria-labelledby="landing-title">
     <header class="kinetic-index__masthead">
         <div class="kinetic-index__title">
             <h1

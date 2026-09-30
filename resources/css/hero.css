@@ -142,8 +142,6 @@
     .index-panel {
         --panel-accent: var(--accent);
         --panel-accent-rgb: var(--accent-rgb);
-        --panel-pointer-x: 50%;
-        --panel-pointer-y: 50%;
         position: relative;
         isolation: isolate;
         display: grid;
@@ -159,6 +157,7 @@
         color: var(--ink);
         text-decoration: none;
         transition:
+            flex-grow 720ms var(--ease-heavy),
             background-color 480ms ease,
             color 320ms ease,
             opacity 420ms ease;
@@ -318,7 +317,13 @@
 
     .has-mouse-input .index-navigation:has(.index-panel:hover) .index-panel:not(:hover, :focus-visible),
     .index-navigation:has(.index-panel:focus-visible) .index-panel:not(:focus-visible, :hover) {
+        flex-grow: 0.76;
         opacity: 0.58;
+    }
+
+    .has-mouse-input .index-panel:hover,
+    .index-panel:focus-visible {
+        flex-grow: 1.75;
     }
 
     .has-mouse-input .index-panel:hover::before,
