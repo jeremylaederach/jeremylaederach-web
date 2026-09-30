@@ -30,7 +30,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSee('Web products, client websites, and Windows tools—built from the backend to the interface.')
+            ->assertSee('Web products, client websites, and Windows tools – built from the backend to the interface.')
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading"', false)
             ->assertDontSee('class="kinetic-index__number"', false)
