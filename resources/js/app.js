@@ -16,7 +16,7 @@ const finePointer = window.matchMedia('(pointer: fine)').matches;
 root.classList.add('js');
 
 const aboutPlaygroundController = createAboutPlaygroundController({ reducedMotion });
-const interactionController = createInteractionController({ finePointer, reducedMotion });
+const interactionController = createInteractionController({ reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
 const pageHeadingController = createPageHeadingController({ reducedMotion });
 const projectReelController = createProjectReelController();

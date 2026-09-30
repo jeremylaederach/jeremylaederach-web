@@ -280,7 +280,7 @@
         display: none;
     }
 
-    @media (hover: hover) and (pointer: fine) {
+    @media (prefers-reduced-motion: no-preference) {
         html.has-site-pointer:not(:has(dialog[open])),
         html.has-site-pointer:not(:has(dialog[open])) * {
             cursor: none !important;

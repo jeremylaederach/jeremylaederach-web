@@ -1,6 +1,6 @@
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-export const createInteractionController = ({ finePointer, reducedMotion }) => {
+export const createInteractionController = ({ reducedMotion }) => {
     let revealObserver;
     let surfaceTargetFrame;
     let surfaceAnimationFrame;
@@ -274,7 +274,24 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         trailFrame = undefined;
     };
 
+    const hidePointer = () => {
+        isPointerInside = false;
+        hasPointerPosition = false;
+        pointerEvent = undefined;
+        window.cancelAnimationFrame(trailFrame);
+        trailFrame = undefined;
+        resetPointerSurfaces();
+        sitePointerLayer?.classList.remove('is-pressed');
+        document.documentElement.classList.remove('has-site-pointer');
+    };
+
     const schedulePointerUpdate = (event) => {
+        // Use the actual input, including mice attached to touch-first devices.
+        if (event.pointerType !== 'mouse') {
+            hidePointer();
+            return;
+        }
+
         pointerEvent = event;
         isPointerInside = true;
 
@@ -342,10 +359,15 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
     const initialize = () => {
         initializeReveals();
 
-        if (finePointer && !reducedMotion) {
+        if (!reducedMotion) {
             document.addEventListener('pointermove', schedulePointerUpdate, { passive: true });
 
-            document.addEventListener('pointerdown', () => {
+            document.addEventListener('pointerdown', (event) => {
+                if (event.pointerType !== 'mouse') {
+                    hidePointer();
+                    return;
+                }
+
                 sitePointerLayer?.classList.add('is-pressed');
             }, { passive: true });
 
@@ -353,10 +375,8 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
                 sitePointerLayer?.classList.remove('is-pressed');
             }, { passive: true });
 
-            window.addEventListener('blur', () => {
-                isPointerInside = false;
-                document.documentElement.classList.remove('has-site-pointer');
-            });
+            document.addEventListener('pointercancel', hidePointer, { passive: true });
+            window.addEventListener('blur', hidePointer);
         }
 
         document.addEventListener('pointerover', (event) => {
@@ -379,7 +399,7 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
                 setIndexRoute(panel.dataset.route);
             }
 
-            if (finePointer && !reducedMotion) {
+            if (event.pointerType === 'mouse' && !reducedMotion) {
                 setPointerIntent(event.target);
             }
         }, { passive: true });
@@ -393,10 +413,9 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
                 setIndexRoute();
             }
 
-            if (finePointer && !reducedMotion) {
+            if (event.pointerType === 'mouse' && !reducedMotion) {
                 if (!event.relatedTarget) {
-                    isPointerInside = false;
-                    document.documentElement.classList.remove('has-site-pointer');
+                    hidePointer();
                 }
 
                 setPointerIntent(event.relatedTarget);
@@ -435,7 +454,7 @@ export const createInteractionController = ({ finePointer, reducedMotion }) => {
         }, { passive: true });
 
         const refreshPointerIntent = () => {
-            if (finePointer && !reducedMotion && isPointerInside && surfaceTargetFrame === undefined) {
+            if (!reducedMotion && isPointerInside && surfaceTargetFrame === undefined) {
                 surfaceTargetFrame = window.requestAnimationFrame(updatePointerSurfaceTarget);
             }
         };
