@@ -69,7 +69,7 @@ return [
             'home' => [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
-                'summary' => 'Web products, client websites, and Windows tools—built from the backend to the interface.',
+                'summary' => 'Web products, client websites, and Windows tools – built from the backend to the interface.',
                 'explore' => 'Explore projects',
                 'index_label' => 'Landing',
                 'routes' => [
