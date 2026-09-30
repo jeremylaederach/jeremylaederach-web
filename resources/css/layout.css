@@ -351,7 +351,7 @@
             box-shadow: 0 0 0 1px rgba(7, 7, 10, 0.18), 0 0 20px rgba(var(--pointer-rgb), 0.08);
             translate: var(--pointer-ring-x, -64px) var(--pointer-ring-y, -64px);
             transform: translate(-50%, -50%);
-            transition: width 180ms ease, height 180ms ease, border-radius 180ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease, translate 120ms ease;
+            transition: width 180ms ease, height 180ms ease, border-radius 180ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease;
         }
 
         .site-pointer__dot {
@@ -361,42 +361,6 @@
             box-shadow: 0 0 10px rgba(244, 241, 234, 0.5);
             transform: translate(-50%, -50%);
             transition: background-color 220ms ease, transform 420ms var(--ease-heavy);
-        }
-
-        .site-pointer-trail {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        .site-pointer-trail__path {
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: opacity 260ms ease, stroke-width 420ms var(--ease-heavy);
-            vector-effect: non-scaling-stroke;
-        }
-
-        .site-pointer-trail__path--outer {
-            stroke-width: 22px;
-        }
-
-        .site-pointer-trail__path--core {
-            stroke-width: 9px;
-        }
-
-        .site-pointer-trail__path--highlight {
-            stroke-width: 2.5px;
-        }
-
-        .site-pointer-trail__stop--accent {
-            stop-color: rgb(var(--pointer-rgb));
-        }
-
-        .site-pointer-trail__stop--highlight {
-            stop-color: var(--ink);
         }
 
         .site-pointer-layer.is-interactive .site-pointer__ring {
@@ -411,14 +375,6 @@
         .site-pointer-layer.is-interactive .site-pointer__dot {
             background: rgb(var(--pointer-rgb));
             transform: translate(-50%, -50%) scale(1.65);
-        }
-
-        .site-pointer-layer.is-interactive .site-pointer-trail__path--outer {
-            stroke-width: 26px;
-        }
-
-        .site-pointer-layer.is-interactive .site-pointer-trail__path--core {
-            stroke-width: 11px;
         }
 
         .site-pointer-layer.is-pressed .site-pointer__ring {

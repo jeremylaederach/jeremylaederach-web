@@ -10,8 +10,6 @@ const setup = (t, reducedMotion = false) => {
     `);
     const globals = {
         getComputedStyle: window.getComputedStyle.bind(window),
-        SVGPathElement: window.SVGElement,
-        SVGLinearGradientElement: window.SVGElement,
     };
 
     for (const [name, value] of Object.entries(globals)) {
@@ -106,26 +104,46 @@ test('the sticky ring moves only slightly within the same control while the dot 
     assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '80px');
 });
 
-test('settled glow surfaces stop receiving updates when the mouse moves elsewhere', t => {
+test('free cursor and glow use the latest mouse position without follow-up animation frames', t => {
     const { pointer, frame, frames } = setup(t);
-    const surfaces = [document.createElement('div'), document.createElement('div')];
-    surfaces.forEach(surface => {
-        surface.dataset.pointerSurface = '';
-        surface.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 100 });
-        document.body.append(surface);
-    });
-    const writes = t.mock.method(surfaces[0].style, 'setProperty');
-    document.elementFromPoint = () => surfaces[0];
+    const surface = document.createElement('div');
+    surface.dataset.pointerSurface = '';
+    surface.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 100 });
+    document.body.append(surface);
+    document.elementFromPoint = () => surface;
+
     pointer('pointermove', 'mouse', 40);
-    for (let i = 0; i < 200 && frames.size; i++) frame();
-    assert.equal(frames.size, 0);
-    const settledWrites = writes.mock.callCount();
-    assert.ok(settledWrites > 0);
-    document.elementFromPoint = () => surfaces[1];
     pointer('pointermove', 'mouse', 80);
-    for (let i = 0; i < 200 && frames.size; i++) frame();
+    assert.equal(frames.size, 1);
+    frame();
+
+    const layer = document.querySelector('[data-site-pointer-layer]');
+    assert.equal(layer.style.getPropertyValue('--pointer-ring-x'), '80px');
+    assert.equal(layer.style.getPropertyValue('--pointer-ring-y'), '40px');
+    assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '80px');
+    assert.equal(surface.style.getPropertyValue('--pointer-x'), '40%');
+    assert.equal(surface.style.getPropertyValue('--pointer-y'), '40%');
     assert.equal(frames.size, 0);
-    assert.equal(writes.mock.callCount(), settledWrites);
+});
+
+test('scrolling and page replacement refresh the control under a stationary mouse', t => {
+    const { window, pointer, frame, frames } = setup(t);
+    const layer = document.querySelector('[data-site-pointer-layer]');
+    pointer('pointermove', 'mouse');
+    frame();
+    assert.equal(layer.classList.contains('is-interactive'), true);
+
+    document.elementFromPoint = () => document.body;
+    window.dispatchEvent(new window.Event('scroll'));
+    frame();
+    assert.equal(layer.classList.contains('is-interactive'), false);
+    assert.equal(layer.style.getPropertyValue('--pointer-ring-x'), '40px');
+
+    document.elementFromPoint = () => document.querySelector('button');
+    document.dispatchEvent(new window.Event('portfolio:page-swapped'));
+    frame();
+    assert.equal(layer.classList.contains('is-interactive'), true);
+    assert.equal(frames.size, 0);
 });
 
 test('losing window focus cancels queued cursor updates', t => {
