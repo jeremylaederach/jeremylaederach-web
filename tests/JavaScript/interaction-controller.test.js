@@ -3,10 +3,11 @@ import test from 'node:test';
 import { createInteractionController } from '../../resources/js/interaction-controller.js';
 import { createDom } from './dom.js';
 
-const setup = (t, reducedMotion = false) => {
+const setup = (t, reducedMotion = false, withTrail = false) => {
     const window = createDom(t, `
         <div data-site-pointer-layer><div data-site-pointer></div></div>
         <button data-route="projects">Projects</button>
+        ${withTrail ? '<svg><defs><linearGradient data-pointer-gradient="outer"></linearGradient></defs><path data-pointer-path="outer"></path></svg>' : ''}
     `);
     const globals = {
         getComputedStyle: window.getComputedStyle.bind(window),
@@ -153,4 +154,49 @@ test('losing window focus cancels queued cursor updates', t => {
     frame();
     assert.equal(frames.size, 0);
     assert.equal(document.documentElement.classList.contains('has-site-pointer'), false);
+});
+
+test('the decorative trail settles without moving or repeatedly updating the cursor', t => {
+    const { pointer, frame, frames } = setup(t, false, true);
+    document.elementFromPoint = () => document.body;
+    pointer('pointermove', 'mouse', 40);
+    frame();
+    frame();
+    assert.equal(frames.size, 0);
+
+    const cursor = document.querySelector('[data-site-pointer]');
+    const writes = t.mock.method(cursor.style, 'setProperty');
+    pointer('pointermove', 'mouse', 240);
+    frame();
+    assert.equal(cursor.style.getPropertyValue('--site-pointer-x'), '240px');
+    assert.equal(document.querySelector('[data-site-pointer-layer]').style.getPropertyValue('--pointer-ring-x'), '240px');
+    const cursorWrites = writes.mock.callCount();
+    frame();
+    const trail = document.querySelector('[data-pointer-path]');
+    const movingPath = trail.getAttribute('d');
+    assert.ok(movingPath.includes('C'));
+    assert.ok(frames.size > 0);
+    for (let i = 0; i < 200 && frames.size; i++) frame();
+    assert.equal(frames.size, 0);
+    assert.notEqual(trail.getAttribute('d'), movingPath);
+    assert.equal(writes.mock.callCount(), cursorWrites);
+});
+
+test('switching to touch clears the trail and mouse re-entry starts at the new position', t => {
+    const { pointer, frame, frames } = setup(t, false, true);
+    pointer('pointermove', 'mouse', 40);
+    frame();
+    frame();
+    pointer('pointermove', 'mouse', 240);
+    frame();
+    frame();
+    pointer('pointerdown', 'touch');
+    const trail = document.querySelector('[data-pointer-path]');
+    assert.equal(frames.size, 0);
+    assert.equal(trail.hasAttribute('d'), false);
+    pointer('pointermove', 'mouse', 500);
+    frame();
+    frame();
+    assert.equal(frames.size, 0);
+    assert.ok(trail.getAttribute('d').startsWith('M 500.00 40.00'));
 });

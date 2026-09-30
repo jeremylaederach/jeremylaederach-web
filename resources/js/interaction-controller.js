@@ -1,3 +1,5 @@
+import { createPointerTrail } from './pointer-trail.js';
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 export const createInteractionController = ({ reducedMotion }) => {
@@ -6,6 +8,7 @@ export const createInteractionController = ({ reducedMotion }) => {
     let pointerEvent;
     const sitePointerLayer = document.querySelector('[data-site-pointer-layer]');
     const sitePointer = document.querySelector('[data-site-pointer]');
+    const trail = createPointerTrail();
 
     const getInteractiveTarget = (target) => target instanceof Element
         ? target.closest('a[href], button, input, textarea, select')
@@ -53,6 +56,7 @@ export const createInteractionController = ({ reducedMotion }) => {
         const rect = surface?.getBoundingClientRect();
 
         setPointerIntent(target);
+        trail.move(clientX, clientY);
 
         if (sitePointer instanceof HTMLElement) {
             sitePointer.style.setProperty('--site-pointer-x', clientX + 'px');
@@ -69,6 +73,7 @@ export const createInteractionController = ({ reducedMotion }) => {
     };
 
     const hidePointer = () => {
+        trail.reset();
         window.cancelAnimationFrame(pointerFrame);
         pointerFrame = undefined;
         pointerEvent = undefined;
