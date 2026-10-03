@@ -2,6 +2,15 @@ name: Quality checks
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy the checked main build to production
+        type: boolean
+        default: false
+      backup_confirmed:
+        description: A current website backup and restore path are confirmed
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -14,7 +23,8 @@ permissions:
 
 concurrency:
   group: quality-${{ github.ref }}
-  cancel-in-progress: true
+  # Never interrupt an active production upload when another main push arrives.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
@@ -65,8 +75,14 @@ jobs:
       - name: Run code quality and tests
         run: composer test
 
+      - name: Test deployment safeguards
+        run: python3 -B -m unittest discover -s tests/deployment -v
+
       - name: Verify static deployment package
         run: npm run export:static
+
+      - name: Validate production package
+        run: python3 -B scripts/deploy_static.py --check-only dist-static
 
       - name: Save Hosttech upload package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -76,3 +92,40 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
+
+  deploy:
+    needs: quality
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.deploy) ||
+       (github.event_name == 'push' && vars.DEPLOY_AUTOMATIC == 'true'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://jeremylaederach.ch/en/
+
+    steps:
+      - name: Confirm first manual upload prerequisites
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          BACKUP_CONFIRMED: ${{ inputs.backup_confirmed }}
+        run: test "$BACKUP_CONFIRMED" = true
+
+      - name: Check out deployment script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download the checked production package
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: hosttech-${{ github.sha }}
+          path: dist-static/
+
+      - name: Upload through verified FTPS and check the live website
+        env:
+          DEPLOY_FTP_USERNAME: ${{ secrets.DEPLOY_FTP_USERNAME }}
+          DEPLOY_FTP_PASSWORD: ${{ secrets.DEPLOY_FTP_PASSWORD }}
+        run: python3 -B scripts/deploy_static.py dist-static

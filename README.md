@@ -54,6 +54,8 @@ resources/css/          Foundation, layout and responsive styles
 resources/js/           Navigation, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Playground logic and DOM interaction tests
+scripts/deploy_static.py Restricted FTPS upload and live verification
+tests/deployment/        Deployment safeguards (Python standard library)
 ```
 
 Project galleries share one Blade component, interaction controller and stylesheet (`project-reel.css`). The gallery distinguishes screenshots from HTML interface previews; previews use illustrative data and are not live product embeds. All galleries use manual navigation with previous/next buttons, arrow keys and touch swipes; images never advance automatically. The optional enlarged view uses a native dialog and moves the same gallery into it, preserving the selected slide without duplicating markup or carousel state. Closing restores keyboard focus and the original layout.
@@ -68,7 +70,9 @@ Run the same checks used by GitHub Actions:
 npm run build
 npm test
 composer test
+python -B -m unittest discover -s tests/deployment -v
 npm run export:static
+python -B scripts/deploy_static.py --check-only dist-static
 composer audit --locked
 npm audit
 ```
@@ -83,7 +87,26 @@ npm run build:static
 
 Laravel remains the maintainable source project. Production receives only generated HTML, CSS, JavaScript and public media.
 
-GitHub Actions provides a ready-to-upload ZIP after all quality checks and the static export succeed. Open the successful **Quality checks** run for the desired commit, then download its **hosttech-<commit>** artifact. The workflow also supports **Run workflow** to rebuild a package without a new commit. Artifacts remain available for 14 days and include the required `.htaccess` files. This prepares the package; uploading to Hosttech is still manual.
+GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, dependency audits and static export succeed. Artifacts remain available for 14 days and include the required `.htaccess` files. The deployment job uploads that same checked package through explicit FTPS; it does not rebuild the site. Like Jay-Jay, deployment is opt-in: manual runs need **deploy** and **backup_confirmed**, and automatic uploads require the repository variable `DEPLOY_AUTOMATIC=true`. Pull requests, other branches and tags never deploy.
+
+### First-time setup
+
+1. Back up this website's document root and confirm how to restore it. Keep a regular backup schedule before enabling automatic uploads; restore only the portfolio files, not unrelated subscription data.
+2. In Hosttech/Plesk hosting 117, create a separate FTP user **jeremylaederach-deploy** restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not allow access to Jay-Jay or other sites. The uploader checks the existing portfolio URL before writing. Do not reuse the master login or Jay-Jay's deployment credential.
+3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** (`jeremylaederach-deploy`) and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The endpoint is `117.hosttech.eu:21`; both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
+4. Keep `DEPLOY_AUTOMATIC` absent or `false` initially. Commit and push the reviewed changes. Under **Actions → Quality checks → Run workflow**, choose `main` and enable **deploy** and **backup_confirmed**. A manual run without **deploy** performs quality checks only.
+5. Wait for both jobs to succeed, then review EN/DE, project galleries, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job compares published HTML/CSS/JS with the package; it does not replace visual checks or verify image/font contents.
+6. After the first accepted deployment, set the repository variable **DEPLOY_AUTOMATIC** to `true`. A reviewed `main` push then runs tests, builds and deploys on GitHub, even when your computer is closed. Review the live result before creating a release tag. Set the variable to `false` to pause automatic uploads without disabling CI.
+
+The upload installs root dot-file protection first, then assets, then HTML. Files are transferred under temporary names and renamed only after transfer completes. Active production runs are not cancelled by another push. The uploader never mirror-deletes server files or old hashed assets, preserving `.well-known` and existing server-managed content. The portfolio package rejects every PHP file.
+
+The whole release is **not atomic**, and there is no automatic rollback or tag creation. If an upload or live comparison fails, inspect the live state and either restore the targeted website backup or revert the faulty change on `main` and deploy the checked revert. Previous hashed assets are retained deliberately; any later cleanup should be limited to known unused build files. Environment restrictions and deployment concurrency follow [GitHub's deployment controls](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments).
+
+Python is used only for deployment and its tests, with no third-party packages. GitHub's Ubuntu runner already provides it; local deployment tests require Python 3.
+
+### Manual fallback
+
+The successful workflow's artifact can still be downloaded and uploaded manually. Local `npm run build:static` also remains available for previews and emergency uploads.
 
 In the Plesk file manager for `jeremylaederach.ch`, back up the existing website, upload the ZIP into the domain's `httpdocs/` directory, and extract it there with replacement enabled. `index.html`, `.htaccess`, `en/`, `de/` and `build/` must sit directly inside `httpdocs/`, without an extra `dist-static/` folder. Preserve `.well-known/` and other Plesk-managed files, remove the uploaded ZIP afterwards, and verify the pages as described below.
 
