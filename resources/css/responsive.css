@@ -5,7 +5,7 @@
     }
 
     .kinetic-index__heading {
-        font-size: 84px;
+        font-size: clamp(64px, 6.6vw, 84px);
     }
 
     .index-panel {
@@ -103,15 +103,32 @@
 
     .kinetic-index__masthead {
         padding: 112px 0 38px;
-        grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
-        gap: 38px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+        align-content: center;
+    }
+
+    .kinetic-index__title {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .kinetic-index__heading {
+        grid-column: 1;
         font-size: 64px;
+        text-align: center;
+    }
+
+    .kinetic-index__intro {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .kinetic-index__intro::before {
+        margin-inline: auto;
     }
 
     .kinetic-index__summary {
+        margin-inline: auto;
         font-size: 15px;
     }
 
@@ -259,7 +276,12 @@
     }
 
     .about-story {
-        gap: 16px;
+        gap: 32px 16px;
+    }
+
+    .about-story__lead,
+    .about-story__body {
+        grid-column: 3 / 13;
     }
 
     .about-story__lead h2 {
@@ -441,7 +463,7 @@
     .kinetic-index {
         --index-column-gap: 14px;
         --index-number-column: 30px;
-        grid-template-rows: minmax(260px, 40svh) minmax(390px, 60svh);
+        grid-template-rows: minmax(280px, 40svh) minmax(390px, 1fr);
     }
 
     .kinetic-index__masthead {
@@ -452,22 +474,13 @@
         align-content: center;
     }
 
-    .kinetic-index__title {
-        grid-template-columns: var(--index-number-column) minmax(0, 1fr);
-        gap: var(--index-column-gap);
-    }
-
-    .kinetic-index__intro {
-        padding-left: calc(var(--index-number-column) + var(--index-column-gap));
-    }
-
     .kinetic-index__intro::before {
         width: 42px;
-        margin-bottom: 12px;
+        margin: 0 auto 12px;
     }
 
     .kinetic-index__heading {
-        font-size: 40px;
+        font-size: clamp(32px, 10vw, 48px);
         line-height: 0.94;
     }
 
@@ -480,7 +493,8 @@
     .index-panel {
         grid-template-columns: var(--index-number-column) minmax(0, 1fr) 40px;
         grid-template-rows: auto auto;
-        gap: 5px var(--index-column-gap);
+        gap: 10px var(--index-column-gap);
+        align-content: center;
         padding: 16px 20px;
     }
 
@@ -1555,17 +1569,9 @@
 }
 
 @media (max-width: 380px), (max-height: 700px) and (max-width: 720px) {
-    .kinetic-index {
-        grid-template-rows: minmax(300px, 47svh) minmax(390px, 63svh);
-    }
-
     .kinetic-index__masthead {
         padding-top: 84px;
         gap: 12px;
-    }
-
-    .kinetic-index__heading {
-        font-size: 36px;
     }
 
     .kinetic-index__summary {
