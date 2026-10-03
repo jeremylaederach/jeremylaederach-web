@@ -20,6 +20,18 @@
         font-size: 92px;
     }
 
+    .career-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .career-list li:nth-child(2) {
+        border-right: 0;
+    }
+
+    .career-list li:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+    }
+
     .project-case__link {
         grid-template-columns: minmax(280px, 0.72fr) minmax(480px, 1.28fr);
         gap: 54px;
@@ -302,18 +314,6 @@
     .career-section h2,
     .stack-section h2 {
         font-size: 52px;
-    }
-
-    .career-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .career-list li:nth-child(2) {
-        border-right: 0;
-    }
-
-    .career-list li:nth-child(-n + 2) {
-        border-bottom: 1px solid var(--line);
     }
 
     .career-list h3 {
