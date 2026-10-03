@@ -193,6 +193,9 @@ ErrorDocument 404 /404.html
     Header always set Strict-Transport-Security "max-age=31536000"
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "DENY"
+    <FilesMatch "\.html$">
+        Header always set Cache-Control "no-cache"
+    </FilesMatch>
 </IfModule>
 
 <FilesMatch "(^\.|^\.env(?:\..*)?$|^artisan$|^composer\.(?:json|lock)$|^package(?:-lock)?\.json$|^phpunit\.xml$|^vite\.config\..*$)">

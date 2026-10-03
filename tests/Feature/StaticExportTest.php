@@ -42,6 +42,7 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('Strict-Transport-Security "max-age=31536000"', $rootHtaccess);
             $this->assertStringContainsString('X-Content-Type-Options "nosniff"', $rootHtaccess);
             $this->assertStringContainsString('X-Frame-Options "DENY"', $rootHtaccess);
+            $this->assertStringContainsString('Header always set Cache-Control "no-cache"', $rootHtaccess);
             $this->assertStringNotContainsString('/@vite/client', $englishHome);
             $this->assertStringNotContainsString('localhost', $englishHome);
             $this->assertStringNotContainsString('[::1]', $englishHome);
