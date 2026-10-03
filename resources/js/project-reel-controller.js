@@ -20,6 +20,10 @@ export const createProjectReelController = () => {
             return;
         }
 
+        if (!initialRender) {
+            state.reel.dataset.direction = requestedIndex > previous ? 'next' : 'previous';
+        }
+
         state.current = index;
 
         state.slides.forEach((slide, slideIndex) => {
@@ -65,6 +69,7 @@ export const createProjectReelController = () => {
             currentLabel: reel.querySelector('[data-reel-current]'),
             initialized: false,
             kind: reel.querySelector('[data-reel-kind]'),
+            reel,
             slides,
             suppressClickUntil: 0,
             swipeStart: undefined,

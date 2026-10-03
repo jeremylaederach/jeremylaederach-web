@@ -58,6 +58,16 @@ test('reinitialization preserves selection without duplicating listeners', (t) =
     assert.equal(document.querySelector('[data-reel-current]').textContent, '01');
 });
 
+test('gallery motion follows the requested direction, including wraparound', (t) => {
+    setup(t);
+    const reel = document.querySelector('[data-project-reel]');
+    assert.equal(reel.dataset.direction, undefined);
+    for (const action of ['previous', 'next', 'next', 'previous']) {
+        document.querySelector(`[data-reel-action="${action}"]`).click();
+        assert.equal(reel.dataset.direction, action);
+    }
+});
+
 test('rapid navigation keeps exactly one active, accessible slide and matching labels', (t) => {
     setup(t);
     for (const action of ['next', 'next', 'previous', 'next', 'previous']) {

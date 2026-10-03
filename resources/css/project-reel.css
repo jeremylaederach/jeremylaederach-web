@@ -48,16 +48,34 @@
         inset: 0;
         opacity: 0;
         pointer-events: none;
-        transform: translateY(12px) scale(0.98);
-        transition:
-            opacity 360ms ease,
-            transform 520ms var(--ease-out);
+        transition: opacity 360ms ease;
     }
 
     .project-reel__slide[data-state='active'] {
         z-index: 2;
         opacity: 1;
-        transform: none;
+    }
+
+    .project-reel[data-direction] {
+        --reel-offset: 24px;
+    }
+
+    .project-reel[data-direction='previous'] {
+        --reel-offset: -24px;
+    }
+
+    .project-reel[data-direction] .project-reel__slide[data-state='active'] {
+        animation: reel-enter 520ms var(--ease-out) both;
+    }
+
+    @keyframes reel-enter {
+        from {
+            transform: translateX(var(--reel-offset)) scale(0.985);
+        }
+
+        to {
+            transform: none;
+        }
     }
 
     .project-reel__surface,
@@ -318,6 +336,11 @@
     }
 
     @media (max-width: 900px) {
+        .project-reel__controls > button {
+            width: 44px;
+            height: 44px;
+        }
+
         .project-reel__dialog {
             width: calc(100% - 20px);
             max-height: calc(100dvh - 20px);
