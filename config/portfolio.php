@@ -103,8 +103,8 @@ return [
                         'value' => 'I completed my four-year Application Developer EFZ apprenticeship at EcoLogic AG. Alongside writing code, I learned to work through customer requirements and maintain existing software.',
                     ],
                     [
-                        'label' => 'From September 2026',
-                        'value' => 'I start the BSc in Business Informatics at OST to learn more about the business decisions behind software projects.',
+                        'label' => 'Since September 2026',
+                        'value' => 'Alongside development, I study Business Informatics at OST. The degree connects my technical work with the business side of software projects.',
                     ],
                 ],
                 'playground_label' => 'Code',
@@ -255,7 +255,7 @@ return [
                     [
                         'period' => 'Sep 2026 — Sep 2030',
                         'title' => 'Business Informatics BSc',
-                        'body' => 'Studies at OST, starting in September 2026.',
+                        'body' => 'Studying at OST alongside my software projects.',
                     ],
                 ],
             ],
@@ -701,8 +701,8 @@ return [
                         'value' => 'Meine vierjährige Lehre als Applikationsentwickler EFZ habe ich bei EcoLogic AG abgeschlossen. Neben dem Programmieren gehörten Kundenanforderungen und die Weiterentwicklung bestehender Software zum Alltag.',
                     ],
                     [
-                        'label' => 'Ab September 2026',
-                        'value' => 'Ich starte den BSc Wirtschaftsinformatik an der OST, um die wirtschaftlichen Entscheidungen hinter Softwareprojekten besser zu verstehen.',
+                        'label' => 'Seit September 2026',
+                        'value' => 'Neben der Entwicklung studiere ich Wirtschaftsinformatik an der OST. Im Studium verbinde ich meine technische Arbeit mit der wirtschaftlichen Seite von Softwareprojekten.',
                     ],
                 ],
                 'playground_label' => 'Code',
@@ -853,7 +853,7 @@ return [
                     [
                         'period' => 'Sep. 2026 — Sep. 2030',
                         'title' => 'BSc Wirtschaftsinformatik',
-                        'body' => 'Studium an der OST ab September 2026.',
+                        'body' => 'Studium an der OST neben meinen Softwareprojekten.',
                     ],
                 ],
             ],

@@ -19,6 +19,21 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
+    public function test_about_copy_reflects_the_confirmed_study_start_in_both_locales(): void
+    {
+        $this->get('/en/about')
+            ->assertOk()
+            ->assertSee('Since September 2026')
+            ->assertSee('I study Business Informatics at OST.')
+            ->assertDontSee('I start the BSc');
+
+        $this->get('/de/about')
+            ->assertOk()
+            ->assertSee('Seit September 2026')
+            ->assertSee('studiere ich Wirtschaftsinformatik an der OST.')
+            ->assertDontSee('Ich starte den BSc');
+    }
+
     public function test_landing_page_renders_the_kinetic_route_index(): void
     {
         $response = $this->get('/en');
@@ -123,7 +138,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="technology-groups"', false)
             ->assertSee('In brief.')
             ->assertSee('Foundation')
-            ->assertSee('From September 2026')
+            ->assertSee('Since September 2026')
             ->assertSee('Playground.')
             ->assertSee('Sorting')
             ->assertSee('It repeats that split until every group is in order.')
