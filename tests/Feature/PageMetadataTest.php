@@ -2,10 +2,24 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Routing\Route as RoutingRoute;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class PageMetadataTest extends TestCase
 {
+    private const PAGES = ['home', 'about', 'projects', 'quantified', 'jay-jay', 'session-deck', 'contact', 'imprint', 'privacy'];
+
+    public function test_the_named_locale_routes_are_exactly_the_public_pages(): void
+    {
+        $namedRoutes = collect(Route::getRoutes()->getRoutesByName())
+            ->filter(fn (RoutingRoute $route): bool => in_array('locale', $route->parameterNames(), true))
+            ->keys()
+            ->all();
+
+        $this->assertSame(self::PAGES, $namedRoutes);
+    }
+
     public function test_about_page_uses_only_its_localized_heading_as_the_tab_title(): void
     {
         $this->withoutVite();
@@ -21,12 +35,11 @@ class PageMetadataTest extends TestCase
     public function test_each_localized_page_has_a_distinct_title_and_matching_language_links(): void
     {
         $this->withoutVite();
-        $pages = ['home', 'about', 'projects', 'quantified', 'jay-jay', 'session-deck', 'contact', 'imprint', 'privacy'];
 
         foreach (array_keys(config('portfolio.locales')) as $locale) {
             $titles = [];
 
-            foreach ($pages as $page) {
+            foreach (self::PAGES as $page) {
                 $url = route($page, ['locale' => $locale]);
                 $html = $this->get($url)->assertOk()->getContent();
                 preg_match('/<title>(.*?)<\/title>/', $html, $matches);
@@ -51,7 +64,7 @@ class PageMetadataTest extends TestCase
                 }
             }
 
-            $this->assertCount(count($pages), array_unique($titles));
+            $this->assertCount(count(self::PAGES), array_unique($titles));
         }
     }
 

@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use RuntimeException;
 use SimpleXMLElement;
@@ -15,30 +17,6 @@ class ExportStaticSite extends Command
     protected $signature = 'site:export-static';
 
     protected $description = 'Export the portfolio as a static Plesk deployment package';
-
-    /**
-     * @var array<int, string>
-     */
-    private array $pages = [
-        '/en',
-        '/en/about',
-        '/en/projects',
-        '/en/quantified',
-        '/en/jay-jay',
-        '/en/session-deck',
-        '/en/contact',
-        '/en/imprint',
-        '/en/privacy',
-        '/de',
-        '/de/about',
-        '/de/projects',
-        '/de/quantified',
-        '/de/jay-jay',
-        '/de/session-deck',
-        '/de/contact',
-        '/de/imprint',
-        '/de/privacy',
-    ];
 
     public function handle(Kernel $kernel): int
     {
@@ -97,32 +75,53 @@ class ExportStaticSite extends Command
         URL::forceRootUrl($siteUrl);
         URL::forceScheme('https');
 
-        foreach ($this->pages as $page) {
+        $locales = array_keys(config('portfolio.locales'));
+        $pages = $this->pages($locales);
+
+        foreach ($pages as $page) {
             if (! $this->exportPage($kernel, $siteUrl, $outputDirectory, $page)) {
                 return self::FAILURE;
             }
         }
 
-        foreach (['en', 'de'] as $locale) {
+        foreach ($locales as $locale) {
             if (! $this->exportPage($kernel, $siteUrl, $outputDirectory, "/{$locale}/404", 404)) {
                 return self::FAILURE;
             }
+
+            File::put($outputDirectory."/{$locale}/.htaccess", "ErrorDocument 404 /{$locale}/404/index.html\n");
         }
 
-        File::copy($outputDirectory.'/en/404/index.html', $outputDirectory.'/404.html');
+        File::copy($outputDirectory.'/'.config('portfolio.default_locale').'/404/index.html', $outputDirectory.'/404.html');
         File::put($outputDirectory.'/.htaccess', $this->rootHtaccess());
-        File::put($outputDirectory.'/en/.htaccess', "ErrorDocument 404 /en/404/index.html\n");
-        File::put($outputDirectory.'/de/.htaccess', "ErrorDocument 404 /de/404/index.html\n");
         File::put($outputDirectory.'/index.html', $this->rootRedirect());
         $sitemap = new SimpleXMLElement('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
 
-        foreach ($this->pages as $page) {
+        foreach ($pages as $page) {
             $sitemap->addChild('url')->addChild('loc', $siteUrl.$page.'/');
         }
 
         File::put($outputDirectory.'/sitemap.xml', $sitemap->asXML());
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Every named route with a locale is a public page; redirects stay unnamed.
+     *
+     * @param  list<string>  $locales
+     * @return list<string>
+     */
+    private function pages(array $locales): array
+    {
+        $routes = collect(Route::getRoutes()->getRoutesByName())
+            ->filter(fn (RoutingRoute $route): bool => in_array('locale', $route->parameterNames(), true))
+            ->keys();
+
+        return collect($locales)
+            ->crossJoin($routes)
+            ->map(fn (array $page): string => route($page[1], ['locale' => $page[0]], false))
+            ->all();
     }
 
     private function publishExport(string $stagingDirectory): void

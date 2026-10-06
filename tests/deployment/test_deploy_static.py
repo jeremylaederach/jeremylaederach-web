@@ -56,15 +56,25 @@ class FakeFTP:
         self.events.append(("delete", name))
 
 
+def sitemap(pages, site=deploy.SITE_URL):
+    locations = "".join(f"<url><loc>{site}/{page}/</loc></url>" for page in pages)
+    return f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{locations}</urlset>'
+
+
 class DeploymentTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for name in deploy.REQUIRED | {"build/assets/app-hash.css", "build/assets/app-hash.js"}:
-            path = self.root / name
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("test " + name, encoding="utf-8")
+        self.write("sitemap.xml", sitemap(("en", "en/about", "de", "de/about")))
+        assets = {"build/assets/app-hash.css", "build/assets/app-hash.js"}
+        for name in (deploy.required_files(self.root) | assets) - {"sitemap.xml"}:
+            self.write(name, "test " + name)
+
+    def write(self, name, content):
+        path = self.root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
 
     def test_assets_are_uploaded_before_html(self):
         ftp = FakeFTP()
@@ -101,7 +111,10 @@ class DeploymentTest(unittest.TestCase):
                 path.unlink()
 
     def test_every_required_file_is_checked(self):
-        for name in deploy.REQUIRED:
+        required = deploy.required_files(self.root)
+        self.assertLessEqual(
+            {"de/about/index.html", "de/404/index.html", "de/.htaccess", "en/index.html"}, required)
+        for name in required:
             with self.subTest(name=name):
                 path = self.root / name
                 content = path.read_bytes()
@@ -109,6 +122,13 @@ class DeploymentTest(unittest.TestCase):
                 with self.assertRaisesRegex(deploy.DeploymentError, "incomplete"):
                     deploy.package_files(self.root)
                 path.write_bytes(content)
+
+    def test_sitemap_must_list_pages_of_this_website(self):
+        for content in (sitemap(()), sitemap(("en",), site="https://jay-jay.ch"), "not a sitemap"):
+            with self.subTest(content=content):
+                self.write("sitemap.xml", content)
+                with self.assertRaises(deploy.DeploymentError):
+                    deploy.package_files(self.root)
 
     def test_symbolic_links_are_rejected(self):
         link = self.root / "linked-file"

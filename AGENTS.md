@@ -42,11 +42,11 @@ again before relying on them. Inspect implementation and tests before proposing 
   never invent or reword them unasked.
 - JavaScript stays vanilla: one small controller per concern, created in `resources/js/app.js`.
   Transition timing belongs to CSS, and reduced-motion preferences are respected (see README).
-- Adding, renaming or removing a public page touches several places together: `routes/web.php`,
-  `PortfolioController`, the page list and redirects in
-  `app/Console/Commands/ExportStaticSite.php`, `PAGES` in `scripts/deploy_static.py`, the
-  navigation in `config/portfolio.php` for both locales, and the tests. The uploader never
-  deletes: a removed page stays online until a release cleans it up explicitly.
+- A public page is a named route in `routes/web.php`; the export, the sitemap and the uploader's
+  completeness check follow from it. Adding, renaming or removing a page also touches
+  `PortfolioController`, the navigation in `config/portfolio.php` for both locales, the page list
+  in `PageMetadataTest` and, for an old address, the redirects in the exported `.htaccess`. The
+  uploader never deletes: a removed page stays online until a release cleans it up explicitly.
 - Run the checks from the README that fit the change. Build the Vite assets before `composer test`;
   its export test rewrites the ignored `dist-static/` folder. Add focused tests for meaningful
   behavior. Review rendered changes in English and German, on desktop and at 375px: overflow,
