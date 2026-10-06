@@ -56,6 +56,8 @@ tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Playground logic and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
 tests/deployment/        Deployment safeguards (Python standard library)
+AGENTS.md                Working rules for coding agents
+docs/handoff.md          Current state, open decisions and audit findings
 ```
 
 Project galleries share one Blade component, interaction controller and stylesheet (`project-reel.css`). The gallery distinguishes screenshots from HTML interface previews; previews use illustrative data and are not live product embeds. All galleries use manual navigation with previous/next buttons, arrow keys and touch swipes; images never advance automatically. The optional enlarged view uses a native dialog and moves the same gallery into it, preserving the selected slide without duplicating markup or carousel state. Closing restores keyboard focus and the original layout.
@@ -87,16 +89,16 @@ npm run build:static
 
 Laravel remains the maintainable source project. Production receives only generated HTML, CSS, JavaScript and public media.
 
-GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, dependency audits and static export succeed. Artifacts remain available for 14 days and include the required `.htaccess` files. The deployment job uploads that same checked package through explicit FTPS; it does not rebuild the site. Like Jay-Jay, deployment is opt-in: manual runs need **deploy** and **backup_confirmed**, and automatic uploads require the repository variable `DEPLOY_AUTOMATIC=true`. Pull requests, other branches and tags never deploy.
+GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, dependency audits and static export succeed. Artifacts remain available for 14 days and include the required `.htaccess` files. The deployment job uploads that same checked package through explicit FTPS; it does not rebuild the site. Production changes only from a manual run on `main` with **deploy** and **backup_confirmed** checked. Pushes, pull requests, other branches and tags never deploy.
 
 ### First-time setup
 
 1. Back up this website's document root and confirm how to restore it. Keep a regular backup schedule before enabling automatic uploads; restore only the portfolio files, not unrelated subscription data.
 2. In Hosttech/Plesk hosting 117, create a separate FTP user **jeremylaederach-deploy** restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not allow access to Jay-Jay or other sites. The uploader checks the existing portfolio URL before writing. Do not reuse the master login or Jay-Jay's deployment credential.
 3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** (`jeremylaederach-deploy`) and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The endpoint is `117.hosttech.eu:21`; both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
-4. Keep `DEPLOY_AUTOMATIC` absent or `false` initially. Commit and push the reviewed changes. Under **Actions → Quality checks → Run workflow**, choose `main` and enable **deploy** and **backup_confirmed**. A manual run without **deploy** performs quality checks only.
+4. Commit and push the reviewed changes; the push runs the quality checks only. Under **Actions → Quality checks → Run workflow**, choose `main` and enable **deploy** and **backup_confirmed**. A manual run without **deploy** performs quality checks only.
 5. Wait for both jobs to succeed, then review EN/DE, project galleries, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job compares published HTML/CSS/JS with the package; it does not replace visual checks or verify image/font contents.
-6. After the first accepted deployment, set the repository variable **DEPLOY_AUTOMATIC** to `true`. A reviewed `main` push then runs tests, builds and deploys on GitHub, even when your computer is closed. Review the live result before creating a release tag. Set the variable to `false` to pause automatic uploads without disabling CI.
+6. Create the release tag on the uploaded commit once the live result is accepted. Every later release repeats steps 4 to 6.
 
 The upload installs root dot-file protection first, then assets, then HTML. Files are transferred under temporary names and renamed only after transfer completes. Active production runs are not cancelled by another push. The uploader never mirror-deletes server files or old hashed assets, preserving `.well-known` and existing server-managed content. The portfolio package rejects every PHP file.
 
