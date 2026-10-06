@@ -2,11 +2,6 @@ name: Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      backup_confirmed:
-        description: A current website backup and restore path are confirmed
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -30,11 +25,6 @@ jobs:
       url: https://jeremylaederach.ch/en/
 
     steps:
-      - name: Confirm the backup before uploading
-        env:
-          BACKUP_CONFIRMED: ${{ inputs.backup_confirmed }}
-        run: test "$BACKUP_CONFIRMED" = true
-
       - name: Check out deployment script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

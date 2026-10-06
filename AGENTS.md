@@ -12,8 +12,7 @@ again before relying on them. Inspect implementation and tests before proposing 
 - Make coherent, verified commits for completed work and push them to `main`; the owner allowed
   this on 6 October 2026, together with deploying finished batches and tagging the deployed
   commit. Write English messages in the existing `type(scope): summary` style: one commit per
-  outcome, no bursts of small ones. List the hashes and their purpose. Before confirming the
-  backup of a deploy run, verify that the live release can be restored: its package is still
+  outcome, no bursts of small ones. List the hashes and their purpose. Before a deploy run, verify that the live release can be restored: its package is still
   retained as a workflow artifact or rebuilds from its tag. A change to the look that the owner
   has not asked for waits for his review before it is deployed. Force-pushing and rewriting
   history need his explicit word each time.
@@ -59,8 +58,8 @@ again before relying on them. Inspect implementation and tests before proposing 
 - Check the live site with a few targeted requests. The host runs a bot protection; do not send
   scripted bursts or probe protected paths.
 - A push to `main` runs the checks only. Production changes only through **Actions → Deploy →
-  Run workflow** on `main` with **backup_confirmed**, started or explicitly authorized by the
-  owner; that workflow runs the quality checks before it uploads. No ad-hoc FTP uploads. Do not
+  Run workflow** on `main`, started or explicitly authorized by the owner; that workflow runs
+  CI before it uploads. No ad-hoc FTP uploads. Do not
   weaken the deployment safeguards (target verification, PHP rejection, no mirror deletion) to
   make a run pass. Tag only the exact commit that was uploaded and checked.
 - Plesk, DNS and GitHub settings are the owner's to change. Credentials live in the GitHub
