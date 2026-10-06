@@ -95,11 +95,11 @@ jobs:
 
   deploy:
     needs: quality
+    # Pushes only run the checks; production changes from a deliberate manual run.
     if: >-
       github.ref == 'refs/heads/main' &&
-      github.event_name != 'pull_request' &&
-      ((github.event_name == 'workflow_dispatch' && inputs.deploy) ||
-       (github.event_name == 'push' && vars.DEPLOY_AUTOMATIC == 'true'))
+      github.event_name == 'workflow_dispatch' &&
+      inputs.deploy
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -107,8 +107,7 @@ jobs:
       url: https://jeremylaederach.ch/en/
 
     steps:
-      - name: Confirm first manual upload prerequisites
-        if: github.event_name == 'workflow_dispatch'
+      - name: Confirm the backup before uploading
         env:
           BACKUP_CONFIRMED: ${{ inputs.backup_confirmed }}
         run: test "$BACKUP_CONFIRMED" = true
