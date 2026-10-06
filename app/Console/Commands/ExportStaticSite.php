@@ -196,6 +196,10 @@ ErrorDocument 404 /404.html
     <FilesMatch "\.html$">
         Header always set Cache-Control "no-cache"
     </FilesMatch>
+    # Link previews embed this image from other origins.
+    <Files "social-preview.png">
+        Header always set Cross-Origin-Resource-Policy "cross-origin"
+    </Files>
 </IfModule>
 
 <FilesMatch "(^\.|^\.env(?:\..*)?$|^artisan$|^composer\.(?:json|lock)$|^package(?:-lock)?\.json$|^phpunit\.xml$|^vite\.config\..*$)">

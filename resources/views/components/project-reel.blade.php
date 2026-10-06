@@ -90,6 +90,8 @@
                                 <img
                                     src="{{ asset('assets/work/jay-jay-home.png') }}"
                                     alt="{{ $slide['description'] ?? $slide['label'] }}"
+                                    width="1425"
+                                    height="990"
                                     loading="{{ $isDetail ? 'eager' : 'lazy' }}"
                                     decoding="async"
                                 >

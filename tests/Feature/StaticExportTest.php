@@ -43,6 +43,7 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('X-Content-Type-Options "nosniff"', $rootHtaccess);
             $this->assertStringContainsString('X-Frame-Options "DENY"', $rootHtaccess);
             $this->assertStringContainsString('Header always set Cache-Control "no-cache"', $rootHtaccess);
+            $this->assertStringContainsString('Cross-Origin-Resource-Policy "cross-origin"', $rootHtaccess);
             $this->assertStringNotContainsString('/@vite/client', $englishHome);
             $this->assertStringNotContainsString('localhost', $englishHome);
             $this->assertStringNotContainsString('[::1]', $englishHome);
@@ -51,6 +52,8 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('Jeremy', $germanHome);
             $this->assertStringContainsString('rel="canonical" href="https://jeremylaederach.ch/en/"', $englishHome);
             $this->assertStringContainsString('hreflang="de" href="https://jeremylaederach.ch/de/"', $englishHome);
+            $this->assertStringContainsString('property="og:image" content="https://jeremylaederach.ch/brand/social-preview.png"', $englishHome);
+            $this->assertFileExists(base_path('dist-static/brand/social-preview.png'));
             $this->assertStringContainsString('href="/en/about"', $englishHome);
             $this->assertStringContainsString('Sitemap: https://jeremylaederach.ch/sitemap.xml', File::get(base_path('dist-static/robots.txt')));
             $sitemap = simplexml_load_file(base_path('dist-static/sitemap.xml'));

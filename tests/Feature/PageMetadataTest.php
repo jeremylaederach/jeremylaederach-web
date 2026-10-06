@@ -41,6 +41,8 @@ class PageMetadataTest extends TestCase
 
                 $this->assertStringContainsString('rel="canonical" href="'.$url.'/"', $html);
                 $this->assertStringContainsString('property="og:url" content="'.$url.'/"', $html);
+                $this->assertStringContainsString('property="og:image" content="'.asset('brand/social-preview.png').'"', $html);
+                $this->assertStringContainsString('name="twitter:card" content="summary_large_image"', $html);
                 $this->assertStringNotContainsString('name="robots" content="noindex"', $html);
 
                 foreach (['en', 'de'] as $language) {
@@ -63,7 +65,8 @@ class PageMetadataTest extends TestCase
                 ->assertSee('<title>'.config("portfolio.content.{$locale}.not_found.heading").'</title>', false)
                 ->assertSee('name="robots" content="noindex"', false)
                 ->assertDontSee('rel="canonical"', false)
-                ->assertDontSee('rel="alternate"', false);
+                ->assertDontSee('rel="alternate"', false)
+                ->assertDontSee('property="og:image"', false);
         }
     }
 }

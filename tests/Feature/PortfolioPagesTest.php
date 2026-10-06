@@ -96,6 +96,7 @@ class PortfolioPagesTest extends TestCase
             'brand/icons/apple-touch-icon.png' => [180, 180],
             'brand/icons/icon-192.png' => [192, 192],
             'brand/icons/icon-512.png' => [512, 512],
+            'brand/social-preview.png' => [1200, 630],
         ];
 
         foreach ($assets as $relativePath => $expectedDimensions) {

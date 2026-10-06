@@ -32,6 +32,12 @@
             <meta property="og:title" content="{{ $pageTitle }}" data-page-meta>
             <meta property="og:description" content="{{ $description }}" data-page-meta>
             <meta property="og:url" content="{{ $canonicalUrl }}" data-page-meta>
+            <meta property="og:site_name" content="Jeremy Läderach" data-page-meta>
+            <meta property="og:image" content="{{ asset('brand/social-preview.png') }}" data-page-meta>
+            <meta property="og:image:width" content="1200" data-page-meta>
+            <meta property="og:image:height" content="630" data-page-meta>
+            <meta property="og:image:alt" content="Jeremy Läderach" data-page-meta>
+            <meta name="twitter:card" content="summary_large_image" data-page-meta>
         @endif
 
         <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
