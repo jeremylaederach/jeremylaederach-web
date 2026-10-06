@@ -8,24 +8,13 @@ use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-    )
+    ->withRouting(web: __DIR__.'/../routes/web.php')
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Every page is exported as a static file: no cookies, sessions or forms.
+        $middleware->group('web', []);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
-        );
-
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
-            if ($request->expectsJson()) {
-                return null;
-            }
-
             $requestedLocale = $request->segment(1);
             $locales = config('portfolio.locales');
             $locale = array_key_exists($requestedLocale, $locales)
