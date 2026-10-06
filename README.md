@@ -41,7 +41,7 @@ npm run dev
 
 The link command is required only once per machine. Herd then serves the application at `http://jeremylaederach-web.test`, while Vite watches the frontend assets. Open the English homepage at `http://jeremylaederach-web.test/en/`.
 
-Herd is the recommended local workflow, but it is not a production dependency. Without Herd, `composer dev` starts Laravel's development server and Vite at `http://127.0.0.1:8000`.
+Herd is the recommended local workflow, but it is not a production dependency. Without Herd, run `php artisan serve` and `npm run dev` in two terminals and open `http://127.0.0.1:8000/en/`.
 
 ## Project Structure
 
