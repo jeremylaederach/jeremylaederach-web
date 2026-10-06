@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
 
 
 spec = importlib.util.spec_from_file_location(
@@ -19,6 +20,7 @@ spec.loader.exec_module(deploy)
 class FakeFTP:
     def __init__(self, fail_upload=False):
         self.events = []
+        self.files = {}
         self.directory = Path("/")
         self.fail_upload = fail_upload
 
@@ -42,18 +44,31 @@ class FakeFTP:
 
     def retrbinary(self, command, receive):
         self.events.append(("read", command))
-        receive(b'<link rel="canonical" href="https://jeremylaederach.ch/de/">')
+        name = (self.directory / command.removeprefix("RETR ")).as_posix()
+        # Before an upload the server holds the existing website.
+        receive(self.files.get(name, b'<link rel="canonical" href="https://jeremylaederach.ch/de/">'))
 
     def storbinary(self, command, content):
-        self.events.append(("store", command, content.read()))
+        data = content.read()
+        self.events.append(("store", command, data))
         if self.fail_upload:
             raise ftplib.error_temp("Transfer failed")
+        self.files[(self.directory / command.removeprefix("STOR ")).as_posix()] = data
 
     def rename(self, temporary, destination):
         self.events.append(("rename", temporary, (self.directory / destination).as_posix()))
+        self.files[(self.directory / destination).as_posix()] = self.files.pop(
+            (self.directory / temporary).as_posix())
 
     def delete(self, name):
         self.events.append(("delete", name))
+
+
+class FakeResponse(io.BytesIO):
+    def __init__(self, body, status=200, content_type="text/html"):
+        super().__init__(body)
+        self.status = status
+        self.headers = {"Content-Type": content_type}
 
 
 def sitemap(pages, site=deploy.SITE_URL):
@@ -96,6 +111,15 @@ class DeploymentTest(unittest.TestCase):
         deleted = [event[1] for event in ftp.events if event[0] == "delete"]
         self.assertEqual(len(deleted), 1)
         self.assertTrue(deleted[0].startswith(".deploy-"))
+
+    def test_uploaded_files_are_read_back(self):
+        ftp = FakeFTP()
+        files = deploy.package_files(self.root)
+        deploy.upload_files(ftp, self.root, files)
+        deploy.verify_upload(ftp, self.root, files)
+        ftp.files["/build/assets/app-hash.css"] = b"truncated"
+        with self.assertRaisesRegex(deploy.DeploymentError, "build/assets/app-hash.css"):
+            deploy.verify_upload(ftp, self.root, files)
 
     def test_protected_paths_and_all_php_are_rejected(self):
         for name in [".env", ".well-known/token", "wp-content/settings.json",
@@ -168,6 +192,7 @@ class DeploymentTest(unittest.TestCase):
         events = [event[0] for event in ftp.events]
         self.assertLess(events.index("protect_data"), events.index("read"))
         self.assertLess(events.index("read"), events.index("store"))
+        self.assertEqual(events[-1], "read")
 
     def test_wrong_or_missing_credentials_never_connect(self):
         for username, password in [("", ""), (deploy.DEPLOY_USER, ""),
@@ -188,14 +213,27 @@ class DeploymentTest(unittest.TestCase):
         client.assert_not_called()
         request.assert_not_called()
 
-    def test_live_mismatch_is_detected(self):
-        with patch.object(deploy, "urlopen", return_value=io.BytesIO(b"Stale HTML")):
-            with self.assertRaisesRegex(deploy.DeploymentError, "differs"):
+    def test_live_mismatch_is_reported_after_every_attempt(self):
+        stale = [FakeResponse(b"Stale HTML") for _ in range(deploy.LIVE_ATTEMPTS)]
+        with patch.object(deploy, "urlopen", side_effect=stale) as request, \
+                patch.object(deploy.time, "sleep") as sleep:
+            with self.assertRaisesRegex(deploy.DeploymentError, r"differs.*HTTP 200, text/html, 10 bytes"):
                 deploy.verify_live(self.root, [Path("de/index.html")])
+        self.assertEqual(request.call_count, deploy.LIVE_ATTEMPTS)
+        self.assertEqual(sleep.call_count, deploy.LIVE_ATTEMPTS - 1)
+
+    def test_live_check_recovers_from_a_challenge_page(self):
+        published = (self.root / "de/index.html").read_bytes()
+        blocked = HTTPError(deploy.SITE_URL, 403, "Forbidden", {"Content-Type": "text/html"}, None)
+        answers = [FakeResponse(b"One moment, please..."), blocked, FakeResponse(published)]
+        with patch.object(deploy, "urlopen", side_effect=answers), \
+                patch.object(deploy.time, "sleep") as sleep:
+            deploy.verify_live(self.root, [Path("de/index.html")])
+        self.assertEqual(sleep.call_count, 2)
 
     def test_matching_live_files_are_accepted(self):
         for name in ("de/index.html", "build/assets/app-hash.css", "build/assets/app-hash.js"):
-            content = io.BytesIO((self.root / name).read_bytes())
+            content = FakeResponse((self.root / name).read_bytes())
             with self.subTest(name=name), patch.object(deploy, "urlopen", return_value=content) as request:
                 deploy.verify_live(self.root, [Path(name)])
             self.assertEqual(request.call_args.args[0].full_url, deploy.SITE_URL + "/" + name)

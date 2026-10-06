@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 import ssl
 import sys
+import time
+from urllib.error import HTTPError
 from urllib.parse import quote, urlsplit
 from urllib.request import Request, urlopen
 import uuid
@@ -14,6 +16,8 @@ from xml.etree import ElementTree
 
 SITE_URL = "https://jeremylaederach.ch"
 DEPLOY_USER = "jeremylaederach-deploy"
+LIVE_ATTEMPTS = 3
+LIVE_RETRY_SECONDS = 20
 REQUIRED = {".htaccess", "index.html", "404.html", "sitemap.xml", "build/manifest.json"}
 SITEMAP_LOCATION = "{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
 FORBIDDEN = {".well-known", "wp-content", "vendor", "node_modules", "storage", "app", "config"}
@@ -107,16 +111,44 @@ def upload_files(ftp, root, files):
     # No mirror deletion: previous assets, .well-known and server files survive.
 
 
+def verify_upload(ftp, root, files):
+    """Read every uploaded file back, including the images and fonts no HTTP check compares."""
+    for relative in files:
+        ftp.cwd("/")
+        for directory in relative.parts[:-1]:
+            ftp.cwd(directory)
+        uploaded = hashlib.sha256()
+        ftp.retrbinary("RETR " + relative.name, uploaded.update)
+        if uploaded.digest() != hashlib.sha256((root / relative).read_bytes()).digest():
+            raise DeploymentError("Uploaded file differs from the checked package: " + relative.as_posix())
+
+
+def fetch_live(relative):
+    url = SITE_URL + "/" + quote(relative.as_posix())
+    request = Request(url, headers={"Cache-Control": "no-cache", "Accept-Encoding": "identity"})
+    try:
+        with urlopen(request, timeout=30) as response:
+            return response.status, response.headers.get("Content-Type", ""), response.read()
+    except HTTPError as error:
+        return error.code, error.headers.get("Content-Type", ""), b""
+
+
 def verify_live(root, files):
     for relative in files:
         if relative.suffix.lower() not in {".html", ".css", ".js"}:
             continue
-        url = SITE_URL + "/" + quote(relative.as_posix())
-        request = Request(url, headers={"Cache-Control": "no-cache", "Accept-Encoding": "identity"})
-        with urlopen(request, timeout=30) as response:
-            actual = hashlib.sha256(response.read()).digest()
-        if actual != hashlib.sha256((root / relative).read_bytes()).digest():
-            raise DeploymentError("Live file differs from the checked package: " + relative.as_posix())
+        expected = hashlib.sha256((root / relative).read_bytes()).digest()
+        for attempt in range(1, LIVE_ATTEMPTS + 1):
+            status, content_type, body = fetch_live(relative)
+            if status == 200 and hashlib.sha256(body).digest() == expected:
+                break
+            if attempt == LIVE_ATTEMPTS:
+                # The host's bot protection can answer a runner with a challenge page.
+                raise DeploymentError(
+                    f"Live file differs from the checked package: {relative.as_posix()} "
+                    f"(HTTP {status}, {content_type or 'no content type'}, {len(body)} bytes). "
+                    "The upload itself was verified over FTPS")
+            time.sleep(LIVE_RETRY_SECONDS)
 
 
 def main():
@@ -142,6 +174,8 @@ def main():
         verify_target(ftp)
         print(f"Uploading {len(files)} checked files.", flush=True)
         upload_files(ftp, root, files)
+        print("Reading the uploaded files back over FTPS.", flush=True)
+        verify_upload(ftp, root, files)
     print("Comparing published HTML, CSS and JavaScript with the checked package.", flush=True)
     verify_live(root, files)
     print(f"Uploaded and verified {len(files)} production files.")
