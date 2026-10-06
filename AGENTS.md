@@ -12,8 +12,9 @@ again before relying on them. Inspect implementation and tests before proposing 
 - Make coherent, verified commits for completed work and push them to `main`; the owner allowed
   this on 6 October 2026. Write English messages in the existing `type(scope): summary` style: one
   commit per outcome, no bursts of small ones. List the hashes and their purpose. A deploy run
-  needs the owner's word for that batch, and its backup confirmation is his. Tagging,
-  force-pushing and rewriting history need his explicit word each time.
+  needs the owner's word for that batch. Before confirming the backup, verify that the live
+  release can be restored: its package is still retained as a workflow artifact or rebuilds from
+  its tag. Tagging, force-pushing and rewriting history need his explicit word each time.
 - This repository is public. Everything committed is published, this file and the handoff
   included. No credentials, private records or unpublished plans belong here, and project media
   must be publishable: the Quantified previews show illustrative data, never real calendar, health
