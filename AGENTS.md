@@ -34,8 +34,10 @@ again before relying on them. Inspect implementation and tests before proposing 
   scope before a redesign or a new section, start with one contained, reviewable change, and
   distinguish confirmed defects from preferences and ideas. Notice interface problems yourself
   (hierarchy, spacing, dividers, selected states, color consistency) and solve them within the
-  shared components and stylesheets instead of adding one-off rules. Do not split or rewrite the
-  large stylesheets just because of their size.
+  shared components and stylesheets instead of adding one-off rules. Page styles live in
+  `resources/css/pages`. `responsive.css` is unlayered and ordered by breakpoint, so its rules
+  override the layered component styles: move a page's breakpoint rules only together with a
+  rework of that page, and prove an unchanged look by comparing computed styles.
 - All content lives in `config/portfolio.php`, in English and German with the same structure.
   English is the default locale; German uses Swiss spelling (`ss`, never `ß`). Keep both languages
   in step. Career, education, dates, skills, project claims and legal text come from the owner:

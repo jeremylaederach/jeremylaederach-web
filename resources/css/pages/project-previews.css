@@ -1,0 +1,1006 @@
+@layer components {
+    .client-hub-visual {
+        display: grid;
+        grid-template-columns: minmax(132px, 0.3fr) minmax(0, 1fr);
+        color: #f4f4f5;
+        background:
+            radial-gradient(circle at 84% 12%, rgba(95, 105, 225, 0.18), transparent 34%),
+            #08080a;
+    }
+
+    .client-hub-visual__sidebar {
+        display: flex;
+        min-width: 0;
+        padding: 18px 15px;
+        flex-direction: column;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(12, 12, 15, 0.94);
+    }
+
+    .client-hub-visual__brand,
+    .client-hub-visual__badge,
+    .client-hub-visual__customer {
+        display: flex;
+        align-items: center;
+    }
+
+    .client-hub-visual__brand {
+        gap: 9px;
+    }
+
+    .client-hub-visual__brand img {
+        width: 18px;
+        height: 22px;
+        object-fit: contain;
+    }
+
+    .client-hub-visual__brand > span,
+    .client-hub-visual__customer > span {
+        display: grid;
+        gap: 2px;
+    }
+
+    .client-hub-visual__brand strong {
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .client-hub-visual__brand small,
+    .client-hub-visual__customer small {
+        color: #71717a;
+        font-size: 7px;
+    }
+
+    .client-hub-visual__badge {
+        width: fit-content;
+        min-height: 24px;
+        padding: 0 8px;
+        gap: 6px;
+        margin-top: 16px;
+        border: 1px solid rgba(95, 105, 225, 0.28);
+        border-radius: 7px;
+        color: #a5b4fc;
+        background: rgba(95, 105, 225, 0.09);
+        font-size: 7px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .client-hub-visual__badge i {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #5f69e1;
+        box-shadow: 0 0 8px rgba(95, 105, 225, 0.8);
+    }
+
+    .client-hub-visual__navigation {
+        display: grid;
+        gap: 4px;
+        margin-top: 18px;
+    }
+
+    .client-hub-visual__navigation > span {
+        padding: 7px 8px;
+        border-radius: 5px;
+        color: #71717a;
+        font-size: 8px;
+    }
+
+    .client-hub-visual__navigation > span.is-active {
+        color: #f4f4f5;
+        background: rgba(95, 105, 225, 0.14);
+    }
+
+    .client-hub-visual__customer {
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .client-hub-visual__customer > b {
+        display: grid;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 50%;
+        color: #c7d2fe;
+        background: rgba(95, 105, 225, 0.16);
+        font-size: 8px;
+    }
+
+    .client-hub-visual__customer > span {
+        font-size: 8px;
+    }
+
+    .client-hub-visual__workspace {
+        display: grid;
+        min-width: 0;
+        padding: 28px;
+        align-content: center;
+    }
+
+    .client-hub-visual__eyebrow {
+        color: #818cf8;
+        font-size: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .client-hub-visual__heading {
+        margin-top: 7px;
+        font-size: 25px;
+        font-weight: 560;
+        line-height: 1;
+    }
+
+    .client-hub-visual__workspace > p {
+        max-width: 46ch;
+        margin: 8px 0 0;
+        color: #8f8f99;
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .client-hub-visual__cards {
+        display: grid;
+        margin-top: 24px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .client-hub-visual__cards > span {
+        display: grid;
+        min-width: 0;
+        min-height: 90px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        align-content: space-between;
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .client-hub-visual__cards small {
+        overflow: hidden;
+        color: #a1a1aa;
+        font-size: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .client-hub-visual__cards strong {
+        color: #f4f4f5;
+        font-size: 22px;
+        font-weight: 520;
+    }
+
+    .client-hub-visual__cards em {
+        overflow: hidden;
+        color: #5f69e1;
+        font-size: 7px;
+        font-style: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .project-detail,
+    .case-study-next--quantified {
+        --project-accent: #53b1fd;
+        --project-accent-rgb: 83, 177, 253;
+    }
+
+    .project-detail--jay-jay,
+    .case-study-next--jay-jay {
+        --project-accent: #818cf8;
+        --project-accent-rgb: 129, 140, 248;
+    }
+
+    .project-detail--sessiondeck,
+    .case-study-next--sessiondeck {
+        --project-accent: #ff8a00;
+        --project-accent-rgb: 255, 138, 0;
+    }
+
+    .project-detail .accent-dot {
+        color: var(--project-accent);
+    }
+
+
+    .quantified-app {
+        display: grid;
+        grid-template-rows: 58px minmax(0, 1fr);
+        color: #ecf4ff;
+        background:
+            radial-gradient(circle at 78% 2%, rgba(46, 144, 250, 0.16), transparent 36%),
+            #07111e;
+    }
+
+    .quantified-app__navigation {
+        display: flex;
+        width: calc(100% - 24px);
+        height: 42px;
+        min-width: 0;
+        padding: 5px 7px;
+        margin: 10px auto 0;
+        border: 1px solid rgba(98, 136, 180, 0.19);
+        border-radius: 8px;
+        align-items: center;
+        gap: clamp(8px, 1.4vw, 18px);
+        background: rgba(8, 18, 31, 0.84);
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.2);
+    }
+
+    .quantified-app__brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .quantified-app__brand img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        filter: drop-shadow(0 6px 14px rgba(46, 144, 250, 0.2));
+    }
+
+    .quantified-app__brand strong {
+        overflow: hidden;
+        font-size: 10px;
+        font-weight: 620;
+        text-overflow: ellipsis;
+    }
+
+    .quantified-app__links {
+        display: flex;
+        min-width: 0;
+        margin-left: auto;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .quantified-app__links > span {
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        min-height: 28px;
+        padding: 0 clamp(5px, 0.75vw, 10px);
+        border: 1px solid transparent;
+        border-radius: 5px;
+        align-items: center;
+        color: #7187a3;
+        font-size: clamp(6px, 0.7vw, 8px);
+        font-weight: 560;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .quantified-app__links > span.is-active {
+        color: #dcecff;
+        border-color: rgba(46, 144, 250, 0.24);
+        background: rgba(46, 144, 250, 0.12);
+        box-shadow: 0 7px 18px rgba(46, 144, 250, 0.08);
+    }
+
+    .quantified-app__workspace {
+        display: grid;
+        min-width: 0;
+        padding: 9px 22px 18px;
+        grid-template-rows: 24px minmax(0, 1fr);
+        gap: 11px;
+    }
+
+    .quantified-app__toolbar {
+        display: flex;
+        padding-bottom: 11px;
+        border-bottom: 1px solid rgba(98, 136, 180, 0.14);
+        justify-content: space-between;
+        align-items: center;
+        color: #6f86a1;
+        font-size: 8px;
+    }
+
+    .quantified-app__toolbar small {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #82a1c5;
+        font-size: 7px;
+    }
+
+    .quantified-app__toolbar i {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #4ed7a8;
+        box-shadow: 0 0 10px rgba(78, 215, 168, 0.52);
+    }
+
+    .quantified-app__home header small,
+    .quantified-app__calendar header small,
+    .quantified-app__finances header small {
+        color: #53b1fd;
+        font-size: 8px;
+        font-weight: 620;
+        text-transform: uppercase;
+    }
+
+    .quantified-app__home {
+        display: grid;
+        min-height: 0;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .quantified-app__home > header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+    }
+
+    .quantified-app__home > header > span {
+        display: grid;
+        gap: 4px;
+    }
+
+    .quantified-app__home header strong {
+        font-size: clamp(15px, 2vw, 22px);
+        font-weight: 540;
+    }
+
+    .quantified-app__home header em {
+        color: #6b829f;
+        font-size: 7px;
+        font-style: normal;
+    }
+
+    .quantified-app__home-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .quantified-app__home-metrics > span {
+        display: grid;
+        min-width: 0;
+        min-height: 66px;
+        padding: 10px;
+        border: 1px solid rgba(83, 177, 253, 0.16);
+        border-radius: 5px;
+        align-content: space-between;
+        background: rgba(13, 29, 49, 0.62);
+    }
+
+    .quantified-app__home-metrics small,
+    .quantified-app__home-context small {
+        color: #7189a5;
+        font-size: 7px;
+    }
+
+    .quantified-app__home-metrics strong {
+        overflow: hidden;
+        font-size: clamp(10px, 1.45vw, 16px);
+        font-weight: 570;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .quantified-app__home-metrics em {
+        overflow: hidden;
+        color: #5f7690;
+        font-size: 6px;
+        font-style: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .quantified-app__home-context {
+        display: grid;
+        min-height: 0;
+        padding: 6px 10px;
+        border-top: 1px solid rgba(98, 136, 180, 0.14);
+        align-content: space-evenly;
+        gap: 6px;
+    }
+
+    .quantified-app__home-context > span {
+        display: grid;
+        grid-template-columns: 54px minmax(0, 1fr) 28px;
+        gap: 9px;
+        align-items: center;
+    }
+
+    .quantified-app__home-context i {
+        display: block;
+        overflow: hidden;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(83, 177, 253, 0.1);
+    }
+
+    .quantified-app__home-context b {
+        display: block;
+        width: var(--context-width);
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #2e90fa, #53b1fd);
+    }
+
+    .quantified-app__home-context em {
+        color: #91a8c1;
+        font-size: 7px;
+        font-style: normal;
+        text-align: right;
+    }
+
+    .quantified-app__calendar,
+    .quantified-app__finances {
+        display: grid;
+        min-height: 0;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .quantified-app__calendar > header,
+    .quantified-app__finances > header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+    }
+
+    .quantified-app__calendar header > span,
+    .quantified-app__finances header > span {
+        display: grid;
+        gap: 3px;
+    }
+
+    .quantified-app__calendar header strong,
+    .quantified-app__finances header strong {
+        font-size: 18px;
+        font-weight: 520;
+    }
+
+    .quantified-app__calendar header em,
+    .quantified-app__finances header em {
+        padding: 6px 9px;
+        border: 1px solid #1c304a;
+        border-radius: 999px;
+        color: #7890ac;
+        font-size: 7px;
+        font-style: normal;
+    }
+
+    .quantified-app__calendar-metrics,
+    .quantified-app__finance-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .quantified-app__calendar-metrics > span,
+    .quantified-app__finance-metrics > span {
+        display: grid;
+        min-width: 0;
+        padding: 9px 10px;
+        border: 1px solid #192c45;
+        border-radius: 5px;
+        gap: 4px;
+        background: rgba(12, 25, 43, 0.68);
+    }
+
+    .quantified-app__calendar-metrics small,
+    .quantified-app__finance-metrics small {
+        color: #6b819c;
+        font-size: 6px;
+        text-transform: uppercase;
+    }
+
+    .quantified-app__calendar-metrics strong,
+    .quantified-app__finance-metrics strong {
+        font-size: 13px;
+        font-weight: 520;
+    }
+
+    .quantified-app__finance-metrics em {
+        color: #53b1fd;
+        font-size: 6px;
+        font-style: normal;
+    }
+
+    .quantified-app__timeline {
+        display: grid;
+        min-height: 0;
+        align-content: stretch;
+        gap: 6px;
+    }
+
+    .quantified-app__timeline > span {
+        display: grid;
+        min-height: 0;
+        padding-top: 6px;
+        border-top: 1px solid rgba(98, 136, 180, 0.13);
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 9px;
+        align-items: center;
+    }
+
+    .quantified-app__timeline > span > small {
+        color: #607792;
+        font-size: 6px;
+    }
+
+    .quantified-app__timeline i {
+        display: flex;
+        width: var(--event-width);
+        min-height: 30px;
+        padding: 0 9px;
+        border-left: 2px solid #53b1fd;
+        border-radius: 3px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: linear-gradient(90deg, rgba(83, 177, 253, 0.15), rgba(83, 177, 253, 0.03));
+        font-style: normal;
+    }
+
+    .quantified-app__timeline b {
+        font-size: 7px;
+        font-weight: 560;
+    }
+
+    .quantified-app__timeline em {
+        color: #7890aa;
+        font-size: 6px;
+        font-style: normal;
+    }
+
+    .quantified-app__finance-chart {
+        display: flex;
+        min-height: 0;
+        padding: 14px 10px 0;
+        border-top: 1px solid rgba(98, 136, 180, 0.14);
+        align-items: end;
+        gap: clamp(4px, 0.8vw, 10px);
+    }
+
+    .quantified-app__finance-chart i {
+        height: var(--bar-height);
+        min-height: 12%;
+        flex: 1;
+        border-radius: 3px 3px 0 0;
+        background: linear-gradient(to top, rgba(83, 177, 253, 0.16), #53b1fd);
+        box-shadow: 0 0 16px rgba(83, 177, 253, 0.08);
+    }
+
+    .quantified-app__finance-legend {
+        display: flex;
+        justify-content: space-between;
+        color: #5f7690;
+        font-size: 6px;
+    }
+
+    .client-hub-visual__workspace--board {
+        display: grid;
+        align-content: start;
+        gap: 16px;
+    }
+
+    .client-hub-visual__board-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .client-hub-visual__board-head > span {
+        display: grid;
+        gap: 5px;
+    }
+
+    .client-hub-visual__board-head small,
+    .client-hub-visual__ticket small {
+        color: #777994;
+        font-size: 7px;
+        text-transform: uppercase;
+    }
+
+    .client-hub-visual__board-head strong {
+        font-size: 22px;
+        font-weight: 560;
+    }
+
+    .client-hub-visual__board-head em {
+        max-width: 40ch;
+        color: #8d8eaa;
+        font-size: 8px;
+        font-style: normal;
+        line-height: 1.45;
+    }
+
+    .client-hub-visual__board-head > b {
+        height: max-content;
+        padding: 6px 9px;
+        border: 1px solid rgba(95, 105, 225, 0.24);
+        border-radius: 999px;
+        color: #adb1ff;
+        background: rgba(95, 105, 225, 0.09);
+        font-size: 7px;
+        font-weight: 540;
+    }
+
+    .client-hub-visual__board-columns {
+        display: grid;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .client-hub-visual__board-columns > span {
+        display: grid;
+        min-height: 72px;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 5px;
+        align-content: space-between;
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .client-hub-visual__board-columns i {
+        width: 7px;
+        height: 7px;
+        border: 2px solid #5f69e1;
+        border-radius: 50%;
+        background: #5f69e1;
+        box-shadow: 0 0 12px rgba(95, 105, 225, 0.35);
+    }
+
+    .client-hub-visual__board-columns i.is-current {
+        background: transparent;
+    }
+
+    .client-hub-visual__board-columns strong {
+        font-size: 8px;
+        font-weight: 540;
+    }
+
+    .client-hub-visual__board-columns small {
+        color: #777994;
+        font-size: 6px;
+    }
+
+    .client-hub-visual__ticket {
+        display: grid;
+        padding: 12px;
+        border-left: 2px solid #5f69e1;
+        border-radius: 3px;
+        gap: 4px;
+        background: rgba(95, 105, 225, 0.07);
+    }
+
+    .client-hub-visual__ticket strong {
+        font-size: 8px;
+        font-weight: 520;
+    }
+
+    .sessiondeck-app {
+        display: grid;
+        padding: 17px;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 12px;
+        color: #f5f3ef;
+        background:
+            radial-gradient(circle at 78% 18%, rgba(255, 138, 0, 0.1), transparent 38%),
+            #0c0d10;
+    }
+
+    .sessiondeck-app__header,
+    .sessiondeck-app__brand,
+    .sessiondeck-app__status {
+        display: flex;
+        align-items: center;
+    }
+
+    .sessiondeck-app__header {
+        justify-content: space-between;
+        gap: 14px;
+    }
+
+    .sessiondeck-app__brand {
+        gap: 9px;
+    }
+
+    .sessiondeck-app__brand > i {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(255, 161, 51, 0.36);
+        border-radius: 7px;
+        place-items: center;
+        color: #ffb45e;
+        background: rgba(255, 138, 0, 0.08);
+        box-shadow: 0 8px 20px rgba(255, 138, 0, 0.08);
+        font-size: 8px;
+        font-style: normal;
+        font-weight: 650;
+        letter-spacing: 0;
+    }
+
+    .sessiondeck-app__brand > span {
+        display: grid;
+        gap: 2px;
+    }
+
+    .sessiondeck-app__brand strong {
+        font-size: 11px;
+        font-weight: 620;
+    }
+
+    .sessiondeck-app__brand small,
+    .sessiondeck-app__status {
+        color: #8e9097;
+        font-size: 7px;
+    }
+
+    .sessiondeck-app__status {
+        gap: 6px;
+    }
+
+    .sessiondeck-app__status i {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #ff8a00;
+        box-shadow: 0 0 10px rgba(255, 138, 0, 0.5);
+    }
+
+    .sessiondeck-app__body {
+        display: grid;
+        min-height: 0;
+        grid-template-columns: 156px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .sessiondeck-app__profiles,
+    .sessiondeck-app__overview,
+    .sessiondeck-app__editor,
+    .sessiondeck-app__result {
+        min-height: 0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    .sessiondeck-app__profiles {
+        display: flex;
+        padding: 10px;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .sessiondeck-app__profiles > header {
+        display: flex;
+        min-height: 26px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        justify-content: space-between;
+        align-items: center;
+        color: #8f9198;
+        font-size: 7px;
+        text-transform: uppercase;
+    }
+
+    .sessiondeck-app__profiles > header b {
+        display: grid;
+        width: 20px;
+        height: 20px;
+        border: 1px solid rgba(255, 138, 0, 0.28);
+        border-radius: 4px;
+        place-items: center;
+        color: #ff9d2e;
+        font-size: 12px;
+        font-weight: 420;
+    }
+
+    .sessiondeck-app__profiles > span {
+        display: grid;
+        padding: 9px;
+        border-radius: 5px;
+        gap: 3px;
+        color: #a7a8ae;
+    }
+
+    .sessiondeck-app__profiles > span.is-active {
+        color: #f5f3ef;
+        background: rgba(255, 138, 0, 0.09);
+        box-shadow: inset 2px 0 #ff8a00;
+    }
+
+    .sessiondeck-app__profiles strong {
+        overflow: hidden;
+        font-size: 8px;
+        font-weight: 540;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sessiondeck-app__profiles small {
+        color: #73757c;
+        font-size: 6px;
+    }
+
+    .sessiondeck-app__overview {
+        display: grid;
+        padding: 22px;
+        align-content: center;
+    }
+
+    .sessiondeck-app__eyebrow {
+        color: #ff9d2e;
+        font-size: 7px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .sessiondeck-app__overview h3 {
+        margin: 6px 0 0;
+        font-size: 24px;
+        font-weight: 520;
+    }
+
+    .sessiondeck-app__overview > p {
+        max-width: 46ch;
+        margin: 7px 0 0;
+        color: #8e9097;
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .sessiondeck-app__summary {
+        display: grid;
+        margin-top: 18px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .sessiondeck-app__summary > span {
+        display: grid;
+        min-height: 54px;
+        padding: 9px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 5px;
+        align-content: space-between;
+    }
+
+    .sessiondeck-app__summary small {
+        color: #777981;
+        font-size: 6px;
+    }
+
+    .sessiondeck-app__summary strong {
+        font-size: 16px;
+        font-weight: 520;
+    }
+
+    .sessiondeck-app__primary,
+    .sessiondeck-app__secondary {
+        display: flex;
+        width: max-content;
+        min-height: 30px;
+        padding: 0 12px;
+        margin-top: 14px;
+        border-radius: 5px;
+        align-items: center;
+        gap: 18px;
+        color: #17110a;
+        background: #ff8a00;
+        font-size: 7px;
+        font-weight: 620;
+    }
+
+    .sessiondeck-app__editor,
+    .sessiondeck-app__result {
+        display: grid;
+        padding: 15px;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
+    .sessiondeck-app__editor > header,
+    .sessiondeck-app__result > header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+    }
+
+    .sessiondeck-app__editor > header > span,
+    .sessiondeck-app__result > header > span {
+        display: grid;
+        gap: 3px;
+    }
+
+    .sessiondeck-app__editor header small,
+    .sessiondeck-app__result header small {
+        color: #81838a;
+        font-size: 6px;
+        text-transform: uppercase;
+    }
+
+    .sessiondeck-app__editor header strong,
+    .sessiondeck-app__result header strong {
+        font-size: 14px;
+        font-weight: 560;
+    }
+
+    .sessiondeck-app__editor header em,
+    .sessiondeck-app__result header em {
+        color: #ff9d2e;
+        font-size: 6px;
+        font-style: normal;
+        text-transform: uppercase;
+    }
+
+    .sessiondeck-app__launch-items,
+    .sessiondeck-app__results {
+        display: grid;
+        min-height: 0;
+        align-content: stretch;
+    }
+
+    .sessiondeck-app__launch-items > span,
+    .sessiondeck-app__results > span {
+        display: grid;
+        min-height: 0;
+        padding: 7px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        grid-template-columns: 26px minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .sessiondeck-app__launch-items > span > b {
+        color: #ff9d2e;
+        font-size: 7px;
+        font-weight: 520;
+    }
+
+    .sessiondeck-app__launch-items > span > i {
+        display: grid;
+        gap: 2px;
+        font-style: normal;
+    }
+
+    .sessiondeck-app__launch-items strong,
+    .sessiondeck-app__results strong {
+        font-size: 8px;
+        font-weight: 520;
+    }
+
+    .sessiondeck-app__launch-items small,
+    .sessiondeck-app__results small {
+        color: #777981;
+        font-size: 6px;
+    }
+
+    .sessiondeck-app__launch-items em,
+    .sessiondeck-app__results em {
+        color: #a5a7ad;
+        font-size: 6px;
+        font-style: normal;
+    }
+
+    .sessiondeck-app__results > span {
+        grid-template-columns: 9px minmax(100px, 0.8fr) minmax(0, 1fr) auto;
+    }
+
+    .sessiondeck-app__results > span > i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #4ed7a8;
+        box-shadow: 0 0 9px rgba(78, 215, 168, 0.38);
+    }
+
+    .sessiondeck-app__secondary {
+        color: #c6c7ca;
+        background: rgba(255, 255, 255, 0.06);
+    }
+}

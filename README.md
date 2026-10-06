@@ -50,7 +50,7 @@ app/Console/Commands/    Static export command
 app/Http/Controllers/   Localized portfolio controller
 config/portfolio.php    English and German content
 resources/views/        Blade pages and reusable components
-resources/css/          Foundation, layout and responsive styles
+resources/css/          Foundation, layout, one stylesheet per page in pages/, responsive rules
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
 resources/js/           Navigation, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage

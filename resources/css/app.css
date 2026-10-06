@@ -3,7 +3,14 @@
 @import './layout.css';
 @import './hero.css';
 @import './components.css';
-@import './sections.css';
+@import './pages/page-hero.css';
+@import './pages/projects.css';
+@import './pages/project-previews.css';
+@import './pages/case-study.css';
+@import './pages/about.css';
+@import './pages/contact.css';
+@import './pages/not-found.css';
+@import './reveal.css';
 @import './project-reel.css';
 @import './responsive.css';
 
