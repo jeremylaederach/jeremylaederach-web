@@ -90,14 +90,14 @@ npm run build:static
 
 Laravel remains the maintainable source project. Production receives only generated HTML, CSS, JavaScript and public media.
 
-GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, dependency audits and static export succeed. Artifacts remain available for 14 days and include the required `.htaccess` files. The deployment job uploads that same checked package through explicit FTPS; it does not rebuild the site. Production changes only from a manual run on `main` with **deploy** and **backup_confirmed** checked. Pushes, pull requests, other branches and tags never deploy.
+GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, dependency audits and static export succeed. Artifacts remain available for 14 days and include the required `.htaccess` files. The deployment job uploads that same checked package through explicit FTPS; it does not rebuild the site. Production changes only from the separate **Deploy** workflow, started manually on `main` with **backup_confirmed** checked; it runs the quality checks first. Pushes, pull requests, other branches and tags never deploy.
 
 ### First-time setup
 
 1. Back up this website's document root and confirm how to restore it. Keep a regular backup schedule before enabling automatic uploads; restore only the portfolio files, not unrelated subscription data.
 2. In Hosttech/Plesk hosting 117, create a separate FTP user **jeremylaederach-deploy** restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not allow access to Jay-Jay or other sites. The uploader checks the existing portfolio URL before writing. Do not reuse the master login or Jay-Jay's deployment credential.
 3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** (`jeremylaederach-deploy`) and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The endpoint is `117.hosttech.eu:21`; both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
-4. Commit and push the reviewed changes; the push runs the quality checks only. Under **Actions → Quality checks → Run workflow**, choose `main` and enable **deploy** and **backup_confirmed**. A manual run without **deploy** performs quality checks only.
+4. Commit and push the reviewed changes; the push runs the quality checks only. Under **Actions → Deploy → Run workflow**, choose `main` and enable **backup_confirmed**.
 5. Wait for both jobs to succeed, then review EN/DE, project galleries, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job reads every uploaded file back over FTPS, then compares the published HTML, CSS and JavaScript with the package. The public comparison is repeated twice before it fails, because the host's bot protection can answer a runner with a challenge page; the error then states what the server returned, and re-running the deploy job repeats the check. None of this replaces a visual review.
 6. Create the release tag on the uploaded commit once the live result is accepted. Every later release repeats steps 4 to 6.
 

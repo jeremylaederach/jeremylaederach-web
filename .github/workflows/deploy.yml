@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_confirmed:
+        description: A current website backup and restore path are confirmed
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  # Never interrupt an active production upload.
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/quality.yml
+
+  deploy:
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://jeremylaederach.ch/en/
+
+    steps:
+      - name: Confirm the backup before uploading
+        env:
+          BACKUP_CONFIRMED: ${{ inputs.backup_confirmed }}
+        run: test "$BACKUP_CONFIRMED" = true
+
+      - name: Check out deployment script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download the checked production package
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: hosttech-${{ github.sha }}
+          path: dist-static/
+
+      - name: Upload through verified FTPS and check the live website
+        env:
+          DEPLOY_FTP_USERNAME: ${{ secrets.DEPLOY_FTP_USERNAME }}
+          DEPLOY_FTP_PASSWORD: ${{ secrets.DEPLOY_FTP_PASSWORD }}
+        run: python3 -B scripts/deploy_static.py dist-static

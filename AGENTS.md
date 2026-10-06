@@ -58,10 +58,11 @@ again before relying on them. Inspect implementation and tests before proposing 
   live host are not covered by local tests or CI.
 - Check the live site with a few targeted requests. The host runs a bot protection; do not send
   scripted bursts or probe protected paths.
-- A push to `main` runs the checks only. Production changes only through **Actions → Quality
-  checks → Run workflow** on `main` with **deploy** and **backup_confirmed**, started or
-  explicitly authorized by the owner. No ad-hoc FTP uploads. Do not weaken the deployment safeguards (target verification, PHP rejection, no
-  mirror deletion) to make a run pass. Tag only the exact commit that was uploaded and checked.
+- A push to `main` runs the checks only. Production changes only through **Actions → Deploy →
+  Run workflow** on `main` with **backup_confirmed**, started or explicitly authorized by the
+  owner; that workflow runs the quality checks before it uploads. No ad-hoc FTP uploads. Do not
+  weaken the deployment safeguards (target verification, PHP rejection, no mirror deletion) to
+  make a run pass. Tag only the exact commit that was uploaded and checked.
 - Plesk, DNS and GitHub settings are the owner's to change. Credentials live in the GitHub
   `production` environment and his password manager, never in Git, the handoff or a chat. The
   deployment account is dedicated to this site; do not reuse another project's hosting access.
