@@ -44,6 +44,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/icons/apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
+        @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">

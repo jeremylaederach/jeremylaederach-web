@@ -48,6 +48,11 @@ class StaticExportTest extends TestCase
             $this->assertStringNotContainsString('localhost', $englishHome);
             $this->assertStringNotContainsString('[::1]', $englishHome);
             $this->assertStringContainsString('/build/assets/app-', $englishHome);
+            $this->assertMatchesRegularExpression(
+                '/<link rel="preload" as="font" href="\/build\/assets\/instrument-sans-400-700-normal-[\w-]+\.woff2"/',
+                $englishHome,
+            );
+            $this->assertStringContainsString('font-weight: 400 700;', $englishHome);
             $this->assertStringContainsString('Jeremy', $englishHome);
             $this->assertStringContainsString('Jeremy', $germanHome);
             $this->assertStringContainsString('rel="canonical" href="https://jeremylaederach.ch/en/"', $englishHome);
