@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
 @import './foundation.css';
 @import './layout.css';
 @import './hero.css';
@@ -14,19 +14,11 @@
 @import './project-reel.css';
 @import './responsive.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+/* Utility classes are generated only for the templates and scripts, never for words in other files. */
+@source '../views';
+@source '../js';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-ink: #f4f1ea;
-    --color-muted: #aaa6af;
-    --color-bg: #07070a;
-    --color-surface: #101014;
-    --color-elevated: #17171d;
-    --color-line: #29272e;
-    --color-accent: #a978ff;
-    --color-glow: #ca9fff;
-    --color-signal: #79f2c0;
-    --color-warm: #ffd166;
 }
