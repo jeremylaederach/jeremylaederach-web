@@ -15,9 +15,9 @@
         "laravel/framework": "^13.8"
     },
     "require-dev": {
+        "larastan/larastan": "^3.12",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
-        "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^12.5.12"
     },
@@ -49,9 +49,13 @@
         "lint:check": [
             "pint --parallel --test"
         ],
+        "analyse": [
+            "phpstan analyse --memory-limit=1G --no-progress"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
             "@lint:check",
+            "@analyse",
             "@php artisan test"
         ],
         "post-autoload-dump": [
@@ -61,11 +65,6 @@
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
     },
     "config": {
         "optimize-autoloader": true,

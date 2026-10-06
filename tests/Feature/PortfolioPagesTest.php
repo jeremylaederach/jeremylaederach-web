@@ -70,8 +70,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
-        $this->assertSame(3, substr_count($response->getContent(), 'data-index-panel'));
-        $this->assertSame(15, substr_count($response->getContent(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
+        $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
+        $this->assertSame(15, substr_count($response->content(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
         $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
         $this->assertFileExists(public_path('brand/icons/icon-192.png'));
         $this->assertFileExists(public_path('brand/icons/icon-512.png'));
@@ -185,20 +185,20 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('page-stage', false)
             ->assertDontSee('data-project-stage', false);
 
-        $this->assertSame(4, substr_count($about->getContent(), 'class="technology-group"'));
-        $this->assertSame(4, substr_count($about->getContent(), 'data-technology-icon='));
-        $this->assertSame(4, substr_count($about->getContent(), 'class="section-label about-section-label"'));
-        $this->assertSame(3, substr_count($about->getContent(), '<article class="playground-demo'));
-        $this->assertSame(0, substr_count($about->getContent(), '<canvas'));
-        $this->assertSame(5, substr_count($about->getContent(), 'data-sorting-algorithm='));
-        $this->assertSame(5, substr_count($about->getContent(), 'data-sorting-description='));
-        $this->assertSame(0, substr_count($about->getContent(), 'data-sorting-complexity='));
-        $this->assertSame(3, substr_count($about->getContent(), 'data-network-preset='));
-        $this->assertSame(3, substr_count($about->getContent(), 'data-pathfinding-strategy='));
-        $this->assertSame(3, substr_count($about->getContent(), 'data-pathfinding-description='));
-        $this->assertSame(2, substr_count($about->getContent(), 'aria-multiselectable="true"'));
-        $this->assertStringNotContainsString('playground-demo__title', $about->getContent());
-        $aboutHtml = $about->getContent();
+        $this->assertSame(4, substr_count($about->content(), 'class="technology-group"'));
+        $this->assertSame(4, substr_count($about->content(), 'data-technology-icon='));
+        $this->assertSame(4, substr_count($about->content(), 'class="section-label about-section-label"'));
+        $this->assertSame(3, substr_count($about->content(), '<article class="playground-demo'));
+        $this->assertSame(0, substr_count($about->content(), '<canvas'));
+        $this->assertSame(5, substr_count($about->content(), 'data-sorting-algorithm='));
+        $this->assertSame(5, substr_count($about->content(), 'data-sorting-description='));
+        $this->assertSame(0, substr_count($about->content(), 'data-sorting-complexity='));
+        $this->assertSame(3, substr_count($about->content(), 'data-network-preset='));
+        $this->assertSame(3, substr_count($about->content(), 'data-pathfinding-strategy='));
+        $this->assertSame(3, substr_count($about->content(), 'data-pathfinding-description='));
+        $this->assertSame(2, substr_count($about->content(), 'aria-multiselectable="true"'));
+        $this->assertStringNotContainsString('playground-demo__title', $about->content());
+        $aboutHtml = $about->content();
 
         $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
         $this->assertLessThan(strpos($aboutHtml, 'id="stack-title"'), strpos($aboutHtml, 'id="career-title"'));
@@ -278,7 +278,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('project-reel__sheen', false)
             ->assertDontSee('project-case__action', false);
 
-        $projectHtml = $projects->getContent();
+        $projectHtml = $projects->content();
 
         $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
         $this->assertStringNotContainsString('data-reel-autoplay', $projectHtml);
@@ -337,7 +337,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('quantified-visual__chart', false)
             ->assertSee('href="http://localhost/de/quantified"', false);
 
-        $englishHtml = $english->getContent();
+        $englishHtml = $english->content();
         $viewsPosition = strpos($englishHtml, 'id="views"');
         $productPosition = strpos($englishHtml, 'id="product"');
         $stackPosition = strpos($englishHtml, 'id="stack"');
@@ -399,7 +399,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 
-        $this->assertSame(3, substr_count($english->getContent(), 'class="technology-group"'));
+        $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
 
         $this->get('/de/jay-jay')
             ->assertOk()
@@ -438,7 +438,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false);
 
-        $this->assertSame(3, substr_count($english->getContent(), 'class="technology-group"'));
+        $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
 
         $this->get('/de/session-deck')
             ->assertOk()

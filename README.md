@@ -12,7 +12,7 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 - Lightweight pointer, glow and original interface-sound systems
 - Detailed case studies for Quantified, Jay-Jay and SessionDeck
 - Static production export with localized 404 pages and hardened response headers
-- PHPUnit feature coverage, JavaScript interaction tests and Laravel Pint formatting checks
+- PHPUnit feature coverage, JavaScript interaction tests, PHPStan analysis and Laravel Pint formatting checks
 
 ## Stack
 

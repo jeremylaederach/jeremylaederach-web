@@ -26,7 +26,7 @@ class ProjectReelTest extends TestCase
                     ->assertDontSee('class="project-reel__chrome" aria-hidden="true"', false)
                     ->assertDontSee('data-reel-autoplay', false);
 
-                $html = $response->getContent();
+                $html = $response->content();
                 $this->assertSame(3, substr_count($html, 'data-reel-slide'));
                 $this->assertStringNotContainsString('data-reel-index', $html);
                 $this->assertSame(1, substr_count($html, 'data-reel-current'));

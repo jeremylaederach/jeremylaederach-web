@@ -101,7 +101,13 @@ class ExportStaticSite extends Command
             $sitemap->addChild('url')->addChild('loc', $siteUrl.$page.'/');
         }
 
-        File::put($outputDirectory.'/sitemap.xml', $sitemap->asXML());
+        $sitemapXml = $sitemap->asXML();
+
+        if ($sitemapXml === false) {
+            throw new RuntimeException('Could not build the sitemap.');
+        }
+
+        File::put($outputDirectory.'/sitemap.xml', $sitemapXml);
 
         return self::SUCCESS;
     }
@@ -109,8 +115,8 @@ class ExportStaticSite extends Command
     /**
      * Every named route with a locale is a public page; redirects stay unnamed.
      *
-     * @param  list<string>  $locales
-     * @return list<string>
+     * @param  list<array-key>  $locales
+     * @return array<int, string>
      */
     private function pages(array $locales): array
     {
@@ -133,12 +139,14 @@ class ExportStaticSite extends Command
             throw new RuntimeException('A previous export backup exists in storage/app/static-export.previous; inspect it before rebuilding.');
         }
 
-        if (File::exists($outputDirectory) && ! File::moveDirectory($outputDirectory, $backupDirectory)) {
+        $hasPreviousExport = File::exists($outputDirectory);
+
+        if ($hasPreviousExport && ! File::moveDirectory($outputDirectory, $backupDirectory)) {
             throw new RuntimeException('Could not preserve the previous static export.');
         }
 
         if (! File::moveDirectory($stagingDirectory, $outputDirectory)) {
-            if (File::exists($backupDirectory)) {
+            if ($hasPreviousExport) {
                 File::moveDirectory($backupDirectory, $outputDirectory);
             }
 
@@ -259,6 +267,12 @@ HTML;
                 : str_replace($siteUrl, '', $tag[0]),
             $content,
         );
+
+        if ($content === null) {
+            $this->components->error("Could not export {$page}: its links could not be rewritten.");
+
+            return false;
+        }
 
         File::put($outputPath, $content);
         $kernel->terminate($request, $response);

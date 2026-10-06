@@ -58,6 +58,9 @@ class PortfolioController extends Controller
         return $this->renderLegalPage($locale, 'privacy');
     }
 
+    /**
+     * @param  view-string  $view
+     */
     private function render(string $view, string $locale, ?string $contentKey = null): View
     {
         $content = $this->contentFor($locale);
@@ -106,6 +109,9 @@ class PortfolioController extends Controller
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function contentFor(string $locale): array
     {
         App::setLocale($locale);

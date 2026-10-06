@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PageMetadataTest extends TestCase
@@ -41,16 +42,17 @@ class PageMetadataTest extends TestCase
 
             foreach (self::PAGES as $page) {
                 $url = route($page, ['locale' => $locale]);
-                $html = $this->get($url)->assertOk()->getContent();
-                preg_match('/<title>(.*?)<\/title>/', $html, $matches);
-                $titles[] = $matches[1];
+                $html = $this->get($url)->assertOk()->content();
+                $title = Str::match('/<title>(.*?)<\/title>/', $html);
+                $titles[] = $title;
 
                 if ($page === 'home') {
-                    $this->assertSame('Jeremy Läderach', $matches[1]);
+                    $this->assertSame('Jeremy Läderach', $title);
                 } else {
-                    $this->assertStringNotContainsString('Jeremy', $matches[1]);
+                    $this->assertNotSame('', $title);
+                    $this->assertStringNotContainsString('Jeremy', $title);
                 }
-                $this->assertStringContainsString('property="og:title" content="'.$matches[1].'"', $html);
+                $this->assertStringContainsString('property="og:title" content="'.$title.'"', $html);
 
                 $this->assertStringContainsString('rel="canonical" href="'.$url.'/"', $html);
                 $this->assertStringContainsString('property="og:url" content="'.$url.'/"', $html);

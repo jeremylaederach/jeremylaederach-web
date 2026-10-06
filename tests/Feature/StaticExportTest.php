@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
@@ -16,7 +18,7 @@ class StaticExportTest extends TestCase
         File::put($hotFile, $developmentUrl);
 
         try {
-            $this->artisan('site:export-static')->assertSuccessful();
+            $this->assertSame(Command::SUCCESS, Artisan::call('site:export-static'));
 
             $englishHome = File::get(base_path('dist-static/en/index.html'));
             $germanHome = File::get(base_path('dist-static/de/index.html'));
@@ -62,6 +64,7 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('href="/en/about"', $englishHome);
             $this->assertStringContainsString('Sitemap: https://jeremylaederach.ch/sitemap.xml', File::get(base_path('dist-static/robots.txt')));
             $sitemap = simplexml_load_file(base_path('dist-static/sitemap.xml'));
+            $this->assertNotFalse($sitemap);
             $this->assertCount(18, $sitemap->url);
             $this->assertSame('https://jeremylaederach.ch/en/', (string) $sitemap->url[0]->loc);
             $this->assertDirectoryDoesNotExist(storage_path('app/static-export'));
@@ -77,7 +80,7 @@ class StaticExportTest extends TestCase
 
     public function test_a_failed_export_preserves_the_previous_package_and_restores_vite(): void
     {
-        $this->artisan('site:export-static')->assertSuccessful();
+        $this->assertSame(Command::SUCCESS, Artisan::call('site:export-static'));
         $previousHome = File::get(base_path('dist-static/en/index.html'));
         $probe = public_path('static-export-test.php');
         $hotFile = public_path('hot');
@@ -88,7 +91,7 @@ class StaticExportTest extends TestCase
         File::put($hotFile, 'http://localhost:5173');
 
         try {
-            $this->artisan('site:export-static')->assertFailed();
+            $this->assertSame(Command::FAILURE, Artisan::call('site:export-static'));
             $this->assertSame($previousHome, File::get(base_path('dist-static/en/index.html')));
             $this->assertSame('http://localhost:5173', File::get($hotFile));
             $this->assertFileDoesNotExist(base_path('dist-static/static-export-test.php'));

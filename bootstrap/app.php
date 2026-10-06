@@ -16,8 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
             $requestedLocale = $request->segment(1);
-            $locales = config('portfolio.locales');
-            $locale = array_key_exists($requestedLocale, $locales)
+            $locale = $requestedLocale !== null && array_key_exists($requestedLocale, config('portfolio.locales'))
                 ? $requestedLocale
                 : config('portfolio.default_locale');
 
