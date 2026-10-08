@@ -1,4 +1,5 @@
 import { drawnFigures } from './dot-orb-figures.js';
+import { transitionFinishedEvent } from './transition-controller.js';
 
 const dotCount = 1200;
 const turnSeconds = 52;
@@ -40,6 +41,11 @@ const bud = {
 // sampled from a small canvas (the drawn ones at once, the mark when its image loads) and
 // inflated: thickest in the middle of the shape, flat at its edge. It sways instead of turning.
 const figure = { size: 0.72, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
+
+// On a page change the dots scatter away from the middle of the sphere and fade; the sphere of
+// the next page gathers from there. `reach` is how far they travel, in multiples of their distance
+// from the middle.
+const scatter = { reach: 1.4, leaveRate: 9, arriveRate: 3.2 };
 
 // Evenly spread points on a unit sphere (Fibonacci lattice), ordered from the top down.
 const createLattice = (count) => Array.from({ length: count }, (_, index) => {
@@ -145,7 +151,7 @@ const createBuds = () => bud.groups.map((group) => ({
     rotation: null,
 }));
 
-const initializeOrb = (canvas, reducedMotion) => {
+const initializeOrb = (canvas, reducedMotion, arriving) => {
     const context = canvas.getContext('2d');
     const listeners = new AbortController();
     const channels = readChannels(getComputedStyle(canvas).color);
@@ -179,6 +185,8 @@ const initializeOrb = (canvas, reducedMotion) => {
     let figurePoints = [];
     let shape = 0;
     let targetShape = 0;
+    let scattered = arriving && !reducedMotion ? 1 : 0;
+    let targetScattered = 0;
 
     // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii.
     const place = (point, rotation, seconds) => {
@@ -315,6 +323,11 @@ const initializeOrb = (canvas, reducedMotion) => {
                 y += ((y - ripple.y) / (fromClick || 1)) * push;
             }
 
+            if (scattered > 0.001) {
+                x += (x - home.x) * scattered * scatter.reach;
+                y += (y - home.y) * scattered * scatter.reach;
+            }
+
             dots.x[index] = x;
             dots.y[index] = y;
             dots.z[index] = z;
@@ -339,7 +352,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
                 const closeness = (dots.z[index] + 1) / 2;
 
-                context.globalAlpha = 0.3 + closeness * closeness * 0.7;
+                context.globalAlpha = (0.3 + closeness * closeness * 0.7) * (1 - scattered);
                 context.beginPath();
                 context.arc(
                     dots.x[index] * unit,
@@ -373,6 +386,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
         shape = approach(shape, targetShape, 8, delta);
+        scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
         position(clock, delta);
         paint();
     };
@@ -509,6 +523,12 @@ const initializeOrb = (canvas, reducedMotion) => {
             react(event.target.matches(':focus-visible') ? event.target : null);
         }, options);
         document.addEventListener('focusout', () => react(null), options);
+        document.addEventListener('portfolio:before-navigation', () => {
+            targetScattered = 1;
+        }, options);
+        document.addEventListener(transitionFinishedEvent, () => {
+            targetScattered = 0;
+        }, options);
     }
 
     return () => {
@@ -522,15 +542,16 @@ const initializeOrb = (canvas, reducedMotion) => {
 export const createDotOrbController = ({ reducedMotion }) => {
     let cleanups = [];
 
-    const initialize = () => {
+    const initialize = (arriving) => {
         cleanups.forEach((cleanup) => cleanup());
-        cleanups = [...document.querySelectorAll('[data-dot-orb]')].map((canvas) => initializeOrb(canvas, reducedMotion));
+        cleanups = [...document.querySelectorAll('[data-dot-orb]')]
+            .map((canvas) => initializeOrb(canvas, reducedMotion, arriving));
     };
 
     return {
         initialize: () => {
-            initialize();
-            document.addEventListener('portfolio:page-swapped', initialize);
+            initialize(false);
+            document.addEventListener('portfolio:page-swapped', () => initialize(true));
         },
     };
 };

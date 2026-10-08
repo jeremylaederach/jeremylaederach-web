@@ -8,7 +8,6 @@
     href="{{ route('contact', ['locale' => $locale]) }}"
     data-route="contact"
     data-route-transition
-    data-transition-label="{{ $content['contact_page']['heading'] }}"
     data-interface-sound
     data-sound-tone="panel"
     data-reveal

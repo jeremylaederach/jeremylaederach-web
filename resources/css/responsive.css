@@ -431,14 +431,6 @@
         font-size: 30px;
     }
 
-    .page-transition__surface {
-        padding: 24px 20px;
-    }
-
-    .page-transition__surface strong {
-        font-size: 48px;
-    }
-
     .dot-orb {
         mask-image: none;
     }

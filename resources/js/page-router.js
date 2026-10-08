@@ -20,8 +20,6 @@ const routeFromUrl = (url) => {
     return sceneFromRoute(route);
 };
 
-const transitionThemeFromUrl = (url) => url.pathname.split('/').filter(Boolean).at(-1) ?? 'home';
-
 const loadPage = async (url, pageCache) => {
     const cacheKey = `${url.origin}${url.pathname}${url.search}`;
 
@@ -144,12 +142,9 @@ export const createPageRouter = ({ soundController, transitionController }) => {
 
     const navigate = async (url, {
         historyMode = 'push',
-        origin,
         restoreFocus = true,
         scrollPosition,
         routeHint,
-        transitionLabel,
-        transitionTheme,
     } = {}) => {
         if (historyMode === 'push') {
             saveScrollPosition();
@@ -159,11 +154,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         pendingUrl = url.href;
         document.dispatchEvent(new CustomEvent('portfolio:before-navigation'));
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
-        const covered = transitionController.beginTransition(hintedScene, {
-            origin,
-            transitionLabel,
-            transitionTheme: transitionTheme ?? transitionThemeFromUrl(url),
-        });
+        const left = transitionController.beginTransition();
         const currentMain = document.querySelector('[data-page-main]');
 
         soundController.select();
@@ -175,7 +166,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         try {
             const [page] = await Promise.all([
                 loadPage(url, pageCache),
-                covered,
+                left,
             ]);
 
             if (sequence !== navigationSequence) {
@@ -253,17 +244,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
             return;
         }
 
-        const externalOrigin = link.dataset.transitionOriginId
-            ? document.getElementById(link.dataset.transitionOriginId)
-            : null;
-        const nestedOrigin = link.querySelector('[data-transition-origin]');
-
-        navigate(destination, {
-            origin: externalOrigin ?? (nestedOrigin instanceof Element ? nestedOrigin : link),
-            routeHint: link.dataset.route,
-            transitionLabel: link.dataset.transitionLabel ?? link.textContent.trim(),
-            transitionTheme: link.dataset.transitionTheme,
-        });
+        navigate(destination, { routeHint: link.dataset.route });
     });
 
     const prefetch = (event) => {

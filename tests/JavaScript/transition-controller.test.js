@@ -10,96 +10,72 @@ const deferred = () => {
 };
 
 const setup = (t, reducedMotion = false) => {
-    const window = createDom(t, `<body data-page="home">
-        <div data-page-transition data-phase="idle">
-            <div data-transition-surface><strong data-transition-label></strong></div>
-        </div></body>`);
-    t.mock.method(window, 'requestAnimationFrame', (callback) => { queueMicrotask(callback); return 1; });
-    const overlay = document.querySelector('[data-page-transition]');
-    const surface = document.querySelector('[data-transition-surface]');
-    const cover = deferred();
-    const reveal = deferred();
-    surface.getAnimations = () => [{ finished: overlay.dataset.phase === 'covering' ? cover.promise : reveal.promise }];
+    createDom(t, '<body data-page="home"><main data-page-main></main></body>');
+    const root = document.documentElement;
+    const leave = deferred();
+    const enter = deferred();
+    document.querySelector('[data-page-main]').getAnimations = () => [
+        { finished: root.dataset.transition === 'leaving' ? leave.promise : enter.promise },
+    ];
     const finished = [];
     document.addEventListener(transitionFinishedEvent, (event) => finished.push(event.detail.scene));
-    return { overlay, cover, reveal, finished, controller: createPageTransitionController({ reducedMotion }) };
+    return { root, leave, enter, finished, controller: createPageTransitionController({ reducedMotion }) };
 };
 
-test('cover and reveal follow animation completion rather than independent timers', async (t) => {
-    const { controller, overlay, cover, reveal, finished } = setup(t);
-    const covering = controller.beginTransition('projects');
+test('leaving and entering follow animation completion rather than independent timers', async (t) => {
+    const { controller, root, leave, enter, finished } = setup(t);
+    let left = false;
+    const leaving = controller.beginTransition().then(() => { left = true; });
     await new Promise(setImmediate);
-    assert.equal(overlay.dataset.phase, 'covering');
-    cover.resolve();
-    await covering;
-    assert.equal(overlay.dataset.phase, 'covered');
-    const revealing = controller.completeTransition('projects');
-    assert.equal(overlay.dataset.phase, 'revealing');
+    assert.equal(root.dataset.transition, 'leaving');
+    assert.equal(left, false);
+    leave.resolve();
+    await leaving;
+    const entering = controller.completeTransition('projects');
+    assert.equal(root.dataset.transition, 'entering');
     assert.deepEqual(finished, []);
-    reveal.resolve();
-    await revealing;
-    assert.equal(overlay.dataset.phase, 'idle');
+    enter.resolve();
+    await entering;
+    assert.equal(root.dataset.transition, undefined);
     assert.deepEqual(finished, ['projects']);
+    assert.equal(controller.getScene(), 'projects');
 });
 
-test('a stale reveal cannot clear or announce a newer navigation', async (t) => {
-    const { controller, overlay, cover, reveal, finished } = setup(t);
-    cover.resolve();
-    await controller.beginTransition('projects');
-    const oldReveal = controller.completeTransition('projects');
-    await controller.beginTransition('contact', { transitionLabel: 'Contact' });
-    reveal.resolve();
-    await oldReveal;
-    assert.equal(overlay.dataset.phase, 'covered');
-    assert.equal(overlay.dataset.route, 'contact');
+test('a stale entrance cannot clear or announce a newer navigation', async (t) => {
+    const { controller, root, leave, enter, finished } = setup(t);
+    leave.resolve();
+    await controller.beginTransition();
+    const oldEntrance = controller.completeTransition('projects');
+    await controller.beginTransition();
+    enter.resolve();
+    await oldEntrance;
+    assert.equal(root.dataset.transition, 'leaving');
     assert.deepEqual(finished, []);
 });
 
-test('restoring a cached page clears the overlay and invalidates pending work', async (t) => {
-    const { controller, overlay, cover, finished } = setup(t);
-    const covering = controller.beginTransition('projects');
+test('restoring a cached page clears the phase and invalidates pending work', async (t) => {
+    const { controller, root, leave, finished } = setup(t);
+    const leaving = controller.beginTransition();
     await new Promise(setImmediate);
     controller.reset('home');
-    cover.resolve();
-    await covering;
-    assert.equal(overlay.dataset.phase, 'idle');
-    assert.equal(overlay.dataset.route, undefined);
+    leave.resolve();
+    await leaving;
+    assert.equal(root.dataset.transition, undefined);
     assert.deepEqual(finished, ['home']);
 });
 
-test('reduced motion swaps without a cover animation', async (t) => {
-    const { controller, overlay, finished } = setup(t, true);
-    await controller.beginTransition('about');
+test('reduced motion swaps without a phase', async (t) => {
+    const { controller, root, finished } = setup(t, true);
+    await controller.beginTransition();
+    assert.equal(root.dataset.transition, undefined);
     await controller.completeTransition('about');
-    assert.equal(overlay.dataset.phase, 'idle');
+    assert.equal(root.dataset.transition, undefined);
     assert.deepEqual(finished, ['about']);
 });
 
-test('image origins start from a compact line within the visible part of the preview', async (t) => {
-    const { controller, overlay, cover } = setup(t);
-    const origin = document.createElement('a');
-    origin.dataset.transitionOrigin = 'compact';
-    origin.getBoundingClientRect = () => ({ top: -100, bottom: 500, left: 200, right: 900 });
-    cover.resolve();
-    await controller.beginTransition('projects', { origin });
-    const style = document.querySelector('[data-transition-surface]').style;
-    assert.equal(overlay.dataset.origin, 'compact');
-    assert.equal(style.getPropertyValue('--origin-top'), '250px');
-    assert.equal(style.getPropertyValue('--origin-bottom'), `${window.innerHeight - 250}px`);
-    assert.equal(style.getPropertyValue('--origin-left'), '518px');
-    assert.equal(style.getPropertyValue('--origin-right'), `${window.innerWidth - 582}px`);
-    controller.reset('projects');
-    assert.equal(overlay.dataset.origin, undefined);
-});
-
-test('small navigation links retain their original transition bounds', async (t) => {
-    const { controller, overlay, cover } = setup(t);
-    const origin = document.createElement('a');
-    origin.getBoundingClientRect = () => ({ top: 20, bottom: 60, left: 100, right: 180 });
-    cover.resolve();
-    await controller.beginTransition('about', { origin });
-    const style = document.querySelector('[data-transition-surface]').style;
-    assert.equal(overlay.dataset.origin, 'element');
-    assert.equal(style.getPropertyValue('--origin-top'), '20px');
-    assert.equal(style.getPropertyValue('--origin-left'), '100px');
+test('a case study belongs to the projects scene', async (t) => {
+    const { controller, enter } = setup(t);
+    enter.resolve();
+    await controller.completeTransition('quantified');
+    assert.equal(controller.getScene(), 'projects');
 });

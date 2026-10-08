@@ -65,7 +65,7 @@ docs/handoff.md          Current state, open decisions and audit findings
 
 Project galleries share one Blade component, interaction controller and stylesheet (`project-reel.css`). The gallery distinguishes screenshots from HTML interface previews; previews use illustrative data and are not live product embeds. All galleries use manual navigation with previous/next buttons, arrow keys and touch swipes; images never advance automatically. The optional enlarged view uses a native dialog and moves the same gallery into it, preserving the selected slide without duplicating markup or carousel state. Closing restores keyboard focus and the original layout.
 
-The router waits for the transition surface's CSS animations to finish before swapping content, then reveals the new page. Timing belongs to CSS rather than a second set of JavaScript delays. Image links use a compact origin so a large preview does not turn into a solid colour block at the start. Reduced-motion navigation skips the cover entirely.
+A page change has two phases, leaving and entering. The router waits for the main region's CSS transitions to finish before swapping content, then lets the new page enter. Timing belongs to CSS rather than a second set of JavaScript delays. Reduced-motion navigation swaps without a transition.
 
 ## Quality Checks
 

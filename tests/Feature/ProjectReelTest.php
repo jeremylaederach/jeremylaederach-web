@@ -20,7 +20,6 @@ class ProjectReelTest extends TestCase
                     ->assertSee($ui['media_preview'])
                     ->assertSee('aria-label="'.$ui['media_previous'].'"', false)
                     ->assertSee('aria-label="'.$ui['media_next'].'"', false)
-                    ->assertSee('data-transition-origin="compact"', false)
                     ->assertSee('data-reel-action="expand"', false)
                     ->assertSee('aria-label="'.$ui['media_close'].'"', false)
                     ->assertDontSee('class="project-reel__chrome" aria-hidden="true"', false)

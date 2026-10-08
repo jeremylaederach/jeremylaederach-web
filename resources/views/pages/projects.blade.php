@@ -55,9 +55,6 @@
                             data-sound-tone="panel"
                             data-route="projects"
                             data-route-transition
-                            data-transition-label="{{ $project['name'] }}"
-                            data-transition-theme="{{ $project['transition_theme'] }}"
-                            data-transition-origin-id="{{ $reelId }}"
                         >
                             <header class="project-case__header">
                                 <span>0{{ $loop->iteration }}</span>
@@ -81,8 +78,6 @@
                             :ui="$content['ui']"
                             :href="$projectUrl"
                             route-name="projects"
-                            :transition-theme="$project['transition_theme']"
-                            :transition-label="$project['name']"
                             :open-label="$content['ui']['open'].' '.$project['name']"
                             mode="teaser"
                         />

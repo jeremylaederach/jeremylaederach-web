@@ -273,7 +273,6 @@ return [
                         'description' => 'A personal analytics platform that brings calendar, finance, coding, and local system data into dashboards and timelines.',
                         'tags' => ['Angular', '.NET / C#', 'PostgreSQL'],
                         'detail_route' => 'quantified',
-                        'transition_theme' => 'quantified',
                     ],
                     [
                         'slug' => 'jay-jay',
@@ -282,7 +281,6 @@ return [
                         'description' => 'My business for websites, hosting, and ongoing support, backed by jay-jay.ch and a separate Client Hub in development.',
                         'tags' => ['Business', 'Laravel 13', 'Product design'],
                         'detail_route' => 'jay-jay',
-                        'transition_theme' => 'jay-jay',
                     ],
                     [
                         'slug' => 'sessiondeck',
@@ -291,7 +289,6 @@ return [
                         'description' => 'An open-source Windows app that saves apps, commands, URLs, and folders as reusable profiles, then starts them in order.',
                         'tags' => ['WinUI 3', '.NET 10', 'MVVM'],
                         'detail_route' => 'session-deck',
-                        'transition_theme' => 'session-deck',
                     ],
                 ],
             ],
@@ -871,7 +868,6 @@ return [
                         'description' => 'Eine persönliche Analytics-Plattform für Kalender-, Finanz-, Coding- und lokale Systemdaten – aufbereitet als Dashboards und Timelines.',
                         'tags' => ['Angular', '.NET / C#', 'PostgreSQL'],
                         'detail_route' => 'quantified',
-                        'transition_theme' => 'quantified',
                     ],
                     [
                         'slug' => 'jay-jay',
@@ -880,7 +876,6 @@ return [
                         'description' => 'Mein Unternehmen für Websites, Hosting und laufende Betreuung – mit jay-jay.ch und einem separaten Client Hub in Entwicklung.',
                         'tags' => ['Unternehmen', 'Laravel 13', 'Product Design'],
                         'detail_route' => 'jay-jay',
-                        'transition_theme' => 'jay-jay',
                     ],
                     [
                         'slug' => 'sessiondeck',
@@ -889,7 +884,6 @@ return [
                         'description' => 'Eine Open-Source-Windows-App, die Apps, Commands, URLs und Ordner als wiederverwendbare Profile speichert und der Reihe nach startet.',
                         'tags' => ['WinUI 3', '.NET 10', 'MVVM'],
                         'detail_route' => 'session-deck',
-                        'transition_theme' => 'session-deck',
                     ],
                 ],
             ],

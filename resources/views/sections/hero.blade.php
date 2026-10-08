@@ -25,7 +25,6 @@
                 data-route="{{ $route['route'] }}"
                 data-pointer-wrap
                 data-route-transition
-                data-transition-label="{{ $route['label'] }}"
                 data-interface-sound
                 data-sound-tone="panel"
             >

@@ -25,7 +25,6 @@
                 href="{{ route('home', ['locale' => $locale]) }}"
                 data-route="home"
                 data-route-transition
-                data-transition-label="{{ $content['nav'][0]['label'] }}"
                 data-interface-sound
                 data-sound-tone="action"
             >

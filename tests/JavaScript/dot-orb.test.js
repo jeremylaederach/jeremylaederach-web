@@ -213,3 +213,17 @@ test('reduced motion draws a still sphere without a frame loop', (t) => {
     assert.equal(dots.length, 1200);
     assert.equal(frames.size, 0);
 });
+
+test('a page change scatters the dots and the next page gathers them again', (t) => {
+    const { run, spread } = setup(t);
+    run(30);
+    const whole = spread('y');
+
+    document.dispatchEvent(new window.Event('portfolio:before-navigation'));
+    run(40);
+    assert.ok(spread('y') > whole * 1.8);
+
+    document.dispatchEvent(new window.Event('portfolio:page-swapped'));
+    run(200);
+    assert.ok(spread('y') < whole * 1.2);
+});

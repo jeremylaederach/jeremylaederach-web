@@ -4,8 +4,6 @@
     'mode' => 'teaser',
     'href' => null,
     'routeName' => null,
-    'transitionTheme' => null,
-    'transitionLabel' => null,
     'openLabel' => null,
 ])
 
@@ -22,7 +20,7 @@
         $reelAttributes['tabindex'] = '0';
     } else {
         throw_unless(
-            $href && $routeName && $transitionTheme && $transitionLabel && $openLabel,
+            $href && $routeName && $openLabel,
             LogicException::class,
         );
     }
@@ -37,7 +35,6 @@
         'project-reel--teaser' => ! $isDetail,
     ])->merge($reelAttributes) }}
     data-project-reel
-    data-transition-origin="compact"
 >
     <div class="project-reel__frame">
         <div class="project-reel__chrome">
@@ -57,13 +54,10 @@
                 href="{{ $href }}"
                 aria-label="{{ $openLabel }}"
                 data-reel-open
-                data-transition-origin="compact"
                 data-interface-sound
                 data-sound-tone="panel"
                 data-route="{{ $routeName }}"
                 data-route-transition
-                data-transition-label="{{ $transitionLabel }}"
-                data-transition-theme="{{ $transitionTheme }}"
             >
         @endif
             @foreach ($slides as $slide)

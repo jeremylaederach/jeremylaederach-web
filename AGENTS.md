@@ -29,8 +29,8 @@ again before relying on them. Inspect implementation and tests before proposing 
   sets a strict CSP (`'self'` only): no third-party scripts, fonts or embeds unless that policy is
   changed deliberately.
 - `DESIGN.md` describes the interface as built. Since 8 October 2026 the owner is reworking the
-  look around the home page's dot sphere and allows changes to the pointer, navigation and hover
-  styles for it; the typeface, the dark ground, the page transitions and the interface sounds
+  look around the home page's dot sphere and allows changes to the pointer, navigation, hover
+  styles and page transitions for it; the typeface, the dark ground and the interface sounds
   stay. Propose a small scope before a redesign or a new section, start with one contained,
   reviewable change, and distinguish confirmed defects from preferences and ideas. Notice interface problems yourself
   (hierarchy, spacing, dividers, selected states, color consistency) and solve them within the

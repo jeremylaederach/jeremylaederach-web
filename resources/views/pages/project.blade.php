@@ -11,7 +11,6 @@
                 href="{{ route('projects', ['locale' => $locale]) }}#{{ $project['slug'] }}"
                 data-route="projects"
                 data-route-transition
-                data-transition-label="{{ $content['projects_page']['heading'] }}"
                 data-interface-sound
                 data-sound-tone="navigation"
             >
@@ -145,8 +144,6 @@
                 aria-label="{{ $content['ui']['next_project'] }}: {{ $nextProject['name'] }}"
                 data-route="projects"
                 data-route-transition
-                data-transition-label="{{ $nextProject['name'] }}"
-                data-transition-theme="{{ $nextProject['transition_theme'] }}"
                 data-interface-sound
                 data-sound-tone="navigation"
             >

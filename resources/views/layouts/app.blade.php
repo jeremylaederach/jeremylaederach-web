@@ -63,7 +63,6 @@
                     aria-label="{{ $content['ui']['brand'] }}"
                     data-route="home"
                     data-route-transition
-                    data-transition-label="{{ $content['nav'][0]['label'] }}"
                     data-interface-sound
                     data-sound-tone="brand"
                     data-dot-orb-figure="mark"
@@ -96,7 +95,6 @@
                                 data-page-route="{{ $item['route'] }}"
                                 data-route="{{ $item['route'] }}"
                                 data-route-transition
-                                data-transition-label="{{ $item['label'] }}"
                                 data-interface-sound
                                 data-sound-tone="navigation"
                                 @if ($isActive) aria-current="page" @endif
@@ -170,7 +168,6 @@
                                         data-page-route="{{ $item['route'] }}"
                                         data-route="{{ $item['route'] }}"
                                         data-route-transition
-                                        data-transition-label="{{ $item['label'] }}"
                                         data-interface-sound
                                         data-sound-tone="navigation"
                                         style="--menu-index: {{ $loop->index }}"
@@ -205,13 +202,6 @@
             </div>
         </header>
 
-        <div class="page-transition" data-page-transition data-phase="idle" aria-hidden="true">
-            <div class="page-transition__surface" data-transition-surface>
-                <span>Jeremy Läderach</span>
-                <strong data-transition-label></strong>
-            </div>
-        </div>
-
         <main id="main" data-page-main>
             @yield('content')
         </main>
@@ -224,7 +214,6 @@
                         href="{{ route('home', ['locale' => $locale]) }}"
                         data-route="home"
                         data-route-transition
-                        data-transition-label="{{ $content['nav'][0]['label'] }}"
                         data-interface-sound
                         data-sound-tone="brand"
                     >
@@ -238,7 +227,6 @@
                                 href="{{ route($item['route'], ['locale' => $locale]) }}"
                                 data-route="{{ $item['route'] }}"
                                 data-route-transition
-                                data-transition-label="{{ $item['label'] }}"
                                 data-interface-sound
                                 data-sound-tone="navigation"
                             >
@@ -281,7 +269,6 @@
                             href="{{ route('imprint', ['locale' => $locale]) }}"
                             data-route="imprint"
                             data-route-transition
-                            data-transition-label="{{ $content['imprint']['title'] }}"
                             data-interface-sound
                             data-sound-tone="control"
                         >{{ $content['imprint']['title'] }}</a>
@@ -289,7 +276,6 @@
                             href="{{ route('privacy', ['locale' => $locale]) }}"
                             data-route="privacy"
                             data-route-transition
-                            data-transition-label="{{ $content['privacy']['title'] }}"
                             data-interface-sound
                             data-sound-tone="control"
                         >{{ $content['privacy']['title'] }}</a>

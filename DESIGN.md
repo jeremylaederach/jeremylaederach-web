@@ -16,7 +16,8 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   sets from the pointer type of the last event. Every hover state has a `:focus-visible`
   counterpart. Touch gets the resting state.
 - **Motion.** Timing belongs to CSS. Under `prefers-reduced-motion` transitions and animations
-  collapse to 1ms, page navigation skips the cover, and canvas animation draws one still frame.
+  collapse to 1ms, page navigation swaps without a transition, and canvas animation draws one
+  still frame.
 - **Stability.** Pages reveal with opacity and transform only, and animated regions keep their
   size, so nothing shifts the layout after the first paint.
 - **Performance.** No third-party scripts, fonts or embeds (the exported CSP allows `'self'`
@@ -43,8 +44,9 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   such as the home page's destinations, a ring grows out of the dot and wraps the control; the dot
   grows and both take the accent that applies to that control (`--pointer-accent-rgb`), without
   glow. A press shrinks the dot. Touch and pen input hide the pointer, and reduced motion keeps the
-  native cursor; page transitions that grow from the clicked
-  element; optional interface sounds. No surface lights up under the pointer: a hovered link or
+  native cursor. A page change covers nothing: the old page fades out as it sinks, the sphere
+  scatters, and the new page fades in as it rises while its sphere gathers
+  (`resources/js/transition-controller.js`). Optional interface sounds. No surface lights up under the pointer: a hovered link or
   card answers with its accent, a rule drawn in the accent or a small movement.
 
 ### Home page
@@ -90,6 +92,8 @@ the text.
   hero, in the page's accent and without figures. A case study shows it in the project's color
   behind the gallery of its hero. On the 404 page it stands behind the large number, moved to the
   left from 721px. The legal pages have no sphere.
+- **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
+  and fade; the sphere of the next page gathers from the scattered state.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
   sphere.
 
