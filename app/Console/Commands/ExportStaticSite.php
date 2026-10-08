@@ -261,7 +261,7 @@ HTML;
         File::ensureDirectoryExists(dirname($outputPath));
         // Navigation and assets work in local previews; discovery metadata stays absolute.
         $content = preg_replace_callback(
-            '/<(?:a|link|img|script)\b[^>]*>/i',
+            '/<[a-z][^>]*>/i',
             fn (array $tag): string => str_contains($tag[0], 'data-page-meta')
                 ? $tag[0]
                 : str_replace($siteUrl, '', $tag[0]),

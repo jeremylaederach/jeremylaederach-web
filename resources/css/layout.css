@@ -60,7 +60,7 @@
             color-mix(in srgb, var(--route-accent) 76%, white) 20%,
             color-mix(in srgb, var(--route-accent) 92%, black) 80%
         );
-        mask: url('/brand/jeremy-cat-256.png') center / contain no-repeat;
+        mask: var(--brand-mark) center / contain no-repeat;
     }
 
     .site-header__controls {
