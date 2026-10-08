@@ -182,33 +182,33 @@
         white-space: nowrap;
     }
 
-    body:has(.project-detail--quantified, .project-index__item--quantified[data-current]),
+    body:has(.project-detail--quantified, [data-project='quantified'][data-current]),
     .project-detail,
     .case-study-next--quantified,
-    .project-index__item--quantified {
+    [data-project='quantified'] {
         --project-accent: #53b1fd;
         --project-accent-rgb: 83, 177, 253;
     }
 
-    body:has(.project-detail--jay-jay, .project-index__item--jay-jay[data-current]),
+    body:has(.project-detail--jay-jay, [data-project='jay-jay'][data-current]),
     .project-detail--jay-jay,
     .case-study-next--jay-jay,
-    .project-index__item--jay-jay {
+    [data-project='jay-jay'] {
         --project-accent: #818cf8;
         --project-accent-rgb: 129, 140, 248;
     }
 
-    body:has(.project-detail--sessiondeck, .project-index__item--sessiondeck[data-current]),
+    body:has(.project-detail--sessiondeck, [data-project='sessiondeck'][data-current]),
     .project-detail--sessiondeck,
     .case-study-next--sessiondeck,
-    .project-index__item--sessiondeck {
+    [data-project='sessiondeck'] {
         --project-accent: #ff8a00;
         --project-accent-rgb: 255, 138, 0;
     }
 
     /* Where a project is shown, in its case study or as the current one of the overview, its
        color is the accent of the whole page. */
-    body:has(.project-detail, .project-index__item[data-current]) {
+    body:has(.project-detail, [data-project][data-current]) {
         --route-accent-goal: var(--project-accent-rgb);
     }
 

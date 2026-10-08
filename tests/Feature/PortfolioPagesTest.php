@@ -240,7 +240,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="portfolio-page projects-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('aria-label="Projekte."', false)
-            ->assertSee('class="project-index__list"', false)
+            ->assertSee('class="stage-list__rows"', false)
             ->assertSee('Projekte')
             ->assertSee('Quantified')
             ->assertSee('Persönliches Analyseprodukt')
@@ -253,14 +253,15 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-dot-orb-figure="quantified"', false)
             ->assertSee('data-dot-orb-figure="jay-jay"', false)
             ->assertDontSee('Nativer Workspace-Launcher')
-            ->assertSee('aria-describedby="project-detail-quantified"', false)
+            ->assertSee('aria-describedby="quantified-detail"', false)
+            ->assertSee('data-project="quantified"', false)
             ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
             ->assertDontSee('data-project-reel', false);
 
         $projectHtml = $projects->content();
 
-        $this->assertSame(2, substr_count($projectHtml, 'data-project-index-item'));
-        $this->assertSame(1, substr_count($projectHtml, 'data-current'));
+        $this->assertSame(2, substr_count($projectHtml, 'data-stage-item'));
+        $this->assertSame(1, substr_count($projectHtml, ' data-current'));
         $this->assertSame(1, substr_count($projectHtml, 'data-dot-orb-resting'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
     }
@@ -441,11 +442,10 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="portfolio-page contact-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('aria-label="Contact."', false)
-            ->assertSee('class="contact-workspace"', false)
-            ->assertSee('aria-labelledby="contact-workspace-title"', false)
-            ->assertSee('class="contact-email"', false)
-            ->assertSee('class="contact-channels"', false)
-            ->assertSee('Tell me what you want to build.')
+            ->assertSee('class="stage-list__rows"', false)
+            ->assertSee('href="mailto:info@jeremylaederach.ch"', false)
+            ->assertSee('data-dot-orb-figure="github"', false)
+            ->assertSee('A few sentences are enough.')
             ->assertDontSee('class="contact-form"', false)
             ->assertDontSee('<form', false)
             ->assertSee('info@jeremylaederach.ch')

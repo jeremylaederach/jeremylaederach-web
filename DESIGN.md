@@ -102,7 +102,7 @@ the text.
 - **Fitted canvas.** On a canvas marked `data-dot-orb-fit` the sphere stands still in the middle,
   and a figure, which is drawn within the middle 80% of its square, fills the smaller side of the
   canvas.
-- **Sub-pages.** The about and contact pages show the same sphere behind their page hero. A case
+- **Sub-pages.** The about page shows the same sphere behind its page hero. A case
   study shows it in the project's color behind the gallery of its hero. On the 404 page it stands
   behind the large number, moved to the left from 721px. The legal pages have no sphere.
 - **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
@@ -110,20 +110,27 @@ the text.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
   sphere.
 
-### Projects overview
+### Stage list: projects overview and contact
 
-The overview lists the projects marked as featured in the content, Quantified and Jay-Jay; a
-project without the mark keeps its case study and its place in the sequence of case studies. From
-961px the overview and the line that ends the page fill one screen
-(`resources/css/pages/project-index.css`). On the left stand the page heading and the introduction
-on one line, below them the projects as a list of large names in rows of one height, and below the
-list the current project's kind, description and technologies. One project is always current, the
-first at the start and after that the one last hovered or focused
-(`resources/js/project-index-controller.js`). The current one stands in full ink and shows an
-arrow, the others recede, and the pointer's ring lies on the edges of a hovered row. The right
-belongs to a square as high as the stage and at most five of the twelve columns wide, flush with
-the right edge: it holds the sphere, which rests in the current project's figure and color, the
-bars of a chart for Quantified and the brackets of a tag for Jay-Jay. The rows of the list never
-move. Each row is the link to the case study. Up to 960px every
-project shows its description under its name, and the sphere stays
-behind the page. The overview carries no screenshots; those belong to the case studies.
+Both pages are one component (`resources/views/components/stage-list.blade.php`,
+`resources/css/stage-list.css`, `resources/js/stage-list-controller.js`): a heading with the
+introduction on one line, a list of large rows and the sphere. One row is always current, the
+first at the start and after that the one last hovered or focused. The current one stands in full
+ink and shows an icon, the others recede, and the pointer's ring lies on the edges of a hovered
+row. Each row is a link.
+
+From 961px the section and the line that ends the page fill one screen. The right belongs to a
+square as high as the stage and at most five of the twelve columns wide, flush with the right
+edge: it holds the sphere, which rests in the current row's figure. The list keeps to the left in
+rows of one height that never move. Up to 960px the rows follow each other with their texts, and
+the sphere stays behind the page.
+
+- **Projects overview.** The rows are the projects marked as featured in the content, Quantified
+  and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
+  case studies. A row brings its project's color, which is then the accent of the page, and its
+  figure: the bars of a chart for Quantified, the brackets of a tag for Jay-Jay. Below the list
+  stand the current project's kind, description and technologies. The overview carries no
+  screenshots; those belong to the case studies.
+- **Contact.** The rows are the channels, each with its address at the end of the row: an
+  envelope for email, GitHub's mark for GitHub, a head and shoulders for LinkedIn. Below the list
+  stands a note on what to write.

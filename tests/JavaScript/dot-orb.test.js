@@ -49,6 +49,7 @@ const setup = (t, reducedMotion = false) => {
         getComputedStyle: (element) => ({
             getPropertyValue: (name) => element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : ''),
         }),
+        Path2D: class {},
         ResizeObserver: class {
             constructor(callback) {
                 this.callback = callback;

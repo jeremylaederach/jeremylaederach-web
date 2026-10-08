@@ -1,81 +1,33 @@
 @extends('layouts.app')
 
+@php
+    // The figure the sphere takes for each channel.
+    $figures = ['email' => 'contact', 'github' => 'github', 'linkedin' => 'about'];
+    $items = [];
+
+    foreach (config('portfolio.socials') as $key => $social) {
+        $items[] = [
+            'id' => $key,
+            'name' => $social['label'],
+            'label' => $social['label'].': '.$social['display'],
+            'href' => $social['url'],
+            'value' => $social['display'],
+            'figure' => $figures[$key],
+            'icon' => 'arrow-up-right',
+        ];
+    }
+@endphp
+
 @section('content')
     <article class="portfolio-page contact-page">
-        <header class="page-hero page-hero--contact" data-reveal>
-            <div class="dot-orb" aria-hidden="true">
-                <canvas data-dot-orb></canvas>
-            </div>
-
-            <div class="page-hero__title">
-                <x-animated-page-heading :text="$content['contact_page']['heading']" />
-            </div>
-
-            <p>{{ $content['contact_page']['intro'] }}</p>
-
-            <a
-                class="scroll-cue directional-link directional-link--down"
-                href="#contact-workspace"
-                data-interface-sound
-                data-sound-tone="action"
-            >
-                <span>{{ $content['contact_page']['direct_label'] }}</span>
-                <x-nav-icon name="arrow-down" />
-            </a>
-        </header>
-
-        <section
-            id="contact-workspace"
-            class="contact-workspace"
-            aria-labelledby="contact-workspace-title"
-            data-reveal
+        <x-stage-list
+            heading-id="contact-title"
+            :heading="$content['contact_page']['heading']"
+            :intro="$content['contact_page']['intro']"
+            :items="$items"
         >
-            <header class="contact-workspace__header">
-                <p class="section-label contact-workspace__label">
-                    <span>01</span>
-                    <span aria-hidden="true">/</span>
-                    <span>{{ $content['contact_page']['direct_label'] }}</span>
-                </p>
-                <h2 id="contact-workspace-title">{{ $content['contact_page']['direct_heading'] }}</h2>
-            </header>
-
-            <a
-                class="contact-email"
-                href="{{ config('portfolio.socials.email.url') }}"
-                data-interface-sound
-                data-sound-tone="action"
-            >
-                <span>{{ config('portfolio.socials.email.label') }}</span>
-                <strong>{{ config('portfolio.socials.email.display') }}</strong>
-                <x-nav-icon name="arrow-up-right" />
-            </a>
-
-            <div class="contact-workspace__details">
-                <div class="contact-note">
-                    <p class="section-label">{{ $content['contact_page']['context_label'] }}</p>
-                    <p>{{ $content['contact_page']['context'] }}</p>
-                </div>
-
-                <nav class="contact-channels" aria-label="{{ $content['contact_page']['channels_label'] }}">
-                    <p class="section-label">{{ $content['contact_page']['channels_label'] }}</p>
-                    <div>
-                        @foreach (config('portfolio.socials') as $key => $social)
-                            @continue($key === 'email')
-
-                            <a
-                                href="{{ $social['url'] }}"
-                                rel="noopener noreferrer"
-                                data-interface-sound
-                                data-sound-tone="action"
-                            >
-                                <span>{{ $social['label'] }}</span>
-                                <strong>{{ $social['display'] }}</strong>
-                                <x-nav-icon name="arrow-up-right" />
-                            </a>
-                        @endforeach
-                    </div>
-                </nav>
-            </div>
-        </section>
+            <p class="stage-list__kind">{{ $content['contact_page']['context_label'] }}</p>
+            <p class="stage-list__text">{{ $content['contact_page']['context'] }}</p>
+        </x-stage-list>
     </article>
 @endsection

@@ -5,12 +5,11 @@
 @import './orb.css';
 @import './pointer.css';
 @import './components.css';
+@import './stage-list.css';
 @import './pages/page-hero.css';
-@import './pages/project-index.css';
 @import './pages/project-previews.css';
 @import './pages/case-study.css';
 @import './pages/about.css';
-@import './pages/contact.css';
 @import './pages/not-found.css';
 @import './reveal.css';
 @import './project-reel.css';

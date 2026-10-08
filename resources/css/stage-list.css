@@ -1,7 +1,8 @@
 @layer components {
-    /* The projects overview lists the three projects. One of them is always current: it shows its
-       description, the sphere takes its figure, and its color is the accent of the page. */
-    .project-index {
+    /* A stage list is a page's main section: a heading, a list of large rows and the sphere. One
+       row is always current: it shows its description, and the sphere takes its figure. A row
+       that stands for a project brings that project's color. */
+    .stage-list {
         position: relative;
         isolation: isolate;
         width: var(--shell);
@@ -9,14 +10,14 @@
         padding: 124px 0 72px;
     }
 
-    .project-index__header h1 {
+    .stage-list__header h1 {
         margin: 0;
         font-size: clamp(34px, 3.4vw, 48px);
         font-weight: 430;
         line-height: 1;
     }
 
-    .project-index__header > p {
+    .stage-list__header > p {
         max-width: 40ch;
         margin: 14px 0 0;
         color: var(--ink-muted);
@@ -24,34 +25,36 @@
         line-height: 1.55;
     }
 
-    .project-index__list {
+    .stage-list__rows {
         margin: 40px 0 0;
         padding: 0;
         list-style: none;
     }
 
-    .project-index__item {
-        --dot-orb-rgb: var(--project-accent-rgb);
+    .stage-list__item {
+        --item-accent: var(--project-accent, var(--route-accent));
+        --dot-orb-rgb: var(--project-accent-rgb, var(--route-accent-goal));
         border-bottom: 1px solid var(--line);
         scroll-margin-top: 100px;
     }
 
-    .project-index__item:first-child {
+    .stage-list__item:first-child {
         border-top: 1px solid var(--line);
     }
 
-    .project-index__link {
+    .stage-list__link {
         position: relative;
-        display: grid;
+        display: flex;
         padding: 22px 0 10px;
-        grid-template-columns: minmax(0, 1fr) 24px;
         gap: 14px;
         align-items: center;
         color: var(--ink);
         transition: color 360ms ease;
     }
 
-    .project-index__name {
+    .stage-list__name {
+        min-width: 0;
+        flex: 1;
         font-size: clamp(36px, 10vw, 56px);
         font-weight: 430;
         line-height: 1;
@@ -59,37 +62,51 @@
         transition: translate 620ms var(--ease-heavy);
     }
 
-    .project-index__link .nav-icon {
+    .stage-list__link .nav-icon {
         width: 22px;
         height: 22px;
-        color: var(--project-accent);
+        color: var(--item-accent);
         transition: opacity 260ms ease, translate 460ms var(--ease-out);
     }
 
-    .project-index__detail {
+    /* A short text at the end of a row, such as an address. */
+    .stage-list__value {
+        color: var(--muted);
+        font-size: 15px;
+        transition: color 360ms ease;
+    }
+
+    .stage-list__detail {
         padding: 0 0 26px;
     }
 
-    .project-index__detail p,
-    .project-index__tags {
+    /* A note that belongs to the whole list stands below it. */
+    .stage-list__note {
+        max-width: 560px;
+        padding-top: 28px;
+    }
+
+    .stage-list__detail p,
+    .stage-list__note p,
+    .stage-list__tags {
         margin: 0;
     }
 
-    .project-index__type {
-        color: var(--project-accent);
+    .stage-list__kind {
+        color: var(--item-accent);
         font-size: 11px;
         font-weight: 560;
         text-transform: uppercase;
     }
 
-    .project-index__description {
+    .stage-list__text {
         padding-top: 12px;
         color: rgba(var(--ink-rgb), 0.78);
         font-size: 16px;
         line-height: 1.55;
     }
 
-    .project-index__tags {
+    .stage-list__tags {
         display: flex;
         padding: 18px 0 0;
         flex-wrap: wrap;
@@ -104,7 +121,7 @@
        columns wide. On the left stand the heading, the list in rows of one height and, below the
        list, the current project's description. */
     @media (min-width: 961px) {
-        .project-index {
+        .stage-list {
             --top: clamp(132px, 18svh, 176px);
             --bottom: clamp(28px, 6svh, 56px);
             --side: min(
@@ -117,7 +134,7 @@
             padding: var(--top) 0 var(--bottom);
         }
 
-        .project-index .dot-orb {
+        .stage-list .dot-orb {
             inset: var(--top) 0 auto auto;
             width: var(--side);
             height: var(--side);
@@ -125,7 +142,7 @@
         }
 
         /* The heading and the introduction share one line above the list. */
-        .project-index__header {
+        .stage-list__header {
             display: flex;
             width: var(--left);
             height: 48px;
@@ -134,55 +151,60 @@
             justify-content: space-between;
         }
 
-        .project-index__header > p {
+        .stage-list__header > p {
             margin: 0;
             text-align: right;
         }
 
-        .project-index__list {
+        .stage-list__rows {
             width: var(--left);
             margin: clamp(28px, 6svh, 56px) 0 0;
         }
 
-        .project-index__item,
-        .project-index__item:first-child {
+        .stage-list__item,
+        .stage-list__item:first-child {
             border: 0;
         }
 
         /* A row reaches a little beyond the list on both sides, so the pointer's ring, which lies
            on its edges, keeps clear of the name. */
-        .project-index__link {
+        .stage-list__link {
             height: var(--row);
             margin: 0 -18px;
             padding: 0 18px;
-            grid-template-columns: minmax(0, 1fr) 28px;
             gap: 20px;
             border-radius: 10px;
             color: rgba(var(--ink-rgb), 0.42);
         }
 
-        .project-index__name {
+        .stage-list__name {
             font-size: clamp(44px, min(6vw, 11.5svh), 104px);
         }
 
-        .project-index__link .nav-icon {
+        .stage-list__link .nav-icon {
             width: 26px;
             height: 26px;
             opacity: 0;
             translate: -10px 0;
         }
 
-        .project-index__item[data-current] .project-index__link {
+        .stage-list__item[data-current] .stage-list__link,
+        .stage-list__item[data-current] .stage-list__value {
             color: var(--ink);
         }
 
-        .project-index__item[data-current] .nav-icon {
+        .stage-list__note {
+            width: min(var(--left), 560px);
+            padding-top: clamp(28px, 5svh, 48px);
+        }
+
+        .stage-list__item[data-current] .nav-icon {
             opacity: 1;
             translate: 0;
         }
 
         /* Every description stands in the same place below the list; only the current one shows. */
-        .project-index__detail {
+        .stage-list__detail {
             position: absolute;
             top: calc(100% + clamp(28px, 5svh, 48px));
             left: 0;
@@ -194,7 +216,7 @@
             transition: opacity 200ms ease, translate 200ms ease, visibility 0s 200ms;
         }
 
-        .project-index__item[data-current] .project-index__detail {
+        .stage-list__item[data-current] .stage-list__detail {
             opacity: 1;
             visibility: visible;
             translate: 0;

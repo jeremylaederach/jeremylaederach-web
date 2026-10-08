@@ -1,7 +1,6 @@
 @layer components {
     .about-story,
-    .stack-section,
-    .contact-workspace {
+    .stack-section {
         scroll-margin-top: 96px;
     }
 

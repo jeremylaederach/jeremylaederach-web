@@ -6,9 +6,12 @@
         --control-accent-rgb: var(--route-accent-goal);
     }
 
-    .project-detail :is(a, button),
-    .project-index__link {
+    .project-detail :is(a, button) {
         --control-accent-rgb: var(--project-accent-rgb);
+    }
+
+    .stage-list__link {
+        --control-accent-rgb: var(--project-accent-rgb, var(--route-accent-goal));
     }
 
     .site-pointer {

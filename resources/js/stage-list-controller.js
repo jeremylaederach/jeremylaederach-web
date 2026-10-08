@@ -1,14 +1,14 @@
-// The projects overview always has one current project: the one last hovered or focused. Its
-// entry is marked for the stylesheet, and its link for the dot sphere, which rests in its figure.
-export const createProjectIndexController = () => {
+// A stage list always has one current row: the one last hovered or focused. Its item is marked
+// for the stylesheet, and its link for the dot sphere, which rests in its figure.
+export const createStageListController = () => {
     const select = (target) => {
-        const current = target instanceof Element ? target.closest('[data-project-index-item]') : null;
+        const current = target instanceof Element ? target.closest('[data-stage-item]') : null;
 
         if (!current || current.hasAttribute('data-current')) {
             return;
         }
 
-        for (const item of current.parentElement.querySelectorAll('[data-project-index-item]')) {
+        for (const item of current.parentElement.querySelectorAll('[data-stage-item]')) {
             item.toggleAttribute('data-current', item === current);
             item.querySelector('a')?.toggleAttribute('data-dot-orb-resting', item === current);
         }

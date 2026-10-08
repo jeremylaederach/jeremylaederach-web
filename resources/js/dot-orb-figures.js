@@ -1,4 +1,6 @@
-// Figures the dot sphere can take, one per destination and featured project. Each paints a solid shape onto a square
+import { siGithub } from 'simple-icons';
+
+// Figures the dot sphere can take, one per destination, featured project and contact channel. Each paints a solid shape onto a square
 // canvas of the given size; `cut` then removes lines from it, which read as gaps between the dots.
 
 const cut = (context, size, path) => {
@@ -80,4 +82,13 @@ const jayJay = (context, size) => {
     context.stroke();
 };
 
-export const drawnFigures = { projects, about, contact, quantified, 'jay-jay': jayJay };
+// GitHub: its mark, whose path is drawn on a square of 24 units.
+const github = (context, size) => {
+    context.save();
+    context.translate(size * 0.1, size * 0.1);
+    context.scale((size * 0.8) / 24, (size * 0.8) / 24);
+    context.fill(new Path2D(siGithub.path));
+    context.restore();
+};
+
+export const drawnFigures = { projects, about, contact, quantified, 'jay-jay': jayJay, github };
