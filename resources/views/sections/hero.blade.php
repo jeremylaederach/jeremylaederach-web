@@ -3,11 +3,13 @@
         <canvas data-dot-orb data-mark="{{ asset('brand/jeremy-cat-256.png') }}"></canvas>
     </div>
     <header class="kinetic-index__masthead">
-        <h1 id="landing-title" class="kinetic-index__heading" data-dot-orb-figure="mark">
-            <span class="kinetic-index__name">Jeremy Läderach<em>.</em></span>
+        <h1 id="landing-title" class="kinetic-index__heading">
+            <span class="kinetic-index__name figure-word" data-dot-orb-figure="mark">Jeremy Läderach<em>.</em></span>
         </h1>
 
-        <p class="kinetic-index__summary">{{ $content['home']['summary'] }}</p>
+        <p class="kinetic-index__summary">
+            <x-figure-text :text="$content['home']['summary']" :figures="$content['home']['summary_figures']" />
+        </p>
     </header>
 
     <nav class="index-navigation" aria-label="{{ $content['ui']['menu'] }}">

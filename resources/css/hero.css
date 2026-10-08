@@ -30,15 +30,6 @@
         letter-spacing: -0.01em;
     }
 
-    .kinetic-index__name {
-        display: inline-block;
-        transition: color 360ms ease;
-    }
-
-    .has-mouse-input .kinetic-index__heading:hover .kinetic-index__name {
-        color: var(--route-accent);
-    }
-
     .kinetic-index__heading em {
         color: var(--route-accent);
         font-style: normal;

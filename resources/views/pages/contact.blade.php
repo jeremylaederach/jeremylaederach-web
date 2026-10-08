@@ -21,6 +21,7 @@
 @section('content')
     <article class="portfolio-page contact-page">
         <x-stage-list
+            class="stage-list--mirrored stage-list--compact"
             heading-id="contact-title"
             :heading="$content['contact_page']['heading']"
             :intro="$content['contact_page']['intro']"

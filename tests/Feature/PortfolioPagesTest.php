@@ -45,11 +45,12 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSee('Web products, client websites, and Windows tools – built from the backend to the interface.')
+            ->assertSeeText('Web products, client websites, and Windows tools – built from the backend to the interface.')
+            ->assertSee('<span class="figure-word" data-dot-orb-figure="quantified" data-project="quantified">Web products</span>', false)
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading"', false)
             ->assertDontSee('class="kinetic-index__number"', false)
-            ->assertSee('class="kinetic-index__name"', false)
+            ->assertSee('class="kinetic-index__name figure-word" data-dot-orb-figure="mark"', false)
             ->assertDontSee('class="kinetic-index__eyebrow"', false)
             ->assertSee('class="index-navigation"', false)
             ->assertSee('data-index-panel', false)
@@ -70,14 +71,15 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
-        $this->assertSame(8, substr_count($response->content(), 'data-dot-orb-figure='));
+        $this->assertSame(11, substr_count($response->content(), 'data-dot-orb-figure='));
         $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
         $this->assertFileExists(public_path('brand/icons/icon-192.png'));
         $this->assertFileExists(public_path('brand/icons/icon-512.png'));
 
         $this->get('/de')
             ->assertOk()
-            ->assertSee('Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.')
+            ->assertSeeText('Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.')
+            ->assertSee('<span class="figure-word" data-dot-orb-figure="jay-jay" data-project="jay-jay">Kundenwebsites</span>', false)
             ->assertSee('Profil')
             ->assertSee('Projekte');
 
@@ -85,6 +87,19 @@ class PortfolioPagesTest extends TestCase
         $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-about.png'));
         $this->assertFileDoesNotExist(public_path('brand/liquid/liquid-contact.png'));
         $this->assertFileDoesNotExist(public_path('brand/cats/main/cat-loaf-classic-256.png'));
+    }
+
+    public function test_every_word_that_names_a_figure_occurs_in_the_summary(): void
+    {
+        foreach (array_keys(config('portfolio.locales')) as $locale) {
+            $home = config("portfolio.content.{$locale}.home");
+
+            $this->assertNotEmpty($home['summary_figures']);
+
+            foreach ($home['summary_figures'] as $entry) {
+                $this->assertStringContainsString($entry['words'], $home['summary']);
+            }
+        }
     }
 
     public function test_brand_assets_use_the_expected_png_dimensions(): void

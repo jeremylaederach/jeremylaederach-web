@@ -208,6 +208,26 @@
             translate: 0;
         }
 
+        /* A mirrored stage has the sphere's square on the left and the list on the right. */
+        .stage-list--mirrored .dot-orb {
+            inset: var(--top) auto auto 0;
+        }
+
+        .stage-list--mirrored > :is(.stage-list__header, .stage-list__rows, .stage-list__note) {
+            margin-left: calc(var(--side) + 88px);
+        }
+
+        /* A compact stage lists plain entries instead of showpieces: its rows are lower, and their
+           names stand a step below the heading. */
+        .stage-list--compact {
+            --row: clamp(64px, 9.5svh, 96px);
+        }
+
+        .stage-list--compact .stage-list__name {
+            font-size: clamp(30px, min(2.8vw, 5.2svh), 42px);
+            letter-spacing: -0.02em;
+        }
+
         /* The description has a slot of one height for every row, which holds the kind, three
            lines of text and the technologies. The slot is closed unless its row is current, so
            one row gives the height the other takes: the list keeps its size, and the row under

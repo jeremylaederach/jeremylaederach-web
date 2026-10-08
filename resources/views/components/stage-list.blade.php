@@ -13,7 +13,8 @@
     value    short text at the end of the row's first line
     detail   ['kind' => ..., 'text' => ..., 'tags' => [...]], which the row holds while it is current
 
-    The slot is a note that stands below the list.
+    The slot is a note that stands below the list. The class `stage-list--mirrored` puts the sphere
+    on the left and the list on the right.
 --}}
 @props([
     'headingId',

@@ -1,4 +1,33 @@
+/* How strongly the beads under a word that names a figure show, so that they can fade. */
+@property --figure-beads {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+}
+
 @layer components {
+    /* Words that name a figure look like the text around them. Hovered, they answer with a line
+       of fine beads that travel like the pointer's ring, in the color of the figure: the color of
+       the project they stand for, or the accent. */
+    .figure-word {
+        --dot-orb-rgb: var(--project-accent-rgb, var(--route-accent-goal));
+        background:
+            radial-gradient(circle, rgba(var(--dot-orb-rgb), var(--figure-beads)) 0.8px, transparent 1.1px)
+            0 calc(100% - 0.1em) / 4.4px 2.2px repeat-x;
+        transition: --figure-beads 240ms ease;
+    }
+
+    .has-mouse-input .figure-word:hover {
+        --figure-beads: 0.9;
+        animation: figure-beads 6s linear infinite;
+    }
+
+    @keyframes figure-beads {
+        to {
+            background-position-x: 35.2px;
+        }
+    }
+
     /* A sphere of dots, drawn on a canvas that covers its section behind the content. */
     .dot-orb {
         position: absolute;

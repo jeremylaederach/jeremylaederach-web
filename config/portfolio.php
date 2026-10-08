@@ -68,6 +68,13 @@ return [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
                 'summary' => 'Web products, client websites, and Windows tools – built from the backend to the interface.',
+                // Words of the summary that morph the sphere into a figure while they are hovered; a
+                // project gives the figure its color.
+                'summary_figures' => [
+                    ['words' => 'Web products', 'figure' => 'quantified', 'project' => 'quantified'],
+                    ['words' => 'client websites', 'figure' => 'jay-jay', 'project' => 'jay-jay'],
+                    ['words' => 'Windows tools', 'figure' => 'projects', 'project' => 'sessiondeck'],
+                ],
                 'explore' => 'Explore projects',
                 'index_label' => 'Landing',
                 'routes' => [
@@ -662,6 +669,11 @@ return [
                 'statement' => 'Ich entwickle',
                 'statement_accent' => 'nützliche digitale Systeme.',
                 'summary' => 'Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.',
+                'summary_figures' => [
+                    ['words' => 'Webprodukte', 'figure' => 'quantified', 'project' => 'quantified'],
+                    ['words' => 'Kundenwebsites', 'figure' => 'jay-jay', 'project' => 'jay-jay'],
+                    ['words' => 'Windows-Tools', 'figure' => 'projects', 'project' => 'sessiondeck'],
+                ],
                 'explore' => 'Projekte entdecken',
                 'index_label' => 'Start',
                 'routes' => [

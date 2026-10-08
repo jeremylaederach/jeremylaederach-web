@@ -96,6 +96,14 @@ the text.
   envelope for contact (`resources/js/dot-orb-figures.js`, drawn with canvas paths). The name on
   the home page gives the mark itself, sampled from its image with the eyes left open.
   Moving from one element to the next, the dots glide from shape to shape.
+- **Words that name a figure.** Words of a text can name a figure
+  (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
+  beside the text. At rest they look like the text around them. Hovered, they show a line of fine
+  beads below them that fades in within a quarter of a second and travels like the pointer's
+  ring. A word that stands for a project gives the beads and the figure that project's color;
+  the rest of the page keeps its accent. In the statement of the home page the three kinds of
+  work give the bars of Quantified, the brackets of Jay-Jay and a window in SessionDeck's orange,
+  and the name gives the mark.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
   sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
 - **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
@@ -131,8 +139,10 @@ current and shows the description there, inside the ring. The slot opens and clo
 seconds, and one row gives exactly the height the other takes: the list keeps its size, and a row
 that becomes current keeps one edge in place and moves the other outwards, so it never slips from
 under the pointer. The slot holds three lines of description; longer text is cut with an
-ellipsis. Up to 960px the rows follow each other with their texts, and the sphere stays behind
-the page.
+ellipsis. A mirrored stage (`stage-list--mirrored`) swaps the sides: the square stands flush with
+the left edge, and the list keeps to the right. A compact stage (`stage-list--compact`) has lower
+rows whose names stand a step below the heading, for plain entries. Up to 960px the rows follow each other with their
+texts, and the sphere stays behind the page.
 
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
   and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
@@ -140,6 +150,7 @@ the page.
   figure: the bars of a chart for Quantified, the brackets of a tag for Jay-Jay. The current row
   holds the project's kind, description and technologies. The overview carries no
   screenshots; those belong to the case studies.
-- **Contact.** The rows are the channels, each with its address at the end of the row: an
-  envelope for email, GitHub's mark for GitHub, a head and shoulders for LinkedIn. Below the list
-  stands a note on what to write.
+- **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
+  largest text. The rows are the channels, each
+  with its address at the end of the row: an envelope for email, GitHub's mark for GitHub, a head
+  and shoulders for LinkedIn. Below the list stands a note on what to write.
