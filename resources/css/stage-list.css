@@ -1,6 +1,6 @@
 @layer components {
     /* A stage list is a page's main section: a heading, a list of large rows and the sphere. One
-       row is always current: it shows its description, and the sphere takes its figure. A row
+       row is always current: it holds its description, and the sphere takes its figure. A row
        that stands for a project brings that project's color. */
     .stage-list {
         position: relative;
@@ -31,6 +31,7 @@
         list-style: none;
     }
 
+    /* Hairlines show where a row begins and ends. */
     .stage-list__item {
         --item-accent: var(--project-accent, var(--route-accent));
         --dot-orb-rgb: var(--project-accent-rgb, var(--route-accent-goal));
@@ -42,14 +43,19 @@
         border-top: 1px solid var(--line);
     }
 
+    /* The whole row is the link, its description included. */
     .stage-list__link {
-        position: relative;
+        display: block;
+        color: var(--ink);
+        transition: color 360ms ease;
+    }
+
+    /* The first line of a row: its name, an optional short text and the icon. */
+    .stage-list__title {
         display: flex;
         padding: 22px 0 10px;
         gap: 14px;
         align-items: center;
-        color: var(--ink);
-        transition: color 360ms ease;
     }
 
     .stage-list__name {
@@ -59,7 +65,6 @@
         font-weight: 430;
         line-height: 1;
         letter-spacing: -0.03em;
-        transition: translate 620ms var(--ease-heavy);
     }
 
     .stage-list__link .nav-icon {
@@ -69,7 +74,7 @@
         transition: opacity 260ms ease, translate 460ms var(--ease-out);
     }
 
-    /* A short text at the end of a row, such as an address. */
+    /* A short text at the end of the first line, such as an address. */
     .stage-list__value {
         color: var(--muted);
         font-size: 15px;
@@ -118,8 +123,8 @@
 
     /* From 961px the overview and the line that ends the page fill one screen. The right belongs
        to a square for the sphere's figure, as high as the stage and at most five of the twelve
-       columns wide. On the left stand the heading, the list in rows of one height and, below the
-       list, the current project's description. */
+       columns wide. On the left stand the heading and the list. Every row has one height, and
+       the current one is taller by its description. */
     @media (min-width: 961px) {
         .stage-list {
             --top: clamp(132px, 18svh, 176px);
@@ -130,6 +135,7 @@
             );
             --left: calc(100% - var(--side) - 88px);
             --row: clamp(88px, 15svh, 160px);
+            --detail: 164px;
             min-height: calc(100svh - 73px);
             padding: var(--top) 0 var(--bottom);
         }
@@ -161,20 +167,19 @@
             margin: clamp(28px, 6svh, 56px) 0 0;
         }
 
-        .stage-list__item,
-        .stage-list__item:first-child {
-            border: 0;
-        }
-
         /* A row reaches a little beyond the list on both sides, so the pointer's ring, which lies
            on its edges, keeps clear of the name. */
         .stage-list__link {
-            height: var(--row);
             margin: 0 -18px;
             padding: 0 18px;
-            gap: 20px;
             border-radius: 10px;
             color: rgba(var(--ink-rgb), 0.42);
+        }
+
+        .stage-list__title {
+            height: var(--row);
+            padding: 0;
+            gap: 20px;
         }
 
         .stage-list__name {
@@ -203,24 +208,36 @@
             translate: 0;
         }
 
-        /* Every description stands in the same place below the list; only the current one shows. */
+        /* The description has a slot of one height for every row, which holds the kind, three
+           lines of text and the technologies. The slot is closed unless its row is current, so
+           one row gives the height the other takes: the list keeps its size, and the row under
+           the pointer only ever grows around it. */
         .stage-list__detail {
-            position: absolute;
-            top: calc(100% + clamp(28px, 5svh, 48px));
-            left: 0;
-            width: min(100%, 560px);
+            height: 0;
             padding: 0;
+            overflow: clip;
             opacity: 0;
             visibility: hidden;
-            translate: 0 10px;
-            transition: opacity 200ms ease, translate 200ms ease, visibility 0s 200ms;
+            transition: height 520ms var(--ease-out), opacity 200ms ease, visibility 0s 520ms;
+        }
+
+        .stage-list__detail > * {
+            max-width: 560px;
+        }
+
+        .stage-list__detail .stage-list__text {
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
         }
 
         .stage-list__item[data-current] .stage-list__detail {
+            height: var(--detail);
             opacity: 1;
             visibility: visible;
-            translate: 0;
-            transition: opacity 360ms ease 140ms, translate 520ms var(--ease-out) 140ms, visibility 0s;
+            transition: height 520ms var(--ease-out), opacity 360ms ease 140ms, visibility 0s;
         }
     }
 }

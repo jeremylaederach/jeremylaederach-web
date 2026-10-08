@@ -264,6 +264,12 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(1, substr_count($projectHtml, ' data-current'));
         $this->assertSame(1, substr_count($projectHtml, 'data-dot-orb-resting'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
+
+        // A row is one link that holds its description, so the pointer's ring frames both.
+        $this->assertMatchesRegularExpression(
+            '/<a\b[^>]*aria-describedby="jay-jay-detail"(?:(?!<\/a>).)*id="jay-jay-detail"/s',
+            $projectHtml,
+        );
     }
 
     public function test_quantified_case_study_renders_in_both_locales(): void

@@ -45,8 +45,9 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 - **Pointer.** A dot at the mouse position and a ring of fine beads around it that travel slowly
   (`resources/js/pointer-controller.js`, `resources/css/pointer.css`). Over a control up to 240
   by 72 pixels the ring leaves the dot and wraps the control, easing there in about a quarter of a
-  second; a larger control asks for it with `data-pointer-wrap`, and the ring then lies on its
-  edges. Over any control the dot grows and both take the accent that applies to that control
+  second; a larger control asks for it with `data-pointer-wrap`, and the ring then lies still on
+  its edges and follows them when the control changes its size. Over any control the dot grows and
+  both take the accent that applies to that control
   (`--control-accent-rgb`). Over the dots of a sphere the ring is as large as the opening the
   dots leave around the pointer. A press tightens the ring and shrinks the dot. No glow. Touch
   and pen input hide the pointer, and reduced motion keeps the native cursor.
@@ -114,22 +115,27 @@ the text.
 
 Both pages are one component (`resources/views/components/stage-list.blade.php`,
 `resources/css/stage-list.css`, `resources/js/stage-list-controller.js`): a heading with the
-introduction on one line, a list of large rows and the sphere. One row is always current, the
-first at the start and after that the one last hovered or focused. The current one stands in full
-ink and shows an icon, the others recede, and the pointer's ring lies on the edges of a hovered
-row. Each row is a link.
+introduction on one line, a list of large rows and the sphere. Hairlines separate the rows. One
+row is always current, the first at the start and after that the one last hovered or focused. The
+current one stands in full ink and shows an icon, the others recede, and the pointer's ring lies
+on the edges of a hovered row. Each row is one link.
 
 From 961px the section and the line that ends the page fill one screen. The right belongs to a
 square as high as the stage and at most five of the twelve columns wide, flush with the right
-edge: it holds the sphere, which rests in the current row's figure. The list keeps to the left in
-rows of one height that never move. Up to 960px the rows follow each other with their texts, and
-the sphere stays behind the page.
+edge: it holds the sphere, which rests in the current row's figure. The list keeps to the left.
+Every row has one height; a row with a description is taller by a slot of 164px while it is
+current and shows the description there, inside the ring. The slot opens and closes in 0.52
+seconds, and one row gives exactly the height the other takes: the list keeps its size, and a row
+that becomes current keeps one edge in place and moves the other outwards, so it never slips from
+under the pointer. The slot holds three lines of description; longer text is cut with an
+ellipsis. Up to 960px the rows follow each other with their texts, and the sphere stays behind
+the page.
 
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
   and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
   case studies. A row brings its project's color, which is then the accent of the page, and its
-  figure: the bars of a chart for Quantified, the brackets of a tag for Jay-Jay. Below the list
-  stand the current project's kind, description and technologies. The overview carries no
+  figure: the bars of a chart for Quantified, the brackets of a tag for Jay-Jay. The current row
+  holds the project's kind, description and technologies. The overview carries no
   screenshots; those belong to the case studies.
 - **Contact.** The rows are the channels, each with its address at the end of the row: an
   envelope for email, GitHub's mark for GitHub, a head and shoulders for LinkedIn. Below the list

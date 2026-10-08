@@ -30,6 +30,23 @@ const setup = (t, reducedMotion = false) => {
         return frameId;
     });
     t.mock.method(window, 'cancelAnimationFrame', id => frames.delete(id));
+    // The observer reports a change of size when the test calls `resized` for an observed element.
+    const observed = new Set();
+    let resized;
+    globalThis.ResizeObserver = class {
+        constructor(callback) {
+            resized = element => observed.has(element) && callback();
+        }
+
+        observe(element) {
+            observed.add(element);
+        }
+
+        disconnect() {
+            observed.clear();
+        }
+    };
+    t.after(() => delete globalThis.ResizeObserver);
     // Runs frames 16ms apart until the ring has arrived, or for the given number of frames.
     const run = (count = 200) => {
         for (let index = 0; index < count && frames.size; index += 1) {
@@ -50,7 +67,7 @@ const setup = (t, reducedMotion = false) => {
     const shown = () => document.documentElement.classList.contains('has-site-pointer');
     createPointerController({ reducedMotion }).initialize();
 
-    return { window, button, element, frames, run, pointer, ring, dot, shown };
+    return { window, button, element, frames, run, pointer, ring, dot, shown, resized };
 };
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 0.5, `${actual} is not near ${expected}`);
@@ -103,6 +120,9 @@ test('a large control that asks for it is wrapped on its edges', t => {
     assert.equal(element.classList.contains('is-wrapping'), true);
     near(ring('width'), 400);
     near(ring('height'), 200);
+    // The ring lies still on the edges, wherever the dot is inside the control.
+    near(ring('x'), 20);
+    near(ring('y'), 20);
 });
 
 test('a large control keeps the round ring at the mouse position', t => {
@@ -155,6 +175,27 @@ test('scrolling and page replacement refresh the control under a resting mouse',
     document.dispatchEvent(new window.Event('portfolio:page-swapped'));
     run();
     assert.equal(element.classList.contains('is-over-control'), true);
+});
+
+test('a control that grows under a resting mouse takes the ring along', t => {
+    const { button, frames, run, pointer, ring, resized } = setup(t);
+    button.dataset.pointerWrap = '';
+    pointer('pointermove', 'mouse');
+    run();
+    near(ring('height'), 40);
+    assert.equal(frames.size, 0);
+
+    button.getBoundingClientRect = () => ({ left: 20, top: 20, width: 100, height: 160 });
+    resized(button);
+    run();
+    near(ring('height'), 160);
+
+    // A control the pointer has left is no longer followed.
+    document.elementFromPoint = () => document.body;
+    pointer('pointermove', 'mouse');
+    run();
+    resized(button);
+    assert.equal(frames.size, 0);
 });
 
 test('a press tightens the free ring until the button is released', t => {

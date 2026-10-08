@@ -13,7 +13,7 @@ const wrapLimit = { width: 240, height: 72 };
 const ringMargin = 8;
 const smallestRadius = 8;
 
-// How far the ring stays with its control while the dot moves inside it: 1 would pin it to the
+// How far the ring stays with a small control while the dot moves inside it: 1 pins it to the
 // control's centre, 0 would let it follow the dot.
 const hold = 0.88;
 
@@ -40,8 +40,8 @@ export const createPointerController = ({ reducedMotion }) => {
 
     const controlAt = ({ x, y }) => document.elementFromPoint(x, y)?.closest('a[href], button:not(:disabled)') ?? null;
 
-    // A larger control asks for the ring with `data-pointer-wrap`; the ring then lies on its
-    // edges instead of around them.
+    // A larger control asks for the ring with `data-pointer-wrap`; the ring then lies still on
+    // its edges instead of around them.
     const asks = (element) => element.hasAttribute('data-pointer-wrap');
     const wraps = (element, bounds) => bounds.width > 0 && bounds.height > 0
         && (asks(element) || (bounds.width <= wrapLimit.width && bounds.height <= wrapLimit.height));
@@ -51,22 +51,29 @@ export const createPointerController = ({ reducedMotion }) => {
         const element = controlAt(position);
         const bounds = element?.getBoundingClientRect();
         const wrapping = Boolean(element && wraps(element, bounds));
-        const margin = wrapping && asks(element) ? 0 : ringMargin;
+        const pinned = wrapping && asks(element);
+        const margin = pinned ? 0 : ringMargin;
+        const stay = pinned ? 1 : hold;
         const size = (openingAt(position.x, position.y) || freeRing.size) * (pressed ? freeRing.pressed : 1);
 
         // Styles are read only when the pointer reaches another control.
-        if (element && element !== control) {
-            const style = getComputedStyle(element);
+        if (element !== control) {
+            sizeObserver.disconnect();
 
-            pointer.style.setProperty('--pointer-accent', style.getPropertyValue('--control-accent-rgb'));
-            controlRadius = Math.max(smallestRadius, Number.parseFloat(style.borderTopLeftRadius) || 0);
+            if (element) {
+                const style = getComputedStyle(element);
+
+                pointer.style.setProperty('--pointer-accent', style.getPropertyValue('--control-accent-rgb'));
+                controlRadius = Math.max(smallestRadius, Number.parseFloat(style.borderTopLeftRadius) || 0);
+                sizeObserver.observe(element);
+            }
         }
 
         control = element;
         Object.assign(target, wrapping
             ? {
-                x: position.x + (bounds.left + bounds.width / 2 - position.x) * hold,
-                y: position.y + (bounds.top + bounds.height / 2 - position.y) * hold,
+                x: position.x + (bounds.left + bounds.width / 2 - position.x) * stay,
+                y: position.y + (bounds.top + bounds.height / 2 - position.y) * stay,
                 width: bounds.width + margin,
                 height: bounds.height + margin,
                 radius: controlRadius,
@@ -128,6 +135,10 @@ export const createPointerController = ({ reducedMotion }) => {
             frame = window.requestAnimationFrame(step);
         }
     };
+
+    // A control that changes its size under a resting mouse, such as a row that grows, takes the
+    // ring along.
+    const sizeObserver = new ResizeObserver(schedule);
 
     const hide = () => {
         window.cancelAnimationFrame(frame);

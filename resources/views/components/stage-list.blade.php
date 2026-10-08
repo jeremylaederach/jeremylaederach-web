@@ -1,17 +1,17 @@
 {{--
     A page as a stage: a heading, a list of large rows and the dot sphere, which rests in the
-    figure of the current row. Each item is an array:
+    figure of the current row. A row is one link. Each item is an array:
 
     id       anchor of the row
     name     the large text of the row
     label    accessible name of the link
     href     where the link leads
     figure   the figure the sphere takes (see dot-orb-figures.js)
-    icon     name of the icon at the end of the row
+    icon     name of the icon at the end of the row's first line
     route    name of the page's route, for a page of this site
     project  slug of the project the row stands for, which brings that project's color
-    value    short text at the end of the row
-    detail   ['kind' => ..., 'text' => ..., 'tags' => [...]], shown while the row is current
+    value    short text at the end of the row's first line
+    detail   ['kind' => ..., 'text' => ..., 'tags' => [...]], which the row holds while it is current
 
     The slot is a note that stands below the list.
 --}}
@@ -59,24 +59,26 @@
                     data-interface-sound
                     data-sound-tone="panel"
                 >
-                    <span class="stage-list__name">{{ $item['name'] }}</span>
-                    @isset($item['value'])
-                        <span class="stage-list__value">{{ $item['value'] }}</span>
-                    @endisset
-                    <x-nav-icon :name="$item['icon']" />
-                </a>
+                    <span class="stage-list__title">
+                        <span class="stage-list__name">{{ $item['name'] }}</span>
+                        @isset($item['value'])
+                            <span class="stage-list__value">{{ $item['value'] }}</span>
+                        @endisset
+                        <x-nav-icon :name="$item['icon']" />
+                    </span>
 
-                @isset($item['detail'])
-                    <div id="{{ $item['id'] }}-detail" class="stage-list__detail">
-                        <p class="stage-list__kind">{{ $item['detail']['kind'] }}</p>
-                        <p class="stage-list__text">{{ $item['detail']['text'] }}</p>
-                        <ul class="stage-list__tags">
-                            @foreach ($item['detail']['tags'] as $tag)
-                                <li>{{ $tag }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endisset
+                    @isset($item['detail'])
+                        <div id="{{ $item['id'] }}-detail" class="stage-list__detail">
+                            <p class="stage-list__kind">{{ $item['detail']['kind'] }}</p>
+                            <p class="stage-list__text">{{ $item['detail']['text'] }}</p>
+                            <ul class="stage-list__tags">
+                                @foreach ($item['detail']['tags'] as $tag)
+                                    <li>{{ $tag }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endisset
+                </a>
             </li>
         @endforeach
     </ol>
