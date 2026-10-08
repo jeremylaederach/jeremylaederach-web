@@ -3,16 +3,11 @@
         <canvas data-dot-orb data-mark="{{ asset('brand/jeremy-cat-256.png') }}"></canvas>
     </div>
     <header class="kinetic-index__masthead">
-        <div class="kinetic-index__title">
-            <h1 id="landing-title" class="kinetic-index__heading" data-dot-orb-figure="mark">
-                <span class="kinetic-index__name">Jeremy</span>
-                <span class="kinetic-index__name">Läderach<em>.</em></span>
-            </h1>
-        </div>
+        <h1 id="landing-title" class="kinetic-index__heading" data-dot-orb-figure="mark">
+            <span class="kinetic-index__name">Jeremy Läderach<em>.</em></span>
+        </h1>
 
-        <div class="kinetic-index__intro">
-            <p class="kinetic-index__summary">{{ $content['home']['summary'] }}</p>
-        </div>
+        <p class="kinetic-index__summary">{{ $content['home']['summary'] }}</p>
     </header>
 
     <nav class="index-navigation" aria-label="{{ $content['ui']['menu'] }}">
@@ -23,7 +18,6 @@
                 data-index-panel
                 data-dot-orb-figure="{{ $route['route'] }}"
                 data-route="{{ $route['route'] }}"
-                data-pointer-wrap
                 data-route-transition
                 data-interface-sound
                 data-sound-tone="panel"

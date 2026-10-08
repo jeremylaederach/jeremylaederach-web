@@ -24,7 +24,8 @@ const announceTransitionFinished = (scene) => {
 
 // A page change has two phases, set as `data-transition` on the root element: the old page
 // leaves, then the new one enters. The stylesheet animates the main region for each phase, and
-// the controller waits for those animations instead of keeping durations of its own.
+// the controller waits for those animations instead of keeping durations of its own. The sphere
+// scatters and gathers in step, and the accent blends to the new page's on its own.
 export const createPageTransitionController = ({ reducedMotion }) => {
     const root = document.documentElement;
     const main = () => document.querySelector('[data-page-main]');

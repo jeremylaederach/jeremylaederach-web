@@ -5,7 +5,7 @@
         display: grid;
         width: var(--shell);
         min-height: 100svh;
-        padding: 124px 0 78px;
+        padding: 160px 0 78px;
         margin: 0 auto;
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-rows: auto auto auto auto auto minmax(32px, 1fr);
@@ -35,14 +35,6 @@
         font-size: 10px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-    }
-
-    .case-study-hero__index::after {
-        width: 64px;
-        height: 1px;
-        margin-left: 8px;
-        background: linear-gradient(90deg, rgba(var(--project-accent-rgb), 0.72), transparent);
-        content: '';
     }
 
     .case-study-hero__title {

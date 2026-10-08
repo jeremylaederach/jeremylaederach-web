@@ -25,43 +25,10 @@
         align-items: center;
     }
 
-    .page-hero__index {
-        display: flex;
-        grid-row: 1;
-        grid-column: 1 / 5;
-        gap: 18px;
-        align-items: center;
-        color: var(--quiet);
-        font-size: 12px;
-        font-weight: 560;
-        text-transform: uppercase;
-    }
-
-    .page-hero__index::after {
-        width: 64px;
-        height: 1px;
-        margin-left: 8px;
-        background: linear-gradient(90deg, rgba(var(--route-accent-rgb), 0.72), transparent);
-        content: '';
-    }
-
-    .page-hero__index span:first-child {
-        color: var(--route-accent);
-    }
-
     .page-hero__title {
         grid-row: 2;
         grid-column: 1 / 10;
         align-self: center;
-    }
-
-    .page-hero > p::before {
-        display: block;
-        width: 56px;
-        height: 1px;
-        margin-bottom: 20px;
-        background: linear-gradient(90deg, var(--route-accent), rgba(var(--route-accent-rgb), 0));
-        content: '';
     }
 
     .page-hero h1 {

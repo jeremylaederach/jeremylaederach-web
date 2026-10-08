@@ -21,64 +21,39 @@
         align-content: end;
     }
 
-    .kinetic-index__title {
-        display: grid;
-        min-width: 0;
-        grid-template-columns: var(--index-number-column) minmax(0, 1fr);
-        gap: var(--index-column-gap);
-        align-items: center;
-    }
-
     .kinetic-index__heading {
-        grid-column: 2;
         margin: 0;
         color: var(--ink);
-        font-size: 112px;
-        font-weight: 430;
-        line-height: 0.94;
-        white-space: nowrap;
+        font-size: 18px;
+        font-weight: 520;
+        line-height: 1;
+        letter-spacing: -0.01em;
     }
 
-    /* The name is an outline: the stroke is painted first and the fill, in the ground's color,
-       covers its inner half and any overlapping contours of the variable font. */
     .kinetic-index__name {
-        display: block;
-        color: var(--bg);
-        -webkit-text-stroke: 0.03em rgba(var(--ink-rgb), 0.9);
-        paint-order: stroke fill;
-        transition: color 420ms ease, -webkit-text-stroke-color 420ms ease;
+        display: inline-block;
+        transition: color 360ms ease;
     }
 
     .has-mouse-input .kinetic-index__heading:hover .kinetic-index__name {
         color: var(--route-accent);
-        -webkit-text-stroke-color: var(--route-accent);
     }
 
     .kinetic-index__heading em {
         color: var(--route-accent);
         font-style: normal;
-        -webkit-text-stroke: 0;
     }
 
-    .kinetic-index__intro {
-        padding-left: calc(var(--index-number-column) + var(--index-column-gap));
-    }
-
-    .kinetic-index__intro::before {
-        display: block;
-        width: 56px;
-        height: 1px;
-        margin-bottom: 20px;
-        background: linear-gradient(90deg, var(--route-accent), rgba(var(--route-accent-rgb), 0));
-        content: '';
-    }
-
+    /* The summary is the statement of the page and its largest text. */
     .kinetic-index__summary {
-        max-width: 520px;
+        max-width: 17em;
         margin: 0;
-        color: var(--ink-muted);
-        font-size: 17px;
-        line-height: 1.55;
+        color: var(--ink);
+        font-size: clamp(28px, 7.6vw, 44px);
+        font-weight: 430;
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
     }
 
     .index-navigation {
@@ -137,7 +112,7 @@
        has the rest. */
     @media (min-width: 961px) {
         .kinetic-index {
-            padding: clamp(96px, 13svh, 120px) max(32px, calc((100vw - 1600px) / 2)) clamp(24px, 6svh, 56px);
+            padding: clamp(128px, 15svh, 148px) max(32px, calc((100vw - 1600px) / 2)) clamp(24px, 6svh, 56px);
             grid-template-rows: none;
             grid-template-columns: minmax(0, 680px) minmax(0, 1fr);
             row-gap: clamp(24px, 5svh, 48px);
@@ -152,58 +127,18 @@
             grid-column: 1;
         }
 
-        .kinetic-index__heading {
-            font-size: clamp(72px, min(8vw, 13svh), 124px);
-            font-weight: 520;
-            letter-spacing: -0.035em;
-            line-height: 0.9;
+        .kinetic-index__summary {
+            font-size: clamp(38px, min(3.9vw, 7.4svh), 62px);
         }
 
-        /* The destinations stand side by side under one rule; the hovered one draws the rule in
-           the accent. */
+        /* The statement reaches further right than the mask of other pages allows for. */
+        .kinetic-index .dot-orb {
+            mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 50%, #000 62%);
+        }
+
+        /* The header carries the navigation here. */
         .index-navigation {
-            display: grid;
-            margin-left: calc(var(--index-number-column) + var(--index-column-gap));
-            grid-column: 1;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            border-bottom: 0;
-        }
-
-        .index-panel {
-            position: relative;
-            overflow: visible;
-            padding: 20px 20px 0 0;
-            grid-template-columns: minmax(0, 1fr);
-            gap: 10px;
-            align-content: start;
-            border-bottom: 0;
-        }
-
-        .index-panel::before {
-            position: absolute;
-            top: -1px;
-            right: 0;
-            left: 0;
-            height: 1px;
-            background: var(--route-accent);
-            content: '';
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 460ms var(--ease-heavy);
-        }
-
-        .has-mouse-input .index-panel:hover::before,
-        .index-panel:focus-visible::before {
-            transform: scaleX(1);
-        }
-
-        .index-panel__title {
-            font-size: 34px;
-        }
-
-        .index-panel__description {
-            max-width: 22ch;
-            font-size: 14px;
+            display: none;
         }
     }
 
@@ -219,7 +154,7 @@
         transition: opacity 620ms ease 120ms, transform 860ms var(--ease-heavy) 120ms;
     }
 
-    .js.is-ready .kinetic-index__intro {
+    .js.is-ready .kinetic-index__summary {
         transition-delay: 220ms;
     }
 

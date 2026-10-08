@@ -40,7 +40,27 @@ const bud = {
 // A figure is a shape the dots take while an element that names it is hovered or focused. It is
 // sampled from a small canvas (the drawn ones at once, the mark when its image loads) and
 // inflated: thickest in the middle of the shape, flat at its edge. It sways instead of turning.
-const figure = { size: 0.72, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
+// A figure is drawn within the middle `extent` of its square.
+const figure = { size: 0.72, extent: 0.8, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
+
+// The dots that give way to the pointer leave an opening of this share of the reach around it,
+// where at least this many dots are close.
+const opening = { share: 0.6, dots: 4 };
+const openings = new Set();
+
+// The diameter in pixels of the opening a sphere leaves around a pointer at this place of the
+// window, or 0 where no dots are near.
+export const openingAt = (clientX, clientY) => {
+    for (const probe of openings) {
+        const size = probe(clientX, clientY);
+
+        if (size) {
+            return size;
+        }
+    }
+
+    return 0;
+};
 
 // On a page change the dots scatter away from the middle of the sphere and fade; the sphere of
 // the next page gathers from there. `reach` is how far they travel, in multiples of their distance
@@ -56,7 +76,14 @@ const createLattice = (count) => Array.from({ length: count }, (_, index) => {
     return { x: Math.cos(angle) * ring, y, z: Math.sin(angle) * ring };
 });
 
-const readChannels = (value) => value.match(/\d+/g).slice(0, 3).map(Number);
+// The three channels of a color written as "r, g, b"; null if the text names none.
+const readChannels = (value) => {
+    const numbers = value.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+
+    return numbers?.length === 3 ? numbers : null;
+};
+
+const white = [255, 255, 255];
 const mix = (from, to, amount) => from + (to - from) * amount;
 const clamp = (value, low, high) => Math.min(Math.max(value, low), high);
 const smooth = (value) => value * value * (3 - 2 * value);
@@ -154,8 +181,9 @@ const createBuds = () => bud.groups.map((group) => ({
 const initializeOrb = (canvas, reducedMotion, arriving) => {
     const context = canvas.getContext('2d');
     const listeners = new AbortController();
-    const baseColor = readChannels(getComputedStyle(canvas).color);
-    const color = [...baseColor];
+    // The accent the page is heading for; the accent in use may still be blending towards it.
+    const accent = () => readChannels(getComputedStyle(canvas).getPropertyValue('--route-accent-goal'));
+    const color = accent() ?? [...white];
     const buds = createBuds();
     const sphere = createLattice(dotCount);
     const budSphere = createLattice(Math.ceil(dotCount / buds.length));
@@ -186,7 +214,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let figurePoints = [];
     let shape = 0;
     let targetShape = 0;
-    let targetColor = baseColor;
+    let targetColor = color;
     let scattered = arriving && !reducedMotion ? 1 : 0;
     let targetScattered = 0;
 
@@ -203,10 +231,12 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         view.z = z;
     };
 
-    // The sphere wanders slowly around the middle of the stage.
+    // A canvas marked `data-dot-orb-fit` holds the sphere still in its middle, and a figure fills
+    // its smaller side. Otherwise the sphere wanders slowly around the middle of the stage.
+    const fit = canvas.hasAttribute('data-dot-orb-fit') && !reducedMotion;
     const wander = (seconds) => {
-        home.x = (width * (0.68 + 0.1 * Math.sin(seconds / 23))) / unit;
-        home.y = (height * (0.5 + 0.1 * Math.sin(seconds / 17))) / unit;
+        home.x = (width * (fit ? 0.5 : 0.68 + 0.1 * Math.sin(seconds / 23))) / unit;
+        home.y = (height * (fit ? 0.5 : 0.5 + 0.1 * Math.sin(seconds / 17))) / unit;
     };
 
     // Where each bud is right now, and how far out of the sphere.
@@ -420,7 +450,9 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         scale = Math.min(window.devicePixelRatio, 2);
         width = Math.round(canvas.clientWidth * scale);
         height = Math.round(canvas.clientHeight * scale);
-        unit = Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale) || 1;
+        unit = (fit
+            ? Math.min(width, height) / (figure.size * figure.extent)
+            : Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale)) || 1;
         canvas.width = width;
         canvas.height = height;
         update();
@@ -432,6 +464,17 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         const cssUnit = unit / scale;
 
         return { x: (event.clientX - bounds.left) / cssUnit, y: (event.clientY - bounds.top) / cssUnit };
+    };
+
+    const probe = (clientX, clientY) => {
+        const { x, y } = locate({ clientX, clientY });
+        let close = 0;
+
+        for (let index = 0; index < dotCount && close < opening.dots; index += 1) {
+            close += Math.hypot(dots.x[index] - x, dots.y[index] - y) < reach * 1.5 ? 1 : 0;
+        }
+
+        return close < opening.dots ? 0 : (opening.share * 2 * reach * unit) / scale;
     };
 
     // The pointer arrives where it is instead of sweeping in.
@@ -487,7 +530,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         const tone = points?.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
 
         targetShape = points?.length ? 1 : 0;
-        targetColor = tone ? readChannels(tone) : baseColor;
+        targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
 
         if (points?.length) {
             figurePoints = points;
@@ -521,6 +564,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             image.src = canvas.dataset.mark;
         }
 
+        openings.add(probe);
         window.addEventListener('pointermove', follow, { ...options, passive: true });
         document.documentElement.addEventListener('pointerleave', release, options);
         window.addEventListener('pointerdown', pressDown, { ...options, passive: true });
@@ -548,6 +592,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         resizeObserver.disconnect();
         visibilityObserver.disconnect();
         listeners.abort();
+        openings.delete(probe);
     };
 };
 

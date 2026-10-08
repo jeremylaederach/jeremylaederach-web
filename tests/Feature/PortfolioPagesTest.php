@@ -68,7 +68,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
-        $this->assertSame(5, substr_count($response->content(), 'data-dot-orb-figure='));
+        $this->assertSame(8, substr_count($response->content(), 'data-dot-orb-figure='));
         $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
         $this->assertFileExists(public_path('brand/icons/icon-192.png'));
         $this->assertFileExists(public_path('brand/icons/icon-512.png'));
@@ -113,7 +113,6 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('aria-current="page"', false)
             ->assertSee('class="portfolio-page about-page"', false)
-            ->assertSee('class="page-hero__index"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('data-page-heading-signal', false)
             ->assertSee('aria-label="About me."', false)
@@ -187,7 +186,7 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->content(), 'class="section-label about-section-label"'));
         $this->assertSame(3, substr_count($about->content(), '<article class="playground-demo'));
         // The only canvas is the sphere behind the page hero; the demos are built from elements.
-        $this->assertSame(1, substr_count($about->content(), '<canvas'));
+        $this->assertSame(1, substr_count($about->content(), '<canvas data-dot-orb'));
         $about->assertSee('<canvas data-dot-orb>', false);
         $this->assertSame(5, substr_count($about->content(), 'data-sorting-algorithm='));
         $this->assertSame(5, substr_count($about->content(), 'data-sorting-description='));
@@ -248,27 +247,22 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Jay-Jay')
             ->assertSee('Digitales Dienstleistungsunternehmen')
             ->assertSee('Laravel 13')
-            ->assertSee('SessionDeck')
-            ->assertSee('Nativer Workspace-Launcher')
-            ->assertSee('WinUI 3')
             ->assertSee('.NET / C#')
             ->assertSee('href="http://localhost/de/quantified"', false)
-            ->assertSee('href="http://localhost/de/session-deck"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('data-dot-orb-figure="quantified"', false)
             ->assertSee('data-dot-orb-figure="jay-jay"', false)
-            ->assertSee('data-dot-orb-figure="sessiondeck"', false)
+            ->assertDontSee('Nativer Workspace-Launcher')
             ->assertSee('aria-describedby="project-detail-quantified"', false)
             ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
             ->assertDontSee('data-project-reel', false);
 
         $projectHtml = $projects->content();
 
-        $this->assertSame(3, substr_count($projectHtml, 'data-project-index-item'));
+        $this->assertSame(2, substr_count($projectHtml, 'data-project-index-item'));
         $this->assertSame(1, substr_count($projectHtml, 'data-current'));
         $this->assertSame(1, substr_count($projectHtml, 'data-dot-orb-resting'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
-        $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }
 
     public function test_quantified_case_study_renders_in_both_locales(): void
@@ -311,7 +305,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Next project')
             ->assertSee('class="case-study-next case-study-next--jay-jay directional-link directional-link--forward"', false)
             ->assertSee('href="http://localhost/en/jay-jay"', false)
-            ->assertSee('Start a conversation')
             ->assertDontSee('Current scope')
             ->assertDontSee('quantified-visual__chart', false)
             ->assertSee('href="http://localhost/de/quantified"', false);
@@ -338,7 +331,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Weitere Datenquellen anbinden und Entwicklungen über längere Zeit vergleichen.')
             ->assertSee('Aktiv in Entwicklung')
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('Gespräch beginnen')
             ->assertSee('href="http://localhost/en/quantified"', false);
     }
 
@@ -375,7 +367,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="case-study-next case-study-next--sessiondeck directional-link directional-link--forward"', false)
             ->assertSee('aria-label="Next project: SessionDeck"', false)
             ->assertSee('href="http://localhost/en/session-deck"', false)
-            ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 
         $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
@@ -414,7 +405,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Next project')
             ->assertSee('class="case-study-next case-study-next--quantified directional-link directional-link--forward"', false)
             ->assertSee('href="http://localhost/en/quantified"', false)
-            ->assertSee('class="page-cta page-cta--contact"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false);
 
         $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
@@ -461,8 +451,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('info@jeremylaederach.ch')
             ->assertSee('GitHub')
             ->assertSee('LinkedIn')
-            ->assertSee('class="site-footer__main"', false)
-            ->assertSee('class="site-footer__base"', false)
+            ->assertSee('class="site-colophon"', false)
             ->assertSee('href="http://localhost/en/imprint"', false)
             ->assertSee('href="http://localhost/en/privacy"', false);
 

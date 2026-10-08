@@ -16,7 +16,6 @@
     }
 
     .dot-orb canvas {
-        color: var(--route-accent);
         display: block;
         width: 100%;
         height: 100%;
@@ -28,11 +27,6 @@
             linear-gradient(90deg, rgb(0 0 0 / 0.25) 34%, #000 52%),
             linear-gradient(180deg, #000 42%, rgb(0 0 0 / 0.22) 74%);
         mask-composite: intersect;
-    }
-
-    /* A case study shows its sphere in the project's color, behind the gallery. */
-    .project-detail .dot-orb canvas {
-        color: var(--project-accent);
     }
 
     /* On the 404 page the sphere moves to the left, behind the large number. */

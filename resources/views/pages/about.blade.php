@@ -6,10 +6,6 @@
             <div class="dot-orb" aria-hidden="true">
                 <canvas data-dot-orb></canvas>
             </div>
-            <div class="page-hero__index">
-                <span>02</span>
-                <span>{{ $content['about_page']['eyebrow'] }}</span>
-            </div>
 
             <div class="page-hero__title">
                 <x-animated-page-heading :text="$content['about_page']['heading']" />
@@ -94,7 +90,5 @@
         </section>
 
         <x-about-playground :content="$content" />
-
-        <x-contact-cta :content="$content" :locale="$locale" />
     </article>
 @endsection

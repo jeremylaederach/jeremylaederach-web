@@ -1,6 +1,6 @@
 @layer components {
     /* The projects overview lists the three projects. One of them is always current: it shows its
-       description, and the sphere takes its figure and its color. */
+       description, the sphere takes its figure, and its color is the accent of the page. */
     .project-index {
         position: relative;
         isolation: isolate;
@@ -10,7 +10,7 @@
     }
 
     .project-index__header h1 {
-        margin: 18px 0 0;
+        margin: 0;
         font-size: clamp(34px, 3.4vw, 48px);
         font-weight: 430;
         line-height: 1;
@@ -24,13 +24,9 @@
         line-height: 1.55;
     }
 
-    /* The list stays out of the stacking order of the sphere's siblings, so a description can be
-       placed against the whole section. */
     .project-index__list {
-        position: static;
         margin: 40px 0 0;
         padding: 0;
-        border-top: 1px solid var(--line);
         list-style: none;
     }
 
@@ -40,23 +36,18 @@
         scroll-margin-top: 100px;
     }
 
+    .project-index__item:first-child {
+        border-top: 1px solid var(--line);
+    }
+
     .project-index__link {
         position: relative;
-        z-index: 1;
         display: grid;
         padding: 22px 0 10px;
-        grid-template-columns: 30px minmax(0, 1fr) 24px;
+        grid-template-columns: minmax(0, 1fr) 24px;
         gap: 14px;
         align-items: center;
         color: var(--ink);
-        transition: color 360ms ease;
-    }
-
-    .project-index__number {
-        color: var(--project-accent);
-        font-size: 11px;
-        font-variant-numeric: tabular-nums;
-        line-height: 1;
         transition: color 360ms ease;
     }
 
@@ -76,9 +67,7 @@
     }
 
     .project-index__detail {
-        position: relative;
-        z-index: 1;
-        padding: 0 0 26px 44px;
+        padding: 0 0 26px;
     }
 
     .project-index__detail p,
@@ -110,64 +99,70 @@
         list-style: none;
     }
 
-    /* From 961px the overview is a stage of one screen: the list keeps to the left, the sphere
-       has the right, and only the current project shows its description, below the sphere. */
+    /* From 961px the overview and the line that ends the page fill one screen. The right belongs
+       to a square for the sphere's figure, as high as the stage and at most five of the twelve
+       columns wide. On the left stand the heading, the list in rows of one height and, below the
+       list, the current project's description. */
     @media (min-width: 961px) {
         .project-index {
-            display: grid;
-            min-height: 100svh;
-            padding: clamp(112px, 16svh, 148px) 0 clamp(32px, 7svh, 64px);
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-            grid-template-rows: auto 1fr;
-            gap: clamp(28px, 6svh, 56px) 24px;
+            --top: clamp(132px, 18svh, 176px);
+            --bottom: clamp(28px, 6svh, 56px);
+            --side: min(
+                calc((min(100vw - 64px, 1600px) - 264px) / 12 * 5 + 96px),
+                calc(100svh - 73px - var(--top) - var(--bottom))
+            );
+            --left: calc(100% - var(--side) - 88px);
+            --row: clamp(88px, 15svh, 160px);
+            min-height: calc(100svh - 73px);
+            padding: var(--top) 0 var(--bottom);
         }
 
         .project-index .dot-orb {
-            bottom: 26%;
-            mask-image:
-                linear-gradient(90deg, rgb(0 0 0 / 0.2) 38%, #000 56%),
-                linear-gradient(180deg, #000 78%, transparent);
-            mask-composite: intersect;
+            inset: var(--top) 0 auto auto;
+            width: var(--side);
+            height: var(--side);
+            mask-image: none;
         }
 
+        /* The heading and the introduction share one line above the list. */
         .project-index__header {
-            grid-column: 1 / 7;
+            display: flex;
+            width: var(--left);
+            height: 48px;
+            gap: 32px;
+            align-items: end;
+            justify-content: space-between;
+        }
+
+        .project-index__header > p {
+            margin: 0;
+            text-align: right;
         }
 
         .project-index__list {
-            margin: 0;
-            grid-row: 2;
-            grid-column: 1 / 8;
-            align-self: start;
+            width: var(--left);
+            margin: clamp(28px, 6svh, 56px) 0 0;
         }
 
+        .project-index__item,
+        .project-index__item:first-child {
+            border: 0;
+        }
+
+        /* A row reaches a little beyond the list on both sides, so the pointer's ring, which lies
+           on its edges, keeps clear of the name. */
         .project-index__link {
-            padding: clamp(14px, 2.6svh, 26px) 0;
-            grid-template-columns: 44px minmax(0, 1fr) 28px;
+            height: var(--row);
+            margin: 0 -18px;
+            padding: 0 18px;
+            grid-template-columns: minmax(0, 1fr) 28px;
             gap: 20px;
+            border-radius: 10px;
             color: rgba(var(--ink-rgb), 0.42);
         }
 
-        /* The current project draws its part of the list's rule in its color. */
-        .project-index__link::before {
-            position: absolute;
-            top: -1px;
-            right: 0;
-            left: 0;
-            height: 1px;
-            background: var(--project-accent);
-            content: '';
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 460ms var(--ease-heavy);
-        }
-
-        .project-index__number {
-            color: var(--quiet);
-        }
-
         .project-index__name {
-            font-size: clamp(44px, min(5.6vw, 10svh), 88px);
+            font-size: clamp(44px, min(6vw, 11.5svh), 104px);
         }
 
         .project-index__link .nav-icon {
@@ -181,28 +176,17 @@
             color: var(--ink);
         }
 
-        .project-index__item[data-current] .project-index__link::before {
-            transform: scaleX(1);
-        }
-
-        .project-index__item[data-current] .project-index__number {
-            color: var(--project-accent);
-        }
-
-        .project-index__item[data-current] .project-index__name {
-            translate: 10px 0;
-        }
-
         .project-index__item[data-current] .nav-icon {
             opacity: 1;
             translate: 0;
         }
 
+        /* Every description stands in the same place below the list; only the current one shows. */
         .project-index__detail {
             position: absolute;
-            right: 0;
-            bottom: clamp(32px, 7svh, 64px);
-            width: min(36%, 440px);
+            top: calc(100% + clamp(28px, 5svh, 48px));
+            left: 0;
+            width: min(100%, 560px);
             padding: 0;
             opacity: 0;
             visibility: hidden;

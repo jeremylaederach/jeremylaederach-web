@@ -50,10 +50,10 @@
     <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
-        <div class="site-pointer" data-site-pointer aria-hidden="true">
-            <span class="site-pointer__ring"></span>
-            <span class="site-pointer__dot"></span>
-        </div>
+        <svg class="site-pointer" data-site-pointer aria-hidden="true" focusable="false">
+            <rect class="site-pointer__ring" data-pointer-ring />
+            <circle class="site-pointer__dot" data-pointer-dot r="3" />
+        </svg>
 
         <header class="site-header" data-page-header>
             <div class="site-header__inner">
@@ -67,61 +67,49 @@
                     data-sound-tone="brand"
                     data-dot-orb-figure="mark"
                 >
-                    <span class="brand-lockup__name" aria-label="Jeremy Läderach">
-                        <span class="brand-lockup__wordmark" aria-hidden="true">
-                            @foreach (mb_str_split('Jeremy Läderach') as $letter)
-                                @if ($letter === ' ')
-                                    <span class="brand-lockup__space">&nbsp;</span>
-                                @else
-                                    <span class="brand-lockup__letter">{{ $letter }}</span>
-                                @endif
-                            @endforeach
-                        </span>
-                    </span>
+                    <x-brand-mark class="brand-lockup__mark" size="30" />
                 </a>
 
+                <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
+                    @foreach ($content['nav'] as $item)
+                        @continue($item['route'] === 'home')
+
+                        @php
+                            $isActive = $currentScene === $item['route'];
+                        @endphp
+
+                        <a
+                            @class(['site-header__nav-link', 'is-active' => $isActive])
+                            href="{{ route($item['route'], ['locale' => $locale]) }}"
+                            data-page-route="{{ $item['route'] }}"
+                            data-route="{{ $item['route'] }}"
+                            data-route-transition
+                            data-interface-sound
+                            data-sound-tone="navigation"
+                            data-dot-orb-figure="{{ $item['route'] }}"
+                            @if ($isActive) aria-current="page" @endif
+                        >{{ $item['label'] }}</a>
+                    @endforeach
+                </nav>
+
                 <div class="site-header__controls">
-                    <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
-                        @foreach ($content['nav'] as $item)
-                            @continue($item['route'] === 'home')
-
+                    <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
+                        @foreach (config('portfolio.locales') as $code => $localeMeta)
                             @php
-                                $isActive = $currentScene === $item['route'];
+                                $targetParams = array_merge($languageParams, ['locale' => $code]);
+                                $targetUrl = route($languageRoute, $targetParams);
                             @endphp
-
                             <a
-                                class="site-header__nav-link site-header__nav-link--{{ $item['route'] }}{{ $isActive ? ' is-active' : '' }}"
-                                href="{{ route($item['route'], ['locale' => $locale]) }}"
-                                data-page-route="{{ $item['route'] }}"
-                                data-route="{{ $item['route'] }}"
-                                data-route-transition
+                                @class(['is-active' => $code === $locale])
+                                href="{{ $targetUrl }}"
+                                hreflang="{{ $code }}"
                                 data-interface-sound
-                                data-sound-tone="navigation"
-                                @if ($isActive) aria-current="page" @endif
+                                data-sound-tone="control"
                             >
-                                <span class="site-header__nav-index">0{{ $loop->index }}</span>
-                                <span class="site-header__nav-label">{{ $item['label'] }}</span>
+                                {{ $localeMeta['label'] }}
                             </a>
                         @endforeach
-
-                        <div class="site-header__languages" aria-label="{{ $content['ui']['language'] }}">
-                            @foreach (config('portfolio.locales') as $code => $localeMeta)
-                                @php
-                                    $targetParams = array_merge($languageParams, ['locale' => $code]);
-                                    $targetUrl = route($languageRoute, $targetParams);
-                                @endphp
-                                <a
-                                    @class(['is-active' => $code === $locale])
-                                    href="{{ $targetUrl }}"
-                                    hreflang="{{ $code }}"
-                                    data-interface-sound
-                                    data-sound-tone="control"
-                                >
-                                    {{ $localeMeta['label'] }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </nav>
+                    </div>
 
                     <button
                         class="sound-toggle"
@@ -206,82 +194,35 @@
             @yield('content')
         </main>
 
-        <footer class="site-footer" data-page-footer>
-            <div class="site-footer__inner">
-                <div class="site-footer__main">
-                    <a
-                        class="site-footer__identity"
-                        href="{{ route('home', ['locale' => $locale]) }}"
-                        data-route="home"
-                        data-route-transition
-                        data-interface-sound
-                        data-sound-tone="brand"
-                    >
-                        <x-brand-mark class="site-footer__mark" size="44" />
-                        <strong>Jeremy Läderach</strong>
-                    </a>
-
-                    <nav class="site-footer__nav" aria-label="{{ $content['ui']['footer_navigation'] }}">
-                        @foreach (array_slice($content['nav'], 1) as $item)
-                            <a
-                                href="{{ route($item['route'], ['locale' => $locale]) }}"
-                                data-route="{{ $item['route'] }}"
-                                data-route-transition
-                                data-interface-sound
-                                data-sound-tone="navigation"
-                            >
-                                <span class="site-footer__nav-index">0{{ $loop->iteration }}</span>
-                                <span class="site-footer__nav-label">{{ $item['label'] }}</span>
-                            </a>
-                        @endforeach
-                    </nav>
-
-                    <a
-                        class="site-footer__top"
-                        href="#main"
-                        aria-label="{{ $content['ui']['back_to_top'] }}"
-                        title="{{ $content['ui']['back_to_top'] }}"
-                        data-interface-sound
-                        data-sound-tone="control"
-                    >
-                        <span class="sr-only">{{ $content['ui']['back_to_top'] }}</span>
-                        <x-nav-icon name="arrow-down" />
-                    </a>
-                </div>
-
-                <div class="site-footer__base">
-                    <small>© {{ date('Y') }} Jeremy Läderach</small>
-
-                    <nav class="site-footer__meta" aria-label="{{ $content['ui']['legal_navigation'] }}">
-                        <a
-                            href="{{ config('portfolio.socials.github.url') }}"
-                            rel="noopener noreferrer"
-                            data-interface-sound
-                            data-sound-tone="action"
-                        >GitHub</a>
-                        <a
-                            href="{{ config('portfolio.socials.linkedin.url') }}"
-                            rel="noopener noreferrer"
-                            data-interface-sound
-                            data-sound-tone="action"
-                        >LinkedIn</a>
-                        <a
-                            href="{{ route('imprint', ['locale' => $locale]) }}"
-                            data-route="imprint"
-                            data-route-transition
-                            data-interface-sound
-                            data-sound-tone="control"
-                        >{{ $content['imprint']['title'] }}</a>
-                        <a
-                            href="{{ route('privacy', ['locale' => $locale]) }}"
-                            data-route="privacy"
-                            data-route-transition
-                            data-interface-sound
-                            data-sound-tone="control"
-                        >{{ $content['privacy']['title'] }}</a>
-                    </nav>
-                </div>
-            </div>
+        <footer class="site-colophon" data-page-footer>
+            <nav class="site-colophon__links" aria-label="{{ $content['ui']['legal_navigation'] }}">
+                <a
+                    href="{{ config('portfolio.socials.github.url') }}"
+                    rel="noopener noreferrer"
+                    data-interface-sound
+                    data-sound-tone="action"
+                >GitHub</a>
+                <a
+                    href="{{ config('portfolio.socials.linkedin.url') }}"
+                    rel="noopener noreferrer"
+                    data-interface-sound
+                    data-sound-tone="action"
+                >LinkedIn</a>
+                <a
+                    href="{{ route('imprint', ['locale' => $locale]) }}"
+                    data-route="imprint"
+                    data-route-transition
+                    data-interface-sound
+                    data-sound-tone="control"
+                >{{ $content['imprint']['title'] }}</a>
+                <a
+                    href="{{ route('privacy', ['locale' => $locale]) }}"
+                    data-route="privacy"
+                    data-route-transition
+                    data-interface-sound
+                    data-sound-tone="control"
+                >{{ $content['privacy']['title'] }}</a>
+            </nav>
         </footer>
     </body>
 </html>

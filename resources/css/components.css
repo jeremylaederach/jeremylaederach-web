@@ -64,75 +64,12 @@
         transform: translateY(4px);
     }
 
-    .page-cta {
-        position: relative;
-        isolation: isolate;
-        display: grid;
-        min-height: 360px;
-        overflow: hidden;
-        grid-template-columns: minmax(100px, 0.4fr) minmax(0, 1.6fr) 64px;
-        gap: 48px;
-        align-items: center;
-        padding: 72px max(32px, calc((100vw - 1600px) / 2));
-        border-top: 1px solid var(--line);
-        color: var(--ink);
-    }
-
-    .page-cta::before {
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        height: 1px;
-        background: var(--route-accent);
-        content: '';
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 620ms var(--ease-heavy);
-    }
-
-    .page-cta > span {
-        color: var(--route-accent);
-        font-size: 10px;
-        text-transform: uppercase;
-    }
-
-    .page-cta strong {
-        font-size: 76px;
-        font-weight: 420;
-        line-height: 0.95;
-        transition: color 360ms ease, transform 620ms var(--ease-heavy);
-    }
-
-    .page-cta > .nav-icon {
-        width: 42px;
-        height: 42px;
-        color: var(--route-accent);
-        transition: transform 620ms var(--ease-heavy);
-    }
-
-    .page-cta:hover::before,
-    .page-cta:focus-visible::before {
-        transform: scaleX(1);
-    }
-
-    .page-cta:hover strong,
-    .page-cta:focus-visible strong {
-        color: var(--route-accent);
-        transform: translateX(10px);
-    }
-
-    .page-cta:hover > .nav-icon,
-    .page-cta:focus-visible > .nav-icon {
-        transform: translateX(10px);
-    }
-
     .legal-page {
         position: relative;
         z-index: 1;
         width: var(--shell);
         min-height: 100svh;
-        padding: 156px 0 112px;
+        padding: 184px 0 112px;
         margin: 0 auto;
     }
 

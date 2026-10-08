@@ -1,7 +1,7 @@
 @layer components {
     .project-reel {
-        --reel-accent: var(--project-accent, rgb(var(--case-accent-rgb)));
-        --reel-accent-rgb: var(--project-accent-rgb, var(--case-accent-rgb));
+        --reel-accent: var(--project-accent);
+        --reel-accent-rgb: var(--project-accent-rgb);
         overflow: visible;
         aspect-ratio: auto;
         border: 0;

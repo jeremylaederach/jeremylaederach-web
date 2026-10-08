@@ -151,7 +151,5 @@
                 <x-nav-icon name="arrow-right" />
             </a>
         </nav>
-
-        <x-contact-cta :content="$content" :locale="$locale" />
     </article>
 @endsection

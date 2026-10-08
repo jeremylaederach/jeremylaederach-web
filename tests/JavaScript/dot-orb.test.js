@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createDotOrbController } from '../../resources/js/dot-orb-controller.js';
+import { createDotOrbController, openingAt } from '../../resources/js/dot-orb-controller.js';
 import { createDom } from './dom.js';
 
 const figureResolution = 120;
@@ -47,8 +47,7 @@ const setup = (t, reducedMotion = false) => {
     let timestamp = 0;
     const globals = {
         getComputedStyle: (element) => ({
-            color: 'rgb(125, 240, 201)',
-            getPropertyValue: () => element.dataset.tone ?? '',
+            getPropertyValue: (name) => element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : ''),
         }),
         ResizeObserver: class {
             constructor(callback) {
@@ -242,4 +241,13 @@ test('an element marked as resting holds its figure in its color while nothing i
 
     assert.ok(spread('x') < 170 && spread('y') < 170);
     assert.match(context.fillStyle, /^rgb\(255 /);
+});
+
+test('the pointer finds an opening only where dots are near', (t) => {
+    const { run } = setup(t);
+    run(30);
+
+    // The sphere stands at 68% of the 600 pixel wide canvas, and a unit measures 420 pixels here.
+    assert.ok(Math.abs(openingAt(408, 450) - 0.6 * 2 * 0.08 * 420) < 0.01);
+    assert.equal(openingAt(5, 5), 0);
 });

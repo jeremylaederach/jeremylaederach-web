@@ -1,9 +1,4 @@
 @layer components {
-    .page-cta--contact {
-        --route-accent: var(--coral);
-        --route-accent-rgb: 255, 142, 170;
-    }
-
     .contact-workspace {
         width: var(--shell);
         margin: 0 auto;

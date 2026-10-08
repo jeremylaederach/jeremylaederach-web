@@ -4,22 +4,17 @@
     <article class="portfolio-page projects-page">
         <section class="project-index" aria-labelledby="projects-title" data-reveal>
             <div class="dot-orb" aria-hidden="true">
-                <canvas data-dot-orb></canvas>
+                <canvas data-dot-orb data-dot-orb-fit></canvas>
             </div>
 
             <header class="project-index__header">
-                <div class="page-hero__index">
-                    <span>01</span>
-                    <span>{{ $content['projects_page']['eyebrow'] }}</span>
-                </div>
-
                 <x-animated-page-heading id="projects-title" :text="$content['projects_page']['heading']" />
 
                 <p>{{ $content['projects_page']['intro'] }}</p>
             </header>
 
             <ol class="project-index__list">
-                @foreach ($content['projects_page']['items'] as $project)
+                @foreach (array_filter($content['projects_page']['items'], fn (array $project): bool => $project['featured'] ?? true) as $project)
                     <li
                         id="{{ $project['slug'] }}"
                         class="project-index__item project-index__item--{{ $project['slug'] }}"
@@ -32,13 +27,13 @@
                             aria-label="{{ $content['ui']['open'] }} {{ $project['name'] }}"
                             aria-describedby="project-detail-{{ $project['slug'] }}"
                             data-dot-orb-figure="{{ $project['slug'] }}"
+                            data-pointer-wrap
                             @if ($loop->first) data-dot-orb-resting @endif
                             data-route="projects"
                             data-route-transition
                             data-interface-sound
                             data-sound-tone="panel"
                         >
-                            <span class="project-index__number">0{{ $loop->iteration }}</span>
                             <span class="project-index__name">{{ $project['name'] }}</span>
                             <x-nav-icon name="arrow-right" />
                         </a>
@@ -56,7 +51,5 @@
                 @endforeach
             </ol>
         </section>
-
-        <x-contact-cta :content="$content" :locale="$locale" />
     </article>
 @endsection
