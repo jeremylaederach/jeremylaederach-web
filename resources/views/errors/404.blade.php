@@ -4,7 +4,10 @@
 ])
 
 @section('content')
-    <section class="not-found-page" aria-labelledby="not-found-title" data-pointer-surface data-reveal>
+    <section class="not-found-page" aria-labelledby="not-found-title" data-reveal>
+        <div class="dot-orb" aria-hidden="true">
+            <canvas data-dot-orb></canvas>
+        </div>
         <div class="not-found-page__index">
             <span>404</span>
             <span>{{ $content['not_found']['eyebrow'] }}</span>

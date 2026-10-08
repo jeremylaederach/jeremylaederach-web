@@ -28,10 +28,11 @@ again before relying on them. Inspect implementation and tests before proposing 
   form backend, server-rendered features or other runtime dependencies. The exported `.htaccess`
   sets a strict CSP (`'self'` only): no third-party scripts, fonts or embeds unless that policy is
   changed deliberately.
-- The visual identity is approved: typography, colors, the motion language and the interaction
-  system (page transitions, pointer trail, glow, interface sounds). Preserve it. Propose a small
-  scope before a redesign or a new section, start with one contained, reviewable change, and
-  distinguish confirmed defects from preferences and ideas. Notice interface problems yourself
+- `DESIGN.md` describes the interface as built. Since 8 October 2026 the owner is reworking the
+  look around the home page's dot sphere and allows changes to the pointer, navigation and hover
+  styles for it; the typeface, the dark ground, the page transitions and the interface sounds
+  stay. Propose a small scope before a redesign or a new section, start with one contained,
+  reviewable change, and distinguish confirmed defects from preferences and ideas. Notice interface problems yourself
   (hierarchy, spacing, dividers, selected states, color consistency) and solve them within the
   shared components and stylesheets instead of adding one-off rules. Page styles live in
   `resources/css/pages`. `responsive.css` is unlayered and ordered by breakpoint, so its rules

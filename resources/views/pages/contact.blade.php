@@ -2,7 +2,10 @@
 
 @section('content')
     <article class="portfolio-page contact-page">
-        <header class="page-hero page-hero--contact" data-pointer-surface data-reveal>
+        <header class="page-hero page-hero--contact" data-reveal>
+            <div class="dot-orb" aria-hidden="true">
+                <canvas data-dot-orb></canvas>
+            </div>
             <div class="page-hero__index">
                 <span>03</span>
                 <span>{{ $content['contact_page']['eyebrow'] }}</span>
@@ -45,7 +48,6 @@
                 href="{{ config('portfolio.socials.email.url') }}"
                 data-interface-sound
                 data-sound-tone="action"
-                data-pointer-surface
             >
                 <span>{{ config('portfolio.socials.email.label') }}</span>
                 <strong>{{ config('portfolio.socials.email.display') }}</strong>
@@ -69,7 +71,6 @@
                                 rel="noopener noreferrer"
                                 data-interface-sound
                                 data-sound-tone="action"
-                                data-pointer-surface
                             >
                                 <span>{{ $social['label'] }}</span>
                                 <strong>{{ $social['display'] }}</strong>

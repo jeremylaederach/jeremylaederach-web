@@ -2,7 +2,10 @@
 
 @section('content')
     <article class="portfolio-page projects-page">
-        <header class="page-hero page-hero--projects" data-pointer-surface data-reveal>
+        <header class="page-hero page-hero--projects" data-reveal>
+            <div class="dot-orb" aria-hidden="true">
+                <canvas data-dot-orb></canvas>
+            </div>
             <div class="page-hero__index">
                 <span>01</span>
                 <span>{{ $content['projects_page']['eyebrow'] }}</span>
@@ -42,7 +45,6 @@
                     id="{{ $project['slug'] }}"
                     class="project-case project-case--{{ $loop->iteration }} project-case--{{ $project['slug'] }}"
                     data-reveal
-                    data-pointer-surface
                 >
                     <div class="project-case__link">
                         <a

@@ -11,7 +11,6 @@
     data-transition-label="{{ $content['contact_page']['heading'] }}"
     data-interface-sound
     data-sound-tone="panel"
-    data-pointer-surface
     data-reveal
 >
     <span>{{ $content['contact_page']['eyebrow'] }}</span>

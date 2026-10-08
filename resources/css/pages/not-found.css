@@ -1,7 +1,5 @@
 @layer components {
     .not-found-page {
-        --pointer-x: 34%;
-        --pointer-y: 50%;
         position: relative;
         isolation: isolate;
         display: grid;
@@ -13,19 +11,6 @@
         grid-template-rows: auto 1fr;
         gap: 44px 32px;
         align-items: center;
-    }
-
-    .not-found-page::before {
-        position: absolute;
-        z-index: -1;
-        inset: 72px 0 0;
-        background: radial-gradient(
-            640px circle at var(--pointer-x) var(--pointer-y),
-            rgba(var(--route-accent-rgb), 0.09),
-            transparent 68%
-        );
-        content: '';
-        pointer-events: none;
     }
 
     .not-found-page__index {

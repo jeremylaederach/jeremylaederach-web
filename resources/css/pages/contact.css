@@ -44,10 +44,6 @@
     }
 
     .contact-email {
-        --pointer-x: 72%;
-        --pointer-y: 50%;
-        position: relative;
-        isolation: isolate;
         display: grid;
         min-height: 232px;
         overflow: hidden;
@@ -61,29 +57,10 @@
         transition: border-color 360ms ease, background 360ms ease;
     }
 
-    .contact-email::before {
-        position: absolute;
-        z-index: -1;
-        inset: 0;
-        background: radial-gradient(
-            700px circle at var(--pointer-x) var(--pointer-y),
-            rgba(var(--route-accent-rgb), 0.16),
-            transparent 64%
-        );
-        content: '';
-        opacity: 0.42;
-        transition: opacity 420ms ease;
-    }
-
     .contact-email:hover,
     .contact-email:focus-visible {
         border-color: rgba(var(--route-accent-rgb), 0.58);
         background: rgba(var(--route-accent-rgb), 0.025);
-    }
-
-    .contact-email:hover::before,
-    .contact-email:focus-visible::before {
-        opacity: 1;
     }
 
     .contact-email > span {

@@ -2,7 +2,10 @@
 
 @section('content')
     <article class="portfolio-page about-page">
-        <header class="page-hero page-hero--about" data-pointer-surface data-reveal>
+        <header class="page-hero page-hero--about" data-reveal>
+            <div class="dot-orb" aria-hidden="true">
+                <canvas data-dot-orb></canvas>
+            </div>
             <div class="page-hero__index">
                 <span>02</span>
                 <span>{{ $content['about_page']['eyebrow'] }}</span>
@@ -64,7 +67,7 @@
 
             <ol class="career-list">
                 @foreach ($content['about_page']['career'] as $step)
-                    <li data-pointer-surface>
+                    <li>
                         <span>0{{ $loop->iteration }}</span>
                         <time>{{ $step['period'] }}</time>
                         <h3>{{ $step['title'] }}</h3>

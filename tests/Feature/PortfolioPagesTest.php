@@ -49,8 +49,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading"', false)
             ->assertDontSee('class="kinetic-index__number"', false)
-            ->assertSee('data-page-heading-signal', false)
-            ->assertSee('class="kinetic-index__wordmark"', false)
+            ->assertSee('class="kinetic-index__name"', false)
             ->assertDontSee('class="kinetic-index__eyebrow"', false)
             ->assertSee('class="index-navigation"', false)
             ->assertSee('data-index-panel', false)
@@ -64,14 +63,13 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('brand/liquid/', false)
             ->assertDontSee('data-motion-chip', false)
             ->assertDontSee('data-portfolio-chat', false)
-            ->assertSee('Quantified')
-            ->assertSee('Jay-Jay')
-            ->assertSee('SessionDeck')
+            ->assertSee('data-dot-orb', false)
+            ->assertDontSee('class="index-panel__preview"', false)
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
-        $this->assertSame(15, substr_count($response->content(), 'class="kinetic-index__letter kinetic-index__letter--tone-'));
+        $this->assertSame(5, substr_count($response->content(), 'data-dot-orb-figure='));
         $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
         $this->assertFileExists(public_path('brand/icons/icon-192.png'));
         $this->assertFileExists(public_path('brand/icons/icon-512.png'));
@@ -189,7 +187,9 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(4, substr_count($about->content(), 'data-technology-icon='));
         $this->assertSame(4, substr_count($about->content(), 'class="section-label about-section-label"'));
         $this->assertSame(3, substr_count($about->content(), '<article class="playground-demo'));
-        $this->assertSame(0, substr_count($about->content(), '<canvas'));
+        // The only canvas is the sphere behind the page hero; the demos are built from elements.
+        $this->assertSame(1, substr_count($about->content(), '<canvas'));
+        $about->assertSee('<canvas data-dot-orb>', false);
         $this->assertSame(5, substr_count($about->content(), 'data-sorting-algorithm='));
         $this->assertSame(5, substr_count($about->content(), 'data-sorting-description='));
         $this->assertSame(0, substr_count($about->content(), 'data-sorting-complexity='));

@@ -3,11 +3,10 @@ import test from 'node:test';
 import { createInteractionController } from '../../resources/js/interaction-controller.js';
 import { createDom } from './dom.js';
 
-const setup = (t, reducedMotion = false, withTrail = false) => {
+const setup = (t, reducedMotion = false) => {
     const window = createDom(t, `
         <div data-site-pointer-layer><div data-site-pointer></div></div>
         <button data-route="projects">Projects</button>
-        ${withTrail ? '<svg><defs><linearGradient data-pointer-gradient="outer"></linearGradient></defs><path data-pointer-path="outer"></path></svg>' : ''}
     `);
     const globals = {
         getComputedStyle: window.getComputedStyle.bind(window),
@@ -105,13 +104,9 @@ test('the sticky ring moves only slightly within the same control while the dot 
     assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '80px');
 });
 
-test('free cursor and glow use the latest mouse position without follow-up animation frames', t => {
+test('free cursor uses the latest mouse position without follow-up animation frames', t => {
     const { pointer, frame, frames } = setup(t);
-    const surface = document.createElement('div');
-    surface.dataset.pointerSurface = '';
-    surface.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 100 });
-    document.body.append(surface);
-    document.elementFromPoint = () => surface;
+    document.elementFromPoint = () => document.body;
 
     pointer('pointermove', 'mouse', 40);
     pointer('pointermove', 'mouse', 80);
@@ -122,8 +117,6 @@ test('free cursor and glow use the latest mouse position without follow-up anima
     assert.equal(layer.style.getPropertyValue('--pointer-ring-x'), '80px');
     assert.equal(layer.style.getPropertyValue('--pointer-ring-y'), '40px');
     assert.equal(document.querySelector('[data-site-pointer]').style.getPropertyValue('--site-pointer-x'), '80px');
-    assert.equal(surface.style.getPropertyValue('--pointer-x'), '40%');
-    assert.equal(surface.style.getPropertyValue('--pointer-y'), '40%');
     assert.equal(frames.size, 0);
 });
 
@@ -154,49 +147,4 @@ test('losing window focus cancels queued cursor updates', t => {
     frame();
     assert.equal(frames.size, 0);
     assert.equal(document.documentElement.classList.contains('has-site-pointer'), false);
-});
-
-test('the decorative trail settles without moving or repeatedly updating the cursor', t => {
-    const { pointer, frame, frames } = setup(t, false, true);
-    document.elementFromPoint = () => document.body;
-    pointer('pointermove', 'mouse', 40);
-    frame();
-    frame();
-    assert.equal(frames.size, 0);
-
-    const cursor = document.querySelector('[data-site-pointer]');
-    const writes = t.mock.method(cursor.style, 'setProperty');
-    pointer('pointermove', 'mouse', 240);
-    frame();
-    assert.equal(cursor.style.getPropertyValue('--site-pointer-x'), '240px');
-    assert.equal(document.querySelector('[data-site-pointer-layer]').style.getPropertyValue('--pointer-ring-x'), '240px');
-    const cursorWrites = writes.mock.callCount();
-    frame();
-    const trail = document.querySelector('[data-pointer-path]');
-    const movingPath = trail.getAttribute('d');
-    assert.ok(movingPath.includes('C'));
-    assert.ok(frames.size > 0);
-    for (let i = 0; i < 200 && frames.size; i++) frame();
-    assert.equal(frames.size, 0);
-    assert.notEqual(trail.getAttribute('d'), movingPath);
-    assert.equal(writes.mock.callCount(), cursorWrites);
-});
-
-test('switching to touch clears the trail and mouse re-entry starts at the new position', t => {
-    const { pointer, frame, frames } = setup(t, false, true);
-    pointer('pointermove', 'mouse', 40);
-    frame();
-    frame();
-    pointer('pointermove', 'mouse', 240);
-    frame();
-    frame();
-    pointer('pointerdown', 'touch');
-    const trail = document.querySelector('[data-pointer-path]');
-    assert.equal(frames.size, 0);
-    assert.equal(trail.hasAttribute('d'), false);
-    pointer('pointermove', 'mouse', 500);
-    frame();
-    frame();
-    assert.equal(frames.size, 0);
-    assert.ok(trail.getAttribute('d').startsWith('M 500.00 40.00'));
 });

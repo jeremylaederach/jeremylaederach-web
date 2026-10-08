@@ -1,28 +1,12 @@
 <section class="kinetic-index" aria-labelledby="landing-title">
+    <div class="dot-orb" aria-hidden="true">
+        <canvas data-dot-orb data-mark="{{ asset('brand/jeremy-cat-256.png') }}"></canvas>
+    </div>
     <header class="kinetic-index__masthead">
         <div class="kinetic-index__title">
-            <h1
-                id="landing-title"
-                class="kinetic-index__heading"
-                aria-label="Jeremy Läderach."
-                data-page-heading-signal
-            >
-                <span class="kinetic-index__wordmark" aria-hidden="true">
-                    @foreach (mb_str_split('Jeremy Läderach') as $letter)
-                        @if ($letter === ' ')
-                            <span class="kinetic-index__letter-space">&nbsp;</span>
-                        @else
-                            <span
-                                class="kinetic-index__letter kinetic-index__letter--tone-{{ (($loop->iteration - 1) % 4) + 1 }}"
-                                style="--letter-index: {{ $loop->index }}"
-                            ><span class="kinetic-index__letter-glyph">{{ $letter }}</span></span>
-                        @endif
-                    @endforeach
-                    <em
-                        class="kinetic-index__letter kinetic-index__letter--tone-1"
-                        style="--letter-index: {{ mb_strlen('Jeremy Läderach') }}"
-                    ><span class="kinetic-index__letter-glyph">.</span></em>
-                </span>
+            <h1 id="landing-title" class="kinetic-index__heading" data-dot-orb-figure="mark">
+                <span class="kinetic-index__name">Jeremy</span>
+                <span class="kinetic-index__name">Läderach<em>.</em></span>
             </h1>
         </div>
 
@@ -34,11 +18,12 @@
     <nav class="index-navigation" aria-label="{{ $content['ui']['menu'] }}">
         @foreach ($content['home']['routes'] as $route)
             <a
-                class="index-panel index-panel--{{ $route['route'] }}"
+                class="index-panel"
                 href="{{ route($route['route'], ['locale' => $locale]) }}"
                 data-index-panel
-                data-pointer-surface
+                data-dot-orb-figure="{{ $route['route'] }}"
                 data-route="{{ $route['route'] }}"
+                data-pointer-route="home"
                 data-route-transition
                 data-transition-label="{{ $route['label'] }}"
                 data-interface-sound
@@ -49,24 +34,6 @@
                 <span class="index-panel__title">{{ $route['label'] }}</span>
 
                 <span class="index-panel__description">{{ $route['description'] }}</span>
-
-                <span class="index-panel__preview" aria-hidden="true">
-                    @if ($route['route'] === 'projects')
-                        @foreach ($content['projects_page']['items'] as $project)
-                            <span>{{ $project['name'] }}</span>
-                        @endforeach
-                    @elseif ($route['route'] === 'about')
-                        @foreach (array_slice($content['about_page']['technology_groups'], 0, 3) as $group)
-                            <span>{{ $group['title'] }}</span>
-                        @endforeach
-                    @else
-                        <span>{{ config('portfolio.socials.email.display') }}</span>
-                    @endif
-                </span>
-
-                <span class="index-panel__arrow" aria-hidden="true">
-                    <x-nav-icon name="arrow-right" />
-                </span>
             </a>
         @endforeach
     </nav>

@@ -51,27 +51,6 @@
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
         <div class="site-pointer-layer" data-site-pointer-layer aria-hidden="true">
-            <svg class="site-pointer-trail" focusable="false">
-                <defs>
-                    <linearGradient id="pointer-trail-outer" gradientUnits="userSpaceOnUse" data-pointer-gradient="outer">
-                        <stop class="site-pointer-trail__stop--accent" offset="0" stop-opacity="0" />
-                        <stop class="site-pointer-trail__stop--accent" offset="0.64" stop-opacity="0.08" />
-                        <stop class="site-pointer-trail__stop--accent" offset="1" stop-opacity="0.32" />
-                    </linearGradient>
-                    <linearGradient id="pointer-trail-core" gradientUnits="userSpaceOnUse" data-pointer-gradient="core">
-                        <stop class="site-pointer-trail__stop--accent" offset="0" stop-opacity="0" />
-                        <stop class="site-pointer-trail__stop--accent" offset="0.58" stop-opacity="0.24" />
-                        <stop class="site-pointer-trail__stop--accent" offset="1" stop-opacity="0.72" />
-                    </linearGradient>
-                    <linearGradient id="pointer-trail-highlight" gradientUnits="userSpaceOnUse" data-pointer-gradient="highlight">
-                        <stop class="site-pointer-trail__stop--highlight" offset="0" stop-opacity="0" />
-                        <stop class="site-pointer-trail__stop--highlight" offset="1" stop-opacity="0.84" />
-                    </linearGradient>
-                </defs>
-                <path class="site-pointer-trail__path site-pointer-trail__path--outer" data-pointer-path="outer" stroke="url(#pointer-trail-outer)" />
-                <path class="site-pointer-trail__path site-pointer-trail__path--core" data-pointer-path="core" stroke="url(#pointer-trail-core)" />
-                <path class="site-pointer-trail__path site-pointer-trail__path--highlight" data-pointer-path="highlight" stroke="url(#pointer-trail-highlight)" />
-            </svg>
             <div class="site-pointer" data-site-pointer>
                 <span class="site-pointer__ring"></span>
                 <span class="site-pointer__dot"></span>
@@ -89,8 +68,8 @@
                     data-transition-label="{{ $content['nav'][0]['label'] }}"
                     data-interface-sound
                     data-sound-tone="brand"
+                    data-dot-orb-figure="mark"
                 >
-                    <x-brand-mark class="brand-lockup__mark" size="96" />
                     <span class="brand-lockup__name" aria-label="Jeremy Läderach">
                         <span class="brand-lockup__wordmark" aria-hidden="true">
                             @foreach (mb_str_split('Jeremy Läderach') as $letter)
@@ -251,7 +230,7 @@
                         data-interface-sound
                         data-sound-tone="brand"
                     >
-                        <x-brand-mark class="site-footer__mark" size="40" />
+                        <x-brand-mark class="site-footer__mark" size="44" />
                         <strong>Jeremy Läderach</strong>
                     </a>
 
@@ -260,12 +239,14 @@
                             <a
                                 href="{{ route($item['route'], ['locale' => $locale]) }}"
                                 data-route="{{ $item['route'] }}"
+                                data-pointer-route="home"
                                 data-route-transition
                                 data-transition-label="{{ $item['label'] }}"
                                 data-interface-sound
                                 data-sound-tone="navigation"
                             >
-                                {{ $item['label'] }}
+                                <span class="site-footer__nav-index">0{{ $loop->iteration }}</span>
+                                <span class="site-footer__nav-label">{{ $item['label'] }}</span>
                             </a>
                         @endforeach
                     </nav>
@@ -275,6 +256,7 @@
                         href="#main"
                         aria-label="{{ $content['ui']['back_to_top'] }}"
                         title="{{ $content['ui']['back_to_top'] }}"
+                        data-pointer-route="home"
                         data-interface-sound
                         data-sound-tone="control"
                     >
@@ -290,18 +272,21 @@
                         <a
                             href="{{ config('portfolio.socials.github.url') }}"
                             rel="noopener noreferrer"
+                            data-pointer-route="home"
                             data-interface-sound
                             data-sound-tone="action"
                         >GitHub</a>
                         <a
                             href="{{ config('portfolio.socials.linkedin.url') }}"
                             rel="noopener noreferrer"
+                            data-pointer-route="home"
                             data-interface-sound
                             data-sound-tone="action"
                         >LinkedIn</a>
                         <a
                             href="{{ route('imprint', ['locale' => $locale]) }}"
                             data-route="imprint"
+                            data-pointer-route="home"
                             data-route-transition
                             data-transition-label="{{ $content['imprint']['title'] }}"
                             data-interface-sound
@@ -310,6 +295,7 @@
                         <a
                             href="{{ route('privacy', ['locale' => $locale]) }}"
                             data-route="privacy"
+                            data-pointer-route="home"
                             data-route-transition
                             data-transition-label="{{ $content['privacy']['title'] }}"
                             data-interface-sound

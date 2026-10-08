@@ -1,5 +1,7 @@
 @layer components {
     .case-study-hero {
+        position: relative;
+        isolation: isolate;
         display: grid;
         width: var(--shell);
         min-height: 100svh;

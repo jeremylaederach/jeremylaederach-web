@@ -1,14 +1,9 @@
-import { createPointerTrail } from './pointer-trail.js';
-
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-
 export const createInteractionController = ({ reducedMotion }) => {
     let revealObserver;
     let pointerFrame;
     let pointerEvent;
     const sitePointerLayer = document.querySelector('[data-site-pointer-layer]');
     const sitePointer = document.querySelector('[data-site-pointer]');
-    const trail = createPointerTrail();
 
     const getInteractiveTarget = (target) => target instanceof Element
         ? target.closest('a[href], button, input, textarea, select')
@@ -52,28 +47,17 @@ export const createInteractionController = ({ reducedMotion }) => {
 
         const { clientX, clientY } = pointerEvent;
         const target = document.elementFromPoint(clientX, clientY);
-        const surface = target instanceof Element ? target.closest('[data-pointer-surface]') : null;
-        const rect = surface?.getBoundingClientRect();
 
         setPointerIntent(target);
-        trail.move(clientX, clientY);
 
         if (sitePointer instanceof HTMLElement) {
             sitePointer.style.setProperty('--site-pointer-x', clientX + 'px');
             sitePointer.style.setProperty('--site-pointer-y', clientY + 'px');
             document.documentElement.classList.add('has-site-pointer');
         }
-
-        if (rect) {
-            const x = clamp((clientX - rect.left) / Math.max(rect.width, 1) * 100, 0, 100);
-            const y = clamp((clientY - rect.top) / Math.max(rect.height, 1) * 100, 0, 100);
-            surface.style.setProperty('--pointer-x', x + '%');
-            surface.style.setProperty('--pointer-y', y + '%');
-        }
     };
 
     const hidePointer = () => {
-        trail.reset();
         window.cancelAnimationFrame(pointerFrame);
         pointerFrame = undefined;
         pointerEvent = undefined;

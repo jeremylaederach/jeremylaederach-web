@@ -1,4 +1,5 @@
 import { createAboutPlaygroundController } from './about-playground-controller.js';
+import { createDotOrbController } from './dot-orb-controller.js';
 import { createInteractionController } from './interaction-controller.js';
 import { createPageHeadingController } from './page-heading-controller.js';
 import { createPageRouter } from './page-router.js';
@@ -16,6 +17,7 @@ const finePointer = window.matchMedia('(pointer: fine)').matches;
 root.classList.add('js');
 
 const aboutPlaygroundController = createAboutPlaygroundController({ reducedMotion });
+const dotOrbController = createDotOrbController({ reducedMotion });
 const interactionController = createInteractionController({ reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
 const pageHeadingController = createPageHeadingController({ reducedMotion });
@@ -30,6 +32,7 @@ soundController.initialize();
 interactionController.initialize();
 pageHeadingController.initialize();
 aboutPlaygroundController.initialize();
+dotOrbController.initialize();
 projectReelController.initialize();
 scrollCueController.initialize();
 technologyIconController.initialize();

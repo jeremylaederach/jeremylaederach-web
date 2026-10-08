@@ -80,14 +80,15 @@
 
     .page-cta::before {
         position: absolute;
-        z-index: -1;
-        inset: 0;
-        background:
-            radial-gradient(640px circle at var(--pointer-x, 72%) var(--pointer-y, 50%), rgba(var(--route-accent-rgb), 0.18), transparent 64%),
-            linear-gradient(90deg, rgba(var(--route-accent-rgb), 0.08), transparent 62%);
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 1px;
+        background: var(--route-accent);
         content: '';
-        opacity: 0.72;
-        transition: opacity 420ms ease;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 620ms var(--ease-heavy);
     }
 
     .page-cta > span {
@@ -100,7 +101,7 @@
         font-size: 76px;
         font-weight: 420;
         line-height: 0.95;
-        transition: transform 620ms var(--ease-heavy);
+        transition: color 360ms ease, transform 620ms var(--ease-heavy);
     }
 
     .page-cta > .nav-icon {
@@ -112,11 +113,12 @@
 
     .page-cta:hover::before,
     .page-cta:focus-visible::before {
-        opacity: 1;
+        transform: scaleX(1);
     }
 
     .page-cta:hover strong,
     .page-cta:focus-visible strong {
+        color: var(--route-accent);
         transform: translateX(10px);
     }
 
@@ -251,12 +253,10 @@
     @keyframes wordmark-signal {
         0%, 22%, 100% {
             color: inherit;
-            text-shadow: none;
         }
 
         9% {
-            color: color-mix(in srgb, var(--wordmark-signal, var(--lavender)) 58%, var(--ink));
-            text-shadow: 0 0 0.26em color-mix(in srgb, var(--wordmark-signal, var(--lavender)) 24%, transparent);
+            color: color-mix(in srgb, var(--wordmark-signal, var(--route-accent)) 58%, var(--ink));
         }
     }
 }

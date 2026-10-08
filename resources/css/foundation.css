@@ -15,6 +15,8 @@
         --coral: #ff8eaa;
         --lavender-light: #ca9fff;
         --lavender: #a978ff;
+        --mint: #7df0c9;
+        --mint-rgb: 125, 240, 201;
         --accent: var(--lavender);
         --accent-rgb: 169, 120, 255;
         --accent-projects: var(--pastel-blue);
@@ -28,6 +30,11 @@
         --shell: min(calc(100% - 64px), 1600px);
         --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
         --ease-heavy: cubic-bezier(0.16, 0.76, 0.24, 1);
+    }
+
+    .route-home {
+        --route-accent: var(--mint);
+        --route-accent-rgb: var(--mint-rgb);
     }
 
     .route-projects {

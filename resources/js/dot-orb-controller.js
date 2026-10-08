@@ -1,0 +1,536 @@
+import { drawnFigures } from './dot-orb-figures.js';
+
+const dotCount = 1200;
+const turnSeconds = 52;
+const tilt = 0.42;
+const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
+// Lengths are in units. One unit is the sphere's box, which follows the canvas size.
+const unitOf = { height: 1, width: 0.7, largest: 1040 };
+const sphereRadius = 0.3;
+const reach = 0.08;
+
+// A click sends a ring outwards through the dots: how fast it travels and how wide it is, in
+// units, how far it pushes a dot, how many seconds it lasts and how many rings travel at once.
+const pulse = { speed: 1.5, width: 0.1, strength: 0.07, life: 1.1, most: 6 };
+
+// A held press gathers the dots within reach towards the pointer and charges up; letting go
+// releases a ring that is stronger the longer the press lasted.
+const press = { reach: 0.5, pull: 0.24, chargeRate: 1.5, releaseRate: 7, boost: 2.2 };
+
+// Nearer dots are a lighter tint of the accent, in steps small enough to pass for a gradient.
+const tint = { levels: 8, lightest: 0.42 };
+
+// A bud is a smaller sphere that leaves the main one for a while, like a blob in a lava lamp: it
+// drifts beside the sphere and rises and sinks over the height of the canvas. The dots are dealt
+// out to four groups. The first is the core and never leaves; the others have their own size,
+// their own side and their own cycles, in seconds, and start inside the sphere.
+const bud = {
+    margin: 0.2,
+    travel: 0.3,
+    groups: [
+        null,
+        { radius: 0.15, offset: 0.46, period: 41, phase: 5.42, rise: 29 },
+        { radius: 0.11, offset: -0.4, period: 53, phase: 3.9, rise: 37 },
+        { radius: 0.13, offset: 0.12, period: 67, phase: 2.6, rise: 23 },
+    ],
+};
+
+// A figure is a shape the dots take while an element that names it is hovered or focused. It is
+// sampled from a small canvas (the drawn ones at once, the mark when its image loads) and
+// inflated: thickest in the middle of the shape, flat at its edge. It sways instead of turning.
+const figure = { size: 0.72, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
+
+// Evenly spread points on a unit sphere (Fibonacci lattice), ordered from the top down.
+const createLattice = (count) => Array.from({ length: count }, (_, index) => {
+    const y = 1 - (index / (count - 1)) * 2;
+    const ring = Math.sqrt(1 - y * y);
+    const angle = index * goldenAngle;
+
+    return { x: Math.cos(angle) * ring, y, z: Math.sin(angle) * ring };
+});
+
+const readChannels = (value) => value.match(/\d+/g).slice(0, 3).map(Number);
+const mix = (from, to, amount) => from + (to - from) * amount;
+const clamp = (value, low, high) => Math.min(Math.max(value, low), high);
+const smooth = (value) => value * value * (3 - 2 * value);
+
+// Frame-rate independent easing towards a target.
+const approach = (current, target, rate, delta) => current + (target - current) * (1 - Math.exp(-rate * delta));
+
+// Slow overlapping waves in view space: bulges rise and sink like a lava lamp.
+const swell = (x, y, z, seconds) => 1
+    + Math.sin(x * 2.1 + seconds * 0.52) * Math.cos(y * 1.7 - seconds * 0.37) * 0.3
+    + Math.sin(z * 2.6 + y * 1.3 + seconds * 0.29) * 0.13
+    + Math.sin(x * 0.9 + seconds * 0.21) * 0.06;
+
+const createRotation = (turn, lean) => ({
+    sinTurn: Math.sin(turn),
+    cosTurn: Math.cos(turn),
+    sinLean: Math.sin(lean),
+    cosLean: Math.cos(lean),
+});
+
+// How far every filled cell of a square grid is from the nearest empty one, in cells.
+const distanceToEdge = (filled, size) => {
+    const distance = new Float32Array(size * size);
+    const at = (x, y) => (x < 0 || y < 0 || x >= size || y >= size ? 0 : distance[y * size + x]);
+
+    for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+            distance[y * size + x] = filled(x, y) ? Math.min(at(x - 1, y), at(x, y - 1)) + 1 : 0;
+        }
+    }
+
+    for (let y = size - 1; y >= 0; y -= 1) {
+        for (let x = size - 1; x >= 0; x -= 1) {
+            distance[y * size + x] = Math.min(distance[y * size + x], at(x + 1, y) + 1, at(x, y + 1) + 1);
+        }
+    }
+
+    return distance;
+};
+
+// Evenly spaced points inside whatever `draw` paints, centred on (0, 0), each with half the
+// figure's thickness at that point. Transparent and near-white areas are holes.
+const sampleFigure = (draw) => {
+    const size = figure.resolution;
+    const canvas = document.createElement('canvas');
+
+    canvas.width = size;
+    canvas.height = size;
+
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+
+    if (!context) {
+        return [];
+    }
+
+    draw(context, size);
+
+    const { data } = context.getImageData(0, 0, size, size);
+    const filled = (x, y) => {
+        const offset = (Math.floor(y) * size + Math.floor(x)) * 4;
+
+        return data[offset + 3] > 128 && Math.min(data[offset], data[offset + 1], data[offset + 2]) < 225;
+    };
+    const distance = distanceToEdge(filled, size);
+    const deepest = Math.max(...distance, 1);
+    const area = distance.reduce((sum, value) => sum + (value > 0 ? 1 : 0), 0);
+    const step = Math.sqrt(area / dotCount) * 1.02;
+    const points = [];
+
+    for (let y = step / 2; y < size; y += step) {
+        for (let x = step / 2; x < size; x += step) {
+            if (filled(x, y)) {
+                const inward = distance[Math.floor(y) * size + Math.floor(x)] / deepest;
+
+                points.push({
+                    x: x / size - 0.5,
+                    y: y / size - 0.5,
+                    half: figure.thickness * Math.sqrt(1 - (1 - inward) ** 2),
+                });
+            }
+        }
+    }
+
+    return points;
+};
+
+const createBuds = () => bud.groups.map((group) => ({
+    group,
+    out: 0,
+    x: 0,
+    y: 0,
+    rotation: null,
+}));
+
+const initializeOrb = (canvas, reducedMotion) => {
+    const context = canvas.getContext('2d');
+    const listeners = new AbortController();
+    const channels = readChannels(getComputedStyle(canvas).color);
+    const buds = createBuds();
+    const sphere = createLattice(dotCount);
+    const budSphere = createLattice(Math.ceil(dotCount / buds.length));
+    const figures = new Map();
+    const dots = {
+        x: new Float32Array(dotCount),
+        y: new Float32Array(dotCount),
+        z: new Float32Array(dotCount),
+        scale: new Float32Array(dotCount),
+        level: new Uint8Array(dotCount),
+        figureX: new Float32Array(dotCount),
+        figureY: new Float32Array(dotCount),
+        figureHalf: new Float32Array(dotCount),
+    };
+    const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, strength: 0, targetStrength: 0 };
+    const ripples = [];
+    const hold = { x: 0, y: 0, down: false, charge: 0 };
+    const home = { x: 0, y: 0 };
+    const view = { x: 0, y: 0, z: 0 };
+    let width = 0;
+    let height = 0;
+    let unit = 1;
+    let scale = 1;
+    let frame = 0;
+    let previousTime = 0;
+    let clock = 0;
+    let visible = false;
+    let figurePoints = [];
+    let shape = 0;
+    let targetShape = 0;
+
+    // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii.
+    const place = (point, rotation, seconds) => {
+        const x = point.x * rotation.cosTurn + point.z * rotation.sinTurn;
+        const depth = point.z * rotation.cosTurn - point.x * rotation.sinTurn;
+        const y = point.y * rotation.cosLean - depth * rotation.sinLean;
+        const z = point.y * rotation.sinLean + depth * rotation.cosLean;
+        const bulge = swell(x, y, z, seconds);
+
+        view.x = x * bulge;
+        view.y = y * bulge;
+        view.z = z;
+    };
+
+    // The sphere wanders slowly around the middle of the stage.
+    const wander = (seconds) => {
+        home.x = (width * (0.68 + 0.1 * Math.sin(seconds / 23))) / unit;
+        home.y = (height * (0.5 + 0.1 * Math.sin(seconds / 17))) / unit;
+    };
+
+    // Where each bud is right now, and how far out of the sphere.
+    const arrange = (seconds, turn, lean) => {
+        for (const [index, part] of buds.entries()) {
+            if (!part.group) {
+                continue;
+            }
+
+            const { offset, period, phase, rise } = part.group;
+            const wave = Math.sin((seconds / period) * Math.PI * 2 + phase);
+            const lift = Math.sin((seconds / rise) * Math.PI * 2 + phase) * bud.travel;
+
+            part.out = smooth(clamp((wave - 0.35) / 0.4, 0, 1));
+            part.x = clamp(home.x + offset, bud.margin, width / unit - bud.margin);
+            part.y = clamp((height / unit) * (0.5 + lift), bud.margin, height / unit - bud.margin);
+            part.rotation = createRotation(turn + index * 2.1, lean);
+        }
+    };
+
+    const position = (seconds, delta) => {
+        wander(seconds);
+
+        const leanX = clamp((pointer.x - home.x) / sphereRadius, -2, 2);
+        const leanY = clamp((pointer.y - home.y) / sphereRadius, -2, 2);
+        const turn = (seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength;
+        const lean = tilt + leanY * 0.35 * pointer.strength;
+        const rotation = createRotation(turn, lean);
+        const sway = createRotation(
+            Math.sin(seconds * 0.5) * figure.sway + leanX * 0.2 * pointer.strength,
+            0.1 + leanY * 0.12 * pointer.strength,
+        );
+
+        arrange(seconds, turn, lean);
+
+        // The sphere shrinks by the share of its dots that are out as buds.
+        const away = buds.reduce((sum, part) => sum + part.out, 0) / buds.length;
+        const radius = sphereRadius * Math.sqrt(1 - away);
+
+        // Within a figure the dots glide from one shape to the next; coming from the sphere they
+        // head straight for the shape.
+        const glide = shape < 0.02 ? 1 : 1 - Math.exp(-9 * delta);
+
+        for (let index = 0; index < dotCount; index += 1) {
+            place(sphere[index], rotation, seconds);
+
+            let x = home.x + view.x * radius;
+            let y = home.y + view.y * radius;
+            let z = view.z;
+            let size = 1;
+            const part = buds[index % buds.length];
+
+            if (part.out > 0.001) {
+                // The dots leave from the top down, so a bud stretches out of the sphere.
+                const amount = smooth(clamp(part.out * 1.35 - (index / dotCount) * 0.35, 0, 1));
+
+                // Each bud turns and swells on its own phase.
+                place(budSphere[Math.floor(index / buds.length)], part.rotation, seconds + (index % buds.length) * 7);
+                x = mix(x, part.x + view.x * part.group.radius, amount);
+                y = mix(y, part.y + view.y * part.group.radius, amount);
+                z = mix(z, view.z, amount);
+                size = mix(1, 0.86, amount);
+            }
+
+            if (figurePoints.length) {
+                const point = figurePoints[index % figurePoints.length];
+
+                dots.figureX[index] += (point.x - dots.figureX[index]) * glide;
+                dots.figureY[index] += (point.y - dots.figureY[index]) * glide;
+                dots.figureHalf[index] += (point.half - dots.figureHalf[index]) * glide;
+            }
+
+            if (shape > 0.001) {
+                const amount = smooth(clamp(shape * 1.35 - (index / dotCount) * 0.35, 0, 1));
+
+                // Every other dot lies on the back of the figure, so it has two faces.
+                const thickness = dots.figureHalf[index] * (index % 2 === 0 ? 1 : -1);
+                const turnedX = dots.figureX[index] * sway.cosTurn + thickness * sway.sinTurn;
+                const depth = thickness * sway.cosTurn - dots.figureX[index] * sway.sinTurn;
+                const turnedY = dots.figureY[index] * sway.cosLean - depth * sway.sinLean;
+                const turnedZ = dots.figureY[index] * sway.sinLean + depth * sway.cosLean;
+
+                x = mix(x, home.x + turnedX * figure.size, amount);
+                y = mix(y, home.y + turnedY * figure.size, amount);
+                z = mix(z, clamp(turnedZ / figure.depth, -1, 1), amount);
+                size = mix(size, 1, amount);
+            }
+
+            // Dots near the pointer give way.
+            const distance = Math.hypot(x - pointer.x, y - pointer.y);
+
+            if (distance < reach && pointer.strength > 0.01) {
+                const push = ((reach - distance) / reach) ** 2 * 0.05 * pointer.strength;
+
+                x += ((x - pointer.x) / (distance || 1)) * push;
+                y += ((y - pointer.y) / (distance || 1)) * push;
+            }
+
+            if (hold.charge > 0.001) {
+                const fromPress = Math.hypot(x - hold.x, y - hold.y);
+
+                if (fromPress < press.reach) {
+                    const pull = Math.min((1 - fromPress / press.reach) * press.pull * hold.charge, fromPress * 0.8);
+
+                    x -= ((x - hold.x) / (fromPress || 1)) * pull;
+                    y -= ((y - hold.y) / (fromPress || 1)) * pull;
+                }
+            }
+
+            for (const ripple of ripples) {
+                const fromClick = Math.hypot(x - ripple.x, y - ripple.y);
+                const ring = Math.exp(-(((fromClick - ripple.age * pulse.speed) / pulse.width) ** 2));
+                const push = ring * pulse.strength * ripple.power * (1 - ripple.age / pulse.life);
+
+                x += ((x - ripple.x) / (fromClick || 1)) * push;
+                y += ((y - ripple.y) / (fromClick || 1)) * push;
+            }
+
+            dots.x[index] = x;
+            dots.y[index] = y;
+            dots.z[index] = z;
+            dots.scale[index] = size;
+            dots.level[index] = Math.min(Math.floor(((z + 1) / 2) * tint.levels), tint.levels - 1);
+        }
+    };
+
+    // From the far dots to the near ones, one tint level and one fill color per pass.
+    const paint = () => {
+        context.clearRect(0, 0, width, height);
+
+        for (let level = 0; level < tint.levels; level += 1) {
+            const lightness = (level / (tint.levels - 1)) * tint.lightest;
+
+            context.fillStyle = `rgb(${channels.map((channel) => Math.round(mix(channel, 255, lightness))).join(' ')})`;
+
+            for (let index = 0; index < dotCount; index += 1) {
+                if (dots.level[index] !== level) {
+                    continue;
+                }
+
+                const closeness = (dots.z[index] + 1) / 2;
+
+                context.globalAlpha = 0.3 + closeness * closeness * 0.7;
+                context.beginPath();
+                context.arc(
+                    dots.x[index] * unit,
+                    dots.y[index] * unit,
+                    unit * (0.0012 + closeness * 0.0026) * dots.scale[index],
+                    0,
+                    Math.PI * 2,
+                );
+                context.fill();
+            }
+        }
+    };
+
+    // The sphere keeps its own clock, so it resumes where it paused instead of jumping ahead.
+    const draw = (time) => {
+        const delta = Math.min((time - previousTime) / 1000, 0.1);
+
+        previousTime = time;
+        clock += delta;
+        hold.charge = approach(hold.charge, hold.down ? 1 : 0, hold.down ? press.chargeRate : press.releaseRate, delta);
+
+        for (let index = ripples.length - 1; index >= 0; index -= 1) {
+            ripples[index].age += delta;
+
+            if (ripples[index].age >= pulse.life) {
+                ripples.splice(index, 1);
+            }
+        }
+
+        pointer.x = approach(pointer.x, pointer.targetX, 5, delta);
+        pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
+        pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
+        shape = approach(shape, targetShape, 8, delta);
+        position(clock, delta);
+        paint();
+    };
+
+    const loop = (time) => {
+        draw(time);
+        frame = window.requestAnimationFrame(loop);
+    };
+
+    const update = () => {
+        window.cancelAnimationFrame(frame);
+
+        if (reducedMotion || !visible || document.hidden) {
+            draw(previousTime);
+
+            return;
+        }
+
+        frame = window.requestAnimationFrame((time) => {
+            previousTime = time;
+            loop(time);
+        });
+    };
+
+    const resize = () => {
+        scale = Math.min(window.devicePixelRatio, 2);
+        width = Math.round(canvas.clientWidth * scale);
+        height = Math.round(canvas.clientHeight * scale);
+        unit = Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale) || 1;
+        canvas.width = width;
+        canvas.height = height;
+        update();
+    };
+
+    // A pointer event's position in units from the canvas corner.
+    const locate = (event) => {
+        const bounds = canvas.getBoundingClientRect();
+        const cssUnit = unit / scale;
+
+        return { x: (event.clientX - bounds.left) / cssUnit, y: (event.clientY - bounds.top) / cssUnit };
+    };
+
+    // The pointer arrives where it is instead of sweeping in.
+    const follow = (event) => {
+        const { x, y } = locate(event);
+
+        pointer.targetX = x;
+        pointer.targetY = y;
+
+        if (hold.down) {
+            hold.x = x;
+            hold.y = y;
+        }
+
+        if (pointer.targetStrength === 0) {
+            pointer.x = pointer.targetX;
+            pointer.y = pointer.targetY;
+        }
+
+        pointer.targetStrength = 1;
+    };
+
+    const release = () => {
+        pointer.targetStrength = 0;
+    };
+
+    const ring = (x, y, power) => {
+        ripples.push({ x, y, power, age: 0 });
+        ripples.splice(0, ripples.length - pulse.most);
+    };
+
+    const pressDown = (event) => {
+        if (event.pointerType === 'mouse') {
+            Object.assign(hold, locate(event), { down: true });
+            ring(hold.x, hold.y, 1);
+        }
+    };
+
+    const pressUp = () => {
+        if (hold.down) {
+            hold.down = false;
+            ring(hold.x, hold.y, hold.charge * press.boost);
+        }
+    };
+
+    // The dots keep the last figure while they return to the sphere.
+    const react = (target) => {
+        const name = target instanceof Element ? target.closest('[data-dot-orb-figure]')?.dataset.dotOrbFigure : null;
+        const points = figures.get(name);
+
+        targetShape = points?.length ? 1 : 0;
+
+        if (points?.length) {
+            figurePoints = points;
+        }
+    };
+
+    const resizeObserver = new ResizeObserver(resize);
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        update();
+    });
+    const options = { signal: listeners.signal };
+
+    resizeObserver.observe(canvas);
+    visibilityObserver.observe(canvas);
+    document.addEventListener('visibilitychange', update, options);
+
+    if (!reducedMotion) {
+        for (const [name, drawFigure] of Object.entries(drawnFigures)) {
+            figures.set(name, sampleFigure(drawFigure));
+        }
+
+        if (canvas.dataset.mark) {
+            const image = document.createElement('img');
+
+            image.addEventListener('load', () => {
+                figures.set('mark', sampleFigure((figureContext, size) => figureContext.drawImage(image, 0, 0, size, size)));
+            }, options);
+            image.src = canvas.dataset.mark;
+        }
+
+        window.addEventListener('pointermove', follow, { ...options, passive: true });
+        document.documentElement.addEventListener('pointerleave', release, options);
+        window.addEventListener('pointerdown', pressDown, { ...options, passive: true });
+        window.addEventListener('pointerup', pressUp, { ...options, passive: true });
+        window.addEventListener('pointercancel', pressUp, { ...options, passive: true });
+        document.addEventListener('pointerover', (event) => {
+            if (event.pointerType === 'mouse') {
+                react(event.target);
+            }
+        }, options);
+        document.addEventListener('focusin', (event) => {
+            react(event.target.matches(':focus-visible') ? event.target : null);
+        }, options);
+        document.addEventListener('focusout', () => react(null), options);
+    }
+
+    return () => {
+        window.cancelAnimationFrame(frame);
+        resizeObserver.disconnect();
+        visibilityObserver.disconnect();
+        listeners.abort();
+    };
+};
+
+export const createDotOrbController = ({ reducedMotion }) => {
+    let cleanups = [];
+
+    const initialize = () => {
+        cleanups.forEach((cleanup) => cleanup());
+        cleanups = [...document.querySelectorAll('[data-dot-orb]')].map((canvas) => initializeOrb(canvas, reducedMotion));
+    };
+
+    return {
+        initialize: () => {
+            initialize();
+            document.addEventListener('portfolio:page-swapped', initialize);
+        },
+    };
+};

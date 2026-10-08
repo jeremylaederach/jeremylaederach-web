@@ -12,8 +12,6 @@
     }
 
     .page-hero {
-        --pointer-x: 72%;
-        --pointer-y: 42%;
         position: relative;
         isolation: isolate;
         display: grid;
@@ -25,21 +23,6 @@
         grid-template-rows: auto 1fr auto;
         gap: 26px;
         align-items: center;
-    }
-
-    .page-hero::before {
-        position: absolute;
-        z-index: -1;
-        inset: 72px -12vw 0;
-        background: radial-gradient(
-            620px circle at var(--pointer-x) var(--pointer-y),
-            rgba(var(--route-accent-rgb), 0.075),
-            transparent 68%
-        );
-        content: '';
-        opacity: 0.72;
-        pointer-events: none;
-        transition: opacity 420ms ease;
     }
 
     .page-hero__index {

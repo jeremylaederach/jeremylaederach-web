@@ -5,7 +5,6 @@
         <li
             class="technology-group"
             style="--technology-color: {{ $group['color'] }}"
-            data-pointer-surface
         >
             <div class="technology-group__visual" aria-hidden="true">
                 <span

@@ -9,7 +9,8 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 - English and German routes with matching content
 - Custom client-side navigation and coordinated page transitions
 - Accessible keyboard navigation, reduced-motion support and responsive layouts
-- Lightweight pointer, glow and original interface-sound systems
+- A custom pointer and original interface sounds
+- A generative sphere of dots on the home page that morphs into a figure for each destination
 - Detailed case studies for Quantified, Jay-Jay and SessionDeck
 - Static production export with localized 404 pages and hardened response headers
 - PHPUnit feature coverage, JavaScript interaction tests, PHPStan analysis and Laravel Pint formatting checks
@@ -58,6 +59,7 @@ tests/JavaScript/        Playground logic and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
 tests/deployment/        Deployment safeguards (Python standard library)
 AGENTS.md                Working rules for coding agents
+DESIGN.md                What the interface does: craft standard, identity, home page
 docs/handoff.md          Current state, open decisions and audit findings
 ```
 

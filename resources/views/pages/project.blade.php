@@ -2,7 +2,10 @@
 
 @section('content')
     <article class="portfolio-page case-study-page project-detail project-detail--{{ $project['slug'] }}">
-        <header class="case-study-hero" data-pointer-surface data-reveal>
+        <header class="case-study-hero" data-reveal>
+            <div class="dot-orb" aria-hidden="true">
+                <canvas data-dot-orb></canvas>
+            </div>
             <a
                 class="case-study-back directional-link directional-link--back"
                 href="{{ route('projects', ['locale' => $locale]) }}#{{ $project['slug'] }}"
