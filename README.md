@@ -53,7 +53,7 @@ config/portfolio.php    English and German content
 resources/views/        Blade pages and reusable components
 resources/css/          Foundation, layout, one stylesheet per page in pages/, responsive rules
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
-resources/js/           Navigation, interaction, sound and transition controllers
+resources/js/           Navigation, pointer, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Playground logic and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification

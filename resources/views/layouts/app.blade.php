@@ -50,11 +50,9 @@
     <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
-        <div class="site-pointer-layer" data-site-pointer-layer aria-hidden="true">
-            <div class="site-pointer" data-site-pointer>
-                <span class="site-pointer__ring"></span>
-                <span class="site-pointer__dot"></span>
-            </div>
+        <div class="site-pointer" data-site-pointer aria-hidden="true">
+            <span class="site-pointer__ring"></span>
+            <span class="site-pointer__dot"></span>
         </div>
 
         <header class="site-header" data-page-header>
@@ -239,7 +237,6 @@
                             <a
                                 href="{{ route($item['route'], ['locale' => $locale]) }}"
                                 data-route="{{ $item['route'] }}"
-                                data-pointer-route="home"
                                 data-route-transition
                                 data-transition-label="{{ $item['label'] }}"
                                 data-interface-sound
@@ -256,7 +253,6 @@
                         href="#main"
                         aria-label="{{ $content['ui']['back_to_top'] }}"
                         title="{{ $content['ui']['back_to_top'] }}"
-                        data-pointer-route="home"
                         data-interface-sound
                         data-sound-tone="control"
                     >
@@ -272,21 +268,18 @@
                         <a
                             href="{{ config('portfolio.socials.github.url') }}"
                             rel="noopener noreferrer"
-                            data-pointer-route="home"
                             data-interface-sound
                             data-sound-tone="action"
                         >GitHub</a>
                         <a
                             href="{{ config('portfolio.socials.linkedin.url') }}"
                             rel="noopener noreferrer"
-                            data-pointer-route="home"
                             data-interface-sound
                             data-sound-tone="action"
                         >LinkedIn</a>
                         <a
                             href="{{ route('imprint', ['locale' => $locale]) }}"
                             data-route="imprint"
-                            data-pointer-route="home"
                             data-route-transition
                             data-transition-label="{{ $content['imprint']['title'] }}"
                             data-interface-sound
@@ -295,7 +288,6 @@
                         <a
                             href="{{ route('privacy', ['locale' => $locale]) }}"
                             data-route="privacy"
-                            data-pointer-route="home"
                             data-route-transition
                             data-transition-label="{{ $content['privacy']['title'] }}"
                             data-interface-sound

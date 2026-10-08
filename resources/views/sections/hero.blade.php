@@ -23,7 +23,7 @@
                 data-index-panel
                 data-dot-orb-figure="{{ $route['route'] }}"
                 data-route="{{ $route['route'] }}"
-                data-pointer-route="home"
+                data-pointer-wrap
                 data-route-transition
                 data-transition-label="{{ $route['label'] }}"
                 data-interface-sound

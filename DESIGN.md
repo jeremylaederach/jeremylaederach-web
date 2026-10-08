@@ -38,8 +38,12 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   `--route-accent` for the page. The footer sets it to mint on every page.
 - **Type.** Instrument Sans, self-hosted, weights 400 to 700. Display sizes are set at weight 430
   with a line height of 0.94.
-- **Interaction system.** A pointer made of a dot and a ring that wraps small controls, in the
-  accent of what it points at and without glow; page transitions that grow from the clicked
+- **Interaction system.** A pointer that is a single dot (`resources/js/pointer-controller.js`,
+  `resources/css/pointer.css`). Over a small control, or a larger one marked `data-pointer-wrap`
+  such as the home page's destinations, a ring grows out of the dot and wraps the control; the dot
+  grows and both take the accent that applies to that control (`--pointer-accent-rgb`), without
+  glow. A press shrinks the dot. Touch and pen input hide the pointer, and reduced motion keeps the
+  native cursor; page transitions that grow from the clicked
   element; optional interface sounds. No surface lights up under the pointer: a hovered link or
   card answers with its accent, a rule drawn in the accent or a small movement.
 

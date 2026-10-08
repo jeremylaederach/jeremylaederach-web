@@ -147,7 +147,6 @@
                 data-route-transition
                 data-transition-label="{{ $nextProject['name'] }}"
                 data-transition-theme="{{ $nextProject['transition_theme'] }}"
-                data-pointer-route="{{ $nextProject['transition_theme'] }}"
                 data-interface-sound
                 data-sound-tone="navigation"
             >

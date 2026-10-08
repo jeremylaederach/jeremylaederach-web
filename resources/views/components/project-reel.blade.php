@@ -64,7 +64,6 @@
                 data-route-transition
                 data-transition-label="{{ $transitionLabel }}"
                 data-transition-theme="{{ $transitionTheme }}"
-                data-pointer-route="{{ $transitionTheme }}"
             >
         @endif
             @foreach ($slides as $slide)

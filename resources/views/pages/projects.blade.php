@@ -58,7 +58,6 @@
                             data-transition-label="{{ $project['name'] }}"
                             data-transition-theme="{{ $project['transition_theme'] }}"
                             data-transition-origin-id="{{ $reelId }}"
-                            data-pointer-route="{{ $project['transition_theme'] }}"
                         >
                             <header class="project-case__header">
                                 <span>0{{ $loop->iteration }}</span>
