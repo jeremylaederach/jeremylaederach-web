@@ -67,7 +67,7 @@
                     data-sound-tone="brand"
                     data-dot-orb-figure="mark"
                 >
-                    <x-brand-mark class="brand-lockup__mark" size="30" />
+                    <x-brand-mark class="brand-lockup__mark" />
                 </a>
 
                 <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">

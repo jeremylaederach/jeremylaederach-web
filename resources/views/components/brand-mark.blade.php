@@ -1,24 +1,2 @@
-@props([
-    'class' => '',
-    'size' => '1024',
-    'alt' => '',
-])
-
-@php
-    $imageAttributes = [
-        'class' => $class,
-        'src' => asset('brand/jeremy-cat-256.png'),
-        'alt' => $alt,
-        'width' => $size,
-        'height' => $size,
-        'decoding' => 'async',
-    ];
-
-    if ($alt === '') {
-        $imageAttributes['aria-hidden'] = 'true';
-    }
-@endphp
-
-<img
-    {{ $attributes->merge($imageAttributes) }}
->
+{{-- The mark as a shape cut out of the page's accent; the stylesheet masks it with its image. --}}
+<span {{ $attributes->class('brand-mark') }} aria-hidden="true"></span>

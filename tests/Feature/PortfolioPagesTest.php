@@ -55,6 +55,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-index-panel', false)
             ->assertSee('data-sound-toggle', false)
             ->assertSee('brand/jeremy-cat-256.png', false)
+            ->assertSee('class="brand-mark brand-lockup__mark"', false)
             ->assertSee('brand/icons/apple-touch-icon.png', false)
             ->assertSee('data-page-main', false)
             ->assertDontSee('data-project-stage', false)

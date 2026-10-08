@@ -49,7 +49,18 @@
     .brand-lockup__mark {
         width: 30px;
         height: 30px;
-        object-fit: contain;
+    }
+
+    /* The mark takes the accent of the page: its image is the mask, and the accent runs from a
+       lighter tone at the top left to a deeper one, as in the image itself. */
+    .brand-mark {
+        display: block;
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--route-accent) 76%, white) 20%,
+            color-mix(in srgb, var(--route-accent) 92%, black) 80%
+        );
+        mask: url('/brand/jeremy-cat-256.png') center / contain no-repeat;
     }
 
     .site-header__controls {

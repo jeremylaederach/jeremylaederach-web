@@ -28,7 +28,10 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 ### Identity
 
 - **Mark.** The cat, in mint since 8 October 2026, as favicon, app icons and link preview and as
-  the link home at the left of the header.
+  the link home at the left of the header. In the header it is cut out of the page's accent with
+  its image as the mask (`resources/views/components/brand-mark.blade.php`), lighter at the top
+  left and deeper at the bottom right as in the image, so it takes a project's color with the
+  rest of the header.
 - **Colors.** Background `#07070a`, ink `#f4f1ea`, muted text `#aaa6af`, hairlines at 13% ink.
   One accent, mint `#7df0c9`. Where a project is shown, in its case study or as the current one
   of the projects overview, its color replaces mint as the accent of the whole page, the header
