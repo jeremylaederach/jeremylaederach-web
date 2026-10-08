@@ -2,88 +2,59 @@
 
 @section('content')
     <article class="portfolio-page projects-page">
-        <header class="page-hero page-hero--projects" data-reveal>
+        <section class="project-index" aria-labelledby="projects-title" data-reveal>
             <div class="dot-orb" aria-hidden="true">
                 <canvas data-dot-orb></canvas>
             </div>
-            <div class="page-hero__index">
-                <span>01</span>
-                <span>{{ $content['projects_page']['eyebrow'] }}</span>
-            </div>
 
-            <div class="page-hero__title">
-                <x-animated-page-heading :text="$content['projects_page']['heading']" />
-            </div>
+            <header class="project-index__header">
+                <div class="page-hero__index">
+                    <span>01</span>
+                    <span>{{ $content['projects_page']['eyebrow'] }}</span>
+                </div>
 
-            <p>{{ $content['projects_page']['intro'] }}</p>
+                <x-animated-page-heading id="projects-title" :text="$content['projects_page']['heading']" />
 
-            <a
-                class="scroll-cue directional-link directional-link--down"
-                href="#selected-work"
-                data-interface-sound
-                data-sound-tone="action"
-            >
-                <span>{{ $content['projects_page']['featured_label'] }}</span>
-                <x-nav-icon name="arrow-down" />
-            </a>
-        </header>
+                <p>{{ $content['projects_page']['intro'] }}</p>
+            </header>
 
-        <section id="selected-work" class="project-cases" aria-label="{{ $content['projects_page']['heading'] }}">
-            @foreach ($content['projects_page']['items'] as $project)
-                @php
-                    $detailContentKey = match ($project['detail_route']) {
-                        'jay-jay' => 'jay_jay_page',
-                        'session-deck' => 'sessiondeck_page',
-                        default => $project['detail_route'].'_page',
-                    };
-                    $detailProject = $content[$detailContentKey];
-                    $projectUrl = route($project['detail_route'], ['locale' => $locale]);
-                    $reelId = 'project-reel-'.$project['slug'];
-                @endphp
-
-                <article
-                    id="{{ $project['slug'] }}"
-                    class="project-case project-case--{{ $loop->iteration }} project-case--{{ $project['slug'] }}"
-                    data-reveal
-                >
-                    <div class="project-case__link">
+            <ol class="project-index__list">
+                @foreach ($content['projects_page']['items'] as $project)
+                    <li
+                        id="{{ $project['slug'] }}"
+                        class="project-index__item project-index__item--{{ $project['slug'] }}"
+                        data-project-index-item
+                        @if ($loop->first) data-current @endif
+                    >
                         <a
-                            class="project-case__content project-case__content-link"
-                            href="{{ $projectUrl }}"
+                            class="project-index__link"
+                            href="{{ route($project['detail_route'], ['locale' => $locale]) }}"
                             aria-label="{{ $content['ui']['open'] }} {{ $project['name'] }}"
-                            data-interface-sound
-                            data-sound-tone="panel"
+                            aria-describedby="project-detail-{{ $project['slug'] }}"
+                            data-dot-orb-figure="{{ $project['slug'] }}"
+                            @if ($loop->first) data-dot-orb-resting @endif
                             data-route="projects"
                             data-route-transition
+                            data-interface-sound
+                            data-sound-tone="panel"
                         >
-                            <header class="project-case__header">
-                                <span>0{{ $loop->iteration }}</span>
-                                <p>{{ $project['type'] }}</p>
-                                <h2>{{ $project['name'] }}</h2>
-                            </header>
-
-                            <div class="project-case__details">
-                                <p>{{ $project['description'] }}</p>
-                                <ul aria-label="{{ $project['name'] }} · {{ $detailProject['stack']['label'] }}">
-                                    @foreach ($project['tags'] as $tag)
-                                        <li>{{ $tag }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <span class="project-index__number">0{{ $loop->iteration }}</span>
+                            <span class="project-index__name">{{ $project['name'] }}</span>
+                            <x-nav-icon name="arrow-right" />
                         </a>
 
-                        <x-project-reel
-                            :id="$reelId"
-                            :project="$detailProject"
-                            :ui="$content['ui']"
-                            :href="$projectUrl"
-                            route-name="projects"
-                            :open-label="$content['ui']['open'].' '.$project['name']"
-                            mode="teaser"
-                        />
-                    </div>
-                </article>
-            @endforeach
+                        <div id="project-detail-{{ $project['slug'] }}" class="project-index__detail">
+                            <p class="project-index__type">{{ $project['type'] }}</p>
+                            <p class="project-index__description">{{ $project['description'] }}</p>
+                            <ul class="project-index__tags">
+                                @foreach ($project['tags'] as $tag)
+                                    <li>{{ $tag }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                @endforeach
+            </ol>
         </section>
 
         <x-contact-cta :content="$content" :locale="$locale" />

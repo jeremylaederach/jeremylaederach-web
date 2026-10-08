@@ -241,45 +241,32 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="portfolio-page projects-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('aria-label="Projekte."', false)
-            ->assertSee('class="project-cases"', false)
-            ->assertSee('assets/work/jay-jay-home.png', false)
-            ->assertSee('assets/work/jay-jay-mark.svg', false)
+            ->assertSee('class="project-index__list"', false)
             ->assertSee('Projekte')
-            ->assertSee('Hauptprojekt')
             ->assertSee('Quantified')
             ->assertSee('Persönliches Analyseprodukt')
             ->assertSee('Jay-Jay')
             ->assertSee('Digitales Dienstleistungsunternehmen')
             ->assertSee('Laravel 13')
-            ->assertSee('Client Hub')
             ->assertSee('SessionDeck')
             ->assertSee('Nativer Workspace-Launcher')
             ->assertSee('WinUI 3')
             ->assertSee('.NET / C#')
-            ->assertSee('Development-Build')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/session-deck"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--teaser"', false)
-            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--teaser"', false)
-            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--teaser"', false)
-            ->assertSee('class="project-case__content project-case__content-link"', false)
-            ->assertSee('class="project-reel__captions" aria-live="polite"', false)
+            ->assertSee('data-dot-orb-figure="quantified"', false)
+            ->assertSee('data-dot-orb-figure="jay-jay"', false)
+            ->assertSee('data-dot-orb-figure="sessiondeck"', false)
+            ->assertSee('aria-describedby="project-detail-quantified"', false)
             ->assertDontSee('PostgreSQL-basierter Finanzprototyp')
-            ->assertDontSee('project-reel__browser-bar', false)
-            ->assertDontSee('project-reel__sheen', false)
-            ->assertDontSee('project-case__action', false);
+            ->assertDontSee('data-project-reel', false);
 
         $projectHtml = $projects->content();
 
-        $this->assertSame(3, substr_count($projectHtml, 'class="project-case project-case--'));
-        $this->assertStringNotContainsString('data-reel-autoplay', $projectHtml);
-        $this->assertStringNotContainsString('data-reel-action="rotation"', $projectHtml);
-        $this->assertSame(3, substr_count($projectHtml, 'data-project-reel'));
-        $this->assertSame(3, substr_count($projectHtml, 'aria-label="Projektansichten"'));
-        $this->assertSame(3, substr_count($projectHtml, 'data-reel-open'));
-        $this->assertSame(3, substr_count($projectHtml, 'data-reel-action="next"'));
-        $this->assertSame(3, substr_count($projectHtml, 'data-reel-action="previous"'));
+        $this->assertSame(3, substr_count($projectHtml, 'data-project-index-item'));
+        $this->assertSame(1, substr_count($projectHtml, 'data-current'));
+        $this->assertSame(1, substr_count($projectHtml, 'data-dot-orb-resting'));
         $this->assertLessThan(strpos($projectHtml, 'id="jay-jay"'), strpos($projectHtml, 'id="quantified"'));
         $this->assertLessThan(strpos($projectHtml, 'id="sessiondeck"'), strpos($projectHtml, 'id="jay-jay"'));
     }

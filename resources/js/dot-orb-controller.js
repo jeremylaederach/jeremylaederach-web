@@ -154,7 +154,8 @@ const createBuds = () => bud.groups.map((group) => ({
 const initializeOrb = (canvas, reducedMotion, arriving) => {
     const context = canvas.getContext('2d');
     const listeners = new AbortController();
-    const channels = readChannels(getComputedStyle(canvas).color);
+    const baseColor = readChannels(getComputedStyle(canvas).color);
+    const color = [...baseColor];
     const buds = createBuds();
     const sphere = createLattice(dotCount);
     const budSphere = createLattice(Math.ceil(dotCount / buds.length));
@@ -185,6 +186,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let figurePoints = [];
     let shape = 0;
     let targetShape = 0;
+    let targetColor = baseColor;
     let scattered = arriving && !reducedMotion ? 1 : 0;
     let targetScattered = 0;
 
@@ -343,7 +345,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         for (let level = 0; level < tint.levels; level += 1) {
             const lightness = (level / (tint.levels - 1)) * tint.lightest;
 
-            context.fillStyle = `rgb(${channels.map((channel) => Math.round(mix(channel, 255, lightness))).join(' ')})`;
+            context.fillStyle = `rgb(${color.map((channel) => Math.round(mix(channel, 255, lightness))).join(' ')})`;
 
             for (let index = 0; index < dotCount; index += 1) {
                 if (dots.level[index] !== level) {
@@ -386,6 +388,9 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
         shape = approach(shape, targetShape, 8, delta);
+        color.forEach((channel, index) => {
+            color[index] = approach(channel, targetColor[index], 6, delta);
+        });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
         position(clock, delta);
         paint();
@@ -472,12 +477,17 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         }
     };
 
-    // The dots keep the last figure while they return to the sphere.
+    // While no element that names a figure is hovered or focused, the one marked as resting holds
+    // its figure. An element may also name the color of its figure (`--dot-orb-rgb`). The dots
+    // keep the last figure while they return to the sphere.
     const react = (target) => {
-        const name = target instanceof Element ? target.closest('[data-dot-orb-figure]')?.dataset.dotOrbFigure : null;
-        const points = figures.get(name);
+        const element = (target instanceof Element ? target.closest('[data-dot-orb-figure]') : null)
+            ?? document.querySelector('[data-dot-orb-resting]');
+        const points = figures.get(element?.dataset.dotOrbFigure);
+        const tone = points?.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
 
         targetShape = points?.length ? 1 : 0;
+        targetColor = tone ? readChannels(tone) : baseColor;
 
         if (points?.length) {
             figurePoints = points;
@@ -499,6 +509,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         for (const [name, drawFigure] of Object.entries(drawnFigures)) {
             figures.set(name, sampleFigure(drawFigure));
         }
+
+        react(null);
 
         if (canvas.dataset.mark) {
             const image = document.createElement('img');

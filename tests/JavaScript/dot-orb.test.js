@@ -46,7 +46,10 @@ const setup = (t, reducedMotion = false) => {
     let frameId = 0;
     let timestamp = 0;
     const globals = {
-        getComputedStyle: () => ({ color: 'rgb(125, 240, 201)' }),
+        getComputedStyle: (element) => ({
+            color: 'rgb(125, 240, 201)',
+            getPropertyValue: () => element.dataset.tone ?? '',
+        }),
         ResizeObserver: class {
             constructor(callback) {
                 this.callback = callback;
@@ -112,7 +115,7 @@ const setup = (t, reducedMotion = false) => {
 
     createDotOrbController({ reducedMotion }).initialize();
 
-    return { link, dots, frames, run, hover, spread };
+    return { context, link, dots, frames, run, hover, spread };
 };
 
 test('the sphere is drawn as one body of 1200 dots', (t) => {
@@ -226,4 +229,17 @@ test('a page change scatters the dots and the next page gathers them again', (t)
     document.dispatchEvent(new window.Event('portfolio:page-swapped'));
     run(200);
     assert.ok(spread('y') < whole * 1.2);
+});
+
+test('an element marked as resting holds its figure in its color while nothing is hovered', (t) => {
+    const { context, link, run, hover, spread } = setup(t);
+    const resting = link.parentElement;
+
+    resting.dataset.tone = '255, 0, 0';
+    resting.toggleAttribute('data-dot-orb-resting', true);
+    hover(document.body);
+    run(200);
+
+    assert.ok(spread('x') < 170 && spread('y') < 170);
+    assert.match(context.fillStyle, /^rgb\(255 /);
 });

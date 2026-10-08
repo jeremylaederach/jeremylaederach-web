@@ -21,7 +21,8 @@
         --pointer-accent-rgb: var(--case-accent-rgb);
     }
 
-    .project-detail :is(a, button) {
+    .project-detail :is(a, button),
+    .project-index__link {
         --pointer-accent-rgb: var(--project-accent-rgb);
     }
 

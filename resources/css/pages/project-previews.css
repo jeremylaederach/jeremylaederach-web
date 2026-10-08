@@ -183,19 +183,22 @@
     }
 
     .project-detail,
-    .case-study-next--quantified {
+    .case-study-next--quantified,
+    .project-index__item--quantified {
         --project-accent: #53b1fd;
         --project-accent-rgb: 83, 177, 253;
     }
 
     .project-detail--jay-jay,
-    .case-study-next--jay-jay {
+    .case-study-next--jay-jay,
+    .project-index__item--jay-jay {
         --project-accent: #818cf8;
         --project-accent-rgb: 129, 140, 248;
     }
 
     .project-detail--sessiondeck,
-    .case-study-next--sessiondeck {
+    .case-study-next--sessiondeck,
+    .project-index__item--sessiondeck {
         --project-accent: #ff8a00;
         --project-accent-rgb: 255, 138, 0;
     }

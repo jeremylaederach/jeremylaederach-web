@@ -88,14 +88,30 @@ the text.
   sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
 - **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
   Up to 720px wide the canvas is shown at 60% opacity without the mask.
-- **Sub-pages.** The projects, about and contact pages show the same sphere behind their page
-  hero, in the page's accent and without figures. A case study shows it in the project's color
+- **Resting figure and color.** While nothing that names a figure is hovered or focused, the
+  element marked `data-dot-orb-resting` holds its figure. An element can give its figure a color
+  with `--dot-orb-rgb`; the dots blend to it and back to the page accent.
+- **Sub-pages.** The about and contact pages show the same sphere behind their page hero, in the
+  page's accent and without figures. A case study shows it in the project's color
   behind the gallery of its hero. On the 404 page it stands behind the large number, moved to the
   left from 721px. The legal pages have no sphere.
 - **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
   and fade; the sphere of the next page gathers from the scattered state.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
   sphere.
+
+### Projects overview
+
+From 961px the overview is a stage of one screen (`resources/css/pages/project-index.css`): a
+small page heading, then the three projects as a list of large names on the left. One project is
+always current, the first at the start and after that the one last hovered or focused
+(`resources/js/project-index-controller.js`). The current one stands in full ink, draws its part
+of the list's rule in its color and shows an arrow; the others recede. The sphere on the right
+rests in the current project's figure and color: the bars of a chart for Quantified, the brackets
+of a tag for Jay-Jay, four tiles for SessionDeck. Its kind, description and technologies stand
+below the sphere and change with it; the rows of the list never move. Each row is the link to the
+case study. Up to 960px every project shows its description under its name, and the sphere stays
+behind the page. The overview carries no screenshots; those belong to the case studies.
 
 ### Footer
 
