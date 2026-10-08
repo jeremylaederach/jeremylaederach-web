@@ -1,0 +1,36 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm ci)",
+      "Bash(npm run *)",
+      "Bash(npm test)",
+      "Bash(composer test)",
+      "Bash(composer test *)",
+      "Bash(composer lint:check)",
+      "Bash(php artisan test)",
+      "Bash(php artisan test *)",
+      "PowerShell(npm ci)",
+      "PowerShell(npm run *)",
+      "PowerShell(npm test)",
+      "PowerShell(composer test)",
+      "PowerShell(composer test *)",
+      "PowerShell(composer lint:check)",
+      "PowerShell(php artisan test)",
+      "PowerShell(php artisan test *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.production)",
+      "Read(.env.backup)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(git push -f *)"
+    ]
+  }
+}
