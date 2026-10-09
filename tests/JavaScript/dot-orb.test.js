@@ -30,7 +30,7 @@ const createContext = (calls) => new Proxy(calls, {
     },
 });
 
-const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
+const setup = (t, { reducedMotion = false, fitted = false, mark = false } = {}) => {
     const window = createDom(t, `
         <div><canvas data-dot-orb></canvas></div>
         <main><div data-dot-orb-stage></div></main>
@@ -47,6 +47,20 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     const stage = document.querySelector('[data-dot-orb-stage]');
 
     stage.toggleAttribute('data-dot-orb-fit', fitted);
+
+    // The mark is sampled from its image, which is told to have loaded once it is asked for.
+    if (mark) {
+        const source = Object.getOwnPropertyDescriptor(window.HTMLImageElement.prototype, 'src');
+
+        canvas.dataset.mark = 'mark.svg';
+        Object.defineProperty(window.HTMLImageElement.prototype, 'src', {
+            configurable: true,
+            set() {
+                this.dispatchEvent(new window.Event('load'));
+            },
+        });
+        t.after(() => Object.defineProperty(window.HTMLImageElement.prototype, 'src', source));
+    }
     lay(stage, 0, 0, 600, 900);
     lay(canvas, 0, 0, 600, 900);
 
@@ -148,7 +162,17 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
 
     createDotOrbController({ reducedMotion }).initialize();
 
-    return { context, link, dots, frames, run, hover, spread, middle, swap };
+    // A press and its release on the dots in the middle of the sphere, by touch.
+    const press = (clientX = 408, clientY = 450) => {
+        for (const type of ['pointerdown', 'pointerup']) {
+            const event = new window.MouseEvent(type, { bubbles: true, clientX, clientY });
+
+            Object.defineProperty(event, 'pointerType', { value: 'touch' });
+            window.dispatchEvent(event);
+        }
+    };
+
+    return { context, link, dots, frames, run, hover, press, spread, middle, swap };
 };
 
 test('the sphere is drawn as one body of 1200 dots', (t) => {
@@ -200,25 +224,51 @@ test('an element that names several figures shows one after the other', (t) => {
 });
 
 test('a press on the dots moves a sequence on to its next figure', (t) => {
-    const { dots, run, hover } = setup(t, { fitted: true });
+    const { dots, run, hover, press } = setup(t, { fitted: true });
     const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
-    const press = (type) => {
-        const event = new window.MouseEvent(type, { bubbles: true, clientX: 300, clientY: 450 });
-
-        Object.defineProperty(event, 'pointerType', { value: 'touch' });
-        window.dispatchEvent(event);
-    };
 
     hover(document.querySelector('[data-dot-orb-figure="projects about"]'));
     run(100);
 
     const first = level();
 
-    press('pointerdown');
-    press('pointerup');
+    press(300, 450);
     run(150);
 
     assert.ok(level() - first > 80);
+});
+
+test('a press on the dots of a single figure shows the plain sphere for a while', (t) => {
+    const { link, run, hover, press, spread } = setup(t, { fitted: true });
+
+    hover(link);
+    run(200);
+
+    const figure = spread('y');
+
+    press(300, 450);
+    run(150);
+    assert.ok(spread('y') > figure * 2);
+
+    // After its 8 seconds, 500 frames of 16 milliseconds, the figure is back.
+    run(500);
+    assert.ok(spread('y') < figure * 1.2);
+});
+
+test('a press on the plain sphere shows the mark, and another one the sphere again', (t) => {
+    const { run, press, spread } = setup(t, { mark: true });
+
+    run(30);
+
+    const sphere = spread('y');
+
+    press();
+    run(200);
+    assert.ok(spread('y') < sphere * 0.75);
+
+    press();
+    run(200);
+    assert.ok(spread('y') > sphere * 0.9);
 });
 
 test('an element that names no known figure leaves the sphere whole', (t) => {

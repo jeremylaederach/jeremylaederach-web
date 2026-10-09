@@ -55,12 +55,14 @@ const bud = {
 const figure = { size: 0.72, extent: 0.8, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
 
 // An element can name several figures, separated by spaces. The sphere then shows one after the
-// other, each for `dwell` seconds, and a press on the dots moves on to the next. The dots flow
-// from shape to shape like the blobs of a lava lamp: at `hover` per second when the pointer
-// moves on to another element, at `rest` when the element the sphere rests with changes or a
-// press steps the sequence, and at `cycle` when the sequence steps by itself. Every dot has a
-// pace of its own, between `slowest` and `fastest` of that rate, so a shape melts into the
-// next instead of jumping.
+// other, each for `dwell` seconds. A press on the dots always moves on to the next shape: the
+// next figure of several, and where there is one figure or none, the other side of what is
+// shown, which stays for `dwell` seconds: the plain sphere behind a figure, the mark behind
+// the plain sphere. The dots flow from shape to shape like the blobs of a lava lamp: at `hover`
+// per second when the pointer moves on to another element, at `rest` when the element the
+// sphere rests with changes or a press moves on, and at `cycle` when a sequence steps by
+// itself. Every dot has a pace of its own, between `slowest` and `fastest` of that rate, so a
+// shape melts into the next instead of jumping.
 const sequence = { dwell: 8, hover: 9, rest: 3, cycle: 1.6, slowest: 0.7, fastest: 1.5 };
 
 // The dots that give way to the pointer leave an opening of this share of the reach around it,
@@ -269,6 +271,8 @@ const initializeOrb = (canvas, reducedMotion) => {
     let shapes = [];
     let shown = null;
     let since = 0;
+    // Until when the other side of the shown shape stays.
+    let turnedUntil = 0;
     let glideRate = sequence.hover;
     let shape = 0;
     let targetShape = 0;
@@ -559,15 +563,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
 
-        if (shapes.length > 1) {
-            const next = shapes[due()];
-
-            if (next !== figurePoints) {
-                figurePoints = next;
-                glideRate = sequence.cycle;
-            }
-        }
-
+        present(sequence.cycle);
         position(clock, delta);
         paint();
     };
@@ -659,12 +655,32 @@ const initializeOrb = (canvas, reducedMotion) => {
     // Which figure of the sequence is due.
     const due = () => Math.floor((clock - since) / sequence.dwell) % shapes.length;
 
+    // What the dots show right now: the figure of a sequence that is due, the one figure, or
+    // the plain sphere; and while a press has turned that around, its other side.
+    const present = (rate) => {
+        const turned = clock < turnedUntil;
+        const other = shapes.length ? null : figures.get('mark');
+        const next = shapes.length > 1 ? shapes[due()] : shapes[0] ?? (other?.length ? other : null);
+
+        targetShape = next && (shapes.length > 1 || turned === !shapes.length) ? 1 : 0;
+
+        if (next && next !== figurePoints && targetShape) {
+            figurePoints = next;
+            glideRate = rate;
+        }
+    };
+
     const pressDown = (event) => {
-        // A press on the dots moves a sequence on to its next figure, which then stays its time.
-        if (shapes.length > 1 && probe(event.clientX, event.clientY)) {
-            since = clock - (due() + 1) * sequence.dwell;
-            figurePoints = shapes[due()];
-            glideRate = sequence.rest;
+        // A press on the dots moves on: to the next figure of a sequence, which then stays its
+        // time, or to the other side of what is shown and back.
+        if (probe(event.clientX, event.clientY)) {
+            if (shapes.length > 1) {
+                since = clock - (due() + 1) * sequence.dwell;
+            } else {
+                turnedUntil = clock < turnedUntil ? 0 : clock + sequence.dwell;
+            }
+
+            present(sequence.rest);
         }
 
         if (event.pointerType === 'mouse') {
@@ -693,20 +709,16 @@ const initializeOrb = (canvas, reducedMotion) => {
         const tone = named.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
 
         pointed = target;
-        targetShape = named.length ? 1 : 0;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
+        shapes = named;
 
         if (element !== shown) {
             shown = element;
             since = clock;
-            glideRate = hovered ? sequence.hover : sequence.rest;
+            turnedUntil = 0;
         }
 
-        shapes = named;
-
-        if (named.length) {
-            figurePoints = named[due()];
-        }
+        present(hovered ? sequence.hover : sequence.rest);
     };
 
     const resizeObserver = new ResizeObserver(resize);

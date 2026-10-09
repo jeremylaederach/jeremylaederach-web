@@ -91,9 +91,18 @@ the stage is the whole section.
 - **Idle motion.** The dots sit on a Fibonacci lattice. The sphere turns once in 52 seconds, bulges
   in slow overlapping waves and wanders around the middle of the stage. On the home page a mask dims the dots to 20% behind
   the text column, so they never compete with the text; it fades in and out with a page change.
-- **Pointer.** The sphere leans towards the pointer, and dots within reach of it give way.
-  A click sends a ring outwards through the dots from where it happened; several rings travel at
-  once. A held press gathers the dots around the pointer and lets go with a stronger ring.
+- **What the dots answer to** is the same on every page, so a visitor learns it once:
+  - *The pointer near them:* the sphere leans towards it, and dots within reach give way.
+  - *Hovering or focusing something that names a figure:* the dots take that figure, and
+    leaving gives them back (see "Figures").
+  - *A press on the dots:* they move on to the next shape. Where several figures follow each
+    other, that is the next figure. Where there is one figure, it is the plain sphere behind
+    it, and behind the plain sphere of the home page it is the mark; that other side stays for
+    8 seconds or until the next press.
+  - *A press anywhere:* a ring travels outwards through the dots from where it happened;
+    several rings travel at once.
+  - *A held press:* gathers the dots around the pointer and lets go with a stronger ring.
+  - *A tap* on the dots moves on like a press. Nothing else follows a finger.
 - **Buds.** Like a lava lamp it sheds buds: a quarter of the dots is the core and always stays;
   three buds each take another quarter on their own slow cycle (41, 53 and 67 seconds), form a
   smaller sphere of their own size beside the main one, rise and sink over the height of the
@@ -117,7 +126,7 @@ the stage is the whole section.
   the home page gives the mark itself, sampled from its image with the eyes left open.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
-  other, each for 8 seconds, and a press on the dots moves on to the next. The sequence starts
+  other, each for 8 seconds; a press on the dots moves on sooner. The sequence starts
   with the first figure whenever the sphere turns to the element, and it runs on the sphere's
   clock, so it pauses with it.
 - **Lava lamp.** From one figure to the next the dots flow instead of jumping: every dot has a
