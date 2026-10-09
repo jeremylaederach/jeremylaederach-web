@@ -53,7 +53,8 @@ config/portfolio.php    English and German content
 resources/views/        Blade pages and reusable components
 resources/css/          Foundation, layout and shared components; pages/ holds what one kind of page needs
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
-resources/js/           One small controller per concern: navigation, pointer, sphere, scenes, sound, transitions
+resources/js/           One small controller per concern: navigation, pointer, sphere, scenes, sound, transitions;
+                        the sphere's parts are the dot-orb-* modules
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Controller and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification

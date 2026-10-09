@@ -1,4 +1,5 @@
 import { sceneChangedEvent } from './scene-controller.js';
+import { createAttention } from './dot-orb-attention.js';
 import { createDivision } from './dot-orb-buds.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { settle } from './dot-orb-lamp.js';
@@ -83,6 +84,14 @@ export const openingAt = (clientX, clientY) => {
 
     return 0;
 };
+
+// What the sphere notices of the visitor (see dot-orb-attention.js), and how little it makes of
+// it. It looks `ahead` seconds along the pointer's way, so it turns towards where the pointer is
+// heading. On a stage that stays in the window it sways with the scrolling of its page, by
+// `sway` units for every pixel per second and `swing` at most, and at `brisk` pixels per second
+// its dots flow to the figure of the next scene as fast as to a hovered one. To a visitor who
+// comes back after a pause it answers with one ring of the strength `greeting`.
+const notice = { ahead: 0.2, sway: 0.00003, swing: 0.05, brisk: 1800, greeting: 0.6 };
 
 // The sphere stays through a page change and travels to where the next page wants it, at
 // `rate` per second.
@@ -237,6 +246,13 @@ const initializeOrb = (canvas, reducedMotion) => {
         pace: Float32Array.from({ length: dotCount }, (_, index) => mix(sequence.slowest, sequence.fastest, (index * 0.618034) % 1)),
     };
     const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, strength: 0, targetStrength: 0 };
+    const attention = reducedMotion ? null : createAttention();
+    // How far ahead of the pointer the sphere looks, in units, how fast its page scrolls and
+    // how far that has moved it.
+    const heading = { x: 0, y: 0 };
+    let scrolling = 0;
+    let swayed = 0;
+    let pinned = false;
     const ripples = [];
     const hold = { x: 0, y: 0, down: false, charge: 0 };
     const home = { x: 0, y: 0 };
@@ -315,7 +331,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
     const wander = (seconds) => {
         home.x = (width * (fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / unit;
-        home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit;
+        home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit + swayed;
     };
 
     // Where each bud is right now, how far out of the sphere, and its axis: the way from the
@@ -348,8 +364,8 @@ const initializeOrb = (canvas, reducedMotion) => {
     const position = (seconds, delta) => {
         wander(seconds);
 
-        const leanX = clamp((pointer.x - home.x) / sphereRadius, -2, 2);
-        const leanY = clamp((pointer.y - home.y) / sphereRadius, -2, 2);
+        const leanX = clamp((pointer.x + heading.x - home.x) / sphereRadius, -2, 2);
+        const leanY = clamp((pointer.y + heading.y - home.y) / sphereRadius, -2, 2);
         const turn = (seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength;
         const lean = tilt + leanY * 0.35 * pointer.strength;
         const rotation = createRotation(turn, lean);
@@ -546,6 +562,20 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         hold.charge = approach(hold.charge, hold.down ? 1 : 0, hold.down ? press.chargeRate : press.releaseRate, delta);
 
+        if (attention) {
+            const noticed = attention.read(delta);
+            const sway = pinned ? clamp(-noticed.scrolling * notice.sway, -notice.swing, notice.swing) : 0;
+
+            heading.x = approach(heading.x, (noticed.headingX * scale * notice.ahead) / unit, 6, delta);
+            heading.y = approach(heading.y, (noticed.headingY * scale * notice.ahead) / unit, 6, delta);
+            scrolling = noticed.scrolling;
+            swayed = approach(swayed, sway, 6, delta);
+
+            if (noticed.returned) {
+                ring(home.x, home.y, notice.greeting);
+            }
+        }
+
         for (let index = ripples.length - 1; index >= 0; index -= 1) {
             ripples[index].age += delta;
 
@@ -718,7 +748,10 @@ const initializeOrb = (canvas, reducedMotion) => {
             turnedUntil = 0;
         }
 
-        present(hovered ? sequence.hover : sequence.rest);
+        // The dots keep the pace of a visitor who scrolls briskly through the scenes.
+        present(hovered
+            ? sequence.hover
+            : mix(sequence.rest, sequence.hover, clamp(Math.abs(scrolling) / notice.brisk, 0, 1)));
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -741,7 +774,8 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         if (stage) {
             // A stage that stays in the window while its page scrolls takes the canvas with it.
-            canvas.parentElement.toggleAttribute('data-pinned', stage.dataset.dotOrbStage === 'pinned');
+            pinned = stage.dataset.dotOrbStage === 'pinned';
+            canvas.parentElement.toggleAttribute('data-pinned', pinned);
             visibilityObserver.observe(stage);
             resizeObserver.observe(stage);
             way.left = 0;

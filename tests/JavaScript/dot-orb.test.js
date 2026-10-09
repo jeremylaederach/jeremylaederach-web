@@ -30,7 +30,7 @@ const createContext = (calls) => new Proxy(calls, {
     },
 });
 
-const setup = (t, { reducedMotion = false, fitted = false, mark = false } = {}) => {
+const setup = (t, { reducedMotion = false, fitted = false, mark = false, pinned = false } = {}) => {
     const window = createDom(t, `
         <div><canvas data-dot-orb></canvas></div>
         <main><div data-dot-orb-stage></div></main>
@@ -47,6 +47,7 @@ const setup = (t, { reducedMotion = false, fitted = false, mark = false } = {}) 
     const stage = document.querySelector('[data-dot-orb-stage]');
 
     stage.toggleAttribute('data-dot-orb-fit', fitted);
+    stage.dataset.dotOrbStage = pinned ? 'pinned' : '';
 
     // The mark is sampled from its image, which is told to have loaded once it is asked for.
     if (mark) {
@@ -344,6 +345,46 @@ test('a held press gathers the dots towards the pointer until it is released', (
     assert.ok(reach() > resting * 0.9);
 });
 
+
+test('on a stage that stays in the window the sphere sways with the scrolling of its page', (t) => {
+    const { link, dots, run, hover } = setup(t, { pinned: true, fitted: true });
+    const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
+
+    // A figure stands still, so only the scrolling moves it.
+    hover(link);
+    run(200);
+
+    const resting = level();
+
+    // 20 pixels in every frame of 16 milliseconds are 1250 pixels a second.
+    for (let frame = 0; frame < 30; frame += 1) {
+        window.scrollY += 20;
+        run(1);
+    }
+
+    assert.ok(resting - level() > 8);
+
+    run(120);
+    assert.ok(Math.abs(resting - level()) < 6);
+});
+
+test('a visitor who comes back after a pause is answered with a ring', (t) => {
+    const { dots, run } = setup(t);
+    const move = new window.MouseEvent('pointermove', { bubbles: true, clientX: 5, clientY: 5 });
+
+    Object.defineProperty(move, 'pointerType', { value: 'mouse' });
+
+    // Twenty seconds are 1250 frames of 16 milliseconds.
+    run(1300);
+
+    const resting = dots.map((dot) => ({ ...dot }));
+    const moved = () => dots.reduce((sum, dot, index) => sum + Math.hypot(dot.x - resting[index].x, dot.y - resting[index].y), 0) / dots.length;
+
+    window.dispatchEvent(move);
+    run(6);
+
+    assert.ok(moved() > 2);
+});
 
 test('touch input leaves the sphere whole', (t) => {
     const { link, run, hover, spread } = setup(t);

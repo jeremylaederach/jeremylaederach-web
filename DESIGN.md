@@ -103,6 +103,15 @@ the stage is the whole section.
     several rings travel at once.
   - *A held press:* gathers the dots around the pointer and lets go with a stronger ring.
   - *A tap* on the dots moves on like a press. Nothing else follows a finger.
+- **What the sphere notices** of the visitor without being asked, and only a little
+  (`resources/js/dot-orb-attention.js`):
+  - *Where the pointer is heading:* the sphere looks a fifth of a second along the pointer's
+    way, so it turns towards where the pointer will be, not only where it is.
+  - *How fast the page scrolls:* on a page told in scenes the sphere sways a little with the
+    scrolling, and the brisker the visitor goes through the scenes, the faster the dots flow
+    into the next figure.
+  - *That somebody is back:* after twenty seconds without a pointer, a key or a scroll, the
+    first sign of the visitor is answered with one soft ring from the middle of the sphere.
 - **Buds.** Like a lava lamp it sheds buds: a quarter of the dots is the core and always stays;
   three buds each take another quarter on their own slow cycle (41, 53 and 67 seconds), form a
   smaller sphere of their own size beside the main one, rise and sink over the height of the
