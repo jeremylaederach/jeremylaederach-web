@@ -7,6 +7,7 @@
         width: var(--shell);
         margin: 0 auto;
         padding: 132px 0 72px;
+        user-select: text;
     }
 
     /* The longest title, one German word, fits a 320px window on one line. */

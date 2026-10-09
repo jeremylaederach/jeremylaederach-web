@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class PageMetadataTest extends TestCase
 {
-    private const PAGES = ['home', 'about', 'projects', 'quantified', 'jay-jay', 'session-deck', 'contact', 'imprint', 'privacy'];
+    private const PAGES = ['home', 'about', 'projects', 'quantified', 'jay-jay', 'contact', 'imprint', 'privacy'];
 
     public function test_the_named_locale_routes_are_exactly_the_public_pages(): void
     {

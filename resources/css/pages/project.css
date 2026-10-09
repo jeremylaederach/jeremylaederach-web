@@ -1,0 +1,64 @@
+@layer components {
+    /* A project brings its color: to its row in the overview, to its case study and to the scene
+       that leads on to it. */
+    :root {
+        --quantified-rgb: 83, 177, 253;
+        --jay-jay-rgb: 129, 140, 248;
+    }
+
+    [data-project='quantified'],
+    .project-detail--quantified {
+        --project-accent-rgb: var(--quantified-rgb);
+        --project-accent: rgb(var(--quantified-rgb));
+    }
+
+    [data-project='jay-jay'],
+    .project-detail--jay-jay {
+        --project-accent-rgb: var(--jay-jay-rgb);
+        --project-accent: rgb(var(--jay-jay-rgb));
+    }
+
+    /* Where a project is shown, in its case study or as the current row of the overview, its
+       color is the accent of the whole page. */
+    body:has(.project-detail--quantified, [data-project='quantified'][data-current]) {
+        --route-accent-goal: var(--quantified-rgb);
+    }
+
+    body:has(.project-detail--jay-jay, [data-project='jay-jay'][data-current]) {
+        --route-accent-goal: var(--jay-jay-rgb);
+    }
+
+    /* The last scene of a case study stands for the next project: while it is shown, the page
+       already takes that project's color, and so do the dots. */
+    body:has([data-project='quantified'][data-active]) {
+        --route-accent-goal: var(--quantified-rgb);
+    }
+
+    body:has([data-project='jay-jay'][data-active]) {
+        --route-accent-goal: var(--jay-jay-rgb);
+    }
+
+    .scene[data-project] {
+        --dot-orb-rgb: var(--project-accent-rgb);
+    }
+
+    /* The head of a case study: the way back, the name and what kind of project it is. */
+    .project-page__back {
+        min-height: 44px;
+    }
+
+    .project-page__title {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 20px;
+        align-items: baseline;
+    }
+
+    .project-page__kind {
+        margin: 0;
+        color: var(--route-accent);
+        font-size: 11px;
+        font-weight: 560;
+        text-transform: uppercase;
+    }
+}

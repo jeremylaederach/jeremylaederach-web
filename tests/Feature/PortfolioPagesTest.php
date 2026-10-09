@@ -42,7 +42,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-sound-toggle', false)
             ->assertSee('data-mark="http://localhost/brand/mark.svg"', false)
             ->assertSee('class="brand-mark brand-lockup__mark"', false)
-            ->assertSee('<stop class="mark-light"', false)
+            ->assertSee("--brand-mark: url('http://localhost/brand/mark.svg')", false)
             ->assertSee('href="http://localhost/brand/mark.svg" type="image/svg+xml"', false)
             ->assertSee('brand/icons/apple-touch-180.png', false)
             ->assertSee('data-page-main', false)
@@ -115,45 +115,41 @@ class PortfolioPagesTest extends TestCase
         $about
             ->assertOk()
             ->assertSee('aria-current="page"', false)
-            ->assertSee('class="portfolio-page about-page"', false)
+            ->assertSee('class="portfolio-page scene-page about-page"', false)
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('data-page-heading-signal', false)
             ->assertSee('aria-label="About me."', false)
-            ->assertSee('class="about-story"', false)
-            ->assertSee('Stack')
+            ->assertSee('I&#039;m Jeremy, a software developer from Zurich.', false)
+            ->assertSee('My primary stack for APIs, domain logic, and native Windows tools.')
             ->assertSee('.NET 10 / C#')
-            ->assertSee('ASP.NET Core')
             ->assertSee('Laravel 13')
-            ->assertSee('PostgreSQL')
-            ->assertSee('GitHub Actions')
             ->assertSee('Herd / Plesk')
-            ->assertDontSee('In brief.')
+            ->assertSee('aria-label="Scenes of this page"', false)
             ->assertDontSee('Career path')
-            ->assertDontSee('playground', false)
-            ->assertDontSee('page-stage', false)
-            ->assertDontSee('data-project-stage', false);
+            ->assertDontSee('data-chapter', false);
 
         $aboutHtml = $about->content();
 
-        // Two chapters, each with a figure for the sphere; the first one is current at the start.
-        $this->assertSame(2, preg_match_all('/\sdata-chapter\s/', $aboutHtml));
-        $this->assertSame(1, substr_count($aboutHtml, 'data-dot-orb-resting'));
-        $this->assertMatchesRegularExpression('/data-chapter\s+data-dot-orb-figure="about"\s+data-dot-orb-resting/', $aboutHtml);
-        $this->assertMatchesRegularExpression('/data-chapter\s+data-dot-orb-figure="stack"/', $aboutHtml);
+        // Five scenes on one stage: each has its step behind the screen and its link among the
+        // steps, and the first is shown at the start.
+        $this->assertSame(5, preg_match_all('/\sdata-scene\s/', $aboutHtml));
+        $this->assertSame(5, substr_count($aboutHtml, 'data-scene-step="'));
+        $this->assertSame(1, substr_count($aboutHtml, 'data-active data-dot-orb-resting'));
+        $this->assertSame(1, substr_count($aboutHtml, 'aria-current="step"'));
+        $this->assertSame(1, substr_count($aboutHtml, '<canvas data-dot-orb data-dot-orb-fit'));
+        $this->assertMatchesRegularExpression('/id="me-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="about"/', $aboutHtml);
+        $this->assertStringContainsString('<div id="me" class="scene-stage__step" data-scene-step="me-scene"></div>', $aboutHtml);
 
-        // Every group and every tool answers a hover: four groups in their colors and sixteen
-        // tools, of which those with a mark of their own show it, the others their group's.
-        $this->assertSame(20, substr_count($aboutHtml, 'class="figure-word"'));
-        $this->assertSame(4, substr_count($aboutHtml, 'class="about-row" style="--dot-orb-rgb: '));
-        $this->assertSame(1, substr_count($aboutHtml, '<canvas data-dot-orb'));
+        // A technology brings its color to the dots, and a tool with a mark answers a hover.
+        $this->assertMatchesRegularExpression('/data-dot-orb-figure="laravel"\s+style="--dot-orb-rgb: 255, 45, 32"/', $aboutHtml);
         $this->assertMatchesRegularExpression('/data-dot-orb-figure="typescript"\s+style="--dot-orb-rgb: 49, 120, 198"\s*>TypeScript</', $aboutHtml);
-        $this->assertMatchesRegularExpression('/data-dot-orb-figure="laravel"\s*>Blade</', $aboutHtml);
         $this->assertMatchesRegularExpression('/data-dot-orb-figure="windows"\s*>WinUI 3</', $aboutHtml);
 
         $this->get('/de/about')
             ->assertOk()
             ->assertSee('aria-label="Über mich."', false)
-            ->assertSee('Stack')
+            ->assertSee('Mein Haupt-Stack für APIs')
+            ->assertSee('aria-label="Szenen dieser Seite"', false)
             ->assertSee('data-dot-orb-figure="tailwindcss"', false);
 
         $projects = $this->get('/de/projects');
@@ -173,7 +169,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('.NET / C#')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('data-dot-orb-figure="jay-jay website cloud board"', false)
+            ->assertSee('data-dot-orb-figure="jay-jay globe cloud contact"', false)
             ->assertDontSee('Nativer Workspace-Launcher')
             ->assertSee('aria-describedby="quantified-detail"', false)
             ->assertSee('data-project="quantified"', false)
@@ -203,62 +199,37 @@ class PortfolioPagesTest extends TestCase
 
         $english
             ->assertOk()
-            ->assertSee('<title>Quantified', false)
-            ->assertSee('data-page="projects"', false)
-            ->assertSee('aria-current="page"', false)
-            ->assertSee('class="portfolio-page case-study-page project-detail project-detail--quantified"', false)
-            ->assertSee('class="scroll-cue directional-link directional-link--down"', false)
-            ->assertSee('href="#product"', false)
-            ->assertSee('class="case-study-product__details"', false)
-            ->assertSee('Quantified brings calendar, finance, coding, and local system data into dashboards')
-            ->assertSee('All my data,')
-            ->assertSee('made visible.')
-            ->assertSee('Current inputs')
-            ->assertSee('Your data, one local workspace.')
-            ->assertSee('Home workspace')
-            ->assertSee('QCalendar')
-            ->assertSee('QFinances')
-            ->assertSee('class="quantified-app__navigation"', false)
-            ->assertSee('class="project-visual project-reel project-reel--quantified project-reel--detail case-study-hero__reel"', false)
-            ->assertDontSee('quantified-app__profile', false)
-            ->assertDontSee('What would you like to understand?')
-            ->assertDontSee('QInsights')
-            ->assertSee('aria-roledescription="carousel"', false)
-            ->assertSee('aria-label="Next view"', false)
-            ->assertSee('<strong>QFinances</strong>', false)
-            ->assertSee('Google Calendar')
-            ->assertSee('ASP.NET Core')
-            ->assertSee('PostgreSQL')
-            ->assertSee('Angular')
-            ->assertSee('Data &amp; integrations', false)
-            ->assertSee('Next project')
-            ->assertSee('class="case-study-next case-study-next--jay-jay directional-link directional-link--forward"', false)
-            ->assertSee('href="http://localhost/en/jay-jay"', false)
-            ->assertDontSee('Current scope')
-            ->assertDontSee('quantified-visual__chart', false)
-            ->assertSee('href="http://localhost/de/quantified"', false);
+            ->assertSee('<title>Quantified</title>', false)
+            ->assertSee('class="portfolio-page scene-page project-page project-detail project-detail--quantified"', false)
+            ->assertSee('aria-label="Quantified."', false)
+            ->assertSee('Product · Active build')
+            ->assertSee('Quantified shows me where my time, my health and my money go.')
+            ->assertSee('data-dot-orb-figure="quantified trend ring calendar"', false)
+            ->assertSee('Apple Health delivers running, nutrition and weight.')
+            ->assertSee('data-dot-orb-figure="ledger"', false)
+            ->assertSee('PostgreSQL 18')
+            ->assertSee('href="http://localhost/en/projects#quantified"', false)
+            ->assertSee('href="http://localhost/de/quantified"', false)
+            ->assertDontSee('<img', false);
 
-        $englishHtml = $english->content();
-        $viewsPosition = strpos($englishHtml, 'id="views"');
-        $productPosition = strpos($englishHtml, 'id="product"');
-        $stackPosition = strpos($englishHtml, 'id="stack"');
-
-        $this->assertSame(3, substr_count($englishHtml, 'class="technology-group"'));
-        $this->assertNotFalse($viewsPosition);
-        $this->assertNotFalse($productPosition);
-        $this->assertNotFalse($stackPosition);
-        $this->assertLessThan($productPosition, $viewsPosition);
-        $this->assertLessThan($stackPosition, $productPosition);
-        $this->assertStringNotContainsString('id="presentation"', $englishHtml);
+        // Seven scenes of its own and one that leads on to the next project, in that project's
+        // color and with its figures.
+        $html = $english->content();
+        $this->assertSame(8, preg_match_all('/\sdata-scene\s/', $html));
+        $this->assertSame(8, substr_count($html, 'data-scene-step="'));
+        $this->assertSame(1, substr_count($html, 'data-active data-dot-orb-resting'));
+        $this->assertMatchesRegularExpression(
+            '/id="next-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="jay-jay globe cloud contact"\s+data-project="jay-jay"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression('/href="http:\/\/localhost\/en\/jay-jay"\s+data-route="projects"\s+data-route-transition/', $html);
 
         $this->get('/de/quantified')
             ->assertOk()
-            ->assertSee('Quantified bringt Kalender-, Finanz-, Coding- und lokale Systemdaten in Dashboards und Timelines zusammen.')
-            ->assertSee('Alle meine Daten,')
-            ->assertSee('sichtbar gemacht.')
-            ->assertSee('Angular + .NET.')
-            ->assertSee('Weitere Datenquellen anbinden und Entwicklungen über längere Zeit vergleichen.')
-            ->assertSee('Aktiv in Entwicklung')
+            ->assertSee('<title>Quantified</title>', false)
+            ->assertSee('Produkt · In Entwicklung')
+            ->assertSee('Quantified zeigt mir, wohin meine Zeit, meine Gesundheit und mein Geld gehen.')
+            ->assertSee('Nächstes Projekt')
             ->assertSee('href="http://localhost/de/jay-jay"', false)
             ->assertSee('href="http://localhost/en/quantified"', false);
     }
@@ -268,84 +239,58 @@ class PortfolioPagesTest extends TestCase
         $this->get('/jay-jay')
             ->assertRedirect('/en/jay-jay');
 
-        $english = $this->get('/en/jay-jay');
-
-        $english
+        $this->get('/en/jay-jay')
             ->assertOk()
-            ->assertSee('<title>Jay-Jay', false)
-            ->assertSee('data-page="projects"', false)
-            ->assertSee('aria-current="page"', false)
+            ->assertSee('<title>Jay-Jay</title>', false)
             ->assertSee('project-detail--jay-jay', false)
-            ->assertSee('A small service business with its own software.')
-            ->assertSee('Two Laravel apps.')
-            ->assertSee('jay-jay.ch')
-            ->assertSee('Client Hub')
-            ->assertSee('Development build')
-            ->assertSee('class="project-visual project-reel project-reel--jay-jay project-reel--detail case-study-hero__reel"', false)
-            ->assertSee('<strong>Customer overview</strong>', false)
-            ->assertSee('<strong>Work board</strong>', false)
-            ->assertSee('id="client-hub"', false)
-            ->assertSee('<span class="is-active">Boards</span>', false)
-            ->assertSee('<i class="is-current"></i>', false)
-            ->assertSee('assets/work/jay-jay-home.png', false)
-            ->assertSee('assets/work/jay-jay-mark.svg', false)
-            ->assertDontSee('tested contact delivery')
-            ->assertDontSee('Current scope')
-            ->assertDontSee('project-reel__browser-bar', false)
-            ->assertSee('Next project')
-            ->assertSee('class="case-study-next case-study-next--sessiondeck directional-link directional-link--forward"', false)
-            ->assertSee('aria-label="Next project: SessionDeck"', false)
-            ->assertSee('href="http://localhost/en/session-deck"', false)
+            ->assertSee('Jay-Jay is my business for websites, hosting, domains, email and support.')
+            ->assertSee('<div id="client-hub" class="scene-stage__step" data-scene-step="client-hub-scene"></div>', false)
+            ->assertSee('It runs on demo data')
+            ->assertSee('Scherer Gartengestaltung &amp; Pflege AG', false)
+            ->assertSee('href="https://scherergartengestaltung.ch/"', false)
+            ->assertSee('href="https://jay-jay.ch/en/"', false)
+            ->assertSee('rel="noopener noreferrer"', false)
+            ->assertSee('data-dot-orb-figure="leaf"', false)
+            ->assertSee('data-project="quantified"', false)
+            ->assertSee('href="http://localhost/en/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
-
-        $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
 
         $this->get('/de/jay-jay')
             ->assertOk()
-            ->assertSee('Ein kleines Unternehmen mit eigener Software.')
-            ->assertSee('Zwei Laravel-Apps.')
-            ->assertSee('Jay-Jay besuchen')
-            ->assertSee('href="http://localhost/de/session-deck"', false)
+            ->assertSee('Websites für Kunden, auf dieselbe Art gebaut.')
+            ->assertSee('Ein Portal für Kunden')
+            ->assertSee('href="https://jay-jay.ch/de/"', false)
+            ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/en/jay-jay"', false);
     }
 
-    public function test_sessiondeck_case_study_renders_in_both_locales(): void
+    public function test_the_former_sessiondeck_addresses_lead_to_the_projects(): void
     {
         $this->get('/session-deck')
-            ->assertRedirect('/en/session-deck');
-
-        $english = $this->get('/en/session-deck');
-
-        $english
-            ->assertOk()
-            ->assertSee('<title>SessionDeck', false)
-            ->assertSee('data-page="projects"', false)
-            ->assertSee('aria-current="page"', false)
-            ->assertSee('project-detail--sessiondeck', false)
-            ->assertSee('WinUI 3')
-            ->assertSee('Working prototype · Build from source')
-            ->assertSee('Save the setup.')
-            ->assertSee('Start it as one session.')
-            ->assertSee('Process control')
-            ->assertSee('class="project-visual project-reel project-reel--sessiondeck project-reel--detail case-study-hero__reel"', false)
-            ->assertSee('<strong>Profile editor</strong>', false)
-            ->assertSee('<strong>Session result</strong>', false)
-            ->assertDontSee('Current scope')
-            ->assertSee('Next project')
-            ->assertSee('class="case-study-next case-study-next--quantified directional-link directional-link--forward"', false)
-            ->assertSee('href="http://localhost/en/quantified"', false)
-            ->assertSee('href="http://localhost/de/session-deck"', false);
-
-        $this->assertSame(3, substr_count($english->content(), 'class="technology-group"'));
+            ->assertMovedPermanently()
+            ->assertRedirect('/en/projects');
 
         $this->get('/de/session-deck')
+            ->assertMovedPermanently()
+            ->assertRedirect('/de/projects');
+
+        $this->get('/en/projects')
             ->assertOk()
-            ->assertSee('Setup speichern.')
-            ->assertSee('Als Session starten.')
-            ->assertSee('WinUI 3 + .NET.')
-            ->assertSee('GitHub-Repository ansehen')
-            ->assertSee('href="http://localhost/de/quantified"', false)
-            ->assertSee('href="http://localhost/en/session-deck"', false);
+            ->assertDontSee('SessionDeck');
+    }
+
+    public function test_every_scene_names_what_the_sphere_shows_in_both_locales(): void
+    {
+        $sphere = config('portfolio.scenes');
+        $pages = ['about_page' => 'about', 'quantified_page' => 'quantified', 'jay_jay_page' => 'jay-jay'];
+
+        foreach (array_keys(config('portfolio.locales')) as $locale) {
+            foreach ($pages as $page => $key) {
+                $scenes = config("portfolio.content.{$locale}.{$page}.scenes");
+
+                $this->assertSame(array_column($scenes, 'id'), array_keys($sphere[$key]), "{$locale}.{$page}");
+            }
+        }
     }
 
     public function test_legacy_client_hub_routes_redirect_to_the_jay_jay_case_study(): void

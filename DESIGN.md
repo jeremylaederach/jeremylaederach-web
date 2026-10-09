@@ -8,15 +8,15 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 - **Tokens first.** Colors, the shell width and the two easing curves are custom properties in
   `resources/css/foundation.css`. Components use them instead of literals; a tint is built from the
   `-rgb` companion of a color (`rgba(var(--accent-rgb), 0.16)`).
-- **Layers.** Stylesheets are layered (`base`, `components`), one file per page in
-  `resources/css/pages`. The home page, the stage lists, the about page, the 404 page and the
-  legal pages carry their own breakpoints, written from the small window up with the stage
-  starting at 961px. `responsive.css` is unlayered and ordered by breakpoint (1280, 960, 800,
-  720, 420 and 340px wide), so its rules override the component styles; it still holds the
-  header, the case studies and the interface previews.
+- **Layers.** Stylesheets are layered (`base`, `components`): shared components in
+  `resources/css`, what only one kind of page needs in `resources/css/pages`. Every page
+  carries its own breakpoints, written from the small window up with the stage starting at
+  961px. `responsive.css` is unlayered, so its rules override the layered ones; it holds what is
+  left of the earlier breakpoints, the header up to 960 and 720px, and the reduced-motion rules.
 - **Input.** Hover effects apply only under `.has-mouse-input`, which the interaction controller
   sets from the pointer type of the last event. Every hover state has a `:focus-visible`
-  counterpart. Touch gets the resting state.
+  counterpart. Touch gets the resting state. Text cannot be selected, because a press or a drag
+  belongs to the sphere; the two legal pages, which have no sphere, allow it.
 - **Motion.** Timing belongs to CSS. Under `prefers-reduced-motion` transitions and animations
   collapse to 1ms, page navigation swaps without a transition, and canvas animation draws one
   still frame.
@@ -33,10 +33,11 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   one outline of sixteen nodes with two pills for the eyes, filled with a gradient from a
   lighter tone at the top left to a deeper one at the bottom right. That file is the favicon and
   the picture the sphere samples for its figure; `npm run brand:render` renders the PNG favicon,
-  the app icons and the link preview from it. The header shows the same drawing inline
-  (`resources/views/components/brand-mark.blade.php`) as the link home, and the stylesheet sets
-  the two colors of its gradient from the page's accent, so it takes a project's color with the
-  rest of the header. It is 38px large; hovered or focused it grows a little.
+  the app icons and the link preview from it. In the header it is the link home, cut out of the
+  page's accent with the drawing as the mask
+  (`resources/views/components/brand-mark.blade.php`), lighter at the top left and deeper at the
+  bottom right, so it takes a project's color with the rest of the header. It is 38px large;
+  hovered or focused it grows a little.
 - **Colors.** Background `#07070a`, ink `#f4f1ea`, muted text `#aaa6af`, hairlines at 13% ink.
   One accent, mint `#7df0c9`. Where a project is shown, in its case study or as the current one
   of the projects overview, its color replaces mint as the accent of the whole page, the header
@@ -73,8 +74,7 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 
 The home page is one screen at every size, a stage of the name, the statement and the sphere. The
 name stands small above the summary, which is the statement of the page and its largest text. The
-header carries the navigation. Text on the home page cannot be selected, because a held press
-moves the sphere. From 961px the content keeps to a column on the left, at most half of the
+header carries the navigation. From 961px the content keeps to a column on the left, at most half of the
 width, and the right belongs to the sphere. Up to 960px the sphere has the upper 68% of the
 screen, where its canvas ends and the dots fade out, and the text stands below it; the line that
 ends the page closes the screen.
@@ -104,9 +104,13 @@ the text.
   the home page gives the mark itself, sampled from its image with the eyes left open.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
-  other, each for 3.6 seconds, and the dots glide from one to the next at half the speed of a
-  hover. The sequence starts with the first figure whenever the sphere turns to the element, and
-  it runs on the sphere's clock, so it pauses with it.
+  other, each for 8 seconds, and a press on the dots moves on to the next. The sequence starts
+  with the first figure whenever the sphere turns to the element, and it runs on the sphere's
+  clock, so it pauses with it.
+- **Lava lamp.** From one figure to the next the dots flow instead of jumping: every dot has a
+  pace of its own, so a shape melts into the next. The flow is quick when the pointer moves on
+  to another element, slower when the element the sphere rests with changes, and slowest, about
+  two seconds, when a sequence steps by itself.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
   beside the text. Hovered, they light up in the color of their figure, the accent unless they
@@ -117,10 +121,7 @@ the text.
   word for the database gives one, the last pixel the arrow of a pointer, and the name gives the mark;
   everything stays in the accent.
 - **Place.** On a canvas that is not fitted the sphere wanders around a point at 68% of the
-  canvas' width and half its height. The element it rests with can name another share of the
-  width (`--dot-orb-x`): the sphere glides there in about a second, keeps level with the middle
-  of that element, or of the part of it marked `data-dot-orb-place`, while the page scrolls and
-  wanders much less.
+  canvas' width and half its height.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
   sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
 - **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
@@ -130,9 +131,9 @@ the text.
 - **Fitted canvas.** On a canvas marked `data-dot-orb-fit` the sphere stands still in the middle,
   and a figure, which is drawn within the middle 80% of its square, fills the smaller side of the
   canvas.
-- **Sub-pages.** The about page is told in chapters beside the sphere (see "About"). A case
-  study shows it in the project's color behind the gallery of its hero. The 404 page is a stage
-  for it (see "404 and legal pages"). The legal pages have no sphere.
+- **Sub-pages.** The about page and the case studies are told in scenes beside the sphere (see
+  "Scenes: about and the case studies"). The 404 page is a stage for it (see "404 and legal
+  pages"). The legal pages have no sphere.
 - **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
   and fade; the sphere of the next page gathers from the scattered state.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
@@ -172,9 +173,9 @@ current row, so the sphere shows the first row's figure.
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
   and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
   case studies. A row brings its project's color, which is then the accent of the page, and its
-  figures (`project_figures` in the content), which the sphere goes through while the row is
-  current: for Quantified the bars of a chart, a trend, a ring and a timeline; for Jay-Jay the
-  brackets of a tag, a website, a cloud for the hosting and the board of the Client Hub. The
+  figures (those of the overview of its case study, `scenes` in the content), which the sphere
+  goes through while the row is current: for Quantified the bars of a chart, a line chart, a
+  ring and a calendar; for Jay-Jay the brackets of a tag, a globe, a cloud and an envelope. The
   current row holds the project's kind, description and technologies. The overview carries no
   screenshots; those belong to the case studies.
 - **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
@@ -182,41 +183,52 @@ current row, so the sphere shows the first row's figure.
   with its address at the end of the row: an envelope for email, GitHub's mark for GitHub, a head
   and shoulders for LinkedIn. Below the list stands a note on what to write.
 
-### About
+### Scenes: about and the case studies
 
-The about page is told in two chapters beside the sphere (`resources/views/pages/about.blade.php`,
-`resources/css/pages/about.css`, `resources/js/chapter-controller.js`): the opening with the
-heading and the introduction, and the technologies. It stays light, the figure the larger part.
+The about page and the two case studies are told in scenes
+(`resources/views/components/scene-stage.blade.php`, `resources/css/scene-stage.css`,
+`resources/js/scene-controller.js`). One screen stays in place while the page scrolls, and what
+changes is its content: the statement and the figure of the sphere, together. No page of the site
+shows a screenshot.
 
-- **Chapters.** The sphere's canvas covers the window and stays there while the chapters scroll
-  over it. The chapter that crosses the middle of the window is the current one: the sphere rests
-  in its figure and keeps level with it, so it scrolls with its chapter like a picture beside the
-  text. From 961px the opening fills the first window with the heading left of the sphere and the
-  introduction right of it; the technologies keep to a column of at most 560px on the left, the
-  sphere at 72% of the width, where it glides in about a second. A chapter is at least as high
-  as a figure.
-- **Figures.** The opening gives a head and shoulders, the technologies three layers. A chapter
-  names its figure only for the time it is current; hovering its text changes nothing.
-- **Technologies.** Four rows between hairlines, each the name of a group and its tools. Every
-  name answers a hover: a group morphs the sphere into its mark in its color (.NET, Laravel,
-  Angular, PostgreSQL), and so does a tool with a mark of its own (TypeScript, Tailwind CSS,
-  Vite, GitHub Actions, Google, four panes for WinUI); the other tools show their group's. The
-  paths come from the `simple-icons` package, as GitHub's does; the content lists which tool has
-  which mark (`technology_marks`).
-- **Up to 960px.** The sphere belongs to the opening, which fills the first window: the heading,
-  the figure in the place held for it, the introduction. Its canvas covers that window, a fifth
-  wider than it so the figure is about half as wide as the page, and leaves with it; the
-  technologies follow as plain rows without dots behind them.
-- **Reduced motion.** One still sphere that stays with the opening.
+- **Scene.** A short label, one statement as the largest text of the page, and below it at most
+  a sentence or two, a few tags or one link. The sphere shows the scene's figures (`scenes` in
+  the content), in the page's accent or in the color the scene names.
+- **Scrolling.** Behind the screen runs a track of steps, one for each scene and 70% of the
+  window high. The step that crosses the middle of the window shows its scene: the old statement
+  fades out as it sinks, the new one fades in, and the dots flow into the new figure. Nothing
+  takes over the scroll; the page is simply as long as its steps.
+- **Steps.** The names of the scenes stand in a row at the bottom of the screen, the current one
+  in the accent. Each is a link to its step, so a scene has an address (`/en/jay-jay#client-hub`).
+  On a narrow screen the row scrolls sideways and keeps the current step in sight.
+- **From 961px.** A stage like the projects overview: the head of the page, the scene and the
+  steps on the left, and on the right a square for the sphere, as high as the stage allows and at
+  most five of the twelve columns wide. Up to 960px the head, the square, the scene and the
+  steps follow each other in one column.
+- **About.** Five scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
+  shoulders, and four technologies, each with its mark in its color (.NET, Laravel, Angular,
+  PostgreSQL) and its tools as tags. A tag with a mark of its own answers a hover
+  (`technology_marks` in the content); the paths come from the `simple-icons` package.
+- **Case study.** One template for Quantified and Jay-Jay
+  (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
+  project's color. The head holds the way back, the name and the kind of project. Seven scenes
+  say what the project is and does, each with a rough picture: for Quantified sources that lead
+  into one place, a timeline, a ledger, a target, the marks of its stack and a checklist; for
+  Jay-Jay a globe, a leaf for the client's garden business, a cloud, a document and the marks
+  of its stack. The last scene stands for the next project: its name, one sentence and the way
+  there, and while it is shown the page and the dots already take that project's color.
+- **Without scripts** the scenes follow each other as plain sections. **Reduced motion** keeps
+  the screen in place and changes the statement at once; the sphere is one still sphere.
+- **Focus.** A scene that is not shown still holds its links. When one of them receives the
+  focus, the page scrolls to its step.
 
 ### 404 and legal pages
 
-- **404.** A stage (`resources/views/errors/404.blade.php`, `resources/css/pages/not-found.css`):
-  the heading, one sentence and the link home on the left, and on the right a square as high as
-  the stage and at most 46% of its width. The sphere rests there in the figure of the number,
-  404 in tall, narrow numerals, on a fitted canvas. From 961px the page and the line that ends
-  it fill one screen; up to 960px the square stands in the middle above the message, at most
-  40% of the window's height.
+- **404.** One centred stage (`resources/views/errors/404.blade.php`,
+  `resources/css/pages/not-found.css`): the sphere rests in the figure of the number, 404 in
+  tall, narrow numerals, on a fitted square of at most 52% of the window's height, and the
+  heading, one sentence and the link home stand below it. With the line that ends the page it
+  fills one screen.
 - **Legal notice and privacy notice.** Text only (`resources/views/pages/legal.blade.php`,
   `resources/css/pages/legal.css`): the title, the introduction and, on the privacy notice, the
   date; then one row between hairlines for every section. From 961px the titles of the sections

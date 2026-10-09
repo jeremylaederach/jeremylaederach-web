@@ -48,6 +48,9 @@
         margin: 0;
         overflow-x: hidden;
         background: var(--bg);
+        /* A press or a drag belongs to the sphere, so text cannot be selected; the legal pages,
+           which have no sphere and whose text is there to be quoted, allow it again. */
+        user-select: none;
     }
 
     body.is-routing {

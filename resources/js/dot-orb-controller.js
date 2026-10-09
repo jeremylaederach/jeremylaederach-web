@@ -1,4 +1,4 @@
-import { chapterChangedEvent } from './chapter-controller.js';
+import { sceneChangedEvent } from './scene-controller.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { transitionFinishedEvent } from './transition-controller.js';
 
@@ -12,12 +12,9 @@ const unitOf = { height: 1, width: 0.7, largest: 1040 };
 const sphereRadius = 0.3;
 const reach = 0.08;
 
-// Where the sphere stands: at this share of its canvas' width and height, unless the element it
-// rests with names another place. It then glides to that share of the width at `rate` per second
-// and keeps level with the middle of that element, or of the part of it marked
-// `data-dot-orb-place`, which it follows at `follow` per second. It wanders around its place by
-// `wander` of the canvas, or by `held` beside such an element.
-const stand = { share: 0.68, level: 0.5, rate: 2.4, follow: 7, wander: 0.1, held: 0.03 };
+// Where the sphere stands: at this share of its canvas' width and height, around which it
+// wanders by `wander` of the canvas.
+const stand = { share: 0.68, level: 0.5, wander: 0.1 };
 
 // A click sends a ring outwards through the dots: how fast it travels and how wide it is, in
 // units, how far it pushes a dot, how many seconds it lasts and how many rings travel at once.
@@ -52,9 +49,13 @@ const bud = {
 const figure = { size: 0.72, extent: 0.8, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
 
 // An element can name several figures, separated by spaces. The sphere then shows one after the
-// other, each for `dwell` seconds. The dots glide from shape to shape at `hover` per second when
-// the pointer moves on to another element and at `cycle` when the sequence steps by itself.
-const sequence = { dwell: 3.6, hover: 9, cycle: 4.5 };
+// other, each for `dwell` seconds, and a press on the dots moves on to the next. The dots flow
+// from shape to shape like the blobs of a lava lamp: at `hover` per second when the pointer
+// moves on to another element, at `rest` when the element the sphere rests with changes or a
+// press steps the sequence, and at `cycle` when the sequence steps by itself. Every dot has a
+// pace of its own, between `slowest` and `fastest` of that rate, so a shape melts into the
+// next instead of jumping.
+const sequence = { dwell: 8, hover: 9, rest: 3, cycle: 1.6, slowest: 0.7, fastest: 1.5 };
 
 // The dots that give way to the pointer leave an opening of this share of the reach around it,
 // where at least this many dots are close.
@@ -210,6 +211,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         figureX: new Float32Array(dotCount),
         figureY: new Float32Array(dotCount),
         figureHalf: new Float32Array(dotCount),
+        // The pace of each dot, spread evenly by the golden ratio.
+        pace: Float32Array.from({ length: dotCount }, (_, index) => mix(sequence.slowest, sequence.fastest, (index * 0.618034) % 1)),
     };
     const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, strength: 0, targetStrength: 0 };
     const ripples = [];
@@ -232,10 +235,6 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let shape = 0;
     let targetShape = 0;
     let targetColor = color;
-    let standing = stand.share;
-    let targetStanding = stand.share;
-    let level = stand.level;
-    let anchor = null;
     let pointed = null;
     let scattered = arriving && !reducedMotion ? 1 : 0;
     let targetScattered = 0;
@@ -257,19 +256,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     // its smaller side. Otherwise the sphere wanders slowly around the middle of the stage.
     const fit = canvas.hasAttribute('data-dot-orb-fit') && !reducedMotion;
     const wander = (seconds) => {
-        const drift = anchor ? stand.held : stand.wander;
-
-        home.x = (width * (fit ? 0.5 : standing + drift * Math.sin(seconds / 23))) / unit;
-        home.y = (height * (fit ? 0.5 : level + drift * Math.sin(seconds / 17))) / unit;
-    };
-
-    // The share of the canvas' height at which the middle of the element the sphere keeps level
-    // with stands right now.
-    const levelOf = (element) => {
-        const bounds = element.getBoundingClientRect();
-        const frame = canvas.getBoundingClientRect();
-
-        return (bounds.top + bounds.height / 2 - frame.top) / (frame.height || 1);
+        home.x = (width * (fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / unit;
+        home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit;
     };
 
     // Where each bud is right now, and how far out of the sphere.
@@ -309,9 +297,9 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         const away = buds.reduce((sum, part) => sum + part.out, 0) / buds.length;
         const radius = sphereRadius * Math.sqrt(1 - away);
 
-        // Within a figure the dots glide from one shape to the next; coming from the sphere they
-        // head straight for the shape.
-        const glide = shape < 0.02 ? 1 : 1 - Math.exp(-glideRate * delta);
+        // Within a figure the dots flow from one shape to the next, each at its own pace; coming
+        // from the sphere they head straight for the shape.
+        const arriving = shape < 0.02;
 
         for (let index = 0; index < dotCount; index += 1) {
             place(sphere[index], rotation, seconds);
@@ -336,6 +324,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
             if (figurePoints.length) {
                 const point = figurePoints[index % figurePoints.length];
+                const glide = arriving ? 1 : 1 - Math.exp(-glideRate * dots.pace[index] * delta);
 
                 dots.figureX[index] += (point.x - dots.figureX[index]) * glide;
                 dots.figureY[index] += (point.y - dots.figureY[index]) * glide;
@@ -451,15 +440,13 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
         shape = approach(shape, targetShape, 8, delta);
-        standing = approach(standing, targetStanding, stand.rate, delta);
-        level = approach(level, anchor ? levelOf(anchor) : stand.level, stand.follow, delta);
         color.forEach((channel, index) => {
             color[index] = approach(channel, targetColor[index], 6, delta);
         });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
 
         if (shapes.length > 1) {
-            const next = shapes[Math.floor((clock - since) / sequence.dwell) % shapes.length];
+            const next = shapes[due()];
 
             if (next !== figurePoints) {
                 figurePoints = next;
@@ -551,7 +538,17 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         ripples.splice(0, ripples.length - pulse.most);
     };
 
+    // Which figure of the sequence is due.
+    const due = () => Math.floor((clock - since) / sequence.dwell) % shapes.length;
+
     const pressDown = (event) => {
+        // A press on the dots moves a sequence on to its next figure, which then stays its time.
+        if (shapes.length > 1 && probe(event.clientX, event.clientY)) {
+            since = clock - (due() + 1) * sequence.dwell;
+            figurePoints = shapes[due()];
+            glideRate = sequence.rest;
+        }
+
         if (event.pointerType === 'mouse') {
             Object.assign(hold, locate(event), { down: true });
             ring(hold.x, hold.y, 1);
@@ -566,37 +563,31 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     };
 
     // While no element that names a figure is hovered or focused, the one marked as resting holds
-    // its figure; the chapter of a page names its figure only for that, not for a hover. An
-    // element that names several figures starts with the first whenever the sphere turns to it. An
-    // element may also name the color of its figure (`--dot-orb-rgb`), and the resting one where
-    // the sphere stands (`--dot-orb-x`); the sphere then keeps level with it. The dots keep the
-    // last figure while they return to the sphere.
+    // its figure. An element that names several figures starts with the first whenever the sphere
+    // turns to it. An element may also name the color of its figure (`--dot-orb-rgb`). The dots
+    // keep the last figure while they return to the sphere.
     const react = (target) => {
-        const resting = document.querySelector('[data-dot-orb-resting]');
-        const element = (target instanceof Element ? target.closest('[data-dot-orb-figure]:not([data-chapter])') : null)
-            ?? resting;
+        const hovered = target instanceof Element ? target.closest('[data-dot-orb-figure]') : null;
+        const element = hovered ?? document.querySelector('[data-dot-orb-resting]');
         const named = (element?.dataset.dotOrbFigure ?? '').split(' ')
             .map((name) => figures.get(name))
             .filter((points) => points?.length);
         const tone = named.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
-        const share = resting ? Number.parseFloat(getComputedStyle(resting).getPropertyValue('--dot-orb-x')) : NaN;
 
         pointed = target;
         targetShape = named.length ? 1 : 0;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
-        targetStanding = Number.isFinite(share) ? share : stand.share;
-        anchor = Number.isFinite(share) ? resting.querySelector('[data-dot-orb-place]') ?? resting : null;
 
         if (element !== shown) {
             shown = element;
             since = clock;
-            glideRate = sequence.hover;
+            glideRate = hovered ? sequence.hover : sequence.rest;
         }
 
         shapes = named;
 
         if (named.length) {
-            figurePoints = named[Math.floor((clock - since) / sequence.dwell) % named.length];
+            figurePoints = named[due()];
         }
     };
 
@@ -616,10 +607,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             figures.set(name, sampleFigure(drawFigure));
         }
 
-        // The sphere starts where it belongs instead of gliding there.
         react(null);
-        standing = targetStanding;
-        level = anchor ? levelOf(anchor) : stand.level;
 
         if (canvas.dataset.mark) {
             const image = document.createElement('img');
@@ -646,7 +634,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             react(event.target.matches(':focus-visible') ? event.target : null);
         }, options);
         document.addEventListener('focusout', () => react(null), options);
-        document.addEventListener(chapterChangedEvent, () => react(pointed), options);
+        document.addEventListener(sceneChangedEvent, () => react(pointed), options);
         document.addEventListener('portfolio:before-navigation', () => {
             targetScattered = 1;
         }, options);

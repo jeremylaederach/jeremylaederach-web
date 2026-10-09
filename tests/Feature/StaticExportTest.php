@@ -38,7 +38,7 @@ class StaticExportTest extends TestCase
             $this->assertFileExists(base_path('dist-static/en/404/index.html'));
             $this->assertFileExists(base_path('dist-static/de/404/index.html'));
             $this->assertFileExists(base_path('dist-static/en/quantified/index.html'));
-            $this->assertFileExists(base_path('dist-static/de/session-deck/index.html'));
+            $this->assertFileDoesNotExist(base_path('dist-static/de/session-deck/index.html'));
             $this->assertSame([], $phpFiles);
             $this->assertStringContainsString('Content-Security-Policy', $rootHtaccess);
             $this->assertStringContainsString('Strict-Transport-Security "max-age=31536000"', $rootHtaccess);
@@ -62,13 +62,13 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('property="og:image" content="https://jeremylaederach.ch/brand/link-preview.png"', $englishHome);
             $this->assertFileExists(base_path('dist-static/brand/link-preview.png'));
             $this->assertStringContainsString('href="/en/about"', $englishHome);
-            $this->assertStringContainsString('fill="url(#mark-gradient)"', $englishHome);
+            $this->assertStringContainsString("--brand-mark: url('/brand/mark.svg')", $englishHome);
             $this->assertStringContainsString('data-mark="/brand/mark.svg"', $englishHome);
             $this->assertFileExists(base_path('dist-static/brand/mark.svg'));
             $this->assertStringContainsString('Sitemap: https://jeremylaederach.ch/sitemap.xml', File::get(base_path('dist-static/robots.txt')));
             $sitemap = simplexml_load_file(base_path('dist-static/sitemap.xml'));
             $this->assertNotFalse($sitemap);
-            $this->assertCount(18, $sitemap->url);
+            $this->assertCount(16, $sitemap->url);
             $this->assertSame('https://jeremylaederach.ch/en/', (string) $sitemap->url[0]->loc);
             $this->assertDirectoryDoesNotExist(storage_path('app/static-export'));
             $this->assertDirectoryDoesNotExist(storage_path('app/static-export.previous'));

@@ -1,81 +1,55 @@
 @layer components {
-    /* The 404 page is a stage: the message and a square for the sphere, which rests in the figure
-       of the number. Up to 960px the square stands above the message. */
+    /* The 404 page is one centred stage: the sphere rests in the figure of the number, and the
+       message stands below it. With the line that ends the page it fills one screen. */
     .not-found-page {
-        --side: min(100%, 40svh);
+        --side: min(100%, 52svh, 560px);
         position: relative;
         isolation: isolate;
         display: grid;
         width: var(--shell);
         min-height: calc(100svh - 73px);
         margin: 0 auto;
-        padding: 112px 0 56px;
-        gap: 32px;
+        padding: 96px 0 40px;
         align-content: center;
+        justify-items: center;
+        text-align: center;
     }
 
     .not-found-page .dot-orb {
         position: relative;
         inset: auto;
         width: var(--side);
-        height: var(--side);
-        justify-self: center;
+        aspect-ratio: 1;
         mask-image: none;
     }
 
+    /* The numerals fill the middle of their square; the message moves up into what they leave. */
+    .not-found-page__message {
+        display: grid;
+        margin-top: calc(var(--side) * -0.1);
+        justify-items: center;
+    }
+
     .not-found-page__message h1 {
-        max-width: 10ch;
         margin: 0;
-        font-size: clamp(44px, 12vw, 72px);
+        font-size: clamp(28px, min(3vw, 5svh), 44px);
         font-weight: 430;
-        line-height: 0.94;
-        text-wrap: balance;
+        line-height: 1;
+        letter-spacing: -0.02em;
     }
 
     .not-found-page__message p {
-        max-width: 38ch;
-        margin: 22px 0 0;
-        color: rgba(var(--ink-rgb), 0.78);
-        font-size: 17px;
+        max-width: 40ch;
+        margin: 14px 0 0;
+        color: var(--ink-muted);
+        font-size: 16px;
         line-height: 1.55;
     }
 
     .not-found-page__message .directional-link {
         min-height: 44px;
-        margin-top: 20px;
+        margin-top: 10px;
         color: var(--ink);
         font-size: 15px;
-    }
-
-    /* From 961px the page and the line that ends it fill one screen: the message keeps to the
-       left, and the square is as high as the stage and at most 46% of its width. */
-    @media (min-width: 961px) {
-        .not-found-page {
-            --top: clamp(132px, 18svh, 176px);
-            --bottom: clamp(28px, 6svh, 56px);
-            --side: min(46%, calc(100svh - 73px - var(--top) - var(--bottom)));
-            padding: var(--top) 0 var(--bottom);
-            grid-template-columns: minmax(0, 1fr) var(--side);
-            gap: 88px;
-            align-items: center;
-        }
-
-        .not-found-page .dot-orb {
-            width: auto;
-            height: auto;
-            aspect-ratio: 1;
-            grid-row: 1;
-            grid-column: 2;
-            justify-self: stretch;
-        }
-
-        .not-found-page__message {
-            grid-row: 1;
-            grid-column: 1;
-        }
-
-        .not-found-page__message h1 {
-            font-size: clamp(52px, min(5vw, 9svh), 88px);
-        }
     }
 }

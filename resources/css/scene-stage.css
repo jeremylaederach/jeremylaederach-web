@@ -1,0 +1,237 @@
+@layer components {
+    /* A page told in scenes: the about page and the case studies. One screen stays in place while
+       the page scrolls through a track of steps behind it; each step shows its scene, a short
+       statement beside the sphere. Clipping instead of hiding the overflow keeps the page from
+       becoming a scroll container, so that screen can stay in the window. */
+    .scene-page {
+        overflow: clip;
+    }
+
+    .scene-stage__view {
+        position: relative;
+        isolation: isolate;
+        width: var(--shell);
+        margin: 0 auto;
+        padding: 96px 0 40px;
+    }
+
+    .scene-stage .dot-orb {
+        position: relative;
+        inset: auto;
+        width: min(72%, 34svh);
+        margin: 0 auto;
+        aspect-ratio: 1;
+        mask-image: none;
+    }
+
+    .scene-stage__header h1 {
+        margin: 0;
+        font-size: clamp(34px, 3.4vw, 48px);
+        font-weight: 430;
+        line-height: 1;
+    }
+
+    .scene-stage__scenes {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* Without scripts the scenes follow each other as plain sections. */
+    .scene {
+        --scene-rgb: var(--dot-orb-rgb, var(--route-accent-rgb));
+        padding: 28px 0;
+    }
+
+    .scene__label {
+        margin: 0;
+        color: rgb(var(--scene-rgb));
+        font-size: 12px;
+        font-weight: 560;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+
+    /* The statement of a scene is the largest text of the page. */
+    .scene__text {
+        max-width: 19em;
+        margin: 16px 0 0;
+        color: var(--ink);
+        font-size: clamp(26px, min(6.6vw, 4.6svh), 40px);
+        font-weight: 430;
+        line-height: 1.1;
+        letter-spacing: -0.022em;
+        text-wrap: balance;
+    }
+
+    .scene__detail {
+        max-width: 46ch;
+        margin: 18px 0 0;
+        color: rgba(var(--ink-rgb), 0.7);
+        font-size: 16px;
+        line-height: 1.55;
+    }
+
+    .scene__tags {
+        display: flex;
+        max-width: 46ch;
+        margin: 20px 0 0;
+        padding: 0;
+        flex-wrap: wrap;
+        gap: 6px 18px;
+        color: var(--ink-muted);
+        font-size: 15px;
+        list-style: none;
+    }
+
+    .scene__link {
+        min-height: 44px;
+        margin-top: 14px;
+        color: var(--ink);
+        font-size: 15px;
+    }
+
+    /* The steps: the names of the scenes in a row, the current one in the accent. */
+    .scene-stage__steps {
+        display: none;
+    }
+
+    .scene-stage__track {
+        display: none;
+    }
+
+    /* With scripts the screen stays in the window: the head of the page, the sphere, the current
+       scene and the steps. The scenes lie on top of each other, and only the current one shows. */
+    .js .scene-stage__view {
+        position: sticky;
+        top: 0;
+        display: grid;
+        height: 100svh;
+        padding: 84px 0 12px;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+        gap: 14px;
+    }
+
+    .js .scene-stage__header {
+        grid-row: 1;
+    }
+
+    .js .scene-stage .dot-orb {
+        grid-row: 2;
+    }
+
+    .js .scene-stage__scenes {
+        display: grid;
+        min-height: 0;
+        grid-row: 3;
+        align-content: start;
+    }
+
+    .js .scene-stage__steps {
+        grid-row: 4;
+    }
+
+    .js .scene {
+        padding: 0;
+        grid-area: 1 / 1;
+        opacity: 0;
+        pointer-events: none;
+        translate: 0 14px;
+        transition: opacity 240ms ease, translate 520ms var(--ease-out);
+    }
+
+    .js .scene[data-active] {
+        opacity: 1;
+        pointer-events: auto;
+        translate: 0;
+        transition: opacity 420ms ease 160ms, translate 620ms var(--ease-out) 160ms;
+    }
+
+    .js .scene-stage__steps {
+        display: flex;
+        overflow-x: auto;
+        border-top: 1px solid var(--line);
+        gap: 0 22px;
+        color: var(--quiet);
+        font-size: 13px;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+
+    .scene-stage__steps a {
+        display: flex;
+        min-height: 44px;
+        align-items: center;
+        transition: color 200ms ease;
+    }
+
+    .has-mouse-input .scene-stage__steps a:hover,
+    .scene-stage__steps a:focus-visible {
+        color: var(--ink);
+    }
+
+    .scene-stage__steps a[aria-current] {
+        color: var(--route-accent);
+    }
+
+    /* Behind the screen the page is as long as its steps: 70% of the window's height for each,
+       so the step that crosses the middle of the window changes at an easy pace. */
+    .js .scene-stage__track {
+        display: block;
+        margin-top: -100svh;
+    }
+
+    .scene-stage__step {
+        height: 70svh;
+    }
+
+    /* From 961px the screen is a stage like the projects overview: the head, the scene and the
+       steps on the left, and on the right a square for the sphere. */
+    @media (min-width: 961px) {
+        .js .scene-stage__view {
+            --top: clamp(132px, 18svh, 176px);
+            --side: min(
+                calc((min(100vw - 64px, 1600px) - 264px) / 12 * 5 + 96px),
+                calc(100svh - var(--top) - 96px)
+            );
+            padding: var(--top) 0 16px;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            grid-template-columns: minmax(0, 1fr) var(--side);
+            gap: 0 88px;
+        }
+
+        .js .scene-stage .dot-orb {
+            width: 100%;
+            margin: 0;
+            grid-row: 1 / 3;
+            grid-column: 2;
+            align-self: center;
+        }
+
+        .js .scene-stage__header {
+            grid-row: 1;
+            grid-column: 1;
+        }
+
+        .js .scene-stage__scenes {
+            grid-row: 2;
+            grid-column: 1;
+            align-content: center;
+        }
+
+        .js .scene-stage__steps {
+            margin-top: 16px;
+            grid-row: 3;
+            grid-column: 1 / -1;
+            gap: 0 32px;
+        }
+
+        .scene__text {
+            font-size: clamp(30px, min(3.2vw, 5.8svh), 52px);
+        }
+
+        .scene__detail {
+            font-size: 17px;
+        }
+    }
+}

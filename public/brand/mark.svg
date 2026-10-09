@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
     <defs>
         <linearGradient id="mark-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="256" y2="211">
-            <stop class="mark-light" stop-color="#bff6f5"/>
-            <stop class="mark-deep" offset="1" stop-color="#51deb2"/>
+            <stop stop-color="#bff6f5"/>
+            <stop offset="1" stop-color="#51deb2"/>
         </linearGradient>
     </defs>
     <path fill="url(#mark-gradient)" fill-rule="evenodd" d="M230.3 151.5C233.1 160 235.5 169.4 235.5 178.4C235.5 215.9 209.2 233.2 174 233.2L61.9 233.2C30.6 233.2 8.8 207.3 8.8 177.1C8.8 154.8 14.4 139.2 29.5 122.7C30.2 110.1 37.3 64.5 54.2 64.5C62.2 64.5 76 88.8 79.4 95.5C89 93.4 106 93.2 115.8 95.6C118.8 88.3 133.1 64.4 141.1 64.4C155.2 64.4 162.2 98.9 163.6 110C180 112.5 191.1 117.2 204.9 126.1C213.9 106.2 215.3 89.5 203.1 69.7C196.3 58.8 180.2 48.6 180.2 40.5C180.2 29.8 187.5 22.2 198.1 22.2C225.7 22.2 247.2 69.6 247.2 97.1C247.2 117.1 241 135 230.3 151.5ZM42.7 160.1a11.5 11.5 0 0 1 23 0v18.6a11.5 11.5 0 0 1 -23 0zM111.6 160.1a11.5 11.5 0 0 1 23 0v18.6a11.5 11.5 0 0 1 -23 0z"/>

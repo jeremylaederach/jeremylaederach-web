@@ -12,15 +12,6 @@
         color: var(--route-accent);
     }
 
-    .section-label {
-        margin: 0;
-        color: var(--route-accent);
-        font-size: 12px;
-        font-weight: 650;
-        line-height: 1.2;
-        text-transform: uppercase;
-    }
-
     .directional-link {
         --directional-accent: var(--route-accent);
         display: inline-flex;
@@ -57,11 +48,6 @@
     .directional-link--forward:hover .nav-icon,
     .directional-link--forward:focus-visible .nav-icon {
         transform: translateX(4px);
-    }
-
-    .directional-link--down:hover .nav-icon,
-    .directional-link--down:focus-visible .nav-icon {
-        transform: translateY(4px);
     }
 
     @keyframes wordmark-signal {

@@ -35,9 +35,9 @@ again before relying on them. Inspect implementation and tests before proposing 
   reviewable change, and distinguish confirmed defects from preferences and ideas. Notice interface problems yourself
   (hierarchy, spacing, dividers, selected states, color consistency) and solve them within the
   shared components and stylesheets instead of adding one-off rules. Page styles live in
-  `resources/css/pages`. `responsive.css` is unlayered and ordered by breakpoint, so its rules
-  override the layered component styles: move a page's breakpoint rules only together with a
-  rework of that page, and prove an unchanged look by comparing computed styles.
+  `resources/css/pages` and carry their own breakpoints. `responsive.css` is unlayered, so its
+  rules override the layered ones; it only holds the header's breakpoints and the reduced-motion
+  rules. Do not add page rules to it.
 - All content lives in `config/portfolio.php`, in English and German with the same structure.
   English is the default locale; German uses Swiss spelling (`ss`, never `ß`). Keep both languages
   in step. Career, education, dates, skills, project claims and legal text come from the owner:

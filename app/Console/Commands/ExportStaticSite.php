@@ -186,7 +186,8 @@ ErrorDocument 404 /404.html
     RewriteEngine On
     RewriteRule ^quantified/?$ /en/quantified/ [R=301,L]
     RewriteRule ^jay-jay/?$ /en/jay-jay/ [R=301,L]
-    RewriteRule ^session-deck/?$ /en/session-deck/ [R=301,L]
+    RewriteRule ^session-deck/?$ /en/projects/ [R=301,L]
+    RewriteRule ^(en|de)/session-deck/?$ /$1/projects/ [R=301,L]
     RewriteRule ^jay-jay-client-hub/?$ /en/jay-jay/#client-hub [R=301,L,NE]
     RewriteRule ^(en|de)/jay-jay-client-hub/?$ /$1/jay-jay/#client-hub [R=301,L,NE]
 </IfModule>

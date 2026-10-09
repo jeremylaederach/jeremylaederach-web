@@ -11,9 +11,8 @@ import {
     siVite,
 } from 'simple-icons';
 
-// Figures the dot sphere can take: one per destination, several per featured project, some for
-// the words and chapters that name them, and the marks of GitHub and of the tools on the about
-// page.
+// Figures the dot sphere can take: one per destination, several per project and per scene of a
+// case study, some for the words that name them, and the marks of GitHub and of the tools.
 // Each paints a solid shape onto a square canvas of the given size; `cut` then removes lines from
 // it, which read as gaps between the dots.
 
@@ -79,31 +78,30 @@ const quantified = (context, size) => {
     }
 };
 
-// Quantified: a trend, the line of a chart above the area it encloses.
+// Quantified: a line chart, the line rising between its two axes.
 const trend = (context, size) => {
-    const line = (path, drop) => {
-        path.moveTo(size * 0.1, size * (0.62 + drop));
-        path.bezierCurveTo(size * 0.3, size * (0.58 + drop), size * 0.3, size * (0.36 + drop), size * 0.48, size * (0.44 + drop));
-        path.bezierCurveTo(size * 0.64, size * (0.52 + drop), size * 0.66, size * (0.2 + drop), size * 0.9, size * (0.18 + drop));
-    };
-
+    context.lineWidth = size * 0.075;
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
     context.beginPath();
-    line(context, 0);
-    context.lineTo(size * 0.9, size * 0.84);
-    context.lineTo(size * 0.1, size * 0.84);
-    context.closePath();
-    context.fill();
-    cut(context, size, (path) => line(path, 0.09));
+    context.moveTo(size * 0.14, size * 0.14);
+    context.lineTo(size * 0.14, size * 0.86);
+    context.lineTo(size * 0.88, size * 0.86);
+    context.moveTo(size * 0.3, size * 0.66);
+    context.lineTo(size * 0.46, size * 0.46);
+    context.lineTo(size * 0.6, size * 0.56);
+    context.lineTo(size * 0.84, size * 0.24);
+    context.stroke();
 };
 
-// Quantified: the ring of a chart in three shares.
+// Quantified: the ring of a chart in two shares.
 const ring = (context, size) => {
     context.lineWidth = size * 0.17;
     context.beginPath();
     context.arc(size * 0.5, size * 0.5, size * 0.29, 0, Math.PI * 2);
     context.stroke();
     cut(context, size, (path) => {
-        for (const turn of [-0.25, 0.2, 0.52]) {
+        for (const turn of [-0.25, 0.08]) {
             const angle = turn * Math.PI * 2;
 
             path.moveTo(size * (0.5 + Math.cos(angle) * 0.17), size * (0.5 + Math.sin(angle) * 0.17));
@@ -112,7 +110,22 @@ const ring = (context, size) => {
     });
 };
 
-// Quantified: a timeline, the entries of a day in rows.
+// A goal: the rings of a target around its middle.
+const target = (context, size) => {
+    context.lineWidth = size * 0.075;
+
+    for (const radius of [0.35, 0.2]) {
+        context.beginPath();
+        context.arc(size * 0.5, size * 0.5, size * radius, 0, Math.PI * 2);
+        context.stroke();
+    }
+
+    context.beginPath();
+    context.arc(size * 0.5, size * 0.5, size * 0.075, 0, Math.PI * 2);
+    context.fill();
+};
+
+// A timeline: the entries of a day in rows.
 const timeline = (context, size) => {
     const entries = [[0.1, 0.17, 0.44], [0.32, 0.345, 0.58], [0.1, 0.52, 0.26], [0.42, 0.52, 0.34], [0.24, 0.695, 0.66]];
 
@@ -121,6 +134,121 @@ const timeline = (context, size) => {
         context.roundRect(size * left, size * top, size * width, size * 0.125, size * 0.04);
         context.fill();
     }
+};
+
+// A ledger: entries with their amounts at the end of each row.
+const ledger = (context, size) => {
+    for (const [row, width] of [0.44, 0.52, 0.36, 0.48].entries()) {
+        context.beginPath();
+        context.roundRect(size * 0.1, size * (0.17 + row * 0.175), size * width, size * 0.125, size * 0.04);
+        context.roundRect(size * 0.7, size * (0.17 + row * 0.175), size * 0.2, size * 0.125, size * 0.04);
+        context.fill();
+    }
+};
+
+// A calendar: a sheet with its head and the grid of its days.
+const calendar = (context, size) => {
+    context.beginPath();
+    context.roundRect(size * 0.12, size * 0.16, size * 0.76, size * 0.68, size * 0.07);
+    context.fill();
+    cut(context, size, (line) => {
+        line.moveTo(size * 0.12, size * 0.34);
+        line.lineTo(size * 0.88, size * 0.34);
+
+        for (const column of [0.31, 0.5, 0.69]) {
+            line.moveTo(size * column, size * 0.34);
+            line.lineTo(size * column, size * 0.84);
+        }
+
+        for (const row of [0.51, 0.675]) {
+            line.moveTo(size * 0.12, size * row);
+            line.lineTo(size * 0.88, size * row);
+        }
+    });
+};
+
+// Several sources that lead into one place.
+const converge = (context, size) => {
+    context.lineWidth = size * 0.04;
+    context.lineCap = 'round';
+
+    for (const source of [0.24, 0.5, 0.76]) {
+        context.beginPath();
+        context.moveTo(size * 0.2, size * source);
+        context.lineTo(size * 0.7, size * 0.5);
+        context.stroke();
+        context.beginPath();
+        context.arc(size * 0.2, size * source, size * 0.085, 0, Math.PI * 2);
+        context.fill();
+    }
+
+    context.beginPath();
+    context.arc(size * 0.7, size * 0.5, size * 0.19, 0, Math.PI * 2);
+    context.fill();
+};
+
+// A checklist: two entries ticked off, one still open.
+const checklist = (context, size) => {
+    context.lineWidth = size * 0.035;
+
+    for (const [row, done] of [true, true, false].entries()) {
+        const top = 0.19 + row * 0.235;
+
+        context.beginPath();
+        context.roundRect(size * 0.34, size * (top + 0.015), size * 0.54, size * 0.12, size * 0.04);
+        context.fill();
+        context.beginPath();
+        context.roundRect(size * 0.12, size * top, size * 0.15, size * 0.15, size * 0.035);
+
+        if (!done) {
+            context.stroke();
+
+            continue;
+        }
+
+        context.fill();
+        cut(context, size, (line) => {
+            line.moveTo(size * 0.155, size * (top + 0.08));
+            line.lineTo(size * 0.185, size * (top + 0.11));
+            line.lineTo(size * 0.235, size * (top + 0.045));
+        });
+    }
+};
+
+// Domains: a globe.
+const globe = (context, size) => {
+    context.beginPath();
+    context.arc(size * 0.5, size * 0.5, size * 0.37, 0, Math.PI * 2);
+    context.fill();
+    cut(context, size, (line) => {
+        line.moveTo(size * 0.13, size * 0.5);
+        line.lineTo(size * 0.87, size * 0.5);
+        line.moveTo(size * 0.66, size * 0.5);
+        line.ellipse(size * 0.5, size * 0.5, size * 0.16, size * 0.37, 0, 0, Math.PI * 2);
+    });
+};
+
+// A document: a sheet with a folded corner and lines of text.
+const sheet = (context, size) => {
+    context.beginPath();
+    context.moveTo(size * 0.28, size * 0.12);
+    context.lineTo(size * 0.58, size * 0.12);
+    context.lineTo(size * 0.76, size * 0.3);
+    context.lineTo(size * 0.76, size * 0.88);
+    context.lineTo(size * 0.24, size * 0.88);
+    context.lineTo(size * 0.24, size * 0.12);
+    context.closePath();
+    context.fill();
+    cut(context, size, (line) => {
+        line.moveTo(size * 0.58, size * 0.12);
+        line.lineTo(size * 0.58, size * 0.3);
+        line.lineTo(size * 0.76, size * 0.3);
+
+        for (const row of [0.47, 0.6, 0.73]) {
+            line.moveTo(size * 0.34, size * row);
+            line.lineTo(size * (row > 0.7 ? 0.54 : 0.66), size * row);
+        }
+    });
 };
 
 // Jay-Jay: the brackets and the slash of a closing tag.
@@ -140,22 +268,7 @@ const jayJay = (context, size) => {
     context.stroke();
 };
 
-// Jay-Jay: a website, a browser window with the blocks of a page.
-const website = (context, size) => {
-    context.beginPath();
-    context.roundRect(size * 0.1, size * 0.18, size * 0.8, size * 0.64, size * 0.07);
-    context.fill();
-    cut(context, size, (line) => {
-        line.moveTo(size * 0.1, size * 0.32);
-        line.lineTo(size * 0.9, size * 0.32);
-        line.moveTo(size * 0.1, size * 0.6);
-        line.lineTo(size * 0.9, size * 0.6);
-        line.moveTo(size * 0.5, size * 0.6);
-        line.lineTo(size * 0.5, size * 0.82);
-    });
-};
-
-// Jay-Jay: hosting, a cloud.
+// Hosting: a cloud.
 const cloud = (context, size) => {
     context.beginPath();
     context.arc(size * 0.3, size * 0.58, size * 0.17, 0, Math.PI * 2);
@@ -165,15 +278,23 @@ const cloud = (context, size) => {
     context.fill();
 };
 
-// Jay-Jay: the Client Hub, a board with tickets in three columns.
-const board = (context, size) => {
-    for (const [column, tickets] of [3, 2, 1].entries()) {
-        for (let ticket = 0; ticket < tickets; ticket += 1) {
-            context.beginPath();
-            context.roundRect(size * (0.1 + column * 0.29), size * (0.2 + ticket * 0.21), size * 0.22, size * 0.17, size * 0.035);
-            context.fill();
-        }
-    }
+// A garden: a leaf with its stem and midrib.
+const leaf = (context, size) => {
+    context.beginPath();
+    context.moveTo(size * 0.27, size * 0.75);
+    context.bezierCurveTo(size * 0.2, size * 0.4, size * 0.48, size * 0.18, size * 0.82, size * 0.18);
+    context.bezierCurveTo(size * 0.82, size * 0.52, size * 0.6, size * 0.8, size * 0.27, size * 0.75);
+    context.fill();
+    context.lineWidth = size * 0.05;
+    context.lineCap = 'round';
+    context.beginPath();
+    context.moveTo(size * 0.27, size * 0.75);
+    context.lineTo(size * 0.16, size * 0.86);
+    context.stroke();
+    cut(context, size, (line) => {
+        line.moveTo(size * 0.32, size * 0.7);
+        line.lineTo(size * 0.7, size * 0.3);
+    });
 };
 
 // Backend: a database, three discs on top of each other.
@@ -212,27 +333,6 @@ const windows = (context, size) => {
         context.roundRect(size * left, size * top, size * 0.35, size * 0.35, size * 0.03);
         context.fill();
     }
-};
-
-// Stack: three layers on top of each other.
-const stack = (context, size) => {
-    for (const middle of [0.34, 0.5, 0.66]) {
-        context.beginPath();
-        context.moveTo(size * 0.5, size * (middle - 0.17));
-        context.lineTo(size * 0.88, size * middle);
-        context.lineTo(size * 0.5, size * (middle + 0.17));
-        context.lineTo(size * 0.12, size * middle);
-        context.closePath();
-        context.fill();
-    }
-
-    cut(context, size, (line) => {
-        for (const middle of [0.34, 0.5]) {
-            line.moveTo(size * 0.12, size * middle);
-            line.lineTo(size * 0.5, size * (middle + 0.17));
-            line.lineTo(size * 0.88, size * middle);
-        }
-    });
 };
 
 // Not found: the number 404 in tall, narrow numerals.
@@ -274,14 +374,19 @@ export const drawnFigures = {
     trend,
     ring,
     timeline,
+    target,
+    ledger,
+    calendar,
+    converge,
+    checklist,
+    globe,
+    sheet,
+    leaf,
     'jay-jay': jayJay,
-    website,
     cloud,
-    board,
     backend,
     interface: pointerArrow,
     windows,
-    stack,
     'not-found': notFound,
     github: mark(siGithub),
     dotnet: mark(siDotnet),

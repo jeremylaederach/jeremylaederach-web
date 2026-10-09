@@ -10,8 +10,8 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 - Custom client-side navigation and coordinated page transitions
 - Accessible keyboard navigation, reduced-motion support and responsive layouts
 - A custom pointer and original interface sounds
-- A generative sphere of dots on the home page that morphs into a figure for each destination
-- Detailed case studies for Quantified, Jay-Jay and SessionDeck
+- A generative sphere of dots that flows from figure to figure: one for each destination, several for each project
+- An about page and case studies told in scenes: one screen stays in place, and scrolling changes its statement and the figure together
 - Static production export with localized 404 pages and hardened response headers
 - PHPUnit feature coverage, JavaScript interaction tests, PHPStan analysis and Laravel Pint formatting checks
 
@@ -51,9 +51,9 @@ app/Console/Commands/    Static export command
 app/Http/Controllers/   Localized portfolio controller
 config/portfolio.php    English and German content
 resources/views/        Blade pages and reusable components
-resources/css/          Foundation, layout, one stylesheet per page in pages/, responsive rules
+resources/css/          Foundation, layout and shared components; pages/ holds what one kind of page needs
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
-resources/js/           Navigation, pointer, interaction, sound and transition controllers
+resources/js/           One small controller per concern: navigation, pointer, sphere, scenes, sound, transitions
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Controller and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
@@ -64,7 +64,7 @@ DESIGN.md                What the interface does: craft standard, identity, the 
 docs/handoff.md          Current state, open decisions and audit findings
 ```
 
-Project galleries share one Blade component, interaction controller and stylesheet (`project-reel.css`). The gallery distinguishes screenshots from HTML interface previews; previews use illustrative data and are not live product embeds. All galleries use manual navigation with previous/next buttons, arrow keys and touch swipes; images never advance automatically. The optional enlarged view uses a native dialog and moves the same gallery into it, preserving the selected slide without duplicating markup or carousel state. Closing restores keyboard focus and the original layout.
+The about page and the case studies are told in scenes: one Blade component (`scene-stage`), one stylesheet and one small controller that shows the scene whose step crosses the middle of the window. What the sphere shows for each scene is listed in `config/portfolio.php`. The site shows no screenshots; the sphere draws rough pictures instead.
 
 A page change has two phases, leaving and entering. The router waits for the main region's CSS animations to finish before swapping content, then lets the new page enter. The page's timing belongs to CSS; the sphere, which scatters and gathers in step, is drawn on a canvas with its own clock. Reduced-motion navigation swaps without a transition.
 

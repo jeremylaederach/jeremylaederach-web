@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { chapterChangedEvent } from '../../resources/js/chapter-controller.js';
 import { createDotOrbController, openingAt } from '../../resources/js/dot-orb-controller.js';
+import { sceneChangedEvent } from '../../resources/js/scene-controller.js';
 import { createDom } from './dom.js';
 
 const figureResolution = 120;
@@ -30,7 +30,7 @@ const createContext = (calls) => new Proxy(calls, {
     },
 });
 
-const setup = (t, reducedMotion = false) => {
+const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     const window = createDom(t, `
         <canvas data-dot-orb></canvas>
         <a href="#" data-dot-orb-figure="projects"><span>Projects</span></a>
@@ -38,6 +38,10 @@ const setup = (t, reducedMotion = false) => {
         <a href="#" data-dot-orb-figure="projects about">Both</a>
     `);
     const canvas = document.querySelector('canvas');
+
+    // A fitted canvas holds the sphere still in its middle.
+    canvas.toggleAttribute('data-dot-orb-fit', fitted);
+
     const link = document.querySelector('[data-dot-orb-figure="projects"] span');
     const dots = [];
     const context = createContext({
@@ -52,9 +56,7 @@ const setup = (t, reducedMotion = false) => {
     let timestamp = 0;
     const globals = {
         getComputedStyle: (element) => ({
-            getPropertyValue: (name) => (name === '--dot-orb-x'
-                ? element.dataset.place ?? ''
-                : element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : '')),
+            getPropertyValue: (name) => element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : ''),
         }),
         Path2D: class {},
         ResizeObserver: class {
@@ -151,26 +153,48 @@ test('hovering an element gathers the dots into its figure and leaving releases 
 });
 
 test('an element that names several figures shows one after the other', (t) => {
-    const { dots, run, hover } = setup(t);
+    const { dots, run, hover } = setup(t, { fitted: true });
     const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
 
     hover(document.querySelector('[data-dot-orb-figure="projects about"]'));
-    run(180);
+    run(250);
 
     const first = level();
 
-    // A figure stays for 3.6 seconds, 225 frames of 16 milliseconds.
-    run(120);
+    // A figure stays for 8 seconds, 500 frames of 16 milliseconds; the dots then flow to the
+    // next one, which sits a sixth of the figure lower, 125 pixels on this canvas.
+    run(400);
 
-    // The second figure sits a sixth of 0.72 units lower, about 50 of the 420 pixels of a unit.
     const second = level();
 
-    assert.ok(second - first > 30);
+    assert.ok(second - first > 80);
 
-    // Another 3.6 seconds later the first figure is back; the sphere wanders a little meanwhile.
-    run(225);
+    // Another 8 seconds later the first figure is back.
+    run(500);
 
-    assert.ok(second - level() > 20);
+    assert.ok(second - level() > 80);
+});
+
+test('a press on the dots moves a sequence on to its next figure', (t) => {
+    const { dots, run, hover } = setup(t, { fitted: true });
+    const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
+    const press = (type) => {
+        const event = new window.MouseEvent(type, { bubbles: true, clientX: 300, clientY: 450 });
+
+        Object.defineProperty(event, 'pointerType', { value: 'touch' });
+        window.dispatchEvent(event);
+    };
+
+    hover(document.querySelector('[data-dot-orb-figure="projects about"]'));
+    run(100);
+
+    const first = level();
+
+    press('pointerdown');
+    press('pointerup');
+    run(150);
+
+    assert.ok(level() - first > 80);
 });
 
 test('an element that names no known figure leaves the sphere whole', (t) => {
@@ -182,53 +206,21 @@ test('an element that names no known figure leaves the sphere whole', (t) => {
     assert.ok(spread('y') > 200);
 });
 
-test('a chapter gives the sphere its figure and its place once it is current, not on a hover', (t) => {
-    const { dots, run, hover, spread } = setup(t);
-    const chapter = document.createElement('section');
-    const middle = () => dots.reduce((sum, dot) => sum + dot.x, 0) / dots.length;
+test('a scene gives the sphere its figure once it is the one the sphere rests with', (t) => {
+    const { run, spread } = setup(t);
+    const scene = document.createElement('li');
 
-    chapter.setAttribute('data-chapter', '');
-    chapter.dataset.dotOrbFigure = 'projects';
-    chapter.dataset.place = '0.25';
-    document.body.append(chapter);
-
-    hover(chapter);
-    run(200);
+    scene.dataset.dotOrbFigure = 'projects';
+    document.body.append(scene);
+    run(100);
 
     assert.ok(spread('y') > 200);
 
-    const before = middle();
-
-    chapter.setAttribute('data-dot-orb-resting', '');
-    document.dispatchEvent(new window.CustomEvent(chapterChangedEvent));
-    run(400);
+    scene.setAttribute('data-dot-orb-resting', '');
+    document.dispatchEvent(new window.CustomEvent(sceneChangedEvent));
+    run(200);
 
     assert.ok(spread('x') < 170 && spread('y') < 170);
-    // The canvas is 600 pixels wide: the sphere glides from 0.68 of it to a quarter, give or take
-    // the tenth it wanders.
-    assert.ok(before > 340 && middle() < 220);
-});
-
-test('the sphere keeps level with the part of a chapter that is marked as its place', (t) => {
-    const { dots, run } = setup(t);
-    const chapter = document.createElement('section');
-    const place = document.createElement('div');
-    const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
-
-    chapter.setAttribute('data-chapter', '');
-    chapter.setAttribute('data-dot-orb-resting', '');
-    chapter.dataset.place = '0.5';
-    chapter.getBoundingClientRect = () => ({ top: 0, height: 900 });
-    place.setAttribute('data-dot-orb-place', '');
-    place.getBoundingClientRect = () => ({ top: 150, height: 100 });
-    chapter.append(place);
-    document.body.append(chapter);
-
-    document.dispatchEvent(new window.CustomEvent(chapterChangedEvent));
-    run(400);
-
-    // The place has its middle 200 pixels below the top of the canvas, the chapter at 450.
-    assert.ok(Math.abs(level() - 200) < 40);
 });
 
 test('a click sends a ring through the dots that fades again', (t) => {
@@ -288,7 +280,7 @@ test('touch input leaves the sphere whole', (t) => {
 });
 
 test('reduced motion draws a still sphere without a frame loop', (t) => {
-    const { link, dots, frames, hover } = setup(t, true);
+    const { link, dots, frames, hover } = setup(t, { reducedMotion: true });
 
     hover(link);
 

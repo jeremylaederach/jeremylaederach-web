@@ -1,15 +1,12 @@
-import { createChapterController } from './chapter-controller.js';
 import { createDotOrbController } from './dot-orb-controller.js';
 import { createInteractionController } from './interaction-controller.js';
 import { createPageHeadingController } from './page-heading-controller.js';
 import { createPageRouter } from './page-router.js';
 import { createPointerController } from './pointer-controller.js';
-import { createProjectReelController } from './project-reel-controller.js';
-import { createScrollCueController } from './scroll-cue-controller.js';
+import { createSceneController } from './scene-controller.js';
 import { createSiteMenuController } from './site-menu.js';
 import { createSoundController } from './sound-controller.js';
 import { createStageListController } from './stage-list-controller.js';
-import { createTechnologyIconController } from './technology-icons.js';
 import { createPageTransitionController } from './transition-controller.js';
 
 const root = document.documentElement;
@@ -18,17 +15,14 @@ const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 root.classList.add('js');
 
-const chapterController = createChapterController();
 const dotOrbController = createDotOrbController({ reducedMotion });
 const interactionController = createInteractionController({ reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
 const pageHeadingController = createPageHeadingController({ reducedMotion });
 const pointerController = createPointerController({ reducedMotion });
-const projectReelController = createProjectReelController();
-const scrollCueController = createScrollCueController({ reducedMotion });
+const sceneController = createSceneController();
 const soundController = createSoundController({ finePointer });
 const stageListController = createStageListController();
-const technologyIconController = createTechnologyIconController();
 const transitionController = createPageTransitionController({ reducedMotion });
 
 menuController.initialize();
@@ -37,11 +31,8 @@ interactionController.initialize();
 pointerController.initialize();
 pageHeadingController.initialize();
 dotOrbController.initialize();
-chapterController.initialize();
+sceneController.initialize();
 stageListController.initialize();
-projectReelController.initialize();
-scrollCueController.initialize();
-technologyIconController.initialize();
 createPageRouter({ soundController, transitionController });
 
 window.requestAnimationFrame(() => {

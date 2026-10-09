@@ -38,9 +38,9 @@ class PortfolioController extends Controller
         return redirect()->to(route('jay-jay', ['locale' => $locale]).'#client-hub', 301);
     }
 
-    public function sessionDeck(string $locale): View
+    public function sessionDeck(string $locale): RedirectResponse
     {
-        return $this->renderProject($locale, 'sessiondeck_page');
+        return redirect()->to(route('projects', ['locale' => $locale]), 301);
     }
 
     public function contact(string $locale): View
@@ -70,7 +70,7 @@ class PortfolioController extends Controller
             'locale' => $locale,
             'content' => $content,
             'title' => $page['heading'] ?? $content['meta']['title'],
-            'description' => $page['intro'] ?? $content['meta']['description'],
+            'description' => $page['intro'] ?? $page['scenes'][0]['text'] ?? $content['meta']['description'],
         ]);
     }
 
@@ -79,17 +79,17 @@ class PortfolioController extends Controller
         $content = $this->contentFor($locale);
         $project = $content[$contentKey];
         $projectItems = $content['projects_page']['items'];
-        $projectSlugs = array_column($projectItems, 'slug');
-        $projectIndex = array_search($project['slug'], $projectSlugs, true);
-        $resolvedProjectIndex = $projectIndex === false ? 0 : $projectIndex;
-        $nextProject = $projectItems[($resolvedProjectIndex + 1) % count($projectItems)];
+        $projectIndex = (int) array_search($project['slug'], array_column($projectItems, 'slug'), true);
+        $nextProject = $projectItems[($projectIndex + 1) % count($projectItems)];
+        $sphere = config('portfolio.scenes');
 
         return view('pages.project', [
             'locale' => $locale,
             'content' => $content,
             'project' => $project,
-            'projectNumber' => $resolvedProjectIndex + 1,
             'nextProject' => $nextProject,
+            // What the sphere shows for each scene; the last one shows the next project.
+            'sphere' => [...$sphere[$project['slug']], 'next' => $sphere[$nextProject['slug']]['overview']],
             'scene' => 'projects',
             'title' => $project['heading'],
             'description' => $project['meta_description'],

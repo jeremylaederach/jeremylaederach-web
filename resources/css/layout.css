@@ -58,24 +58,16 @@
         scale: 1.12;
     }
 
-    /* The mark takes the accent of the page: the gradient of its drawing runs from a lighter
-       tone of the accent at the top left to a deeper one. */
-    .brand-mark,
-    .brand-mark svg {
+    /* The mark takes the accent of the page: its drawing is the mask, and the accent runs from a
+       lighter tone at the top left to a deeper one, as in the drawing itself. */
+    .brand-mark {
         display: block;
-    }
-
-    .brand-mark svg {
-        width: 100%;
-        height: 100%;
-    }
-
-    .brand-mark .mark-light {
-        stop-color: color-mix(in srgb, var(--route-accent) 68%, white);
-    }
-
-    .brand-mark .mark-deep {
-        stop-color: color-mix(in srgb, var(--route-accent) 91%, black);
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--route-accent) 76%, white) 20%,
+            color-mix(in srgb, var(--route-accent) 92%, black) 80%
+        );
+        mask: var(--brand-mark) center / contain no-repeat;
     }
 
     .site-header__controls {
