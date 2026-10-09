@@ -242,8 +242,11 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     const blobs = [];
     const joint = { x: 0, y: 0, z: 0 };
     const spot = { x: 0, y: 0, z: 0 };
+    // The stage in canvas pixels, and how far the canvas reaches beyond it on each side.
     let width = 0;
     let height = 0;
+    let bleedX = 0;
+    let bleedY = 0;
     let unit = 1;
     let scale = 1;
     let frame = 0;
@@ -278,9 +281,12 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         view.plainY = y;
     };
 
-    // A canvas marked `data-dot-orb-fit` holds the sphere still in its middle, and a figure fills
-    // its smaller side. Otherwise the sphere wanders slowly around the middle of the stage.
-    const fit = canvas.hasAttribute('data-dot-orb-fit') && !reducedMotion;
+    // The stage is the canvas itself, or the square around a canvas marked `data-dot-orb-fit`:
+    // that canvas reaches beyond its square, so dots that are pulled or pushed out of the
+    // figure are not cut off at its edge. On such a stage the sphere stands still in the middle
+    // and a figure fills the smaller side. Otherwise the sphere wanders slowly around its place.
+    const stage = canvas.hasAttribute('data-dot-orb-fit') ? canvas.parentElement : canvas;
+    const fit = stage !== canvas && !reducedMotion;
     const wander = (seconds) => {
         home.x = (width * (fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / unit;
         home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit;
@@ -468,7 +474,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
     // From the far dots to the near ones, one tint level and one fill color per pass.
     const paint = () => {
-        context.clearRect(0, 0, width, height);
+        context.clearRect(-bleedX, -bleedY, canvas.width, canvas.height);
 
         for (let level = 0; level < tint.levels; level += 1) {
             const lightness = (level / (tint.levels - 1)) * tint.lightest;
@@ -556,19 +562,23 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
     const resize = () => {
         scale = Math.min(window.devicePixelRatio, 2);
-        width = Math.round(canvas.clientWidth * scale);
-        height = Math.round(canvas.clientHeight * scale);
+        width = Math.round(stage.clientWidth * scale);
+        height = Math.round(stage.clientHeight * scale);
         unit = (fit
             ? Math.min(width, height) / (figure.size * figure.extent)
             : Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale)) || 1;
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = Math.round(canvas.clientWidth * scale);
+        canvas.height = Math.round(canvas.clientHeight * scale);
+        bleedX = (canvas.width - width) / 2;
+        bleedY = (canvas.height - height) / 2;
+        // Everything is drawn from the corner of the stage.
+        context.setTransform(1, 0, 0, 1, bleedX, bleedY);
         update();
     };
 
-    // A pointer event's position in units from the canvas corner.
+    // A pointer event's position in units from the corner of the stage.
     const locate = (event) => {
-        const bounds = canvas.getBoundingClientRect();
+        const bounds = stage.getBoundingClientRect();
         const cssUnit = unit / scale;
 
         return { x: (event.clientX - bounds.left) / cssUnit, y: (event.clientY - bounds.top) / cssUnit };

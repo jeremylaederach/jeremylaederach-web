@@ -43,6 +43,16 @@
         height: 100%;
     }
 
+    /* A canvas that holds a figure in a square reaches half a square beyond it on every side:
+       dots that are pulled or pushed out of the figure are not cut off at the square's edge. */
+    .dot-orb canvas[data-dot-orb-fit] {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+    }
+
     .dot-orb ~ * {
         position: relative;
         z-index: 1;

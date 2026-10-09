@@ -32,21 +32,26 @@ const createContext = (calls) => new Proxy(calls, {
 
 const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     const window = createDom(t, `
-        <canvas data-dot-orb></canvas>
+        <div><canvas data-dot-orb></canvas></div>
         <a href="#" data-dot-orb-figure="projects"><span>Projects</span></a>
         <a href="#" data-dot-orb-figure="unknown">Elsewhere</a>
         <a href="#" data-dot-orb-figure="projects about">Both</a>
     `);
     const canvas = document.querySelector('canvas');
 
-    // A fitted canvas holds the sphere still in its middle.
+    // A fitted canvas holds the sphere still in the middle of the square around it, and reaches
+    // half a square beyond that on every side.
+    const stage = fitted ? canvas.parentElement : canvas;
+
     canvas.toggleAttribute('data-dot-orb-fit', fitted);
 
     const link = document.querySelector('[data-dot-orb-figure="projects"] span');
     const dots = [];
+    const origins = [];
     const context = createContext({
         clearRect: () => dots.splice(0),
         arc: (x, y) => dots.push({ x, y }),
+        setTransform: (...matrix) => origins.push(matrix.slice(4)),
     });
     // The figures are sampled in the order they are listed: the second, "about", sits lower.
     let sampled = 0;
@@ -95,9 +100,15 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     t.mock.method(window.HTMLCanvasElement.prototype, 'getContext', function getContext() {
         return this === canvas ? context : figureContext;
     });
-    Object.defineProperty(canvas, 'clientWidth', { value: 600 });
-    Object.defineProperty(canvas, 'clientHeight', { value: 900 });
-    canvas.getBoundingClientRect = () => ({ left: 0, top: 0, width: 600, height: 900 });
+    Object.defineProperty(stage, 'clientWidth', { value: 600 });
+    Object.defineProperty(stage, 'clientHeight', { value: 900 });
+    stage.getBoundingClientRect = () => ({ left: 0, top: 0, width: 600, height: 900 });
+
+    if (fitted) {
+        Object.defineProperty(canvas, 'clientWidth', { value: 1200 });
+        Object.defineProperty(canvas, 'clientHeight', { value: 1800 });
+    }
+
     t.mock.method(window, 'requestAnimationFrame', (callback) => {
         frames.set(++frameId, callback);
 
@@ -124,7 +135,7 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
 
     createDotOrbController({ reducedMotion }).initialize();
 
-    return { context, link, dots, frames, run, hover, spread };
+    return { canvas, context, link, dots, origins, frames, run, hover, spread };
 };
 
 test('the sphere is drawn as one body of 1200 dots', (t) => {
@@ -268,6 +279,14 @@ test('a held press gathers the dots towards the pointer until it is released', (
     run(120);
 
     assert.ok(reach() > resting * 0.9);
+});
+
+test('a fitted canvas is larger than its stage and draws from the corner of the stage', (t) => {
+    const { canvas, origins } = setup(t, { fitted: true });
+
+    // The stage is 600 by 900 pixels large and stands in the middle of the canvas.
+    assert.deepEqual([canvas.width, canvas.height], [1200, 1800]);
+    assert.deepEqual(origins.at(-1), [300, 450]);
 });
 
 test('touch input leaves the sphere whole', (t) => {

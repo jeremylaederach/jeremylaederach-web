@@ -2,7 +2,8 @@
     /* The 404 page is one centred stage: the sphere rests in the figure of the number, and the
        message stands below it. With the line that ends the page it fills one screen. */
     .not-found-page {
-        --side: min(100%, 52svh, 560px);
+        /* The square leaves the message and the paddings their room in a low window. */
+        --side: min(100%, 52svh, 100svh - 380px, 560px);
         position: relative;
         isolation: isolate;
         display: grid;
@@ -23,10 +24,11 @@
         mask-image: none;
     }
 
-    /* The numerals fill the middle of their square; the message moves up into what they leave. */
+    /* The numerals fill the middle of their square, which leaves an eighth of it free below
+       them: that is most of the room between the number and the message. */
     .not-found-page__message {
         display: grid;
-        margin-top: calc(var(--side) * -0.1);
+        margin-top: calc(var(--side) * -0.02);
         justify-items: center;
     }
 

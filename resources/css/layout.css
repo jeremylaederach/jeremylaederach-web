@@ -285,6 +285,13 @@
         color: var(--ink);
     }
 
+    /* The sphere's canvas may reach beyond its stage. It ends with the page instead of making
+       it longer: at the lower edge of the main region and of the line that follows it. */
+    [data-page-main] {
+        overflow-y: clip;
+        overflow-clip-margin: 73px;
+    }
+
     /* A page change: the old page fades out as it sinks, the new one fades in as it rises. The
        transition controller sets the phase and waits for these transitions. */
     [data-transition='leaving'] :is([data-page-main], [data-page-footer]) {

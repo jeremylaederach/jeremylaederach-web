@@ -136,9 +136,12 @@ the text.
 - **Resting figure and color.** While nothing that names a figure is hovered or focused, the
   element marked `data-dot-orb-resting` holds its figure. An element can give its figure a color
   with `--dot-orb-rgb`; the dots blend to it and back to the page accent.
-- **Fitted canvas.** On a canvas marked `data-dot-orb-fit` the sphere stands still in the middle,
-  and a figure, which is drawn within the middle 80% of its square, fills the smaller side of the
-  canvas.
+- **Fitted canvas.** A canvas marked `data-dot-orb-fit` holds its figure in the square around
+  it: the sphere stands still in the middle, and a figure, which is drawn within the middle 80%
+  of its square, fills the smaller side. The canvas itself reaches half a square beyond that
+  square on every side, so dots that a press pulls out of the figure, a ring pushes away or a
+  page change scatters are not cut off at an edge. It ends with the page: the main region clips
+  it at the lower edge of the line that ends the page.
 - **Sub-pages.** The about page and the case studies are told in scenes beside the sphere (see
   "Scenes: about and the case studies"). The 404 page is a stage for it (see "404 and legal
   pages"). The legal pages have no sphere.
@@ -235,8 +238,9 @@ shows a screenshot.
 - **404.** One centred stage (`resources/views/errors/404.blade.php`,
   `resources/css/pages/not-found.css`): the sphere rests in the figure of the number, 404 in
   tall, narrow numerals, on a fitted square of at most 52% of the window's height, and the
-  heading, one sentence and the link home stand below it. With the line that ends the page it
-  fills one screen.
+  heading, one sentence and the link home stand below it, a clear step away from the
+  numerals. With the line that ends the page it fills one screen; in a low window the square
+  gets smaller so the message keeps its room.
 - **Legal notice and privacy notice.** Text only (`resources/views/pages/legal.blade.php`,
   `resources/css/pages/legal.css`): the title, the introduction and, on the privacy notice, the
   date; then one row between hairlines for every section. From 961px the titles of the sections
