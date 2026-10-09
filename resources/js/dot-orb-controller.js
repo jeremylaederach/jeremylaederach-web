@@ -1,5 +1,7 @@
 import { sceneChangedEvent } from './scene-controller.js';
+import { createDivision } from './dot-orb-buds.js';
 import { drawnFigures } from './dot-orb-figures.js';
+import { settle } from './dot-orb-lamp.js';
 import { transitionFinishedEvent } from './transition-controller.js';
 
 const dotCount = 1200;
@@ -28,12 +30,17 @@ const press = { reach: 0.5, pull: 0.24, chargeRate: 1.5, releaseRate: 7, boost: 
 const tint = { levels: 8, lightest: 0.42 };
 
 // A bud is a smaller sphere that leaves the main one for a while, like a blob in a lava lamp: it
-// drifts beside the sphere and rises and sinks over the height of the canvas. The dots are dealt
-// out to four groups. The first is the core and never leaves; the others have their own size,
-// their own side and their own cycles, in seconds, and start inside the sphere.
+// grows out of the sphere, drifts beside it, rises and sinks over the height of the canvas and
+// melts back into it (see dot-orb-lamp.js for how their surfaces join). A quarter of the dots is
+// the core and never leaves; every bud takes another quarter, the dots beside it at that moment
+// (see dot-orb-buds.js), and turns `turn` further than the sphere. The buds have their own size,
+// their own side and their own cycles, in seconds, and start inside the sphere. A bud is on its
+// way out or back for `transit` of its period. The first entry stands for the core.
 const bud = {
     margin: 0.2,
     travel: 0.3,
+    turn: 2.1,
+    transit: 0.12,
     groups: [
         null,
         { radius: 0.15, offset: 0.46, period: 41, phase: 5.42, rise: 29 },
@@ -186,10 +193,19 @@ const sampleFigure = (draw) => {
 
 const createBuds = () => bud.groups.map((group) => ({
     group,
+    radius: group?.radius ?? 0,
     out: 0,
+    rising: false,
     x: 0,
     y: 0,
-    rotation: null,
+    axis: { x: 0, y: 0, z: 0 },
+}));
+
+// The places on a bud, in the frame of the sphere's lattice: a lattice of its own, turned on.
+const createSeats = (count, turn) => createLattice(count).map(({ x, y, z }) => ({
+    x: x * Math.cos(turn) + z * Math.sin(turn),
+    y,
+    z: z * Math.cos(turn) - x * Math.sin(turn),
 }));
 
 const initializeOrb = (canvas, reducedMotion, arriving) => {
@@ -200,7 +216,9 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     const color = accent() ?? [...white];
     const buds = createBuds();
     const sphere = createLattice(dotCount);
-    const budSphere = createLattice(Math.ceil(dotCount / buds.length));
+    const leaving = buds.filter((part) => part.group);
+    const seats = leaving.map((_, index) => createSeats(dotCount / buds.length, (index + 1) * bud.turn));
+    const division = createDivision(sphere, seats);
     const figures = new Map();
     const dots = {
         x: new Float32Array(dotCount),
@@ -218,7 +236,12 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     const ripples = [];
     const hold = { x: 0, y: 0, down: false, charge: 0 };
     const home = { x: 0, y: 0 };
-    const view = { x: 0, y: 0, z: 0 };
+    const view = { x: 0, y: 0, z: 0, plainX: 0, plainY: 0 };
+    // The sphere itself and the blobs whose surfaces join right now.
+    const body = { x: 0, y: 0, radius: sphereRadius };
+    const blobs = [];
+    const joint = { x: 0, y: 0, z: 0 };
+    const spot = { x: 0, y: 0, z: 0 };
     let width = 0;
     let height = 0;
     let unit = 1;
@@ -239,7 +262,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let scattered = arriving && !reducedMotion ? 1 : 0;
     let targetScattered = 0;
 
-    // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii.
+    // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii,
+    // and once more as they are without the swell.
     const place = (point, rotation, seconds) => {
         const x = point.x * rotation.cosTurn + point.z * rotation.sinTurn;
         const depth = point.z * rotation.cosTurn - point.x * rotation.sinTurn;
@@ -250,6 +274,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         view.x = x * bulge;
         view.y = y * bulge;
         view.z = z;
+        view.plainX = x;
+        view.plainY = y;
     };
 
     // A canvas marked `data-dot-orb-fit` holds the sphere still in its middle, and a figure fills
@@ -260,21 +286,30 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit;
     };
 
-    // Where each bud is right now, and how far out of the sphere.
+    // Where each bud is right now, how far out of the sphere, and its axis: the way from the
+    // middle of the sphere to where the bud is heading, in the frame of the turning lattice as
+    // it will stand when the bud is half on its way, because the dots it takes turn on with
+    // the sphere while it leaves or lands.
     const arrange = (seconds, turn, lean) => {
-        for (const [index, part] of buds.entries()) {
-            if (!part.group) {
-                continue;
-            }
-
+        for (const part of leaving) {
             const { offset, period, phase, rise } = part.group;
-            const wave = Math.sin((seconds / period) * Math.PI * 2 + phase);
+            const rotation = createRotation(turn + ((period * bud.transit) / 2 / turnSeconds) * Math.PI * 2, lean);
+            const cycle = (seconds / period) * Math.PI * 2 + phase;
+            const wave = Math.sin(cycle);
             const lift = Math.sin((seconds / rise) * Math.PI * 2 + phase) * bud.travel;
+            const x = clamp(home.x + offset, bud.margin, width / unit - bud.margin) - home.x;
+            const y = clamp((height / unit) * (0.5 + lift), bud.margin, height / unit - bud.margin) - home.y;
+            const length = Math.hypot(x, y) || 1;
+            const depth = (y / length) * rotation.sinLean;
 
-            part.out = smooth(clamp((wave - 0.35) / 0.4, 0, 1));
-            part.x = clamp(home.x + offset, bud.margin, width / unit - bud.margin);
-            part.y = clamp((height / unit) * (0.5 + lift), bud.margin, height / unit - bud.margin);
-            part.rotation = createRotation(turn + index * 2.1, lean);
+            // A bud leaves from the middle of the sphere and returns into it.
+            part.out = smooth(clamp((wave - 0.25) / 0.6, 0, 1));
+            part.rising = Math.cos(cycle) > 0;
+            part.x = home.x + x * part.out;
+            part.y = home.y + y * part.out;
+            part.axis.x = (x / length) * rotation.cosTurn + depth * rotation.sinTurn;
+            part.axis.y = (y / length) * rotation.cosLean;
+            part.axis.z = (x / length) * rotation.sinTurn - depth * rotation.cosTurn;
         }
     };
 
@@ -297,29 +332,70 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         const away = buds.reduce((sum, part) => sum + part.out, 0) / buds.length;
         const radius = sphereRadius * Math.sqrt(1 - away);
 
+        // The sphere and every bud that is out of it are the blobs of the lamp: where they are
+        // close, their surfaces join, so a bud grows out of the sphere on a neck and melts back
+        // into it. A figure has no blobs.
+        blobs.length = 0;
+
+        if (shape < 0.999) {
+            Object.assign(body, home, { radius });
+            blobs.push(body);
+
+            for (const part of buds) {
+                if (part.out > 0.001) {
+                    blobs.push(part);
+                }
+            }
+        }
+
+        // The dots are shared out between the sphere and the buds that are out of it.
+        division.follow(leaving);
+
         // Within a figure the dots flow from one shape to the next, each at its own pace; coming
         // from the sphere they head straight for the shape.
         const arriving = shape < 0.02;
 
         for (let index = 0; index < dotCount; index += 1) {
-            place(sphere[index], rotation, seconds);
+            spot.x = division.at.x[index];
+            spot.y = division.at.y[index];
+            spot.z = division.at.z[index];
+            place(spot, rotation, seconds);
 
             let x = home.x + view.x * radius;
             let y = home.y + view.y * radius;
             let z = view.z;
             let size = 1;
-            const part = buds[index % buds.length];
+            // The radius of the blob the dot sits on, and where it sits on that blob without the
+            // swell: the surfaces join on those plain shapes.
+            let own = radius;
+            const part = buds[division.bud[index]];
+
+            joint.x = home.x + view.plainX * radius;
+            joint.y = home.y + view.plainY * radius;
+            joint.z = view.z * radius;
 
             if (part.out > 0.001) {
-                // The dots leave from the top down, so a bud stretches out of the sphere.
-                const amount = smooth(clamp(part.out * 1.35 - (index / dotCount) * 0.35, 0, 1));
+                const amount = division.away[index];
 
-                // Each bud turns and swells on its own phase.
-                place(budSphere[Math.floor(index / buds.length)], part.rotation, seconds + (index % buds.length) * 7);
-                x = mix(x, part.x + view.x * part.group.radius, amount);
-                y = mix(y, part.y + view.y * part.group.radius, amount);
+                // Each bud swells on its own phase.
+                place(seats[division.bud[index] - 1][division.seat[index]], rotation, seconds + division.bud[index] * 7);
+                x = mix(x, part.x + view.x * part.radius, amount);
+                y = mix(y, part.y + view.y * part.radius, amount);
                 z = mix(z, view.z, amount);
                 size = mix(1, 0.86, amount);
+                own = mix(own, part.radius, amount);
+                joint.x = mix(joint.x, part.x + view.plainX * part.radius, amount);
+                joint.y = mix(joint.y, part.y + view.plainY * part.radius, amount);
+                joint.z = mix(joint.z, view.z * part.radius, amount);
+            }
+
+            if (blobs.length > 1) {
+                const { x: plainX, y: plainY, z: plainZ } = joint;
+
+                settle(joint, blobs);
+                x += joint.x - plainX;
+                y += joint.y - plainY;
+                z = clamp(z + (joint.z - plainZ) / own, -1, 1);
             }
 
             if (figurePoints.length) {

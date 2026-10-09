@@ -90,9 +90,17 @@ the text.
   A click sends a ring outwards through the dots from where it happened; several rings travel at
   once. A held press gathers the dots around the pointer and lets go with a stronger ring.
 - **Buds.** Like a lava lamp it sheds buds: a quarter of the dots is the core and always stays;
-  the other three quarters each leave on their own slow cycle (41, 53 and 67 seconds), form a
+  three buds each take another quarter on their own slow cycle (41, 53 and 67 seconds), form a
   smaller sphere of their own size beside the main one, rise and sink over the height of the
-  canvas and return. The main sphere shrinks by what has left.
+  canvas and return. The main sphere shrinks by what has left. A bud starts in the middle of
+  the sphere and returns there, and where two blobs are close their surfaces join
+  (`resources/js/dot-orb-lamp.js`): the sphere bulges, the bud grows out on a neck that thins
+  and parts, and on its way back the two touch, grow a neck and become one body again.
+- **Which dots a bud takes.** The ones beside it (`resources/js/dot-orb-buds.js`): the quarter
+  of the dots nearest to where it leaves, the tip of that cap first. The dots that stay close
+  over the place, each moving a little towards it, so the sphere is evenly covered again while
+  the bud is out. On its way back the bud lands where it reaches the sphere at that moment,
+  and the dots there make room. No dot crosses the sphere.
 - **Color.** The dots take the page accent, lighter towards the viewer in eight steps and fading
   with depth. There is no glow, so the far side stays readable.
 - **Figures.** Hovering or focusing an element that names a figure (`data-dot-orb-figure`) morphs
