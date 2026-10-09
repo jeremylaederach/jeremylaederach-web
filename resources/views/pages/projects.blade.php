@@ -12,7 +12,7 @@
         'href' => route($project['detail_route'], ['locale' => $locale]),
         'route' => 'projects',
         'project' => $project['slug'],
-        'figure' => $project['slug'],
+        'figure' => implode(' ', config('portfolio.project_figures')[$project['slug']]),
         'icon' => 'arrow-right',
         'detail' => [
             'kind' => $project['type'],

@@ -11,8 +11,9 @@ import {
     siVite,
 } from 'simple-icons';
 
-// Figures the dot sphere can take: one per destination and featured project, some for the words
-// and chapters that name them, and the marks of GitHub and of the tools on the about page.
+// Figures the dot sphere can take: one per destination, several per featured project, some for
+// the words and chapters that name them, and the marks of GitHub and of the tools on the about
+// page.
 // Each paints a solid shape onto a square canvas of the given size; `cut` then removes lines from
 // it, which read as gaps between the dots.
 
@@ -78,6 +79,50 @@ const quantified = (context, size) => {
     }
 };
 
+// Quantified: a trend, the line of a chart above the area it encloses.
+const trend = (context, size) => {
+    const line = (path, drop) => {
+        path.moveTo(size * 0.1, size * (0.62 + drop));
+        path.bezierCurveTo(size * 0.3, size * (0.58 + drop), size * 0.3, size * (0.36 + drop), size * 0.48, size * (0.44 + drop));
+        path.bezierCurveTo(size * 0.64, size * (0.52 + drop), size * 0.66, size * (0.2 + drop), size * 0.9, size * (0.18 + drop));
+    };
+
+    context.beginPath();
+    line(context, 0);
+    context.lineTo(size * 0.9, size * 0.84);
+    context.lineTo(size * 0.1, size * 0.84);
+    context.closePath();
+    context.fill();
+    cut(context, size, (path) => line(path, 0.09));
+};
+
+// Quantified: the ring of a chart in three shares.
+const ring = (context, size) => {
+    context.lineWidth = size * 0.17;
+    context.beginPath();
+    context.arc(size * 0.5, size * 0.5, size * 0.29, 0, Math.PI * 2);
+    context.stroke();
+    cut(context, size, (path) => {
+        for (const turn of [-0.25, 0.2, 0.52]) {
+            const angle = turn * Math.PI * 2;
+
+            path.moveTo(size * (0.5 + Math.cos(angle) * 0.17), size * (0.5 + Math.sin(angle) * 0.17));
+            path.lineTo(size * (0.5 + Math.cos(angle) * 0.41), size * (0.5 + Math.sin(angle) * 0.41));
+        }
+    });
+};
+
+// Quantified: a timeline, the entries of a day in rows.
+const timeline = (context, size) => {
+    const entries = [[0.1, 0.17, 0.44], [0.32, 0.345, 0.58], [0.1, 0.52, 0.26], [0.42, 0.52, 0.34], [0.24, 0.695, 0.66]];
+
+    for (const [left, top, width] of entries) {
+        context.beginPath();
+        context.roundRect(size * left, size * top, size * width, size * 0.125, size * 0.04);
+        context.fill();
+    }
+};
+
 // Jay-Jay: the brackets and the slash of a closing tag.
 const jayJay = (context, size) => {
     context.lineWidth = size * 0.08;
@@ -93,6 +138,42 @@ const jayJay = (context, size) => {
     context.moveTo(size * 0.56, size * 0.2);
     context.lineTo(size * 0.44, size * 0.8);
     context.stroke();
+};
+
+// Jay-Jay: a website, a browser window with the blocks of a page.
+const website = (context, size) => {
+    context.beginPath();
+    context.roundRect(size * 0.1, size * 0.18, size * 0.8, size * 0.64, size * 0.07);
+    context.fill();
+    cut(context, size, (line) => {
+        line.moveTo(size * 0.1, size * 0.32);
+        line.lineTo(size * 0.9, size * 0.32);
+        line.moveTo(size * 0.1, size * 0.6);
+        line.lineTo(size * 0.9, size * 0.6);
+        line.moveTo(size * 0.5, size * 0.6);
+        line.lineTo(size * 0.5, size * 0.82);
+    });
+};
+
+// Jay-Jay: hosting, a cloud.
+const cloud = (context, size) => {
+    context.beginPath();
+    context.arc(size * 0.3, size * 0.58, size * 0.17, 0, Math.PI * 2);
+    context.arc(size * 0.47, size * 0.44, size * 0.21, 0, Math.PI * 2);
+    context.arc(size * 0.69, size * 0.56, size * 0.19, 0, Math.PI * 2);
+    context.roundRect(size * 0.3, size * 0.55, size * 0.39, size * 0.2, size * 0.02);
+    context.fill();
+};
+
+// Jay-Jay: the Client Hub, a board with tickets in three columns.
+const board = (context, size) => {
+    for (const [column, tickets] of [3, 2, 1].entries()) {
+        for (let ticket = 0; ticket < tickets; ticket += 1) {
+            context.beginPath();
+            context.roundRect(size * (0.1 + column * 0.29), size * (0.2 + ticket * 0.21), size * 0.22, size * 0.17, size * 0.035);
+            context.fill();
+        }
+    }
 };
 
 // Backend: a database, three discs on top of each other.
@@ -190,7 +271,13 @@ export const drawnFigures = {
     about,
     contact,
     quantified,
+    trend,
+    ring,
+    timeline,
     'jay-jay': jayJay,
+    website,
+    cloud,
+    board,
     backend,
     interface: pointerArrow,
     windows,

@@ -6,11 +6,12 @@ import { createDom } from './dom.js';
 
 const figureResolution = 120;
 
-// Every sampled figure is a square in the middle third of its canvas.
-const figurePixels = () => {
+// Every sampled figure is a square in the middle third of its canvas; `lower` moves it down by
+// a sixth.
+const figurePixels = (lower = false) => {
     const data = new Uint8ClampedArray(figureResolution * figureResolution * 4);
 
-    for (let y = 40; y < 80; y += 1) {
+    for (let y = lower ? 60 : 40; y < (lower ? 100 : 80); y += 1) {
         for (let x = 40; x < 80; x += 1) {
             data[(y * figureResolution + x) * 4 + 3] = 255;
         }
@@ -34,6 +35,7 @@ const setup = (t, reducedMotion = false) => {
         <canvas data-dot-orb></canvas>
         <a href="#" data-dot-orb-figure="projects"><span>Projects</span></a>
         <a href="#" data-dot-orb-figure="unknown">Elsewhere</a>
+        <a href="#" data-dot-orb-figure="projects about">Both</a>
     `);
     const canvas = document.querySelector('canvas');
     const link = document.querySelector('[data-dot-orb-figure="projects"] span');
@@ -42,7 +44,9 @@ const setup = (t, reducedMotion = false) => {
         clearRect: () => dots.splice(0),
         arc: (x, y) => dots.push({ x, y }),
     });
-    const figureContext = createContext({ getImageData: figurePixels });
+    // The figures are sampled in the order they are listed: the second, "about", sits lower.
+    let sampled = 0;
+    const figureContext = createContext({ getImageData: () => figurePixels((sampled += 1) === 2) });
     const frames = new Map();
     let frameId = 0;
     let timestamp = 0;
@@ -144,6 +148,29 @@ test('hovering an element gathers the dots into its figure and leaving releases 
     run(200);
 
     assert.ok(spread('y') > 200);
+});
+
+test('an element that names several figures shows one after the other', (t) => {
+    const { dots, run, hover } = setup(t);
+    const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
+
+    hover(document.querySelector('[data-dot-orb-figure="projects about"]'));
+    run(180);
+
+    const first = level();
+
+    // A figure stays for 3.6 seconds, 225 frames of 16 milliseconds.
+    run(120);
+
+    // The second figure sits a sixth of 0.72 units lower, about 50 of the 420 pixels of a unit.
+    const second = level();
+
+    assert.ok(second - first > 30);
+
+    // Another 3.6 seconds later the first figure is back; the sphere wanders a little meanwhile.
+    run(225);
+
+    assert.ok(second - level() > 20);
 });
 
 test('an element that names no known figure leaves the sphere whole', (t) => {

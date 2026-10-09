@@ -6,7 +6,7 @@
     name     the large text of the row
     label    accessible name of the link
     href     where the link leads
-    figure   the figure the sphere takes (see dot-orb-figures.js)
+    figure   the figure the sphere takes, or several separated by spaces (see dot-orb-figures.js)
     icon     name of the icon at the end of the row's first line
     route    name of the page's route, for a page of this site
     project  slug of the project the row stands for, which brings that project's color

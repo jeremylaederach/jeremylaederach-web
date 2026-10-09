@@ -173,7 +173,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('.NET / C#')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('data-dot-orb-figure="jay-jay"', false)
+            ->assertSee('data-dot-orb-figure="jay-jay website cloud board"', false)
             ->assertDontSee('Nativer Workspace-Launcher')
             ->assertSee('aria-describedby="quantified-detail"', false)
             ->assertSee('data-project="quantified"', false)

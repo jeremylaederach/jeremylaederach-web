@@ -103,6 +103,10 @@ the text.
   envelope for contact (`resources/js/dot-orb-figures.js`, drawn with canvas paths). The name on
   the home page gives the mark itself, sampled from its image with the eyes left open.
   Moving from one element to the next, the dots glide from shape to shape.
+- **Several figures.** An element can name several figures. The sphere then shows one after the
+  other, each for 3.6 seconds, and the dots glide from one to the next at half the speed of a
+  hover. The sequence starts with the first figure whenever the sphere turns to the element, and
+  it runs on the sphere's clock, so it pauses with it.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
   beside the text. Hovered, they light up in the color of their figure, the accent unless they
@@ -168,8 +172,10 @@ current row, so the sphere shows the first row's figure.
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
   and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
   case studies. A row brings its project's color, which is then the accent of the page, and its
-  figure: the bars of a chart for Quantified, the brackets of a tag for Jay-Jay. The current row
-  holds the project's kind, description and technologies. The overview carries no
+  figures (`project_figures` in the content), which the sphere goes through while the row is
+  current: for Quantified the bars of a chart, a trend, a ring and a timeline; for Jay-Jay the
+  brackets of a tag, a website, a cloud for the hosting and the board of the Client Hub. The
+  current row holds the project's kind, description and technologies. The overview carries no
   screenshots; those belong to the case studies.
 - **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
   largest text. The rows are the channels, each

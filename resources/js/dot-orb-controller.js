@@ -51,6 +51,11 @@ const bud = {
 // A figure is drawn within the middle `extent` of its square.
 const figure = { size: 0.72, extent: 0.8, resolution: 120, thickness: 0.17, depth: 0.36, sway: 0.45 };
 
+// An element can name several figures, separated by spaces. The sphere then shows one after the
+// other, each for `dwell` seconds. The dots glide from shape to shape at `hover` per second when
+// the pointer moves on to another element and at `cycle` when the sequence steps by itself.
+const sequence = { dwell: 3.6, hover: 9, cycle: 4.5 };
+
 // The dots that give way to the pointer leave an opening of this share of the reach around it,
 // where at least this many dots are close.
 const opening = { share: 0.6, dots: 4 };
@@ -220,6 +225,10 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let clock = 0;
     let visible = false;
     let figurePoints = [];
+    let shapes = [];
+    let shown = null;
+    let since = 0;
+    let glideRate = sequence.hover;
     let shape = 0;
     let targetShape = 0;
     let targetColor = color;
@@ -302,7 +311,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
         // Within a figure the dots glide from one shape to the next; coming from the sphere they
         // head straight for the shape.
-        const glide = shape < 0.02 ? 1 : 1 - Math.exp(-9 * delta);
+        const glide = shape < 0.02 ? 1 : 1 - Math.exp(-glideRate * delta);
 
         for (let index = 0; index < dotCount; index += 1) {
             place(sphere[index], rotation, seconds);
@@ -448,6 +457,16 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             color[index] = approach(channel, targetColor[index], 6, delta);
         });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
+
+        if (shapes.length > 1) {
+            const next = shapes[Math.floor((clock - since) / sequence.dwell) % shapes.length];
+
+            if (next !== figurePoints) {
+                figurePoints = next;
+                glideRate = sequence.cycle;
+            }
+        }
+
         position(clock, delta);
         paint();
     };
@@ -548,6 +567,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
     // While no element that names a figure is hovered or focused, the one marked as resting holds
     // its figure; the chapter of a page names its figure only for that, not for a hover. An
+    // element that names several figures starts with the first whenever the sphere turns to it. An
     // element may also name the color of its figure (`--dot-orb-rgb`), and the resting one where
     // the sphere stands (`--dot-orb-x`); the sphere then keeps level with it. The dots keep the
     // last figure while they return to the sphere.
@@ -555,18 +575,28 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         const resting = document.querySelector('[data-dot-orb-resting]');
         const element = (target instanceof Element ? target.closest('[data-dot-orb-figure]:not([data-chapter])') : null)
             ?? resting;
-        const points = figures.get(element?.dataset.dotOrbFigure);
-        const tone = points?.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
+        const named = (element?.dataset.dotOrbFigure ?? '').split(' ')
+            .map((name) => figures.get(name))
+            .filter((points) => points?.length);
+        const tone = named.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
         const share = resting ? Number.parseFloat(getComputedStyle(resting).getPropertyValue('--dot-orb-x')) : NaN;
 
         pointed = target;
-        targetShape = points?.length ? 1 : 0;
+        targetShape = named.length ? 1 : 0;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
         targetStanding = Number.isFinite(share) ? share : stand.share;
         anchor = Number.isFinite(share) ? resting.querySelector('[data-dot-orb-place]') ?? resting : null;
 
-        if (points?.length) {
-            figurePoints = points;
+        if (element !== shown) {
+            shown = element;
+            since = clock;
+            glideRate = sequence.hover;
+        }
+
+        shapes = named;
+
+        if (named.length) {
+            figurePoints = named[Math.floor((clock - since) / sequence.dwell) % named.length];
         }
     };
 

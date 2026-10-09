@@ -32,6 +32,14 @@ return [
         ],
     ],
 
+    // The figures the sphere shows for a featured project, one after the other (see
+    // dot-orb-figures.js): charts for Quantified, and for Jay-Jay a closing tag, a website, a cloud
+    // for the hosting and the board of the Client Hub.
+    'project_figures' => [
+        'quantified' => ['quantified', 'trend', 'ring', 'timeline'],
+        'jay-jay' => ['jay-jay', 'website', 'cloud', 'board'],
+    ],
+
     // Tools of the about page that have a mark of their own for the sphere (see
     // dot-orb-figures.js), by their name in the technology groups. A tool without a color takes
     // its group's, and a tool that is not listed here shows its group's mark.
