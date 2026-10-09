@@ -1,10 +1,6 @@
 @extends('layouts.app')
 
 @php
-    $featured = array_filter(
-        $content['projects_page']['items'],
-        fn (array $project): bool => $project['featured'] ?? true,
-    );
     $items = array_map(fn (array $project): array => [
         'id' => $project['slug'],
         'name' => $project['name'],
@@ -19,7 +15,7 @@
             'text' => $project['description'],
             'tags' => $project['tags'],
         ],
-    ], array_values($featured));
+    ], $content['projects_page']['items']);
 @endphp
 
 @section('content')

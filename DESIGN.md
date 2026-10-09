@@ -206,14 +206,12 @@ the middle above the heading, at most 40% of the window's height, and the rows f
 with their texts; a compact row then has its short text below its name. Touch never changes the
 current row, so the sphere shows the first row's figure.
 
-- **Projects overview.** The rows are the projects marked as featured in the content, Quantified
-  and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
-  case studies. A row brings its project's color, which is then the accent of the page, and its
-  figures (those of the overview of its case study, `scenes` in the content), which the sphere
-  goes through while the row is current: for Quantified the bars of a chart, a line chart, a
-  ring and a calendar; for Jay-Jay the brackets of a tag, a globe, a cloud and an envelope. The
-  current row holds the project's kind, description and technologies. The overview carries no
-  screenshots; those belong to the case studies.
+- **Projects overview.** The rows are the projects of the content, Quantified and Jay-Jay. A row
+  brings its project's color, which is then the accent of the page, and its figures (those of
+  the overview of its case study, `scenes` in the content), which the sphere goes through
+  while the row is current: for Quantified the bars of a chart, a line chart, a ring and a
+  calendar; for Jay-Jay the brackets of a tag, a globe, a cloud and an envelope. The current
+  row holds the project's kind, description and technologies.
 - **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
   largest text. The rows are the channels, each
   with its address at the end of the row: an envelope for email, GitHub's mark for GitHub, a head

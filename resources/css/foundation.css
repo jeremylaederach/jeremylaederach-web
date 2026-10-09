@@ -25,15 +25,12 @@
     :root {
         --bg: #07070a;
         --bg-rgb: 7, 7, 10;
-        --surface: #101014;
-        --surface-strong: #17171d;
         --ink: #f4f1ea;
         --ink-rgb: 244, 241, 234;
         --muted: #aaa6af;
         --ink-muted: var(--muted);
         --quiet: #8b8591;
         --line: rgba(var(--ink-rgb), 0.13);
-        --line-strong: rgba(var(--ink-rgb), 0.26);
         --mint: #7df0c9;
         --mint-rgb: 125, 240, 201;
         --route-accent-goal: var(--mint-rgb);

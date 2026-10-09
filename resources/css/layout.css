@@ -1,12 +1,4 @@
 @layer components {
-    .site-background {
-        position: fixed;
-        z-index: -2;
-        inset: 0;
-        background: var(--bg);
-        pointer-events: none;
-    }
-
     .site-header {
         position: fixed;
         z-index: 50;

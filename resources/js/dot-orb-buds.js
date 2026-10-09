@@ -7,8 +7,8 @@
 // are not the dots that had those places, but the ones nearest to the bud. Whenever a bud sets
 // out or turns back, every dot on the sphere is given a place again in a way that keeps all of
 // them close to where they are, and glides there while the bud is on its way.
-const smooth = (value) => value * value * (3 - 2 * value);
-const clamp = (value, low, high) => Math.min(Math.max(value, low), high);
+import { clamp, smooth } from './dot-orb-math.js';
+
 const along = (point, axis) => point.x * axis.x + point.y * axis.y + point.z * axis.z;
 
 // The dots at the tip of a cap leave first and the ones at its rim last, so a bud stretches out

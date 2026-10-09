@@ -101,10 +101,10 @@ return [
                 'scenes' => 'Scenes of this page',
             ],
             'nav' => [
-                ['label' => 'Home', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'Projects', 'route' => 'projects', 'icon' => 'folder'],
-                ['label' => 'About', 'route' => 'about', 'icon' => 'user'],
-                ['label' => 'Contact', 'route' => 'contact', 'icon' => 'mail'],
+                ['label' => 'Home', 'route' => 'home'],
+                ['label' => 'Projects', 'route' => 'projects'],
+                ['label' => 'About', 'route' => 'about'],
+                ['label' => 'Contact', 'route' => 'contact'],
             ],
             'home' => [
                 'summary' => 'Data platforms, web services, native apps. Built from the database to the last pixel.',
@@ -367,10 +367,10 @@ return [
                 'scenes' => 'Szenen dieser Seite',
             ],
             'nav' => [
-                ['label' => 'Start', 'route' => 'home', 'icon' => 'home'],
-                ['label' => 'Projekte', 'route' => 'projects', 'icon' => 'folder'],
-                ['label' => 'Profil', 'route' => 'about', 'icon' => 'user'],
-                ['label' => 'Kontakt', 'route' => 'contact', 'icon' => 'mail'],
+                ['label' => 'Start', 'route' => 'home'],
+                ['label' => 'Projekte', 'route' => 'projects'],
+                ['label' => 'Profil', 'route' => 'about'],
+                ['label' => 'Kontakt', 'route' => 'contact'],
             ],
             'home' => [
                 'summary' => 'Datenplattformen, Webservices, native Apps. Gebaut von der Datenbank bis zum letzten Pixel.',

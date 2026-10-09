@@ -1,16 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createDivision } from '../../resources/js/dot-orb-buds.js';
+import { createLattice } from '../../resources/js/dot-orb-math.js';
 
 const count = 1200;
 const size = 300;
-const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-const createLattice = (length) => Array.from({ length }, (_, index) => {
-    const y = 1 - (index / (length - 1)) * 2;
-    const ring = Math.sqrt(1 - y * y);
-
-    return { x: Math.cos(index * goldenAngle) * ring, y, z: Math.sin(index * goldenAngle) * ring };
-});
 const lattice = createLattice(count);
 const seats = [createLattice(size), createLattice(size), createLattice(size)];
 const towards = (angle) => ({ x: Math.cos(angle), y: Math.sin(angle), z: 0 });

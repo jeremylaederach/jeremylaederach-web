@@ -50,7 +50,6 @@
     </head>
     <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
-        <div class="site-background" aria-hidden="true"></div>
         {{-- The sphere of dots. Its canvas stays through every page change; a page marks where
              the sphere stands with a stage (see dot-orb-controller.js). --}}
         <div class="site-orb" aria-hidden="true">

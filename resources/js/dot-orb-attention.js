@@ -1,8 +1,7 @@
 // What the sphere notices of the visitor, and only a little of it: where the pointer is heading,
 // how fast the page scrolls, and that somebody is back after a pause. It asks for nothing and
 // keeps nothing; the sphere reads it once in every frame.
-const mix = (from, to, amount) => from + (to - from) * amount;
-const fade = (rate, delta) => 1 - Math.exp(-rate * delta);
+import { approach, mix } from './dot-orb-math.js';
 
 // After this many seconds without a pointer, a key or a scroll the visitor counts as away.
 const pause = 20;
@@ -45,9 +44,9 @@ export const createAttention = () => {
             const returned = back;
 
             if (delta > 0) {
-                scrollSpeed = mix(scrollSpeed, (window.scrollY - scrolled) / delta, fade(10, delta));
-                pointer.speedX *= 1 - fade(6, delta);
-                pointer.speedY *= 1 - fade(6, delta);
+                scrollSpeed = approach(scrollSpeed, (window.scrollY - scrolled) / delta, 10, delta);
+                pointer.speedX = approach(pointer.speedX, 0, 6, delta);
+                pointer.speedY = approach(pointer.speedY, 0, 6, delta);
             }
 
             scrolled = window.scrollY;
