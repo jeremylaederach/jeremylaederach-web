@@ -66,7 +66,7 @@ docs/handoff.md          Current state, open decisions and audit findings
 
 The about page and the case studies are told in scenes: one Blade component (`scene-stage`), one stylesheet and one small controller that shows the scene whose step crosses the middle of the window. What the sphere shows for each scene is listed in `config/portfolio.php`. The site shows no screenshots; the sphere draws rough pictures instead.
 
-A page change has two phases, leaving and entering. The router waits for the main region's CSS animations to finish before swapping content, then lets the new page enter. The page's timing belongs to CSS; the sphere, which scatters and gathers in step, is drawn on a canvas with its own clock. Reduced-motion navigation swaps without a transition.
+A page change has two phases, leaving and entering. The router waits for the main region's CSS animations to finish before swapping content, then lets the new page enter. The page's timing belongs to CSS. The sphere is drawn on one canvas outside the main region, with its own clock: it stays through the change and travels to the stage the new page marks for it. Reduced-motion navigation swaps without a transition.
 
 ## Quality Checks
 

@@ -21,7 +21,6 @@
         width: min(72%, 34svh);
         margin: 0 auto;
         aspect-ratio: 1;
-        mask-image: none;
     }
 
     .scene-stage__header h1 {

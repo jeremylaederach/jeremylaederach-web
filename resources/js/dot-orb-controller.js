@@ -2,7 +2,6 @@ import { sceneChangedEvent } from './scene-controller.js';
 import { createDivision } from './dot-orb-buds.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { settle } from './dot-orb-lamp.js';
-import { transitionFinishedEvent } from './transition-controller.js';
 
 const dotCount = 1200;
 const turnSeconds = 52;
@@ -83,9 +82,13 @@ export const openingAt = (clientX, clientY) => {
     return 0;
 };
 
-// On a page change the dots scatter away from the middle of the sphere and fade; the sphere of
-// the next page gathers from there. `reach` is how far they travel, in multiples of their distance
-// from the middle.
+// The sphere stays through a page change and travels to where the next page wants it, at
+// `rate` per second.
+const journey = { rate: 3.4 };
+
+// On a page without a stage the dots scatter away from the middle of the sphere and fade; the
+// next page with one gathers them again. `reach` is how far they travel, in multiples of their
+// distance from the middle.
 const scatter = { reach: 1.4, leaveRate: 9, arriveRate: 3.2 };
 
 // Evenly spread points on a unit sphere (Fibonacci lattice), ordered from the top down.
@@ -208,9 +211,8 @@ const createSeats = (count, turn) => createLattice(count).map(({ x, y, z }) => (
     z: z * Math.cos(turn) - x * Math.sin(turn),
 }));
 
-const initializeOrb = (canvas, reducedMotion, arriving) => {
+const initializeOrb = (canvas, reducedMotion) => {
     const context = canvas.getContext('2d');
-    const listeners = new AbortController();
     // The accent the page is heading for; the accent in use may still be blending towards it.
     const accent = () => readChannels(getComputedStyle(canvas).getPropertyValue('--route-accent-goal'));
     const color = accent() ?? [...white];
@@ -242,11 +244,21 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     const blobs = [];
     const joint = { x: 0, y: 0, z: 0 };
     const spot = { x: 0, y: 0, z: 0 };
-    // The stage in canvas pixels, and how far the canvas reaches beyond it on each side.
+    // The canvas lies over the first screen of every page and stays through a page change. A
+    // page marks where the sphere stands with a stage (`data-dot-orb-stage`). A stage marked
+    // `data-dot-orb-fit` is a square: the sphere stands still in its middle and a figure fills
+    // its smaller side. On another stage the sphere wanders slowly around its place.
+    let stage = null;
+    let fit = false;
+    // The stage in canvas pixels: its size, the unit it asks for and where its corner lies.
     let width = 0;
     let height = 0;
-    let bleedX = 0;
-    let bleedY = 0;
+    let size = 1;
+    let originX = 0;
+    let originY = 0;
+    // What is left of the way from the last stage: in pixels, as a ratio of the units, and the
+    // share of both that is still to go.
+    const way = { x: 0, y: 0, zoom: 1, left: 0 };
     let unit = 1;
     let scale = 1;
     let frame = 0;
@@ -262,7 +274,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let targetShape = 0;
     let targetColor = color;
     let pointed = null;
-    let scattered = arriving && !reducedMotion ? 1 : 0;
+    let scattered = 0;
     let targetScattered = 0;
 
     // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii,
@@ -281,12 +293,22 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         view.plainY = y;
     };
 
-    // The stage is the canvas itself, or the square around a canvas marked `data-dot-orb-fit`:
-    // that canvas reaches beyond its square, so dots that are pulled or pushed out of the
-    // figure are not cut off at its edge. On such a stage the sphere stands still in the middle
-    // and a figure fills the smaller side. Otherwise the sphere wanders slowly around its place.
-    const stage = canvas.hasAttribute('data-dot-orb-fit') ? canvas.parentElement : canvas;
-    const fit = stage !== canvas && !reducedMotion;
+    // Where the stage lies on the canvas right now. Both are read in every frame: a stage moves
+    // with its page while that page is revealed or leaves.
+    const measure = () => {
+        const frame = canvas.getBoundingClientRect();
+        const bounds = stage.getBoundingClientRect();
+
+        width = bounds.width * scale;
+        height = bounds.height * scale;
+        size = (fit
+            ? Math.min(width, height) / (figure.size * figure.extent)
+            : Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale)) || 1;
+        unit = size * mix(1, way.zoom, way.left);
+        originX = (bounds.left - frame.left) * scale + way.x * way.left;
+        originY = (bounds.top - frame.top) * scale + way.y * way.left;
+    };
+
     const wander = (seconds) => {
         home.x = (width * (fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / unit;
         home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit;
@@ -473,8 +495,11 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     };
 
     // From the far dots to the near ones, one tint level and one fill color per pass.
+    // Everything is drawn from the corner of the stage.
     const paint = () => {
-        context.clearRect(-bleedX, -bleedY, canvas.width, canvas.height);
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.setTransform(1, 0, 0, 1, originX, originY);
 
         for (let level = 0; level < tint.levels; level += 1) {
             const lightness = (level / (tint.levels - 1)) * tint.lightest;
@@ -508,6 +533,13 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
         previousTime = time;
         clock += delta;
+        way.left = approach(way.left, 0, journey.rate, delta);
+
+        // A stage that has just been replaced is measured again once the next page is in place.
+        if (stage?.isConnected) {
+            measure();
+        }
+
         hold.charge = approach(hold.charge, hold.down ? 1 : 0, hold.down ? press.chargeRate : press.releaseRate, delta);
 
         for (let index = ripples.length - 1; index >= 0; index -= 1) {
@@ -540,15 +572,22 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         paint();
     };
 
+    // The sphere moves while its stage is in sight, and on a page without one until the dots
+    // have scattered.
+    const moving = () => !reducedMotion && !document.hidden && (stage ? visible : scattered < 0.999);
+
     const loop = (time) => {
         draw(time);
-        frame = window.requestAnimationFrame(loop);
+
+        if (moving()) {
+            frame = window.requestAnimationFrame(loop);
+        }
     };
 
     const update = () => {
         window.cancelAnimationFrame(frame);
 
-        if (reducedMotion || !visible || document.hidden) {
+        if (!moving()) {
             draw(previousTime);
 
             return;
@@ -562,26 +601,19 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
 
     const resize = () => {
         scale = Math.min(window.devicePixelRatio, 2);
-        width = Math.round(stage.clientWidth * scale);
-        height = Math.round(stage.clientHeight * scale);
-        unit = (fit
-            ? Math.min(width, height) / (figure.size * figure.extent)
-            : Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale)) || 1;
         canvas.width = Math.round(canvas.clientWidth * scale);
         canvas.height = Math.round(canvas.clientHeight * scale);
-        bleedX = (canvas.width - width) / 2;
-        bleedY = (canvas.height - height) / 2;
-        // Everything is drawn from the corner of the stage.
-        context.setTransform(1, 0, 0, 1, bleedX, bleedY);
         update();
     };
 
     // A pointer event's position in units from the corner of the stage.
     const locate = (event) => {
-        const bounds = stage.getBoundingClientRect();
-        const cssUnit = unit / scale;
+        const frame = canvas.getBoundingClientRect();
 
-        return { x: (event.clientX - bounds.left) / cssUnit, y: (event.clientY - bounds.top) / cssUnit };
+        return {
+            x: ((event.clientX - frame.left) * scale - originX) / unit,
+            y: ((event.clientY - frame.top) * scale - originY) / unit,
+        };
     };
 
     const probe = (clientX, clientY) => {
@@ -682,18 +714,47 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         visible = entry.isIntersecting;
         update();
     });
-    const options = { signal: listeners.signal };
 
-    resizeObserver.observe(canvas);
-    visibilityObserver.observe(canvas);
-    document.addEventListener('visibilitychange', update, options);
+    // Takes the stage of the page that is now in place. The sphere travels there from where it
+    // stands; on a page without a stage the dots scatter.
+    const adopt = () => {
+        const from = stage ? { x: originX + home.x * unit, y: originY + home.y * unit, unit } : null;
+
+        stage = document.querySelector('[data-dot-orb-stage]');
+        fit = Boolean(stage?.hasAttribute('data-dot-orb-fit')) && !reducedMotion;
+        targetScattered = stage ? 0 : 1;
+        visibilityObserver.disconnect();
+        resizeObserver.disconnect();
+        resizeObserver.observe(canvas);
+
+        if (stage) {
+            // A stage that stays in the window while its page scrolls takes the canvas with it.
+            canvas.parentElement.toggleAttribute('data-pinned', stage.dataset.dotOrbStage === 'pinned');
+            visibilityObserver.observe(stage);
+            resizeObserver.observe(stage);
+            way.left = 0;
+            measure();
+            wander(clock);
+
+            if (from && !reducedMotion) {
+                way.x = from.x - (originX + home.x * unit);
+                way.y = from.y - (originY + home.y * unit);
+                way.zoom = from.unit / size;
+                way.left = 1;
+            }
+        }
+
+        react(pointed?.isConnected ? pointed : null);
+        update();
+    };
+
+    document.addEventListener('visibilitychange', update);
+    document.addEventListener('portfolio:page-swapped', adopt);
 
     if (!reducedMotion) {
         for (const [name, drawFigure] of Object.entries(drawnFigures)) {
             figures.set(name, sampleFigure(drawFigure));
         }
-
-        react(null);
 
         if (canvas.dataset.mark) {
             const image = document.createElement('img');
@@ -701,56 +762,43 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             image.addEventListener('load', () => {
                 figures.set('mark', sampleFigure((figureContext, size) => figureContext.drawImage(image, 0, 0, size, size)));
                 react(pointed);
-            }, options);
+            });
             image.src = canvas.dataset.mark;
         }
 
         openings.add(probe);
-        window.addEventListener('pointermove', follow, { ...options, passive: true });
-        document.documentElement.addEventListener('pointerleave', release, options);
-        window.addEventListener('pointerdown', pressDown, { ...options, passive: true });
-        window.addEventListener('pointerup', pressUp, { ...options, passive: true });
-        window.addEventListener('pointercancel', pressUp, { ...options, passive: true });
+        window.addEventListener('pointermove', follow, { passive: true });
+        document.documentElement.addEventListener('pointerleave', release);
+        window.addEventListener('pointerdown', pressDown, { passive: true });
+        window.addEventListener('pointerup', pressUp, { passive: true });
+        window.addEventListener('pointercancel', pressUp, { passive: true });
         document.addEventListener('pointerover', (event) => {
             if (event.pointerType === 'mouse') {
                 react(event.target);
             }
-        }, options);
+        });
+        // A click focuses what it hits without showing a focus; the figure then stays the
+        // hovered one.
         document.addEventListener('focusin', (event) => {
-            react(event.target.matches(':focus-visible') ? event.target : null);
-        }, options);
-        document.addEventListener('focusout', () => react(null), options);
-        document.addEventListener(sceneChangedEvent, () => react(pointed), options);
-        document.addEventListener('portfolio:before-navigation', () => {
-            targetScattered = 1;
-        }, options);
-        document.addEventListener(transitionFinishedEvent, () => {
-            targetScattered = 0;
-        }, options);
+            if (event.target.matches(':focus-visible')) {
+                react(event.target);
+            }
+        });
+        document.addEventListener('focusout', () => react(null));
+        document.addEventListener(sceneChangedEvent, () => react(pointed));
     }
 
-    return () => {
-        window.cancelAnimationFrame(frame);
-        resizeObserver.disconnect();
-        visibilityObserver.disconnect();
-        listeners.abort();
-        openings.delete(probe);
-    };
+    adopt();
+    // A page that opens without a stage has no dots to scatter first.
+    scattered = targetScattered;
 };
 
-export const createDotOrbController = ({ reducedMotion }) => {
-    let cleanups = [];
+export const createDotOrbController = ({ reducedMotion }) => ({
+    initialize: () => {
+        const canvas = document.querySelector('[data-dot-orb]');
 
-    const initialize = (arriving) => {
-        cleanups.forEach((cleanup) => cleanup());
-        cleanups = [...document.querySelectorAll('[data-dot-orb]')]
-            .map((canvas) => initializeOrb(canvas, reducedMotion, arriving));
-    };
-
-    return {
-        initialize: () => {
-            initialize(false);
-            document.addEventListener('portfolio:page-swapped', () => initialize(true));
-        },
-    };
-};
+        if (canvas) {
+            initializeOrb(canvas, reducedMotion);
+        }
+    },
+});

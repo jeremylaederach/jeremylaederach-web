@@ -5,6 +5,22 @@
     initial-value: 125, 240, 201;
 }
 
+/* How far a control of the header is lit, from its resting color to the accent. The accent
+   itself blends from page to page, and a color that followed it with a transition of its own
+   would trail behind: such a control fades by this number instead of by its color. */
+@property --lit {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+}
+
+/* How strongly the dots show behind the text column of the home page. */
+@property --orb-shade {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 1;
+}
+
 @layer base {
     :root {
         --bg: #07070a;

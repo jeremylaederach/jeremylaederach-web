@@ -48,7 +48,8 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 - **Header.** The same on every page: the mark as the link home on the left, the three
   destinations in the middle with even gaps, the languages and the sound toggle on the right. The
   destinations behave like the languages: the current one and a hovered or focused one take the
-  accent, and the pointer's ring wraps the hovered one. On a page with a sphere a hovered
+  accent, and the pointer's ring wraps the hovered one. They fade by how far they are lit, not
+  by their color, so they keep step with the accent while it blends to another page's. On a page with a sphere a hovered
   destination also morphs it into that destination's figure. Up to 960px a menu button replaces
   the destinations and the languages.
 - **Pointer.** A dot at the mouse position and a ring of fine beads around it that travel slowly
@@ -61,9 +62,11 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   dots leave around the pointer. A press tightens the ring and shrinks the dot. No glow. Touch
   and pen input hide the pointer, and reduced motion keeps the native cursor.
 - **Page change.** The old page fades out as it sinks and the new one fades in as it rises, 0.24
-  and 0.46 seconds (`resources/js/transition-controller.js`); the sphere scatters and gathers in
-  step, and the accent blends to the new page's. Nothing covers the page. Reduced motion swaps
-  the page without a transition.
+  and 0.46 seconds (`resources/js/transition-controller.js`). The sphere stays: it is the one
+  thing that does not fade, and it travels from where it stood to its place on the new page
+  while its dots flow into that page's figure. The header answers the click at once, with the
+  destination as the current one, and the accent blends to the new page's. Nothing covers the
+  page. Reduced motion swaps the page without a transition.
 - **Hover.** No surface lights up under the pointer: a hovered link or card answers with its
   accent, a rule drawn in the accent or a small movement. Optional interface sounds.
 - **Page end.** Every page ends with one quiet line in the middle: the profiles and the legal
@@ -76,23 +79,25 @@ The home page is one screen at every size, a stage of the name, the statement an
 name stands small above the summary, which is the statement of the page and its largest text. The
 header carries the navigation. From 961px the content keeps to a column on the left, at most half of the
 width, and the right belongs to the sphere. Up to 960px the sphere has the upper 68% of the
-screen, where its canvas ends and the dots fade out, and the text stands below it; the line that
+screen, where its stage ends and the dots fade out, and the text stands below it; the line that
 ends the page closes the screen.
 
 A sphere of 1200 dots (`resources/js/dot-orb-controller.js`, `resources/css/orb.css`) is the main
-element: a generative particle animation on a 2D canvas that covers the section and sits behind
-the text.
+element: a generative particle animation on a 2D canvas behind the text. There is one canvas for
+the whole site, in the layout: it lies over the first screen of every page and scrolls away with
+it. A page marks where the sphere stands with a stage (`data-dot-orb-stage`); on the home page
+the stage is the whole section.
 
 - **Idle motion.** The dots sit on a Fibonacci lattice. The sphere turns once in 52 seconds, bulges
-  in slow overlapping waves and wanders around the middle of the stage. A mask dims the canvas to
-  25% behind the text column, so the dots never compete with the text.
+  in slow overlapping waves and wanders around the middle of the stage. On the home page a mask dims the dots to 20% behind
+  the text column, so they never compete with the text; it fades in and out with a page change.
 - **Pointer.** The sphere leans towards the pointer, and dots within reach of it give way.
   A click sends a ring outwards through the dots from where it happened; several rings travel at
   once. A held press gathers the dots around the pointer and lets go with a stronger ring.
 - **Buds.** Like a lava lamp it sheds buds: a quarter of the dots is the core and always stays;
   three buds each take another quarter on their own slow cycle (41, 53 and 67 seconds), form a
   smaller sphere of their own size beside the main one, rise and sink over the height of the
-  canvas and return. The main sphere shrinks by what has left. A bud starts in the middle of
+  stage and return. The main sphere shrinks by what has left. A bud starts in the middle of
   the sphere and returns there, and where two blobs are close their surfaces join
   (`resources/js/dot-orb-lamp.js`): the sphere bulges, the bud grows out on a neck that thins
   and parts, and on its way back the two touch, grow a neck and become one body again.
@@ -128,25 +133,27 @@ the text.
   three kinds of work give the bars of Quantified, the brackets of Jay-Jay and four panes, the
   word for the database gives one, the last pixel the arrow of a pointer, and the name gives the mark;
   everything stays in the accent.
-- **Place.** On a canvas that is not fitted the sphere wanders around a point at 68% of the
-  canvas' width and half its height.
+- **Place.** On a stage that is not fitted the sphere wanders around a point at 68% of the
+  stage's width and half its height.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
-  sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
-- **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
+  sphere's own clock, which pauses while the stage is off screen or the tab is hidden.
+- **Size.** The sphere's box follows the stage: its height or 70% of its width, at most 1040px.
 - **Resting figure and color.** While nothing that names a figure is hovered or focused, the
   element marked `data-dot-orb-resting` holds its figure. An element can give its figure a color
   with `--dot-orb-rgb`; the dots blend to it and back to the page accent.
-- **Fitted canvas.** A canvas marked `data-dot-orb-fit` holds its figure in the square around
-  it: the sphere stands still in the middle, and a figure, which is drawn within the middle 80%
-  of its square, fills the smaller side. The canvas itself reaches half a square beyond that
-  square on every side, so dots that a press pulls out of the figure, a ring pushes away or a
-  page change scatters are not cut off at an edge. It ends with the page: the main region clips
-  it at the lower edge of the line that ends the page.
+- **Fitted stage.** A stage marked `data-dot-orb-fit` is a square: the sphere stands still in
+  its middle, and a figure, which is drawn within the middle 80% of its square, fills the
+  smaller side. The canvas is as large as the window, so dots that a press pulls out of the
+  figure or a ring pushes away are not cut off at the square's edge. A stage that stays in the
+  window while its page scrolls (`data-dot-orb-stage="pinned"`, the scenes) pins the canvas
+  too.
 - **Sub-pages.** The about page and the case studies are told in scenes beside the sphere (see
   "Scenes: about and the case studies"). The 404 page is a stage for it (see "404 and legal
   pages"). The legal pages have no sphere.
-- **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
-  and fade; the sphere of the next page gathers from the scattered state.
+- **Page change.** The sphere travels to the stage of the next page: its place and its size
+  ease there within about a second while the dots flow into the new figure. On a page without
+  a stage, the legal pages, the dots scatter away from the middle and fade, and the next stage
+  gathers them again.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
   sphere.
 

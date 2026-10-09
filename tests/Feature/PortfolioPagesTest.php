@@ -136,7 +136,10 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(5, substr_count($aboutHtml, 'data-scene-step="'));
         $this->assertSame(1, substr_count($aboutHtml, 'data-active data-dot-orb-resting'));
         $this->assertSame(1, substr_count($aboutHtml, 'aria-current="step"'));
-        $this->assertSame(1, substr_count($aboutHtml, '<canvas data-dot-orb data-dot-orb-fit'));
+        // The layout holds the one canvas of the sphere, and the page marks its stage: a square
+        // that stays in the window while the page scrolls.
+        $this->assertSame(1, substr_count($aboutHtml, '<canvas data-dot-orb '));
+        $this->assertSame(1, substr_count($aboutHtml, 'data-dot-orb-stage="pinned" data-dot-orb-fit'));
         $this->assertMatchesRegularExpression('/id="me-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="about"/', $aboutHtml);
         $this->assertStringContainsString('<div id="me" class="scene-stage__step" data-scene-step="me-scene"></div>', $aboutHtml);
 

@@ -30,9 +30,7 @@
 
 <div {{ $attributes->class('scene-stage') }} style="--scenes: {{ count($scenes) }}">
     <div class="scene-stage__view">
-        <div class="dot-orb" aria-hidden="true">
-            <canvas data-dot-orb data-dot-orb-fit></canvas>
-        </div>
+        <div class="dot-orb" data-dot-orb-stage="pinned" data-dot-orb-fit></div>
 
         <header class="scene-stage__header" data-reveal>
             {{ $slot }}

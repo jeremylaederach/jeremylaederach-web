@@ -10,6 +10,8 @@ const page = (route) => `<!doctype html><html lang="en"><head>
     <link rel="alternate" hreflang="de" href="https://portfolio.test/de/${route}/" data-page-meta>
     </head><body data-page="${route}">
     <a hreflang="de" href="https://portfolio.test/de/${route}">DE</a>
+    <a href="/en/projects" data-page-route="projects" class="is-active" aria-current="page">Projects</a>
+    <a href="/en/about" data-page-route="about">About</a>
     <main data-page-main><h1>${route}</h1><a href="/en/about" data-route-transition>About</a></main>
     </body></html>`;
 
@@ -83,6 +85,25 @@ test('the page is not swapped before the cover has finished', async (t) => {
     finishCover();
     await done;
     assert.notEqual(document.querySelector('main'), originalMain);
+});
+
+test('the header marks the destination as current before the next page has arrived', async (t) => {
+    let finishCover;
+    const covered = new Promise((resolve) => { finishCover = resolve; });
+    const { finished } = setup(t, { covered });
+    const done = finished();
+    const [projects, about] = document.querySelectorAll('[data-page-route]');
+
+    document.querySelector('[data-route-transition]').click();
+    await new Promise(setImmediate);
+
+    assert.equal(about.getAttribute('aria-current'), 'page');
+    assert.ok(about.classList.contains('is-active'));
+    assert.equal(projects.hasAttribute('aria-current'), false);
+
+    finishCover();
+    await done;
+    assert.ok(about.classList.contains('is-active'));
 });
 
 test('navigation dismisses top-layer UI before beginning the page cover', async (t) => {

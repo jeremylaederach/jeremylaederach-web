@@ -21,40 +21,37 @@
         animation: none;
     }
 
-    /* A sphere of dots, drawn on a canvas that covers its section behind the content. */
-    .dot-orb {
+    /* The sphere of dots is drawn on one canvas that lies over the first screen of every page,
+       behind the main region, and stays through a page change. It scrolls away with the page;
+       where the stage stays in the window while its page scrolls, the canvas stays too. */
+    .site-orb {
         position: absolute;
         z-index: 0;
-        inset: 0;
+        inset: 0 0 auto;
+        height: 100svh;
         pointer-events: none;
-        /* Behind the text column the dots recede, so the sphere may wander anywhere. */
-        mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.25) 34%, #000 52%);
         opacity: 0;
         transition: opacity 1600ms ease 200ms;
     }
 
-    .is-ready .dot-orb {
+    .site-orb[data-pinned] {
+        position: fixed;
+    }
+
+    .is-ready .site-orb {
         opacity: 1;
     }
 
-    .dot-orb canvas {
+    .site-orb canvas {
         display: block;
         width: 100%;
         height: 100%;
     }
 
-    /* A canvas that holds a figure in a square reaches half a square beyond it on every side:
-       dots that are pulled or pushed out of the figure are not cut off at the square's edge. */
-    .dot-orb canvas[data-dot-orb-fit] {
+    /* A stage: where the sphere stands on a page. By default it covers its section. */
+    .dot-orb {
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-    }
-
-    .dot-orb ~ * {
-        position: relative;
-        z-index: 1;
+        inset: 0;
+        pointer-events: none;
     }
 }

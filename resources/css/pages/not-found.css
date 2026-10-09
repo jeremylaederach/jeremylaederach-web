@@ -21,7 +21,6 @@
         inset: auto;
         width: var(--side);
         aspect-ratio: 1;
-        mask-image: none;
     }
 
     /* The numerals fill the middle of their square, which leaves an eighth of it free below

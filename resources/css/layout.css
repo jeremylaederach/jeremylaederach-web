@@ -96,17 +96,17 @@
         height: 48px;
         padding: 0 22px;
         align-items: center;
-        color: var(--muted);
+        color: color-mix(in srgb, var(--route-accent) calc(var(--lit) * 100%), var(--muted));
         font-size: 17px;
         font-weight: 430;
         line-height: 1;
-        transition: color 200ms ease;
+        transition: --lit 200ms ease;
     }
 
     .site-header__nav-link.is-active,
     .has-mouse-input .site-header__nav-link:hover,
     .site-header__nav-link:focus-visible {
-        color: var(--route-accent);
+        --lit: 1;
     }
 
     @media (max-width: 960px) {
@@ -129,15 +129,13 @@
         width: 44px;
         height: 44px;
         place-items: center;
-        transition: color 200ms ease;
+        color: color-mix(in srgb, var(--route-accent) calc(var(--lit) * 100%), var(--quiet));
+        transition: --lit 200ms ease;
     }
 
-    .site-header__languages a:hover {
-        color: var(--route-accent);
-    }
-
+    .site-header__languages a:hover,
     .site-header__languages a.is-active {
-        color: var(--route-accent);
+        --lit: 1;
     }
 
     .sound-toggle,
@@ -283,13 +281,6 @@
 
     .language-switcher a.is-active {
         color: var(--ink);
-    }
-
-    /* The sphere's canvas may reach beyond its stage. It ends with the page instead of making
-       it longer: at the lower edge of the main region and of the line that follows it. */
-    [data-page-main] {
-        overflow-y: clip;
-        overflow-clip-margin: 73px;
     }
 
     /* A page change: the old page fades out as it sinks, the new one fades in as it rises. The

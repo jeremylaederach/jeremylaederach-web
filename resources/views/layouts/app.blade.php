@@ -51,6 +51,11 @@
     <body class="route-{{ $currentScene }}" data-page="{{ $currentScene }}">
         <a class="skip-link" href="#main">{{ $content['ui']['skip'] }}</a>
         <div class="site-background" aria-hidden="true"></div>
+        {{-- The sphere of dots. Its canvas stays through every page change; a page marks where
+             the sphere stands with a stage (see dot-orb-controller.js). --}}
+        <div class="site-orb" aria-hidden="true">
+            <canvas data-dot-orb data-mark="{{ asset('brand/mark.svg') }}"></canvas>
+        </div>
         <svg class="site-pointer" data-site-pointer aria-hidden="true" focusable="false">
             <rect class="site-pointer__ring" data-pointer-ring />
             <circle class="site-pointer__dot" data-pointer-dot r="3" />

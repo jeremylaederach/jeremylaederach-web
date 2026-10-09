@@ -33,17 +33,22 @@ const createContext = (calls) => new Proxy(calls, {
 const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     const window = createDom(t, `
         <div><canvas data-dot-orb></canvas></div>
+        <main><div data-dot-orb-stage></div></main>
         <a href="#" data-dot-orb-figure="projects"><span>Projects</span></a>
         <a href="#" data-dot-orb-figure="unknown">Elsewhere</a>
         <a href="#" data-dot-orb-figure="projects about">Both</a>
     `);
     const canvas = document.querySelector('canvas');
 
-    // A fitted canvas holds the sphere still in the middle of the square around it, and reaches
-    // half a square beyond that on every side.
-    const stage = fitted ? canvas.parentElement : canvas;
+    // The stage of the page covers the canvas; a fitted one holds the sphere still in its middle.
+    const lay = (element, left, top, width, height) => {
+        element.getBoundingClientRect = () => ({ left, top, width, height });
+    };
+    const stage = document.querySelector('[data-dot-orb-stage]');
 
-    canvas.toggleAttribute('data-dot-orb-fit', fitted);
+    stage.toggleAttribute('data-dot-orb-fit', fitted);
+    lay(stage, 0, 0, 600, 900);
+    lay(canvas, 0, 0, 600, 900);
 
     const link = document.querySelector('[data-dot-orb-figure="projects"] span');
     const dots = [];
@@ -100,14 +105,8 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
     t.mock.method(window.HTMLCanvasElement.prototype, 'getContext', function getContext() {
         return this === canvas ? context : figureContext;
     });
-    Object.defineProperty(stage, 'clientWidth', { value: 600 });
-    Object.defineProperty(stage, 'clientHeight', { value: 900 });
-    stage.getBoundingClientRect = () => ({ left: 0, top: 0, width: 600, height: 900 });
-
-    if (fitted) {
-        Object.defineProperty(canvas, 'clientWidth', { value: 1200 });
-        Object.defineProperty(canvas, 'clientHeight', { value: 1800 });
-    }
+    Object.defineProperty(canvas, 'clientWidth', { value: 600 });
+    Object.defineProperty(canvas, 'clientHeight', { value: 900 });
 
     t.mock.method(window, 'requestAnimationFrame', (callback) => {
         frames.set(++frameId, callback);
@@ -132,10 +131,24 @@ const setup = (t, { reducedMotion = false, fitted = false } = {}) => {
         target.dispatchEvent(event);
     };
     const spread = (axis) => Math.max(...dots.map((dot) => dot[axis])) - Math.min(...dots.map((dot) => dot[axis]));
+    // Where the middle of the dots lies on the canvas, from left to right.
+    const middle = () => origins.at(-1)[0] + dots.reduce((sum, dot) => sum + dot.x, 0) / dots.length;
+    // Puts the next page in place: its stage, if it has one, at the given place.
+    const swap = (place) => {
+        const next = document.createElement('main');
+
+        if (place) {
+            next.innerHTML = '<div data-dot-orb-stage></div>';
+            lay(next.firstElementChild, ...place);
+        }
+
+        document.querySelector('main').replaceWith(next);
+        document.dispatchEvent(new window.Event('portfolio:page-swapped'));
+    };
 
     createDotOrbController({ reducedMotion }).initialize();
 
-    return { canvas, context, link, dots, origins, frames, run, hover, spread };
+    return { context, link, dots, frames, run, hover, spread, middle, swap };
 };
 
 test('the sphere is drawn as one body of 1200 dots', (t) => {
@@ -281,13 +294,6 @@ test('a held press gathers the dots towards the pointer until it is released', (
     assert.ok(reach() > resting * 0.9);
 });
 
-test('a fitted canvas is larger than its stage and draws from the corner of the stage', (t) => {
-    const { canvas, origins } = setup(t, { fitted: true });
-
-    // The stage is 600 by 900 pixels large and stands in the middle of the canvas.
-    assert.deepEqual([canvas.width, canvas.height], [1200, 1800]);
-    assert.deepEqual(origins.at(-1), [300, 450]);
-});
 
 test('touch input leaves the sphere whole', (t) => {
     const { link, run, hover, spread } = setup(t);
@@ -307,18 +313,44 @@ test('reduced motion draws a still sphere without a frame loop', (t) => {
     assert.equal(frames.size, 0);
 });
 
-test('a page change scatters the dots and the next page gathers them again', (t) => {
-    const { run, spread } = setup(t);
+test('on a page change the sphere travels to the stage of the next page', (t) => {
+    const { run, middle, swap } = setup(t);
+
     run(30);
+
+    // The sphere stands at 68% of its stage: of all 600 pixels first, then of the right half.
+    assert.ok(Math.abs(middle() - 408) < 30);
+
+    swap([300, 0, 300, 900]);
+    run(1);
+    assert.ok(Math.abs(middle() - 408) < 30);
+
+    run(8);
+    assert.ok(middle() > 425 && middle() < 490);
+
+    run(200);
+    assert.ok(Math.abs(middle() - 504) < 20);
+});
+
+test('a page without a stage scatters the dots and the next stage gathers them again', (t) => {
+    const { frames, run, spread, swap } = setup(t);
+
+    run(30);
+
     const whole = spread('y');
 
-    document.dispatchEvent(new window.Event('portfolio:before-navigation'));
+    swap(null);
     run(40);
     assert.ok(spread('y') > whole * 1.8);
 
-    document.dispatchEvent(new window.Event('portfolio:page-swapped'));
+    // Once the dots have gone, nothing is drawn any more.
     run(200);
-    assert.ok(spread('y') < whole * 1.2);
+    assert.equal(frames.size, 0);
+
+    swap([0, 0, 600, 900]);
+    run(200);
+    // A bud may be on its way out by now, so the body is a little taller than at first.
+    assert.ok(spread('y') < whole * 1.5);
 });
 
 test('an element marked as resting holds its figure in its color while nothing is hovered', (t) => {

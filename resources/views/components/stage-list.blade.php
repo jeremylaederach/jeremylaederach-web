@@ -24,9 +24,7 @@
 ])
 
 <section {{ $attributes->class('stage-list') }} aria-labelledby="{{ $headingId }}" data-reveal>
-    <div class="dot-orb" aria-hidden="true">
-        <canvas data-dot-orb data-dot-orb-fit></canvas>
-    </div>
+    <div class="dot-orb" data-dot-orb-stage data-dot-orb-fit></div>
 
     <header class="stage-list__header">
         <x-animated-page-heading :id="$headingId" :text="$heading" />

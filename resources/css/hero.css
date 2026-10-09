@@ -9,14 +9,18 @@
         padding: 96px 0 clamp(28px, 6svh, 56px);
         overflow: hidden;
         align-content: end;
-        background: var(--bg);
     }
 
-    /* The canvas ends where the text begins, and the dots fade out towards it. */
+    /* The stage ends where the text begins, and the dots fade out towards it. */
     .kinetic-index .dot-orb {
         inset: 0 0 auto;
         height: 68svh;
-        mask-image: linear-gradient(#000 76%, transparent);
+    }
+
+    @media (max-width: 960px) {
+        .route-home .site-orb {
+            mask-image: linear-gradient(#000 52svh, transparent 68svh);
+        }
     }
 
     .kinetic-index__masthead {
@@ -73,11 +77,20 @@
             font-size: clamp(38px, min(3.9vw, 7.4svh), 62px);
         }
 
-        /* The statement reaches further right than the mask of other pages allows for. */
         .kinetic-index .dot-orb {
             inset: 0;
             height: auto;
-            mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 50%, #000 62%);
+        }
+
+        /* Behind the text column the dots recede, so the sphere may wander anywhere. The shade
+           is a number, so it fades when the page changes. */
+        .site-orb {
+            mask-image: linear-gradient(90deg, rgb(0 0 0 / var(--orb-shade)) 50%, #000 62%);
+            transition: opacity 1600ms ease 200ms, --orb-shade 600ms ease;
+        }
+
+        .route-home .site-orb {
+            --orb-shade: 0.2;
         }
     }
 

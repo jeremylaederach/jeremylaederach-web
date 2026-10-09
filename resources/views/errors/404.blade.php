@@ -11,9 +11,7 @@
         data-dot-orb-figure="not-found"
         data-dot-orb-resting
     >
-        <div class="dot-orb" aria-hidden="true">
-            <canvas data-dot-orb data-dot-orb-fit></canvas>
-        </div>
+        <div class="dot-orb" data-dot-orb-stage data-dot-orb-fit></div>
 
         <div class="not-found-page__message" data-reveal>
             <h1 id="not-found-title">

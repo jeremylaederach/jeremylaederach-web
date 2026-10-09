@@ -65,7 +65,8 @@ const updateDocumentMetadata = (nextDocument) => {
     });
 };
 
-const syncPersistentChrome = (nextDocument, scene) => {
+// The destination that is current in the header and the menu.
+const markCurrent = (scene) => {
     document.querySelectorAll('[data-page-route]').forEach((link) => {
         const active = link.dataset.pageRoute === scene;
 
@@ -76,6 +77,10 @@ const syncPersistentChrome = (nextDocument, scene) => {
             link.setAttribute('aria-current', 'page');
         }
     });
+};
+
+const syncPersistentChrome = (nextDocument, scene) => {
+    markCurrent(scene);
 
     document.querySelectorAll('a[hreflang]').forEach((link) => {
         const language = link.getAttribute('hreflang');
@@ -154,6 +159,10 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         pendingUrl = url.href;
         document.dispatchEvent(new CustomEvent('portfolio:before-navigation'));
         const hintedScene = pageRoutes.has(routeHint) ? routeHint : routeFromUrl(url);
+
+        // The header answers the click at once, before the next page has arrived.
+        markCurrent(hintedScene);
+
         const left = transitionController.beginTransition();
         const currentMain = document.querySelector('[data-page-main]');
 
