@@ -204,7 +204,7 @@ ErrorDocument 404 /404.html
         Header always set Cache-Control "no-cache"
     </FilesMatch>
     # Link previews embed this image from other origins.
-    <Files "social-preview.png">
+    <Files "link-preview.png">
         Header always set Cross-Origin-Resource-Policy "cross-origin"
     </Files>
 </IfModule>

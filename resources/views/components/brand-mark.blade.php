@@ -1,6 +1,2 @@
-{{-- The mark as a shape cut out of the page's accent; its image supplies the outline. --}}
-<span
-    {{ $attributes->class('brand-mark') }}
-    style="--brand-mark: url('{{ asset('brand/jeremy-cat-256.png') }}')"
-    aria-hidden="true"
-></span>
+{{-- The mark as it is drawn in public/brand/mark.svg; the stylesheet gives its gradient the page's accent. --}}
+<span {{ $attributes->class('brand-mark') }} aria-hidden="true">{!! file_get_contents(public_path('brand/mark.svg')) !!}</span>

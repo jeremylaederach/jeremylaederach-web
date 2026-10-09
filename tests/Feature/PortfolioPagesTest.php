@@ -41,10 +41,11 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="index-navigation"', false)
             ->assertSee('data-index-panel', false)
             ->assertSee('data-sound-toggle', false)
-            ->assertSee('brand/jeremy-cat-256.png', false)
+            ->assertSee('data-mark="http://localhost/brand/mark.svg"', false)
             ->assertSee('class="brand-mark brand-lockup__mark"', false)
-            ->assertSee("--brand-mark: url('http://localhost/brand/jeremy-cat-256.png')", false)
-            ->assertSee('brand/icons/apple-touch-icon.png', false)
+            ->assertSee('<stop class="mark-light"', false)
+            ->assertSee('href="http://localhost/brand/mark.svg" type="image/svg+xml"', false)
+            ->assertSee('brand/icons/apple-touch-180.png', false)
             ->assertSee('data-page-main', false)
             ->assertDontSee('data-project-stage', false)
             ->assertDontSee('data-project-canvas', false)
@@ -64,9 +65,6 @@ class PortfolioPagesTest extends TestCase
         $response
             ->assertSee('style="--letter-index: 12">s</span></span>', false)
             ->assertSee('<span class="figure-word__letter" style="--letter-index: 13">w</span>', false);
-        $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
-        $this->assertFileExists(public_path('brand/icons/icon-192.png'));
-        $this->assertFileExists(public_path('brand/icons/icon-512.png'));
 
         $this->get('/de')
             ->assertOk()
@@ -96,12 +94,11 @@ class PortfolioPagesTest extends TestCase
     public function test_brand_assets_use_the_expected_png_dimensions(): void
     {
         $assets = [
-            'favicon.png' => [64, 64],
-            'brand/jeremy-cat-256.png' => [256, 256],
-            'brand/icons/apple-touch-icon.png' => [180, 180],
-            'brand/icons/icon-192.png' => [192, 192],
-            'brand/icons/icon-512.png' => [512, 512],
-            'brand/social-preview.png' => [1200, 630],
+            'brand/icons/favicon-64.png' => [64, 64],
+            'brand/icons/apple-touch-180.png' => [180, 180],
+            'brand/icons/app-192.png' => [192, 192],
+            'brand/icons/app-512.png' => [512, 512],
+            'brand/link-preview.png' => [1200, 630],
         ];
 
         foreach ($assets as $relativePath => $expectedDimensions) {

@@ -5,6 +5,7 @@
     "scripts": {
         "build": "vite build",
         "build:static": "npm run build && npm run export:static",
+        "brand:render": "node scripts/render-brand.mjs",
         "dev": "vite",
         "export:static": "php artisan site:export-static",
         "test": "node --test tests/JavaScript/*.test.js"

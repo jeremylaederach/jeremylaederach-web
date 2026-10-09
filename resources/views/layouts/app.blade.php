@@ -33,15 +33,16 @@
             <meta property="og:description" content="{{ $description }}" data-page-meta>
             <meta property="og:url" content="{{ $canonicalUrl }}" data-page-meta>
             <meta property="og:site_name" content="Jeremy Läderach" data-page-meta>
-            <meta property="og:image" content="{{ asset('brand/social-preview.png') }}" data-page-meta>
+            <meta property="og:image" content="{{ asset('brand/link-preview.png') }}" data-page-meta>
             <meta property="og:image:width" content="1200" data-page-meta>
             <meta property="og:image:height" content="630" data-page-meta>
             <meta property="og:image:alt" content="Jeremy Läderach" data-page-meta>
             <meta name="twitter:card" content="summary_large_image" data-page-meta>
         @endif
 
-        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/icons/apple-touch-icon.png') }}">
+        <link rel="icon" href="{{ asset('brand/icons/favicon-64.png') }}" type="image/png" sizes="64x64">
+        <link rel="icon" href="{{ asset('brand/mark.svg') }}" type="image/svg+xml" sizes="any">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('brand/icons/apple-touch-180.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         @fonts

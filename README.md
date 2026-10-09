@@ -57,6 +57,7 @@ resources/js/           Navigation, pointer, interaction, sound and transition c
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Controller and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
+scripts/render-brand.mjs Favicon, app icons and link preview, rendered from public/brand/mark.svg
 tests/deployment/        Deployment safeguards (Python standard library)
 AGENTS.md                Working rules for coding agents
 DESIGN.md                What the interface does: craft standard, identity, the pages
@@ -81,6 +82,8 @@ python -B scripts/deploy_static.py --check-only dist-static
 composer audit --locked
 npm audit
 ```
+
+The mark is drawn once, in `public/brand/mark.svg`. After changing it, `npm run brand:render` renders the PNG favicon, the app icons and the link preview again; it needs Edge, Chrome or Chromium on the machine (`BROWSER_PATH` names another location) and is not part of CI.
 
 The production package can be generated in one command:
 

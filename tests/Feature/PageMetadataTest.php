@@ -56,7 +56,7 @@ class PageMetadataTest extends TestCase
 
                 $this->assertStringContainsString('rel="canonical" href="'.$url.'/"', $html);
                 $this->assertStringContainsString('property="og:url" content="'.$url.'/"', $html);
-                $this->assertStringContainsString('property="og:image" content="'.asset('brand/social-preview.png').'"', $html);
+                $this->assertStringContainsString('property="og:image" content="'.asset('brand/link-preview.png').'"', $html);
                 $this->assertStringContainsString('name="twitter:card" content="summary_large_image"', $html);
                 $this->assertStringNotContainsString('name="robots" content="noindex"', $html);
 

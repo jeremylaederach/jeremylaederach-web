@@ -27,10 +27,13 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 
 ### Identity
 
-- **Mark.** The cat, in mint since 8 October 2026, as favicon, app icons and link preview and as
-  the link home at the left of the header. In the header it is cut out of the page's accent with
-  its image as the mask (`resources/views/components/brand-mark.blade.php`), lighter at the top
-  left and deeper at the bottom right as in the image, so it takes a project's color with the
+- **Mark.** The cat, in mint since 8 October 2026. It is drawn once, in `public/brand/mark.svg`:
+  one outline of sixteen nodes with two pills for the eyes, filled with a gradient from a
+  lighter tone at the top left to a deeper one at the bottom right. That file is the favicon and
+  the picture the sphere samples for its figure; `npm run brand:render` renders the PNG favicon,
+  the app icons and the link preview from it. The header shows the same drawing inline
+  (`resources/views/components/brand-mark.blade.php`) as the link home, and the stylesheet sets
+  the two colors of its gradient from the page's accent, so it takes a project's color with the
   rest of the header. It is 38px large; hovered or focused it grows a little.
 - **Colors.** Background `#07070a`, ink `#f4f1ea`, muted text `#aaa6af`, hairlines at 13% ink.
   One accent, mint `#7df0c9`. Where a project is shown, in its case study or as the current one

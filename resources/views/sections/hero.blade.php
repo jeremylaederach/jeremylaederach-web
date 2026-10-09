@@ -1,6 +1,6 @@
 <section class="kinetic-index" aria-labelledby="landing-title">
     <div class="dot-orb" aria-hidden="true">
-        <canvas data-dot-orb data-mark="{{ asset('brand/jeremy-cat-256.png') }}"></canvas>
+        <canvas data-dot-orb data-mark="{{ asset('brand/mark.svg') }}"></canvas>
     </div>
     <header class="kinetic-index__masthead">
         <h1 id="landing-title" class="kinetic-index__heading">

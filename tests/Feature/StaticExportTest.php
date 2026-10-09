@@ -59,11 +59,12 @@ class StaticExportTest extends TestCase
             $this->assertStringContainsString('Jeremy', $germanHome);
             $this->assertStringContainsString('rel="canonical" href="https://jeremylaederach.ch/en/"', $englishHome);
             $this->assertStringContainsString('hreflang="de" href="https://jeremylaederach.ch/de/"', $englishHome);
-            $this->assertStringContainsString('property="og:image" content="https://jeremylaederach.ch/brand/social-preview.png"', $englishHome);
-            $this->assertFileExists(base_path('dist-static/brand/social-preview.png'));
+            $this->assertStringContainsString('property="og:image" content="https://jeremylaederach.ch/brand/link-preview.png"', $englishHome);
+            $this->assertFileExists(base_path('dist-static/brand/link-preview.png'));
             $this->assertStringContainsString('href="/en/about"', $englishHome);
-            $this->assertStringContainsString("--brand-mark: url('/brand/jeremy-cat-256.png')", $englishHome);
-            $this->assertStringContainsString('data-mark="/brand/jeremy-cat-256.png"', $englishHome);
+            $this->assertStringContainsString('fill="url(#mark-gradient)"', $englishHome);
+            $this->assertStringContainsString('data-mark="/brand/mark.svg"', $englishHome);
+            $this->assertFileExists(base_path('dist-static/brand/mark.svg'));
             $this->assertStringContainsString('Sitemap: https://jeremylaederach.ch/sitemap.xml', File::get(base_path('dist-static/robots.txt')));
             $sitemap = simplexml_load_file(base_path('dist-static/sitemap.xml'));
             $this->assertNotFalse($sitemap);
