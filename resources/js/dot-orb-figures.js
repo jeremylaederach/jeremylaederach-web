@@ -1,7 +1,20 @@
-import { siGithub } from 'simple-icons';
+import {
+    siAngular,
+    siDotnet,
+    siGithub,
+    siGithubactions,
+    siGoogle,
+    siLaravel,
+    siPostgresql,
+    siTailwindcss,
+    siTypescript,
+    siVite,
+} from 'simple-icons';
 
-// Figures the dot sphere can take, one per destination, featured project and contact channel. Each paints a solid shape onto a square
-// canvas of the given size; `cut` then removes lines from it, which read as gaps between the dots.
+// Figures the dot sphere can take: one per destination and featured project, some for the words
+// and chapters that name them, and the marks of GitHub and of the tools on the about page.
+// Each paints a solid shape onto a square canvas of the given size; `cut` then removes lines from
+// it, which read as gaps between the dots.
 
 const cut = (context, size, path) => {
     context.save();
@@ -82,13 +95,92 @@ const jayJay = (context, size) => {
     context.stroke();
 };
 
-// GitHub: its mark, whose path is drawn on a square of 24 units.
-const github = (context, size) => {
+// Backend: a database, three discs on top of each other.
+const backend = (context, size) => {
+    context.beginPath();
+    context.ellipse(size * 0.5, size * 0.26, size * 0.3, size * 0.1, 0, 0, Math.PI * 2);
+    context.rect(size * 0.2, size * 0.26, size * 0.6, size * 0.48);
+    context.ellipse(size * 0.5, size * 0.74, size * 0.3, size * 0.1, 0, 0, Math.PI * 2);
+    context.fill();
+    cut(context, size, (line) => {
+        for (const y of [0.26, 0.42, 0.58]) {
+            line.moveTo(size * 0.8, size * y);
+            line.ellipse(size * 0.5, size * y, size * 0.3, size * 0.1, 0, 0, Math.PI);
+        }
+    });
+};
+
+// Interface: the arrow of a pointer.
+const pointerArrow = (context, size) => {
+    context.beginPath();
+    context.moveTo(size * 0.27, size * 0.13);
+    context.lineTo(size * 0.27, size * 0.77);
+    context.lineTo(size * 0.43, size * 0.62);
+    context.lineTo(size * 0.55, size * 0.88);
+    context.lineTo(size * 0.67, size * 0.83);
+    context.lineTo(size * 0.55, size * 0.58);
+    context.lineTo(size * 0.77, size * 0.58);
+    context.closePath();
+    context.fill();
+};
+
+// Windows: four panes.
+const windows = (context, size) => {
+    for (const [left, top] of [[0.11, 0.11], [0.54, 0.11], [0.11, 0.54], [0.54, 0.54]]) {
+        context.beginPath();
+        context.roundRect(size * left, size * top, size * 0.35, size * 0.35, size * 0.03);
+        context.fill();
+    }
+};
+
+// Stack: three layers on top of each other.
+const stack = (context, size) => {
+    for (const middle of [0.34, 0.5, 0.66]) {
+        context.beginPath();
+        context.moveTo(size * 0.5, size * (middle - 0.17));
+        context.lineTo(size * 0.88, size * middle);
+        context.lineTo(size * 0.5, size * (middle + 0.17));
+        context.lineTo(size * 0.12, size * middle);
+        context.closePath();
+        context.fill();
+    }
+
+    cut(context, size, (line) => {
+        for (const middle of [0.34, 0.5]) {
+            line.moveTo(size * 0.12, size * middle);
+            line.lineTo(size * 0.5, size * (middle + 0.17));
+            line.lineTo(size * 0.88, size * middle);
+        }
+    });
+};
+
+// A brand's mark, whose path is drawn on a square of 24 units.
+const mark = (icon) => (context, size) => {
     context.save();
     context.translate(size * 0.1, size * 0.1);
     context.scale((size * 0.8) / 24, (size * 0.8) / 24);
-    context.fill(new Path2D(siGithub.path));
+    context.fill(new Path2D(icon.path));
     context.restore();
 };
 
-export const drawnFigures = { projects, about, contact, quantified, 'jay-jay': jayJay, github };
+export const drawnFigures = {
+    projects,
+    about,
+    contact,
+    quantified,
+    'jay-jay': jayJay,
+    backend,
+    interface: pointerArrow,
+    windows,
+    stack,
+    github: mark(siGithub),
+    dotnet: mark(siDotnet),
+    laravel: mark(siLaravel),
+    angular: mark(siAngular),
+    postgresql: mark(siPostgresql),
+    typescript: mark(siTypescript),
+    tailwindcss: mark(siTailwindcss),
+    vite: mark(siVite),
+    githubactions: mark(siGithubactions),
+    google: mark(siGoogle),
+};

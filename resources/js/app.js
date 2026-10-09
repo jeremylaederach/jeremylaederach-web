@@ -1,4 +1,4 @@
-import { createAboutPlaygroundController } from './about-playground-controller.js';
+import { createChapterController } from './chapter-controller.js';
 import { createDotOrbController } from './dot-orb-controller.js';
 import { createInteractionController } from './interaction-controller.js';
 import { createPageHeadingController } from './page-heading-controller.js';
@@ -18,7 +18,7 @@ const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 root.classList.add('js');
 
-const aboutPlaygroundController = createAboutPlaygroundController({ reducedMotion });
+const chapterController = createChapterController();
 const dotOrbController = createDotOrbController({ reducedMotion });
 const interactionController = createInteractionController({ reducedMotion });
 const menuController = createSiteMenuController({ reducedMotion });
@@ -36,8 +36,8 @@ soundController.initialize();
 interactionController.initialize();
 pointerController.initialize();
 pageHeadingController.initialize();
-aboutPlaygroundController.initialize();
 dotOrbController.initialize();
+chapterController.initialize();
 stageListController.initialize();
 projectReelController.initialize();
 scrollCueController.initialize();

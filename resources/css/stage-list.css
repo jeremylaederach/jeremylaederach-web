@@ -218,14 +218,34 @@
         }
 
         /* A compact stage lists plain entries instead of showpieces: its rows are lower, and their
-           names stand a step below the heading. */
+           names stand a step below the heading. The figure is the larger part: its square takes
+           what the header and the page end leave of the height, up to 52% of the width and never
+           so much that the list gets narrower than 420px. The content is shorter than the stage,
+           so the content and the square both stand in the middle of the stage's height. */
         .stage-list--compact {
             --row: clamp(64px, 9.5svh, 96px);
+            --side: min(
+                calc(min(100vw - 64px, 1600px) * 0.52),
+                calc(min(100vw - 64px, 1600px) - 508px),
+                calc(100svh - 233px)
+            );
+            display: grid;
+            align-content: center;
+        }
+
+        .stage-list--compact .dot-orb {
+            top: calc(var(--top) + (100% - var(--top) - var(--bottom) - var(--side)) / 2);
+        }
+
+        /* Its current row stays lit: the name takes the accent like the icon. */
+        .stage-list--compact .stage-list__item[data-current] .stage-list__name {
+            color: var(--item-accent);
         }
 
         .stage-list--compact .stage-list__name {
             font-size: clamp(30px, min(2.8vw, 5.2svh), 42px);
             letter-spacing: -0.02em;
+            transition: color 360ms ease;
         }
 
         /* The description has a slot of one height for every row, which holds the kind, three

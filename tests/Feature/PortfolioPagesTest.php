@@ -19,21 +19,6 @@ class PortfolioPagesTest extends TestCase
             ->assertRedirect('/en');
     }
 
-    public function test_about_copy_reflects_the_confirmed_study_start_in_both_locales(): void
-    {
-        $this->get('/en/about')
-            ->assertOk()
-            ->assertSee('Since September 2026')
-            ->assertSee('I study Business Informatics at OST.')
-            ->assertDontSee('I start the BSc');
-
-        $this->get('/de/about')
-            ->assertOk()
-            ->assertSee('Seit September 2026')
-            ->assertSee('studiere ich Wirtschaftsinformatik an der OST.')
-            ->assertDontSee('Ich starte den BSc');
-    }
-
     public function test_landing_page_renders_the_kinetic_route_index(): void
     {
         $response = $this->get('/en');
@@ -45,8 +30,9 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('About')
             ->assertSee('Projects')
             ->assertSee('Contact')
-            ->assertSeeText('Web products, client websites, and Windows tools – built from the backend to the interface.')
-            ->assertSee('<span class="figure-word" data-dot-orb-figure="quantified" data-project="quantified">Web products</span>', false)
+            ->assertSeeText('Data platforms, web services, and native apps – built from the backend to the interface.')
+            ->assertSee('<span class="sr-only">Data platforms, web services, and native apps – built from the backend to the interface.</span>', false)
+            ->assertSee('<span class="figure-word" data-dot-orb-figure="quantified"><span class="figure-word__letter" style="--letter-index: 0">D</span>', false)
             ->assertSee('class="kinetic-index"', false)
             ->assertSee('class="kinetic-index__heading"', false)
             ->assertDontSee('class="kinetic-index__number"', false)
@@ -71,15 +57,20 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/projects"', false);
 
         $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
-        $this->assertSame(11, substr_count($response->content(), 'data-dot-orb-figure='));
+        $this->assertSame(13, substr_count($response->content(), 'data-dot-orb-figure='));
+
+        // The letters of the words that name a figure are numbered through, so the light runs
+        // from the first word to the last: "Data platforms" has 13 letters, "web" follows.
+        $response
+            ->assertSee('style="--letter-index: 12">s</span></span>', false)
+            ->assertSee('<span class="figure-word__letter" style="--letter-index: 13">w</span>', false);
         $this->assertFileExists(public_path('brand/jeremy-cat-256.png'));
         $this->assertFileExists(public_path('brand/icons/icon-192.png'));
         $this->assertFileExists(public_path('brand/icons/icon-512.png'));
 
         $this->get('/de')
             ->assertOk()
-            ->assertSeeText('Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.')
-            ->assertSee('<span class="figure-word" data-dot-orb-figure="jay-jay" data-project="jay-jay">Kundenwebsites</span>', false)
+            ->assertSeeText('Datenplattformen, Webservices und native Apps – vom Backend bis zur Oberfläche.')
             ->assertSee('Profil')
             ->assertSee('Projekte');
 
@@ -133,122 +124,42 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('class="page-heading-wordmark"', false)
             ->assertSee('data-page-heading-signal', false)
             ->assertSee('aria-label="About me."', false)
-            ->assertSee('<span>02</span>', false)
             ->assertSee('class="about-story"', false)
-            ->assertSee('class="about-playground"', false)
-            ->assertSee('data-about-playground', false)
-            ->assertSee('data-sorting-demo', false)
-            ->assertSee('data-network-demo', false)
-            ->assertSee('data-pathfinding-demo', false)
-            ->assertSee('data-network-preset', false)
-            ->assertSee('data-pathfinding-cell-label', false)
-            ->assertSee('aria-live="polite"', false)
-            ->assertSee('data-pathfinding-status', false)
-            ->assertSee('class="section-label about-section-label"', false)
-            ->assertSee('class="career-list"', false)
-            ->assertDontSee('class="career-list__current"', false)
-            ->assertDontSee('class="career-list__status"', false)
-            ->assertDontSee('data-career-state', false)
-            ->assertSee('class="technology-groups"', false)
-            ->assertSee('In brief.')
-            ->assertSee('Foundation')
-            ->assertSee('Since September 2026')
-            ->assertSee('Playground.')
-            ->assertSee('Sorting')
-            ->assertSee('It repeats that split until every group is in order.')
-            ->assertSee('Comparisons')
-            ->assertDontSee('Typical effort')
-            ->assertDontSee('O notation')
-            ->assertSee('Insertion')
-            ->assertSee('Selection')
-            ->assertSee('Neural Network')
-            ->assertSee('Draw a 0, 1 or 2')
-            ->assertSee('it does not learn from your drawings')
-            ->assertSee('Use the arrow keys to move through the pixels')
-            ->assertSee('Recognize')
-            ->assertSee('Guess')
-            ->assertSee('Pathfinder')
-            ->assertSee('Edit the walls')
-            ->assertSee('Shortest')
-            ->assertSee('Fewer checks')
-            ->assertSee('Fewer turns')
-            ->assertSee('Use the arrow keys to move across the grid')
-            ->assertSee('Find path')
-            ->assertSee('Since Aug 2024')
-            ->assertDontSee('Street routing')
-            ->assertDontSee('Fastest')
-            ->assertDontSee('Low traffic')
-            ->assertDontSee('class="about-lab"', false)
-            ->assertDontSee('data-about-lab', false)
-            ->assertDontSee('class="about-facts"', false)
-            ->assertDontSee('class="principles-list"', false)
-            ->assertDontSee('class="about-system"', false)
             ->assertSee('Stack')
-            ->assertSee('Experience')
-            ->assertSee('Tools')
-            ->assertSee('Application Developer EFZ')
-            ->assertSee('Business Informatics BSc')
             ->assertSee('.NET 10 / C#')
             ->assertSee('ASP.NET Core')
             ->assertSee('Laravel 13')
             ->assertSee('PostgreSQL')
             ->assertSee('GitHub Actions')
             ->assertSee('Herd / Plesk')
-            ->assertSee('data-technology-icon="laravel"', false)
+            ->assertDontSee('In brief.')
+            ->assertDontSee('Career path')
+            ->assertDontSee('playground', false)
             ->assertDontSee('page-stage', false)
             ->assertDontSee('data-project-stage', false);
 
-        $this->assertSame(4, substr_count($about->content(), 'class="technology-group"'));
-        $this->assertSame(4, substr_count($about->content(), 'data-technology-icon='));
-        $this->assertSame(4, substr_count($about->content(), 'class="section-label about-section-label"'));
-        $this->assertSame(3, substr_count($about->content(), '<article class="playground-demo'));
-        // The only canvas is the sphere behind the page hero; the demos are built from elements.
-        $this->assertSame(1, substr_count($about->content(), '<canvas data-dot-orb'));
-        $about->assertSee('<canvas data-dot-orb>', false);
-        $this->assertSame(5, substr_count($about->content(), 'data-sorting-algorithm='));
-        $this->assertSame(5, substr_count($about->content(), 'data-sorting-description='));
-        $this->assertSame(0, substr_count($about->content(), 'data-sorting-complexity='));
-        $this->assertSame(3, substr_count($about->content(), 'data-network-preset='));
-        $this->assertSame(3, substr_count($about->content(), 'data-pathfinding-strategy='));
-        $this->assertSame(3, substr_count($about->content(), 'data-pathfinding-description='));
-        $this->assertSame(2, substr_count($about->content(), 'aria-multiselectable="true"'));
-        $this->assertStringNotContainsString('playground-demo__title', $about->content());
         $aboutHtml = $about->content();
 
-        $this->assertLessThan(strpos($aboutHtml, 'id="career-title"'), strpos($aboutHtml, 'id="story"'));
-        $this->assertLessThan(strpos($aboutHtml, 'id="stack-title"'), strpos($aboutHtml, 'id="career-title"'));
-        $this->assertLessThan(strpos($aboutHtml, 'id="playground-title"'), strpos($aboutHtml, 'id="stack-title"'));
+        // Two chapters, each with a figure for the sphere; the first one is current at the start.
+        $this->assertSame(2, preg_match_all('/\sdata-chapter\s/', $aboutHtml));
+        $this->assertSame(1, substr_count($aboutHtml, 'data-dot-orb-resting'));
+        $this->assertMatchesRegularExpression('/data-chapter\s+data-dot-orb-figure="about"\s+data-dot-orb-resting/', $aboutHtml);
+        $this->assertMatchesRegularExpression('/data-chapter\s+data-dot-orb-figure="stack"/', $aboutHtml);
+
+        // Every group and every tool answers a hover: four groups in their colors and sixteen
+        // tools, of which those with a mark of their own show it, the others their group's.
+        $this->assertSame(20, substr_count($aboutHtml, 'class="figure-word"'));
+        $this->assertSame(4, substr_count($aboutHtml, 'class="about-row" style="--dot-orb-rgb: '));
+        $this->assertSame(1, substr_count($aboutHtml, '<canvas data-dot-orb'));
+        $this->assertMatchesRegularExpression('/data-dot-orb-figure="typescript"\s+style="--dot-orb-rgb: 49, 120, 198"\s*>TypeScript</', $aboutHtml);
+        $this->assertMatchesRegularExpression('/data-dot-orb-figure="laravel"\s*>Blade</', $aboutHtml);
+        $this->assertMatchesRegularExpression('/data-dot-orb-figure="windows"\s*>WinUI 3</', $aboutHtml);
 
         $this->get('/de/about')
             ->assertOk()
-            ->assertSee('Erfahrung')
-            ->assertSee('Tools')
-            ->assertSee('Kurzprofil.')
-            ->assertSee('Grundlage')
-            ->assertSee('Playground.')
-            ->assertSee('Sorting')
-            ->assertSee('Diese Aufteilung wiederholt sich, bis jede Gruppe sortiert ist.')
-            ->assertSee('Vergleiche')
-            ->assertDontSee('Typischer Aufwand')
-            ->assertDontSee('O-Notation')
-            ->assertSee('Insertion')
-            ->assertSee('Selection')
-            ->assertSee('Neural Network')
-            ->assertSee('Zeichne eine 0, 1 oder 2')
-            ->assertSee('sie lernt nicht aus deinen Zeichnungen')
-            ->assertSee('Mit den Pfeiltasten durch die Pixel navigieren')
-            ->assertSee('Erkennen')
-            ->assertSee('Pathfinder')
-            ->assertSee('Wände bearbeiten')
-            ->assertSee('Kürzester Weg')
-            ->assertSee('Weniger prüfen')
-            ->assertSee('Weniger Kurven')
-            ->assertSee('Mit den Pfeiltasten durch das Raster navigieren')
-            ->assertSee('Weg finden')
+            ->assertSee('aria-label="Über mich."', false)
             ->assertSee('Stack')
-            ->assertSee('Seit Aug. 2024')
-            ->assertDontSee('Strassen-Routing')
-            ->assertDontSee('Schnellste');
+            ->assertSee('data-dot-orb-figure="tailwindcss"', false);
 
         $projects = $this->get('/de/projects');
 
@@ -267,7 +178,6 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('.NET / C#')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('data-dot-orb-figure="quantified"', false)
             ->assertSee('data-dot-orb-figure="jay-jay"', false)
             ->assertDontSee('Nativer Workspace-Launcher')
             ->assertSee('aria-describedby="quantified-detail"', false)

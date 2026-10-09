@@ -55,11 +55,11 @@ resources/css/          Foundation, layout, one stylesheet per page in pages/, r
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
 resources/js/           Navigation, pointer, interaction, sound and transition controllers
 tests/Feature/           Public-page and export coverage
-tests/JavaScript/        Playground logic and DOM interaction tests
+tests/JavaScript/        Controller and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
 tests/deployment/        Deployment safeguards (Python standard library)
 AGENTS.md                Working rules for coding agents
-DESIGN.md                What the interface does: craft standard, identity, home page
+DESIGN.md                What the interface does: craft standard, identity, the pages
 docs/handoff.md          Current state, open decisions and audit findings
 ```
 

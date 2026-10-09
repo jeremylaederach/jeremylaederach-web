@@ -1,3 +1,4 @@
+import { chapterChangedEvent } from './chapter-controller.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { transitionFinishedEvent } from './transition-controller.js';
 
@@ -10,6 +11,12 @@ const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 const unitOf = { height: 1, width: 0.7, largest: 1040 };
 const sphereRadius = 0.3;
 const reach = 0.08;
+
+// Where the sphere stands: at this share of its canvas' width and height, unless the element it
+// rests with names another place. It then glides to that share of the width at `rate` per second
+// and keeps level with the middle of that element, which it follows at `follow` per second. It
+// wanders around its place by `wander` of the canvas, or by `held` beside such an element.
+const stand = { share: 0.68, level: 0.5, rate: 2.4, follow: 7, wander: 0.1, held: 0.03 };
 
 // A click sends a ring outwards through the dots: how fast it travels and how wide it is, in
 // units, how far it pushes a dot, how many seconds it lasts and how many rings travel at once.
@@ -215,6 +222,11 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     let shape = 0;
     let targetShape = 0;
     let targetColor = color;
+    let standing = stand.share;
+    let targetStanding = stand.share;
+    let level = stand.level;
+    let anchor = null;
+    let pointed = null;
     let scattered = arriving && !reducedMotion ? 1 : 0;
     let targetScattered = 0;
 
@@ -235,8 +247,19 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     // its smaller side. Otherwise the sphere wanders slowly around the middle of the stage.
     const fit = canvas.hasAttribute('data-dot-orb-fit') && !reducedMotion;
     const wander = (seconds) => {
-        home.x = (width * (fit ? 0.5 : 0.68 + 0.1 * Math.sin(seconds / 23))) / unit;
-        home.y = (height * (fit ? 0.5 : 0.5 + 0.1 * Math.sin(seconds / 17))) / unit;
+        const drift = anchor ? stand.held : stand.wander;
+
+        home.x = (width * (fit ? 0.5 : standing + drift * Math.sin(seconds / 23))) / unit;
+        home.y = (height * (fit ? 0.5 : level + drift * Math.sin(seconds / 17))) / unit;
+    };
+
+    // The share of the canvas' height at which the middle of the element the sphere keeps level
+    // with stands right now.
+    const levelOf = (element) => {
+        const bounds = element.getBoundingClientRect();
+        const frame = canvas.getBoundingClientRect();
+
+        return (bounds.top + bounds.height / 2 - frame.top) / (frame.height || 1);
     };
 
     // Where each bud is right now, and how far out of the sphere.
@@ -418,6 +441,8 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
         shape = approach(shape, targetShape, 8, delta);
+        standing = approach(standing, targetStanding, stand.rate, delta);
+        level = approach(level, anchor ? levelOf(anchor) : stand.level, stand.follow, delta);
         color.forEach((channel, index) => {
             color[index] = approach(channel, targetColor[index], 6, delta);
         });
@@ -521,16 +546,23 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
     };
 
     // While no element that names a figure is hovered or focused, the one marked as resting holds
-    // its figure. An element may also name the color of its figure (`--dot-orb-rgb`). The dots
-    // keep the last figure while they return to the sphere.
+    // its figure; the chapter of a page names its figure only for that, not for a hover. An
+    // element may also name the color of its figure (`--dot-orb-rgb`), and the resting one where
+    // the sphere stands (`--dot-orb-x`); the sphere then keeps level with it. The dots keep the
+    // last figure while they return to the sphere.
     const react = (target) => {
-        const element = (target instanceof Element ? target.closest('[data-dot-orb-figure]') : null)
-            ?? document.querySelector('[data-dot-orb-resting]');
+        const resting = document.querySelector('[data-dot-orb-resting]');
+        const element = (target instanceof Element ? target.closest('[data-dot-orb-figure]:not([data-chapter])') : null)
+            ?? resting;
         const points = figures.get(element?.dataset.dotOrbFigure);
         const tone = points?.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
+        const share = resting ? Number.parseFloat(getComputedStyle(resting).getPropertyValue('--dot-orb-x')) : NaN;
 
+        pointed = target;
         targetShape = points?.length ? 1 : 0;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
+        targetStanding = Number.isFinite(share) ? share : stand.share;
+        anchor = Number.isFinite(share) ? resting : null;
 
         if (points?.length) {
             figurePoints = points;
@@ -553,13 +585,17 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             figures.set(name, sampleFigure(drawFigure));
         }
 
+        // The sphere starts where it belongs instead of gliding there.
         react(null);
+        standing = targetStanding;
+        level = anchor ? levelOf(anchor) : stand.level;
 
         if (canvas.dataset.mark) {
             const image = document.createElement('img');
 
             image.addEventListener('load', () => {
                 figures.set('mark', sampleFigure((figureContext, size) => figureContext.drawImage(image, 0, 0, size, size)));
+                react(pointed);
             }, options);
             image.src = canvas.dataset.mark;
         }
@@ -579,6 +615,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
             react(event.target.matches(':focus-visible') ? event.target : null);
         }, options);
         document.addEventListener('focusout', () => react(null), options);
+        document.addEventListener(chapterChangedEvent, () => react(pointed), options);
         document.addEventListener('portfolio:before-navigation', () => {
             targetScattered = 1;
         }, options);

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { chapterChangedEvent } from '../../resources/js/chapter-controller.js';
 import { createDotOrbController, openingAt } from '../../resources/js/dot-orb-controller.js';
 import { createDom } from './dom.js';
 
@@ -47,7 +48,9 @@ const setup = (t, reducedMotion = false) => {
     let timestamp = 0;
     const globals = {
         getComputedStyle: (element) => ({
-            getPropertyValue: (name) => element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : ''),
+            getPropertyValue: (name) => (name === '--dot-orb-x'
+                ? element.dataset.place ?? ''
+                : element.dataset.tone ?? (name === '--route-accent-goal' ? '125, 240, 201' : '')),
         }),
         Path2D: class {},
         ResizeObserver: class {
@@ -150,6 +153,33 @@ test('an element that names no known figure leaves the sphere whole', (t) => {
     run(200);
 
     assert.ok(spread('y') > 200);
+});
+
+test('a chapter gives the sphere its figure and its place once it is current, not on a hover', (t) => {
+    const { dots, run, hover, spread } = setup(t);
+    const chapter = document.createElement('section');
+    const middle = () => dots.reduce((sum, dot) => sum + dot.x, 0) / dots.length;
+
+    chapter.setAttribute('data-chapter', '');
+    chapter.dataset.dotOrbFigure = 'projects';
+    chapter.dataset.place = '0.25';
+    document.body.append(chapter);
+
+    hover(chapter);
+    run(200);
+
+    assert.ok(spread('y') > 200);
+
+    const before = middle();
+
+    chapter.setAttribute('data-dot-orb-resting', '');
+    document.dispatchEvent(new window.CustomEvent(chapterChangedEvent));
+    run(400);
+
+    assert.ok(spread('x') < 170 && spread('y') < 170);
+    // The canvas is 600 pixels wide: the sphere glides from 0.68 of it to a quarter, give or take
+    // the tenth it wanders.
+    assert.ok(before > 340 && middle() < 220);
 });
 
 test('a click sends a ring through the dots that fades again', (t) => {

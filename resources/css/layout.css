@@ -38,17 +38,24 @@
     /* The mark is the link home. */
     .brand-lockup {
         display: grid;
-        width: 44px;
-        height: 44px;
-        margin-left: -7px;
+        width: 48px;
+        height: 48px;
+        margin-left: -5px;
         grid-column: 1;
         justify-self: start;
         place-items: center;
     }
 
+    /* Hovered or focused, the mark grows a little. */
     .brand-lockup__mark {
-        width: 30px;
-        height: 30px;
+        width: 38px;
+        height: 38px;
+        transition: scale 320ms var(--ease-out);
+    }
+
+    .has-mouse-input .brand-lockup:hover .brand-lockup__mark,
+    .brand-lockup:focus-visible .brand-lockup__mark {
+        scale: 1.12;
     }
 
     /* The mark takes the accent of the page: its image is the mask, and the accent runs from a

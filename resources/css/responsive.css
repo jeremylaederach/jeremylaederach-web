@@ -4,22 +4,6 @@
         --index-number-column: 48px;
     }
 
-    .page-hero h1 {
-        font-size: 92px;
-    }
-
-    .career-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .career-list li:nth-child(2) {
-        border-right: 0;
-    }
-
-    .career-list li:nth-child(-n + 2) {
-        border-bottom: 1px solid var(--line);
-    }
-
     .case-study-product h2,
     .case-study-section-heading h2 {
         font-size: 60px;
@@ -31,16 +15,6 @@
 
     .not-found-page__message h1 {
         font-size: 52px;
-    }
-
-    .playground-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .playground-demo:last-child {
-        width: calc(50% - 6px);
-        grid-column: 1 / -1;
-        justify-self: center;
     }
 }
 
@@ -84,20 +58,6 @@
 
     .index-panel {
         grid-template-columns: var(--index-number-column) minmax(170px, 0.8fr) minmax(220px, 1.2fr);
-    }
-
-    .page-hero {
-        min-height: 74svh;
-        padding: 132px 0 54px;
-    }
-
-    .page-hero h1 {
-        font-size: 76px;
-    }
-
-    .page-hero > p {
-        grid-column: 8 / 13;
-        font-size: 16px;
     }
 
     .project-reel {
@@ -187,39 +147,6 @@
 
     .case-study-section-heading h2 {
         font-size: 52px;
-    }
-
-    .about-story {
-        gap: 32px 16px;
-    }
-
-    .about-story__lead,
-    .about-story__body {
-        grid-column: 3 / 13;
-    }
-
-    .about-story__lead h2 {
-        font-size: 54px;
-    }
-
-    .about-story__body p {
-        font-size: 18px;
-    }
-
-    .about-playground > header,
-    .career-section > header,
-    .stack-section > header {
-        gap: 16px;
-    }
-
-    .about-playground h2,
-    .career-section h2,
-    .stack-section h2 {
-        font-size: 52px;
-    }
-
-    .career-list h3 {
-        font-size: 23px;
     }
 
     .technology-groups {
@@ -332,42 +259,6 @@
         grid-column: 2;
         font-size: 12px;
         line-height: 1.35;
-    }
-
-    .page-hero {
-        min-height: 78svh;
-        padding: 112px 0 44px;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto auto;
-        gap: 22px;
-    }
-
-    .page-hero__title,
-    .page-hero > p,
-    .page-hero > .scroll-cue {
-        grid-column: 1;
-    }
-
-    .page-hero__title {
-        grid-row: 2;
-        align-self: center;
-    }
-
-    .page-hero h1 {
-        max-width: 10ch;
-        font-size: 64px;
-    }
-
-    .page-hero > p {
-        max-width: 38ch;
-        grid-row: 3;
-        align-self: auto;
-        font-size: 15px;
-    }
-
-    .page-hero > .scroll-cue {
-        grid-row: 4;
-        margin-top: 12px;
     }
 
     .project-visual {
@@ -762,171 +653,18 @@
         padding-bottom: 64px;
     }
 
-    .about-story {
-        display: grid;
-        min-height: auto;
-        padding: 72px 0 76px;
-        grid-template-columns: 1fr;
-        gap: 28px;
-    }
-
-    .about-story .section-label,
-    .about-story__lead,
-    .about-story__body {
-        grid-column: 1;
-    }
-
-    .about-story__lead h2 {
-        font-size: 46px;
-    }
-
-    .about-story__body {
-        gap: 38px;
-    }
-
-    .about-story__body p {
-        font-size: 17px;
-    }
-
-    .about-story__notes,
     .case-study-hero__meta {
         grid-template-columns: 1fr;
     }
 
-    .about-story__notes > div,
     .case-study-hero__meta > div {
         padding: 18px 0 20px;
     }
 
-    .about-story__notes > div + div,
     .case-study-hero__meta > div + div {
         padding-left: 0;
         border-top: 1px solid var(--line);
         border-left: 0;
-    }
-
-    .about-playground > header,
-    .career-section > header,
-    .stack-section > header {
-        grid-template-columns: 1fr;
-        padding: 60px 0 36px;
-        gap: 18px;
-        align-items: start;
-    }
-
-    .about-section-heading > .about-section-label,
-    .about-section-heading__content {
-        grid-column: 1;
-    }
-
-    .about-playground h2,
-    .career-section h2,
-    .stack-section h2 {
-        font-size: 40px;
-    }
-
-    .about-playground,
-    .career-section {
-        padding-bottom: 64px;
-    }
-
-    .playground-grid {
-        gap: 10px;
-    }
-
-    .playground-demo > header {
-        padding: 0 18px;
-    }
-
-    .playground-demo__stage {
-        aspect-ratio: 16 / 9;
-        padding: 18px;
-    }
-
-    .sorting-stage {
-        padding: 22px 16px 28px;
-    }
-
-    .neural-stage {
-        grid-template-columns: minmax(90px, 0.9fr) 28px minmax(96px, 1fr);
-        gap: 10px;
-    }
-
-    .neural-stage__bridge {
-        width: calc(100% + 20px);
-        margin-inline: -10px;
-    }
-
-    .path-stage {
-        padding: 14px 18px;
-    }
-
-    .playground-demo > footer {
-        min-height: 0;
-        padding: 18px 18px 20px;
-        gap: 14px;
-    }
-
-    .playground-demo__options,
-    .playground-demo__actions {
-        gap: 6px;
-    }
-
-    .playground-demo button {
-        min-height: 42px;
-        padding: 0 12px;
-    }
-
-    [data-network-demo] .playground-demo__options button {
-        min-height: 46px;
-    }
-
-    .playground-demo .neural-pixels button,
-    .playground-demo .path-cell {
-        min-height: 0;
-        padding: 0;
-    }
-
-    .playground-demo footer .playground-demo__description {
-        min-height: 0;
-    }
-
-    .career-list {
-        grid-template-columns: 1fr;
-    }
-
-    .career-list li {
-        min-height: 200px;
-        padding: 26px 20px 24px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .career-list li:last-child {
-        border-bottom: 0;
-    }
-
-    .career-list time {
-        margin-top: 36px;
-    }
-
-    .career-list h3 {
-        margin-top: 16px;
-        font-size: 23px;
-    }
-
-    .career-list p {
-        margin-top: auto;
-        padding-top: 22px;
-        font-size: 13px;
-    }
-
-    .stack-section {
-        padding-bottom: 64px;
-    }
-
-    .about-section-heading__content > p {
-        margin-top: 14px;
     }
 
     .technology-groups {
@@ -1106,17 +844,6 @@
     .case-study-section-heading__content {
         grid-column: 1;
     }
-
-    .playground-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .playground-demo,
-    .playground-demo:last-child {
-        width: min(100%, 640px);
-        grid-column: auto;
-        justify-self: center;
-    }
 }
 
 @media (max-width: 420px) {
@@ -1149,54 +876,6 @@
 
     .project-detail--sessiondeck .case-study-hero__title h1 {
         font-size: 40px;
-    }
-
-    .neural-stage {
-        min-height: 380px;
-        padding: 20px;
-        aspect-ratio: auto;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 38px auto;
-        gap: 12px;
-    }
-
-    .neural-stage__input,
-    .neural-stage__output {
-        width: min(100%, 180px);
-        gap: 10px;
-        justify-self: center;
-    }
-
-    .neural-stage__input .playground-stage-label,
-    .neural-pixels {
-        width: 148px;
-        justify-self: center;
-    }
-
-    .neural-stage__bridge {
-        width: 72px;
-        height: 38px;
-        margin: 0;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-        justify-self: center;
-        transform: none;
-    }
-
-    .neural-stage__bridge span {
-        width: 1px;
-        height: 100%;
-        justify-self: center;
-        background: linear-gradient(180deg, rgba(var(--route-accent-rgb), 0.16), rgba(var(--route-accent-rgb), 0.58));
-        transform-origin: center;
-    }
-
-    .neural-stage__bridge span:first-child {
-        transform: rotate(-12deg);
-    }
-
-    .neural-stage__bridge span:last-child {
-        transform: rotate(12deg);
     }
 }
 

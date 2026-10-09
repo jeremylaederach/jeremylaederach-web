@@ -32,6 +32,18 @@ return [
         ],
     ],
 
+    // Tools of the about page that have a mark of their own for the sphere (see
+    // dot-orb-figures.js), by their name in the technology groups. A tool without a color takes
+    // its group's, and a tool that is not listed here shows its group's mark.
+    'technology_marks' => [
+        'TypeScript' => ['figure' => 'typescript', 'color' => '#3178c6'],
+        'Tailwind CSS' => ['figure' => 'tailwindcss', 'color' => '#06b6d4'],
+        'Vite' => ['figure' => 'vite', 'color' => '#9135ff'],
+        'GitHub Actions' => ['figure' => 'githubactions', 'color' => '#2088ff'],
+        'Google APIs' => ['figure' => 'google', 'color' => '#4285f4'],
+        'WinUI 3' => ['figure' => 'windows'],
+    ],
+
     'content' => [
         'en' => [
             'meta' => [
@@ -67,13 +79,14 @@ return [
             'home' => [
                 'statement' => 'I build',
                 'statement_accent' => 'useful digital systems.',
-                'summary' => 'Web products, client websites, and Windows tools – built from the backend to the interface.',
-                // Words of the summary that morph the sphere into a figure while they are hovered; a
-                // project gives the figure its color.
+                'summary' => 'Data platforms, web services, and native apps – built from the backend to the interface.',
+                // Words of the summary that morph the sphere into a figure while they are hovered.
                 'summary_figures' => [
-                    ['words' => 'Web products', 'figure' => 'quantified', 'project' => 'quantified'],
-                    ['words' => 'client websites', 'figure' => 'jay-jay', 'project' => 'jay-jay'],
-                    ['words' => 'Windows tools', 'figure' => 'projects', 'project' => 'sessiondeck'],
+                    ['words' => 'Data platforms', 'figure' => 'quantified'],
+                    ['words' => 'web services', 'figure' => 'jay-jay'],
+                    ['words' => 'native apps', 'figure' => 'windows'],
+                    ['words' => 'backend', 'figure' => 'backend'],
+                    ['words' => 'interface', 'figure' => 'interface'],
                 ],
                 'explore' => 'Explore projects',
                 'index_label' => 'Landing',
@@ -110,96 +123,6 @@ return [
                     [
                         'label' => 'Since September 2026',
                         'value' => 'Alongside development, I study Business Informatics at OST. The degree connects my technical work with the business side of software projects.',
-                    ],
-                ],
-                'playground_label' => 'Code',
-                'playground_heading' => 'Playground.',
-                'playground_intro' => 'Three small demos in plain JavaScript. Change the input and watch the work happen.',
-                'playground' => [
-                    'sorting' => [
-                        'title' => 'Sorting',
-                        'run' => 'Start',
-                        'shuffle' => 'Mix',
-                        'metric' => 'Comparisons',
-                        'complete' => 'Sorted',
-                        'algorithms' => [
-                            'quick' => [
-                                'label' => 'Quick',
-                                'description' => 'Chooses a pivot, then moves smaller values left and larger values right. It repeats that split until every group is in order.',
-                            ],
-                            'merge' => [
-                                'label' => 'Merge',
-                                'description' => 'Keeps splitting the list, then joins the pieces in order. The merge step rebuilds one sorted list from the smallest pieces.',
-                            ],
-                            'insertion' => [
-                                'label' => 'Insertion',
-                                'description' => 'Takes one value and inserts it into the part that is already sorted. The ordered section grows one bar at a time.',
-                            ],
-                            'selection' => [
-                                'label' => 'Selection',
-                                'description' => 'Finds the smallest remaining value and moves it to the front. Each pass locks one more bar into its final position.',
-                            ],
-                            'bubble' => [
-                                'label' => 'Bubble',
-                                'description' => 'Compares neighbours and swaps them when they are out of order. A pass without a swap means the list is finished.',
-                            ],
-                        ],
-                    ],
-                    'network' => [
-                        'title' => 'Neural Network',
-                        'description' => 'Draw a 0, 1 or 2. Three output neurons score your pixels against fixed patterns. This small demo compares them; it does not learn from your drawings.',
-                        'run' => 'Recognize',
-                        'reset' => 'Clear',
-                        'metric' => 'Guess',
-                        'empty' => 'Draw a digit first',
-                        'default' => '2',
-                        'keyboard_note' => 'Use the arrow keys to move through the pixels. Press Space or Enter to switch one on or off.',
-                        'visual' => [
-                            'input' => 'Pixels',
-                            'output' => 'Result',
-                            'pixel' => 'Pixel',
-                            'on' => 'on',
-                            'off' => 'off',
-                        ],
-                        'presets' => [
-                            '0' => ['label' => '0'],
-                            '1' => ['label' => '1'],
-                            '2' => ['label' => '2'],
-                        ],
-                    ],
-                    'pathfinding' => [
-                        'title' => 'Pathfinder',
-                        'description' => 'Edit the walls, choose how the search should work, and compare the routes.',
-                        'strategies' => [
-                            'shortest' => [
-                                'label' => 'Shortest',
-                                'description' => 'Checks outwards from A and guarantees the fewest steps.',
-                            ],
-                            'guided' => [
-                                'label' => 'Fewer checks',
-                                'description' => 'Uses the distance to B, usually checks fewer cells, and still finds a shortest route.',
-                            ],
-                            'straight' => [
-                                'label' => 'Fewer turns',
-                                'description' => 'Prefers a straighter route, even when it needs a few extra steps.',
-                            ],
-                        ],
-                        'keyboard_note' => 'Use the arrow keys to move across the grid. Press Space or Enter to block or open a cell.',
-                        'run' => 'Find path',
-                        'reset' => 'Reset',
-                        'metric' => 'Checked · steps · turns',
-                        'no_path' => 'No open path',
-                        'visual' => [
-                            'checked' => 'checked',
-                            'steps' => 'steps',
-                            'turns' => 'turns',
-                            'cell' => 'Cell',
-                            'blocked' => 'blocked',
-                            'open' => 'open',
-                            'start' => 'Start',
-                            'goal' => 'Goal',
-                            'fixed' => 'cannot be blocked',
-                        ],
                     ],
                 ],
                 'technology_heading' => 'Stack',
@@ -668,11 +591,13 @@ return [
             'home' => [
                 'statement' => 'Ich entwickle',
                 'statement_accent' => 'nützliche digitale Systeme.',
-                'summary' => 'Webprodukte, Kundenwebsites und Windows-Tools – vom Backend bis zur Oberfläche.',
+                'summary' => 'Datenplattformen, Webservices und native Apps – vom Backend bis zur Oberfläche.',
                 'summary_figures' => [
-                    ['words' => 'Webprodukte', 'figure' => 'quantified', 'project' => 'quantified'],
-                    ['words' => 'Kundenwebsites', 'figure' => 'jay-jay', 'project' => 'jay-jay'],
-                    ['words' => 'Windows-Tools', 'figure' => 'projects', 'project' => 'sessiondeck'],
+                    ['words' => 'Datenplattformen', 'figure' => 'quantified'],
+                    ['words' => 'Webservices', 'figure' => 'jay-jay'],
+                    ['words' => 'native Apps', 'figure' => 'windows'],
+                    ['words' => 'Backend', 'figure' => 'backend'],
+                    ['words' => 'Oberfläche', 'figure' => 'interface'],
                 ],
                 'explore' => 'Projekte entdecken',
                 'index_label' => 'Start',
@@ -709,96 +634,6 @@ return [
                     [
                         'label' => 'Seit September 2026',
                         'value' => 'Neben der Entwicklung studiere ich Wirtschaftsinformatik an der OST. Im Studium verbinde ich meine technische Arbeit mit der wirtschaftlichen Seite von Softwareprojekten.',
-                    ],
-                ],
-                'playground_label' => 'Code',
-                'playground_heading' => 'Playground.',
-                'playground_intro' => 'Drei kleine Demos in purem JavaScript. Input ändern und direkt sehen, was im Hintergrund passiert.',
-                'playground' => [
-                    'sorting' => [
-                        'title' => 'Sorting',
-                        'run' => 'Starten',
-                        'shuffle' => 'Mischen',
-                        'metric' => 'Vergleiche',
-                        'complete' => 'Sortiert',
-                        'algorithms' => [
-                            'quick' => [
-                                'label' => 'Quick',
-                                'description' => 'Wählt einen Pivot und schiebt kleinere Werte nach links, grössere nach rechts. Diese Aufteilung wiederholt sich, bis jede Gruppe sortiert ist.',
-                            ],
-                            'merge' => [
-                                'label' => 'Merge',
-                                'description' => 'Teilt die Liste immer weiter und fügt die Teile sortiert zusammen. Dabei entsteht Schritt für Schritt wieder eine geordnete Liste.',
-                            ],
-                            'insertion' => [
-                                'label' => 'Insertion',
-                                'description' => 'Nimmt einen Wert und schiebt ihn an die richtige Stelle im bereits sortierten Teil. So wächst der geordnete Bereich Balken für Balken.',
-                            ],
-                            'selection' => [
-                                'label' => 'Selection',
-                                'description' => 'Sucht jeweils den kleinsten übrigen Wert und setzt ihn nach vorne. Nach jedem Durchlauf steht ein weiterer Balken endgültig richtig.',
-                            ],
-                            'bubble' => [
-                                'label' => 'Bubble',
-                                'description' => 'Vergleicht Nachbarn und tauscht sie, wenn sie falsch stehen. Ein Durchlauf ohne Tausch bedeutet, dass die Liste fertig sortiert ist.',
-                            ],
-                        ],
-                    ],
-                    'network' => [
-                        'title' => 'Neural Network',
-                        'description' => 'Zeichne eine 0, 1 oder 2. Drei Ausgabe-Neuronen bewerten deine Pixel anhand fester Muster. Diese kleine Demo vergleicht sie; sie lernt nicht aus deinen Zeichnungen.',
-                        'run' => 'Erkennen',
-                        'reset' => 'Leeren',
-                        'metric' => 'Erkannt',
-                        'empty' => 'Zuerst eine Zahl zeichnen',
-                        'default' => '2',
-                        'keyboard_note' => 'Mit den Pfeiltasten durch die Pixel navigieren. Mit Leertaste oder Enter ein Feld ein- oder ausschalten.',
-                        'visual' => [
-                            'input' => 'Pixel',
-                            'output' => 'Ergebnis',
-                            'pixel' => 'Pixel',
-                            'on' => 'an',
-                            'off' => 'aus',
-                        ],
-                        'presets' => [
-                            '0' => ['label' => '0'],
-                            '1' => ['label' => '1'],
-                            '2' => ['label' => '2'],
-                        ],
-                    ],
-                    'pathfinding' => [
-                        'title' => 'Pathfinder',
-                        'description' => 'Wände bearbeiten, Suchart wählen und die Wege vergleichen.',
-                        'strategies' => [
-                            'shortest' => [
-                                'label' => 'Kürzester Weg',
-                                'description' => 'Prüft von A aus Feld für Feld und garantiert die wenigsten Schritte.',
-                            ],
-                            'guided' => [
-                                'label' => 'Weniger prüfen',
-                                'description' => 'Nutzt die Distanz zu B, prüft meist weniger Felder und findet trotzdem einen kürzesten Weg.',
-                            ],
-                            'straight' => [
-                                'label' => 'Weniger Kurven',
-                                'description' => 'Bevorzugt einen geraderen Weg, auch wenn er ein paar Schritte länger wird.',
-                            ],
-                        ],
-                        'keyboard_note' => 'Mit den Pfeiltasten durch das Raster navigieren. Mit Leertaste oder Enter ein Feld sperren oder öffnen.',
-                        'run' => 'Weg finden',
-                        'reset' => 'Zurücksetzen',
-                        'metric' => 'Geprüft · Schritte · Kurven',
-                        'no_path' => 'Kein freier Weg',
-                        'visual' => [
-                            'checked' => 'geprüft',
-                            'steps' => 'Schritte',
-                            'turns' => 'Kurven',
-                            'cell' => 'Feld',
-                            'blocked' => 'gesperrt',
-                            'open' => 'offen',
-                            'start' => 'Start',
-                            'goal' => 'Ziel',
-                            'fixed' => 'kann nicht gesperrt werden',
-                        ],
                     ],
                 ],
                 'technology_heading' => 'Stack',

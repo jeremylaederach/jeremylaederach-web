@@ -31,7 +31,7 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   the link home at the left of the header. In the header it is cut out of the page's accent with
   its image as the mask (`resources/views/components/brand-mark.blade.php`), lighter at the top
   left and deeper at the bottom right as in the image, so it takes a project's color with the
-  rest of the header.
+  rest of the header. It is 38px large; hovered or focused it grows a little.
 - **Colors.** Background `#07070a`, ink `#f4f1ea`, muted text `#aaa6af`, hairlines at 13% ink.
   One accent, mint `#7df0c9`. Where a project is shown, in its case study or as the current one
   of the projects overview, its color replaces mint as the accent of the whole page, the header
@@ -98,12 +98,17 @@ the text.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
-  beside the text. At rest they look like the text around them. Hovered, they show a line of fine
-  beads below them that fades in within a quarter of a second and travels like the pointer's
-  ring. A word that stands for a project gives the beads and the figure that project's color;
-  the rest of the page keeps its accent. In the statement of the home page the three kinds of
-  work give the bars of Quantified, the brackets of Jay-Jay and a window in SessionDeck's orange,
-  and the name gives the mark.
+  beside the text. Hovered, they light up in the color of their figure, the accent unless they
+  or their row name another. In a text those words are set letter by letter, and the light of
+  the page headings runs through them every three seconds, from the first of their letters to
+  the last, so the text shows which of its words answer. In the statement of the home page the
+  three kinds of work give the bars of Quantified, the brackets of Jay-Jay and four panes, the
+  backend gives a database, the interface the arrow of a pointer, and the name gives the mark;
+  everything stays in the accent.
+- **Place.** On a canvas that is not fitted the sphere wanders around a point at 68% of the
+  canvas' width and half its height. The element it rests with can name another share of the
+  width (`--dot-orb-x`): the sphere glides there in about a second, keeps level with the middle
+  of that element while the page scrolls and wanders much less.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
   sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
 - **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
@@ -114,7 +119,7 @@ the text.
 - **Fitted canvas.** On a canvas marked `data-dot-orb-fit` the sphere stands still in the middle,
   and a figure, which is drawn within the middle 80% of its square, fills the smaller side of the
   canvas.
-- **Sub-pages.** The about page shows the same sphere behind its page hero. A case
+- **Sub-pages.** The about page is told in chapters beside the sphere (see "About"). A case
   study shows it in the project's color behind the gallery of its hero. On the 404 page it stands
   behind the large number, moved to the left from 721px. The legal pages have no sphere.
 - **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
@@ -141,7 +146,10 @@ that becomes current keeps one edge in place and moves the other outwards, so it
 under the pointer. The slot holds three lines of description; longer text is cut with an
 ellipsis. A mirrored stage (`stage-list--mirrored`) swaps the sides: the square stands flush with
 the left edge, and the list keeps to the right. A compact stage (`stage-list--compact`) has lower
-rows whose names stand a step below the heading, for plain entries. Up to 960px the rows follow each other with their
+rows whose names stand a step below the heading, for plain entries. There the figure is the
+larger part: the square takes what the header and the page end leave of the height, up to 52% of
+the width, and the content and the square both stand in the middle of the stage's height; the
+current row's name takes the accent like its icon. Up to 960px the rows follow each other with their
 texts, and the sphere stays behind the page.
 
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
@@ -154,3 +162,28 @@ texts, and the sphere stays behind the page.
   largest text. The rows are the channels, each
   with its address at the end of the row: an envelope for email, GitHub's mark for GitHub, a head
   and shoulders for LinkedIn. Below the list stands a note on what to write.
+
+### About
+
+The about page is told in two chapters beside the sphere (`resources/views/pages/about.blade.php`,
+`resources/css/pages/about.css`, `resources/js/chapter-controller.js`): the opening with the
+heading and the introduction, and the technologies. It stays light, the figure the larger part.
+
+- **Chapters.** The sphere's canvas covers the window and stays there while the chapters scroll
+  over it. The chapter that crosses the middle of the window is the current one: the sphere rests
+  in its figure and keeps level with it, so it scrolls with its chapter like a picture beside the
+  text. From 961px the opening fills the first window with the heading left of the sphere and the
+  introduction right of it; the technologies keep to a column of at most 560px on the left, the
+  sphere at 72% of the width, where it glides in about a second. A chapter is at least as high
+  as a figure.
+- **Figures.** The opening gives a head and shoulders, the technologies three layers. A chapter
+  names its figure only for the time it is current; hovering its text changes nothing.
+- **Technologies.** Four rows between hairlines, each the name of a group and its tools. Every
+  name answers a hover: a group morphs the sphere into its mark in its color (.NET, Laravel,
+  Angular, PostgreSQL), and so does a tool with a mark of its own (TypeScript, Tailwind CSS,
+  Vite, GitHub Actions, Google, four panes for WinUI); the other tools show their group's. The
+  paths come from the `simple-icons` package, as GitHub's does; the content lists which tool has
+  which mark (`technology_marks`).
+- **Fallbacks.** Up to 960px the chapters follow each other across the whole width, and the
+  sphere stands in the middle behind them at 30% opacity. Under reduced motion it is one still
+  sphere that stays with the opening.
