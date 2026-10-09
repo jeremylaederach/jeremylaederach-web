@@ -15,10 +15,11 @@
         padding: 96px 0 40px;
     }
 
+    /* Up to 960px the square leaves the head and the tallest scene their room on one screen. */
     .scene-stage .dot-orb {
         position: relative;
         inset: auto;
-        width: min(72%, 34svh);
+        width: min(64%, 100svh - 500px);
         margin: 0 auto;
         aspect-ratio: 1;
     }
@@ -83,6 +84,40 @@
         list-style: none;
     }
 
+    /* What there is to know at one glance: a few facts, each a name and what it stands for. */
+    .scene__facts {
+        display: grid;
+        max-width: 46ch;
+        margin: 26px 0 0;
+        gap: 10px;
+    }
+
+    .scene__facts > div {
+        display: grid;
+        grid-template-columns: 5.5em minmax(0, 1fr);
+        gap: 12px;
+        align-items: baseline;
+    }
+
+    .scene__facts dt {
+        color: var(--quiet);
+        font-size: 11px;
+        font-weight: 560;
+        text-transform: uppercase;
+    }
+
+    .scene__facts dd {
+        margin: 0;
+        color: var(--ink-muted);
+        font-size: 15px;
+        line-height: 1.45;
+    }
+
+    .scene__facts .scene__tags {
+        margin: 0;
+        gap: 2px 16px;
+    }
+
     .scene__link {
         min-height: 44px;
         margin-top: 14px;
@@ -90,8 +125,9 @@
         font-size: 15px;
     }
 
-    /* The steps: the names of the scenes in a row, the current one in the accent. */
-    .scene-stage__steps {
+    /* The steps and the way on belong to the screen that stays in place. */
+    .scene-stage__steps,
+    .scene-stage__next {
         display: none;
     }
 
@@ -99,8 +135,8 @@
         display: none;
     }
 
-    /* With scripts the screen stays in the window: the head of the page, the sphere, the current
-       scene and the steps. The scenes lie on top of each other, and only the current one shows. */
+    /* With scripts the screen stays in the window: the head of the page with the steps, the
+       sphere, the current scene and, from 961px, the way on. The scenes lie on top of each other, and only the current one shows. */
     .js .scene-stage__view {
         position: sticky;
         top: 0;
@@ -108,7 +144,13 @@
         height: 100svh;
         padding: 84px 0 12px;
         grid-template-rows: auto auto minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr);
         gap: 14px;
+    }
+
+    /* On a narrow screen a scene with facts shows them in place of its sentence. */
+    .js .scene:has(.scene__facts) .scene__detail {
+        display: none;
     }
 
     .js .scene-stage__header {
@@ -124,10 +166,6 @@
         min-height: 0;
         grid-row: 3;
         align-content: start;
-    }
-
-    .js .scene-stage__steps {
-        grid-row: 4;
     }
 
     .js .scene {
@@ -146,31 +184,81 @@
         transition: opacity 420ms ease 160ms, translate 620ms var(--ease-out) 160ms;
     }
 
+    /* The steps: the names of the scenes as a row of tabs below the heading. The current one
+       stands in full ink on a line in the accent, which grows in from the left. */
     .js .scene-stage__steps {
         display: flex;
+        margin-top: 14px;
         overflow-x: auto;
-        border-top: 1px solid var(--line);
-        gap: 0 22px;
+        border-bottom: 1px solid var(--line);
+        gap: 0 26px;
         color: var(--quiet);
-        font-size: 13px;
+        font-size: 14px;
         white-space: nowrap;
         scrollbar-width: none;
     }
 
     .scene-stage__steps a {
+        position: relative;
         display: flex;
         min-height: 44px;
         align-items: center;
         transition: color 200ms ease;
     }
 
+    .scene-stage__steps a::after {
+        position: absolute;
+        inset: auto 0 0;
+        height: 2px;
+        background: var(--route-accent);
+        content: '';
+        scale: 0 1;
+        transform-origin: left;
+        transition: scale 420ms var(--ease-out);
+    }
+
     .has-mouse-input .scene-stage__steps a:hover,
-    .scene-stage__steps a:focus-visible {
+    .scene-stage__steps a:focus-visible,
+    .scene-stage__steps a[aria-current] {
         color: var(--ink);
     }
 
-    .scene-stage__steps a[aria-current] {
+    .scene-stage__steps a[aria-current]::after {
+        scale: 1;
+    }
+
+    .scene-stage__next {
+        min-height: 44px;
+        justify-self: start;
+        gap: 10px;
+        align-items: center;
+        color: var(--ink);
+        font-size: 15px;
+        transition: color 200ms ease;
+    }
+
+    .scene-stage__next-label {
+        color: var(--quiet);
+        font-size: 11px;
+        font-weight: 560;
+        text-transform: uppercase;
+    }
+
+    .scene-stage__next .nav-icon {
+        width: 16px;
+        height: 16px;
         color: var(--route-accent);
+        transition: translate 320ms var(--ease-out);
+    }
+
+    .has-mouse-input .scene-stage__next:hover,
+    .scene-stage__next:focus-visible {
+        color: var(--route-accent);
+    }
+
+    .has-mouse-input .scene-stage__next:hover .nav-icon,
+    .scene-stage__next:focus-visible .nav-icon {
+        translate: 0 3px;
     }
 
     /* Behind the screen the page is as long as its steps: 70% of the window's height for each,
@@ -184,8 +272,8 @@
         height: 70svh;
     }
 
-    /* From 961px the screen is a stage like the projects overview: the head, the scene and the
-       steps on the left, and on the right a square for the sphere. */
+    /* From 961px the screen is a stage like the projects overview: the head with the steps, the
+       scene and the way on stand on the left, and on the right a square for the sphere. */
     @media (min-width: 961px) {
         .js .scene-stage__view {
             --top: clamp(132px, 18svh, 176px);
@@ -219,10 +307,25 @@
         }
 
         .js .scene-stage__steps {
-            margin-top: 16px;
+            margin-top: 18px;
+            gap: 0 30px;
+            font-size: 15px;
+        }
+
+        .js .scene:has(.scene__facts) .scene__detail {
+            display: block;
+        }
+
+        /* The way on stands at the lower edge of the screen: the next scene, one press away.
+           On the last scene it is gone and keeps its room, so nothing moves. */
+        .js .scene-stage__next {
+            display: flex;
             grid-row: 3;
-            grid-column: 1 / -1;
-            gap: 0 32px;
+            grid-column: 1;
+        }
+
+        .js .scene-stage__next[hidden] {
+            visibility: hidden;
         }
 
         .scene__text {

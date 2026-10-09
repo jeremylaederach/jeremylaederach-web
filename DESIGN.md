@@ -219,30 +219,36 @@ changes is its content: the statement and the figure of the sphere, together. No
 shows a screenshot.
 
 - **Scene.** A short label, one statement as the largest text of the page, and below it at most
-  a sentence or two, a few tags or one link. The sphere shows the scene's figures (`scenes` in
-  the content), in the page's accent or in the color the scene names.
+  a sentence or two, a few tags or one link. A scene can also list facts, each a name and what
+  it stands for, so that a first scene says what there is to know at one glance; up to 960px
+  they take the place of its sentence. The sphere shows the scene's figures (`scenes` in the
+  content), in the page's accent or in the color the scene names.
 - **Scrolling.** Behind the screen runs a track of steps, one for each scene and 70% of the
   window high. The step that crosses the middle of the window shows its scene: the old statement
   fades out as it sinks, the new one fades in, and the dots flow into the new figure. Nothing
   takes over the scroll; the page is simply as long as its steps.
-- **Steps.** The names of the scenes stand in a row at the bottom of the screen, the current one
-  in the accent. Each is a link to its step, so a scene has an address (`/en/jay-jay#client-hub`).
-  On a narrow screen the row scrolls sideways and keeps the current step in sight.
-- **From 961px.** A stage like the projects overview: the head of the page, the scene and the
-  steps on the left, and on the right a square for the sphere, as high as the stage allows and at
-  most five of the twelve columns wide. Up to 960px the head, the square, the scene and the
-  steps follow each other in one column.
+- **Steps.** The names of the scenes are a row of tabs below the heading: the current one
+  stands in full ink on a line in the accent, which grows in from the left. Each is a link to
+  its step, so a scene has an address (`/en/jay-jay#client-hub`). On a narrow screen the row
+  scrolls sideways and keeps the current step in sight. From 961px a link at the lower edge of
+  the screen leads on: it names the next scene and is gone on the last.
+- **From 961px.** A stage like the projects overview: the head of the page with the steps, the
+  scene and the way on stand on the left, and on the right a square for the sphere, as high as
+  the stage allows and at most five of the twelve columns wide. Up to 960px the head with the
+  steps, the square and the scene follow each other in one column, and the square shrinks with
+  the height of the window.
 - **About.** Five scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
   shoulders, and four technologies, each with its mark in its color (.NET, Laravel, Angular,
   PostgreSQL) and its tools as tags. A tag with a mark of its own answers a hover
   (`technology_marks` in the content); the paths come from the `simple-icons` package.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
-  project's color. The head holds the way back, the name and the kind of project. Seven scenes
-  say what the project is and does, each with a rough picture: for Quantified sources that lead
-  into one place, a timeline, a ledger, a target, the marks of its stack and a checklist; for
-  Jay-Jay a globe, a leaf for the client's garden business, a cloud, a document and the marks
-  of its stack. The last scene stands for the next project: its name, one sentence and the way
+  project's color. The head holds the way back, the name and the kind of project. The scenes
+  say what the project is and does, each with a rough picture. Quantified has five: its first
+  lists the stack, the state and the role as facts, and the others show sources that lead into
+  one place, a timeline, a ledger and a target. Jay-Jay still has seven, with a globe, a leaf
+  for the client's garden business, a cloud, a document, the marks of its stack and a
+  checklist. The last scene stands for the next project: its name, one sentence and the way
   there, and while it is shown the page and the dots already take that project's color.
 - **Without scripts** the scenes follow each other as plain sections. **Reduced motion** keeps
   the screen in place and changes the statement at once; the sphere is one still sphere.

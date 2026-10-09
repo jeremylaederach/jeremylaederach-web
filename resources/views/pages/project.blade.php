@@ -18,7 +18,12 @@
 
 @section('content')
     <article class="portfolio-page scene-page project-page project-detail project-detail--{{ $project['slug'] }}">
-        <x-scene-stage :scenes="$scenes" :sphere="$sphere" :label="$content['ui']['scenes']">
+        <x-scene-stage
+            :scenes="$scenes"
+            :sphere="$sphere"
+            :label="$content['ui']['scenes']"
+            :next="$content['ui']['next_scene']"
+        >
             <a
                 class="project-page__back directional-link directional-link--back"
                 href="{{ route('projects', ['locale' => $locale]) }}#{{ $project['slug'] }}"

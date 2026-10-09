@@ -49,8 +49,6 @@ return [
             'life' => ['figures' => ['timeline']],
             'finances' => ['figures' => ['ledger']],
             'goals' => ['figures' => ['target']],
-            'stack' => ['figures' => ['angular', 'dotnet', 'postgresql']],
-            'state' => ['figures' => ['checklist']],
         ],
         'jay-jay' => [
             'overview' => ['figures' => ['jay-jay', 'globe', 'cloud', 'contact']],
@@ -99,6 +97,7 @@ return [
                 'sound_mute' => 'Mute interface sounds',
                 'sound_enable' => 'Enable interface sounds',
                 'next_project' => 'Next project',
+                'next_scene' => 'Next',
                 'scenes' => 'Scenes of this page',
             ],
             'nav' => [
@@ -186,6 +185,11 @@ return [
                         'label' => 'Overview',
                         'text' => 'Quantified shows me where my time, my health and my money go.',
                         'detail' => 'A personal analytics app. It turns records I already produce into dashboards and timelines.',
+                        'facts' => [
+                            ['label' => 'Stack', 'tags' => ['Angular 22', 'ASP.NET Core', 'PostgreSQL 18']],
+                            ['label' => 'State', 'text' => 'In active development. A private instance runs for me.'],
+                            ['label' => 'Role', 'text' => 'Product design and full-stack engineering.'],
+                        ],
                     ],
                     [
                         'id' => 'sources',
@@ -210,18 +214,6 @@ return [
                         'label' => 'Goals',
                         'text' => 'Monthly targets across health, work, social life and finances.',
                         'detail' => 'Health and time measure themselves; the rest I tick off by hand. Long-term directions link to the monthly goals.',
-                    ],
-                    [
-                        'id' => 'stack',
-                        'label' => 'Stack',
-                        'text' => 'Angular in front, ASP.NET Core behind it, PostgreSQL underneath.',
-                        'tags' => ['Angular 22', 'TypeScript', 'ASP.NET Core', '.NET 10', 'PostgreSQL 18', 'EF Core'],
-                    ],
-                    [
-                        'id' => 'state',
-                        'label' => 'State',
-                        'text' => 'In active development. A private instance runs for me.',
-                        'detail' => 'Role: product design and full-stack engineering. The interface speaks English and German.',
                     ],
                 ],
             ],
@@ -366,6 +358,7 @@ return [
                 'sound_mute' => 'Interface-Töne ausschalten',
                 'sound_enable' => 'Interface-Töne einschalten',
                 'next_project' => 'Nächstes Projekt',
+                'next_scene' => 'Weiter',
                 'scenes' => 'Szenen dieser Seite',
             ],
             'nav' => [
@@ -452,6 +445,11 @@ return [
                         'label' => 'Überblick',
                         'text' => 'Quantified zeigt mir, wohin meine Zeit, meine Gesundheit und mein Geld gehen.',
                         'detail' => 'Eine persönliche Analyse-App. Sie macht aus Daten, die ohnehin anfallen, Dashboards und Timelines.',
+                        'facts' => [
+                            ['label' => 'Stack', 'tags' => ['Angular 22', 'ASP.NET Core', 'PostgreSQL 18']],
+                            ['label' => 'Stand', 'text' => 'In aktiver Entwicklung. Eine private Instanz läuft für mich.'],
+                            ['label' => 'Rolle', 'text' => 'Product Design und Full-Stack-Entwicklung.'],
+                        ],
                     ],
                     [
                         'id' => 'sources',
@@ -476,18 +474,6 @@ return [
                         'label' => 'Ziele',
                         'text' => 'Monatsziele über Gesundheit, Arbeit, Soziales und Finanzen.',
                         'detail' => 'Gesundheit und Zeit messen sich selbst; den Rest hake ich von Hand ab. Langfristige Richtungen hängen an den Monatszielen.',
-                    ],
-                    [
-                        'id' => 'stack',
-                        'label' => 'Stack',
-                        'text' => 'Vorne Angular, dahinter ASP.NET Core, darunter PostgreSQL.',
-                        'tags' => ['Angular 22', 'TypeScript', 'ASP.NET Core', '.NET 10', 'PostgreSQL 18', 'EF Core'],
-                    ],
-                    [
-                        'id' => 'state',
-                        'label' => 'Stand',
-                        'text' => 'In aktiver Entwicklung. Eine private Instanz läuft für mich.',
-                        'detail' => 'Rolle: Product Design und Full-Stack-Entwicklung. Die Oberfläche spricht Deutsch und Englisch.',
                     ],
                 ],
             ],

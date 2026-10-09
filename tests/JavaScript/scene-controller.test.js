@@ -8,10 +8,13 @@ const setup = (t) => {
         <ol>
             <li id="first-scene" data-scene data-active data-dot-orb-resting><a href="/elsewhere">Inside the first</a></li>
             <li id="second-scene" data-scene><a href="/there">Inside the second</a></li>
+            <li id="third-scene" data-scene></li>
         </ol>
-        <nav><a href="#first" aria-current="step">First</a><a href="#second">Second</a></nav>
+        <nav><a href="#first" aria-current="step">First</a><a href="#second">Second</a><a href="#third">Third</a></nav>
+        <a href="#second" data-scene-next>Next <span data-scene-next-name>Second</span></a>
         <div id="first" data-scene-step="first-scene"></div>
         <div id="second" data-scene-step="second-scene"></div>
+        <div id="third" data-scene-step="third-scene"></div>
     `);
 
     const observers = [];
@@ -57,6 +60,7 @@ test('the step that crosses the middle of the window shows its scene', (t) => {
     cross('second');
 
     const [first, second] = document.querySelectorAll('[data-scene]');
+    const next = document.querySelector('[data-scene-next]');
 
     assert.equal(first.hasAttribute('data-active'), false);
     assert.equal(first.hasAttribute('data-dot-orb-resting'), false);
@@ -65,6 +69,14 @@ test('the step that crosses the middle of the window shows its scene', (t) => {
     assert.equal(document.querySelector('[href="#first"]').hasAttribute('aria-current'), false);
     assert.equal(document.querySelector('[href="#second"]').getAttribute('aria-current'), 'step');
     assert.equal(announced, 1);
+
+    // The way on leads to the scene after the current one and is gone on the last.
+    assert.equal(next.getAttribute('href'), '#third');
+    assert.equal(next.querySelector('[data-scene-next-name]').textContent, 'Third');
+    assert.equal(next.hasAttribute('aria-current'), false);
+
+    cross('third');
+    assert.equal(next.hidden, true);
 });
 
 test('a step that leaves the middle changes nothing by itself', (t) => {

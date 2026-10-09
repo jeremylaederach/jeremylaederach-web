@@ -215,11 +215,18 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertDontSee('<img', false);
 
-        // Seven scenes of its own and one that leads on to the next project, in that project's
+        // Five scenes of its own and one that leads on to the next project, in that project's
         // color and with its figures.
         $html = $english->content();
-        $this->assertSame(8, preg_match_all('/\sdata-scene\s/', $html));
-        $this->assertSame(8, substr_count($html, 'data-scene-step="'));
+        $this->assertSame(6, preg_match_all('/\sdata-scene\s/', $html));
+        $this->assertSame(6, substr_count($html, 'data-scene-step="'));
+
+        // The first scene says what the project is at one glance: its stack, whose entries name
+        // their marks, its state and the role. The way on leads to the second scene.
+        $this->assertSame(3, preg_match_all('/<dt>(Stack|State|Role)<\/dt>/', $html));
+        $this->assertMatchesRegularExpression('/<dd>\s*<ul class="scene__tags">.*?data-dot-orb-figure="angular".*?<\/ul>\s*<\/dd>/s', $html);
+        $this->assertMatchesRegularExpression('/class="scene-stage__next"\s+href="#sources"\s+data-scene-next/', $html);
+        $this->assertStringContainsString('<span data-scene-next-name>Sources</span>', $html);
         $this->assertSame(1, substr_count($html, 'data-active data-dot-orb-resting'));
         $this->assertMatchesRegularExpression(
             '/id="next-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="jay-jay globe cloud contact"\s+data-project="jay-jay"/',

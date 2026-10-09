@@ -8,22 +8,24 @@
             label   its name in the list of steps, also shown above its statement
             text    the statement, the largest text
             detail  a sentence or two below it (optional)
-            tags    short entries below, such as tools; one with a mark of its own answers a
-                    hover (`technology_marks` in the content) (optional)
+            facts   what there is to know at one glance, each ['label' => ..., 'text' => ...]
+                    or ['label' => ..., 'tags' => [...]] (optional)
+            tags    short entries below, such as tools (see the scene-tags component) (optional)
             link    ['label' => ..., 'url' => ..., 'route' => name of the page's route for a page
                     of this site] (optional)
             project slug of the project the scene stands for, which brings that project's color
     sphere  what the sphere shows for each scene, by its id: ['figures' => [...], 'color' => '#...']
     label   accessible name of the list of steps
+    next    the word before the name of the next scene, on the link that leads on
 --}}
 @props([
     'scenes',
     'sphere',
     'label',
+    'next',
 ])
 
 @php
-    $marks = config('portfolio.technology_marks');
     // A color as the three numbers the sphere takes.
     $channels = fn (string $hex): string => implode(', ', sscanf($hex, '#%02x%02x%02x'));
 @endphp
@@ -34,6 +36,18 @@
 
         <header class="scene-stage__header" data-reveal>
             {{ $slot }}
+
+            {{-- The steps: the names of the scenes as a row of tabs below the heading. --}}
+            <nav class="scene-stage__steps" aria-label="{{ $label }}">
+                @foreach ($scenes as $scene)
+                    <a
+                        href="#{{ $scene['id'] }}"
+                        @if ($loop->first) aria-current="step" @endif
+                        data-interface-sound
+                        data-sound-tone="control"
+                    >{{ $scene['label'] }}</a>
+                @endforeach
+            </nav>
         </header>
 
         <ol class="scene-stage__scenes">
@@ -57,25 +71,25 @@
                         <p class="scene__detail">{{ $scene['detail'] }}</p>
                     @endisset
 
-                    @isset($scene['tags'])
-                        <ul class="scene__tags">
-                            @foreach ($scene['tags'] as $tag)
-                                @php
-                                    $mark = $marks[$tag] ?? null;
-                                @endphp
-                                <li>
-                                    @if ($mark)
-                                        <span
-                                            class="figure-word"
-                                            data-dot-orb-figure="{{ $mark['figure'] }}"
-                                            @isset($mark['color']) style="--dot-orb-rgb: {{ $channels($mark['color']) }}" @endisset
-                                        >{{ $tag }}</span>
-                                    @else
-                                        {{ $tag }}
-                                    @endif
-                                </li>
+                    @isset($scene['facts'])
+                        <dl class="scene__facts">
+                            @foreach ($scene['facts'] as $fact)
+                                <div>
+                                    <dt>{{ $fact['label'] }}</dt>
+                                    <dd>
+                                        @isset($fact['tags'])
+                                            <x-scene-tags :tags="$fact['tags']" />
+                                        @else
+                                            {{ $fact['text'] }}
+                                        @endisset
+                                    </dd>
+                                </div>
                             @endforeach
-                        </ul>
+                        </dl>
+                    @endisset
+
+                    @isset($scene['tags'])
+                        <x-scene-tags :tags="$scene['tags']" />
                     @endisset
 
                     @isset($scene['link'])
@@ -99,16 +113,20 @@
             @endforeach
         </ol>
 
-        <nav class="scene-stage__steps" aria-label="{{ $label }}">
-            @foreach ($scenes as $scene)
-                <a
-                    href="#{{ $scene['id'] }}"
-                    @if ($loop->first) aria-current="step" @endif
-                    data-interface-sound
-                    data-sound-tone="control"
-                >{{ $scene['label'] }}</a>
-            @endforeach
-        </nav>
+        {{-- The way on: the next scene, one press away. The scene controller keeps it in step. --}}
+        @if (count($scenes) > 1)
+            <a
+                class="scene-stage__next"
+                href="#{{ $scenes[1]['id'] }}"
+                data-scene-next
+                data-interface-sound
+                data-sound-tone="control"
+            >
+                <span class="scene-stage__next-label">{{ $next }}</span>
+                <span data-scene-next-name>{{ $scenes[1]['label'] }}</span>
+                <x-nav-icon name="arrow-down" />
+            </a>
+        @endif
     </div>
 
     {{-- The steps the page scrolls through behind the screen, one for each scene. --}}
