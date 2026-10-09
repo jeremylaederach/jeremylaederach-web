@@ -4,24 +4,25 @@
 ])
 
 @section('content')
-    <section class="not-found-page" aria-labelledby="not-found-title" data-reveal>
+    {{-- A stage: the message beside the sphere, which rests in the figure of the number. --}}
+    <section
+        class="not-found-page"
+        aria-labelledby="not-found-title"
+        data-dot-orb-figure="not-found"
+        data-dot-orb-resting
+    >
         <div class="dot-orb" aria-hidden="true">
-            <canvas data-dot-orb></canvas>
-        </div>
-        <div class="not-found-page__index">
-            <span>404</span>
-            <span>{{ $content['not_found']['eyebrow'] }}</span>
+            <canvas data-dot-orb data-dot-orb-fit></canvas>
         </div>
 
-        <p class="not-found-page__code" aria-hidden="true">404<span>.</span></p>
-
-        <div class="not-found-page__message">
+        <div class="not-found-page__message" data-reveal>
             <h1 id="not-found-title">
                 {{ $content['not_found']['heading'] }}<span class="accent-dot">.</span>
             </h1>
             <p>{{ $content['not_found']['intro'] }}</p>
 
             <a
+                class="directional-link directional-link--forward"
                 href="{{ route('home', ['locale' => $locale]) }}"
                 data-route="home"
                 data-route-transition

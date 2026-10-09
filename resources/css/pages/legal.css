@@ -1,0 +1,127 @@
+@layer components {
+    /* The legal pages are text: a heading with its introduction, then one row between hairlines
+       for every section. They have no sphere. */
+    .legal-page {
+        position: relative;
+        z-index: 1;
+        width: var(--shell);
+        margin: 0 auto;
+        padding: 132px 0 72px;
+    }
+
+    /* The longest title, one German word, fits a 320px window on one line. */
+    .legal-page__header h1 {
+        margin: 0;
+        font-size: clamp(26px, 8.2vw, 72px);
+        font-weight: 430;
+        line-height: 0.94;
+        hyphens: auto;
+        overflow-wrap: anywhere;
+    }
+
+    .legal-page__summary {
+        margin-top: 22px;
+    }
+
+    .legal-page__summary p {
+        max-width: 44ch;
+        margin: 0;
+        color: rgba(var(--ink-rgb), 0.78);
+        font-size: 17px;
+        line-height: 1.55;
+    }
+
+    .legal-page__summary small {
+        display: block;
+        margin-top: 12px;
+        color: var(--quiet);
+        font-size: 13px;
+    }
+
+    .legal-rows {
+        margin-top: 48px;
+        border-top: 1px solid var(--line);
+    }
+
+    .legal-row {
+        padding: 26px 0 30px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .legal-row h2 {
+        margin: 0;
+        font-size: clamp(24px, 2.2vw, 30px);
+        font-weight: 430;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .legal-row__text {
+        max-width: 68ch;
+        margin-top: 14px;
+        color: var(--ink-muted);
+        font-size: 16px;
+        line-height: 1.65;
+    }
+
+    .legal-row__text p {
+        margin: 0;
+    }
+
+    .legal-row__text p + p {
+        margin-top: 14px;
+    }
+
+    .legal-row__text a {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 9px 0;
+        color: var(--ink);
+        text-decoration: underline rgba(var(--route-accent-rgb), 0.54);
+        text-underline-offset: 5px;
+        transition: color 220ms ease, text-decoration-color 220ms ease;
+    }
+
+    .has-mouse-input .legal-row__text a:hover,
+    .legal-row__text a:focus-visible {
+        color: var(--route-accent);
+        text-decoration-color: var(--route-accent);
+    }
+
+    /* From 961px the titles stand in a column on the left and the text in one on the right; the
+       introduction begins where the text does. */
+    @media (min-width: 961px) {
+        .legal-page {
+            padding: clamp(132px, 18svh, 176px) 0 clamp(56px, 10svh, 96px);
+        }
+
+        .legal-page__header,
+        .legal-row {
+            display: grid;
+            grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+            column-gap: 32px;
+        }
+
+        .legal-page__header h1 {
+            grid-column: 1 / -1;
+            font-size: clamp(52px, min(5vw, 9svh), 88px);
+        }
+
+        .legal-page__summary {
+            margin-top: 28px;
+            grid-column: 2;
+        }
+
+        .legal-rows {
+            margin-top: clamp(40px, 7svh, 72px);
+        }
+
+        .legal-row {
+            padding: 34px 0 38px;
+        }
+
+        .legal-row__text {
+            margin-top: 4px;
+        }
+    }
+}

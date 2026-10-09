@@ -61,8 +61,8 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 - **Hover.** No surface lights up under the pointer: a hovered link or card answers with its
   accent, a rule drawn in the accent or a small movement. Optional interface sounds.
 - **Page end.** Every page ends with one quiet line in the middle: the profiles and the legal
-  pages, each link at least 44px tall. The home page, one screen from 961px, ends without it
-  there.
+  pages, each link at least 44px tall. The main region leaves room for it, so a short page and
+  the line fill one screen. The home page, one screen from 961px, ends without it there.
 
 ### Home page
 
@@ -120,8 +120,8 @@ the text.
   and a figure, which is drawn within the middle 80% of its square, fills the smaller side of the
   canvas.
 - **Sub-pages.** The about page is told in chapters beside the sphere (see "About"). A case
-  study shows it in the project's color behind the gallery of its hero. On the 404 page it stands
-  behind the large number, moved to the left from 721px. The legal pages have no sphere.
+  study shows it in the project's color behind the gallery of its hero. The 404 page is a stage
+  for it (see "404 and legal pages"). The legal pages have no sphere.
 - **Page change.** When a navigation starts the dots scatter away from the middle of the sphere
   and fade; the sphere of the next page gathers from the scattered state.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
@@ -187,3 +187,18 @@ heading and the introduction, and the technologies. It stays light, the figure t
 - **Fallbacks.** Up to 960px the chapters follow each other across the whole width, and the
   sphere stands in the middle behind them at 30% opacity. Under reduced motion it is one still
   sphere that stays with the opening.
+
+### 404 and legal pages
+
+- **404.** A stage (`resources/views/errors/404.blade.php`, `resources/css/pages/not-found.css`):
+  the heading, one sentence and the link home on the left, and on the right a square as high as
+  the stage and at most 46% of its width. The sphere rests there in the figure of the number,
+  404 in tall, narrow numerals, on a fitted canvas. From 961px the page and the line that ends
+  it fill one screen; up to 960px the square stands above the message, at most 42% of the
+  window's height.
+- **Legal notice and privacy notice.** Text only (`resources/views/pages/legal.blade.php`,
+  `resources/css/pages/legal.css`): the title, the introduction and, on the privacy notice, the
+  date; then one row between hairlines for every section. From 961px the titles of the sections
+  stand in a column on the left and their text in one on the right, where the introduction
+  begins too. Up to 960px title and text follow each other. A link in the text is underlined in
+  the accent and at least 44px tall.

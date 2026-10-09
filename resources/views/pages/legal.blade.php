@@ -2,9 +2,8 @@
 
 @section('content')
     <article class="legal-page">
-        <header class="legal-page__header">
-            <p class="legal-page__eyebrow">{{ $legal['eyebrow'] }}</p>
-            <h1>{{ $legal['title'] }}</h1>
+        <header class="legal-page__header" data-reveal>
+            <h1>{{ $legal['title'] }}<span class="accent-dot">.</span></h1>
 
             <div class="legal-page__summary">
                 <p>{{ $legal['intro'] }}</p>
@@ -15,14 +14,13 @@
             </div>
         </header>
 
-        <div class="legal-page__sections">
+        {{-- Every section is a row between hairlines: its title, then its text. --}}
+        <div class="legal-rows">
             @foreach ($legal['sections'] as $section)
-                <section class="legal-section reveal">
-                    <span class="legal-section__number">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                <section class="legal-row">
+                    <h2>{{ $section['title'] }}</h2>
 
-                    <div class="legal-section__content">
-                        <h2>{{ $section['title'] }}</h2>
-
+                    <div class="legal-row__text">
                         @foreach ($section['body'] as $paragraph)
                             <p>{{ $paragraph }}</p>
                         @endforeach

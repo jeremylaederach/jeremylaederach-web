@@ -154,6 +154,28 @@ const stack = (context, size) => {
     });
 };
 
+// Not found: the number 404 in tall, narrow numerals.
+const notFound = (context, size) => {
+    const top = 0.24;
+    const bottom = 0.76;
+    const width = 0.17;
+    const four = (left) => {
+        context.moveTo(size * (left + 0.125), size * bottom);
+        context.lineTo(size * (left + 0.125), size * top);
+        context.lineTo(size * left, size * (top + 0.34));
+        context.lineTo(size * (left + width), size * (top + 0.34));
+    };
+
+    context.lineWidth = size * 0.066;
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.beginPath();
+    four(0.135);
+    context.roundRect(size * 0.415, size * top, size * width, size * (bottom - top), size * width / 2);
+    four(0.695);
+    context.stroke();
+};
+
 // A brand's mark, whose path is drawn on a square of 24 units.
 const mark = (icon) => (context, size) => {
     context.save();
@@ -173,6 +195,7 @@ export const drawnFigures = {
     interface: pointerArrow,
     windows,
     stack,
+    'not-found': notFound,
     github: mark(siGithub),
     dotnet: mark(siDotnet),
     laravel: mark(siLaravel),

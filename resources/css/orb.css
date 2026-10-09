@@ -43,14 +43,6 @@
         height: 100%;
     }
 
-    /* On the 404 page the sphere moves to the left, behind the large number. */
-    @media (min-width: 721px) {
-        .not-found-page .dot-orb {
-            translate: -46% 0;
-            mask-image: none;
-        }
-    }
-
     .dot-orb ~ * {
         position: relative;
         z-index: 1;

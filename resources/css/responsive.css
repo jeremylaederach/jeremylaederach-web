@@ -8,14 +8,6 @@
     .case-study-section-heading h2 {
         font-size: 60px;
     }
-
-    .not-found-page__code {
-        font-size: 184px;
-    }
-
-    .not-found-page__message h1 {
-        font-size: 52px;
-    }
 }
 
 @media (max-width: 960px) {
@@ -161,27 +153,6 @@
 
     .technology-group {
         min-height: 350px;
-    }
-
-    .legal-page__header h1 {
-        grid-column: 3 / -1;
-    }
-
-    .legal-page__summary {
-        grid-column: 3 / 9;
-    }
-
-    .legal-section__content {
-        grid-column: 3 / 13;
-    }
-
-    .not-found-page__code {
-        grid-column: 1 / 7;
-        font-size: 148px;
-    }
-
-    .not-found-page__message {
-        grid-column: 7 / 13;
     }
 }
 
@@ -708,106 +679,6 @@
     .technology-group h3 {
         font-size: 21px;
     }
-
-    .not-found-page {
-        min-height: 100svh;
-        padding: 120px 0 64px;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;
-        gap: 34px;
-        align-content: center;
-    }
-
-    .not-found-page__index,
-    .not-found-page__code,
-    .not-found-page__message {
-        grid-column: 1;
-    }
-
-    .not-found-page__index {
-        grid-row: 1;
-    }
-
-    .not-found-page__code {
-        grid-row: 2;
-        font-size: 112px;
-    }
-
-    .not-found-page__message {
-        max-width: 100%;
-        grid-row: 3;
-        gap: 20px;
-        align-self: start;
-    }
-
-    .not-found-page__message h1 {
-        max-width: 10ch;
-        font-size: 46px;
-    }
-
-    .not-found-page__message > p {
-        font-size: 14px;
-    }
-
-    .legal-page {
-        padding: 112px 0 76px;
-    }
-
-    .legal-page__header {
-        min-height: auto;
-        padding: 42px 0 64px;
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .legal-page__eyebrow,
-    .legal-page__header h1,
-    .legal-page__summary {
-        grid-row: auto;
-        grid-column: 1;
-    }
-
-    .legal-page__header h1 {
-        min-width: 0;
-        font-size: clamp(42px, 10vw, 58px);
-        hyphens: auto;
-        overflow-wrap: anywhere;
-    }
-
-    .legal-page__summary {
-        padding-top: 20px;
-        margin-top: 12px;
-        gap: 16px;
-    }
-
-    .legal-page__summary p {
-        max-width: 48ch;
-        font-size: 14px;
-    }
-
-    .legal-section {
-        min-height: 0;
-        padding: 34px 0 40px;
-        grid-template-columns: 28px minmax(0, 1fr);
-        gap: 18px;
-    }
-
-    .legal-section__number {
-        grid-column: 1;
-    }
-
-    .legal-section__content {
-        grid-column: 2;
-    }
-
-    .legal-section h2 {
-        margin-bottom: 18px;
-        font-size: 22px;
-    }
-
-    .legal-section p {
-        font-size: 14px;
-    }
 }
 
 @media (max-width: 800px) {
@@ -855,17 +726,6 @@
     .project-reel--teaser .project-reel__controls {
         justify-self: start;
     }
-
-    .legal-section {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 12px;
-    }
-
-    .legal-section__number,
-    .legal-section__content {
-        grid-column: 1;
-    }
-
 }
 
 @media (max-width: 340px) {

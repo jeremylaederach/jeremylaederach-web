@@ -1,8 +1,10 @@
 @layer components {
+    /* The main region leaves room for the line that ends the page, so a short page and that
+       line fill one screen. */
     [data-page-main] {
         position: relative;
         z-index: 1;
-        min-height: 100svh;
+        min-height: calc(100svh - 73px);
     }
 
     .portfolio-page {

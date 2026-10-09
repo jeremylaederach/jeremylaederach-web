@@ -405,6 +405,7 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Privacy notice')
             ->assertSee('class="legal-page__summary"', false)
+            ->assertSee('class="legal-row"', false)
             ->assertSee('Technical access data')
             ->assertSee('local storage')
             ->assertSee('static website')
@@ -436,6 +437,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/en/does-not-exist')
             ->assertNotFound()
             ->assertSee('class="not-found-page"', false)
+            ->assertSee('data-dot-orb-figure="not-found"', false)
             ->assertSee('Page not found')
             ->assertSee('Back to home')
             ->assertSee('data-page="not-found"', false);
