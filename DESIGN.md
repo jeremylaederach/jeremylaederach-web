@@ -114,7 +114,7 @@ the text.
   the page headings runs through them every three seconds, from the first of their letters to
   the last, so the text shows which of its words answer. In the statement of the home page the
   three kinds of work give the bars of Quantified, the brackets of Jay-Jay and four panes, the
-  backend gives a database, the interface the arrow of a pointer, and the name gives the mark;
+  word for the database gives one, the last pixel the arrow of a pointer, and the name gives the mark;
   everything stays in the accent.
 - **Place.** On a canvas that is not fitted the sphere wanders around a point at 68% of the
   canvas' width and half its height. The element it rests with can name another share of the
