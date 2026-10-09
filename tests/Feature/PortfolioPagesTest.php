@@ -130,10 +130,15 @@ class PortfolioPagesTest extends TestCase
 
         $aboutHtml = $about->content();
 
-        // Five scenes on one stage: each has its step behind the screen and its link among the
-        // steps, and the first is shown at the start.
-        $this->assertSame(5, preg_match_all('/\sdata-scene\s/', $aboutHtml));
-        $this->assertSame(5, substr_count($aboutHtml, 'data-scene-step="'));
+        // Six scenes on one stage: each has its step behind the screen and its link among the
+        // steps, and the first is shown at the start. It lists three facts, and the last scene
+        // leads on to the contact page in that page's own words.
+        $this->assertSame(6, preg_match_all('/\sdata-scene\s/', $aboutHtml));
+        $this->assertSame(6, substr_count($aboutHtml, 'data-scene-step="'));
+        $this->assertSame(3, preg_match_all('/<dt>(Training|Studies|Projects)<\/dt>/', $aboutHtml));
+        $this->assertMatchesRegularExpression('/id="contact-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="contact"/', $aboutHtml);
+        $this->assertStringContainsString('A project, a role or a question? Write to me.', $aboutHtml);
+        $this->assertMatchesRegularExpression('/href="http:\/\/localhost\/en\/contact"\s+data-route="contact"\s+data-route-transition/', $aboutHtml);
         $this->assertSame(1, substr_count($aboutHtml, 'data-active data-dot-orb-resting'));
         $this->assertSame(1, substr_count($aboutHtml, 'aria-current="step"'));
         // The layout holds the one canvas of the sphere, and the page marks its stage: a square

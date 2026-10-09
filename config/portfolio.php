@@ -124,6 +124,11 @@ return [
                         'id' => 'me',
                         'label' => 'Me',
                         'text' => 'I\'m Jeremy, a software developer from Zurich. I build whole products: database, API, interface and deployment.',
+                        'facts' => [
+                            ['label' => 'Training', 'text' => 'Application Developer EFZ, EcoLogic AG, 2019 to 2023'],
+                            ['label' => 'Studies', 'text' => 'Business Informatics BSc, OST, since 2026'],
+                            ['label' => 'Projects', 'text' => 'Quantified and the systems behind Jay-Jay'],
+                        ],
                     ],
                     [
                         'id' => 'dotnet',
@@ -384,6 +389,11 @@ return [
                         'id' => 'me',
                         'label' => 'Ich',
                         'text' => 'Ich bin Jeremy, Softwareentwickler aus Zürich. Ich baue ganze Produkte: Datenbank, API, Oberfläche und Deployment.',
+                        'facts' => [
+                            ['label' => 'Lehre', 'text' => 'Applikationsentwickler EFZ, EcoLogic AG, 2019 bis 2023'],
+                            ['label' => 'Studium', 'text' => 'Wirtschaftsinformatik BSc, OST, seit 2026'],
+                            ['label' => 'Projekte', 'text' => 'Quantified und die Systeme hinter Jay-Jay'],
+                        ],
                     ],
                     [
                         'id' => 'dotnet',

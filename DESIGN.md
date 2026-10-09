@@ -246,10 +246,12 @@ shows a screenshot.
   the stage allows and at most five of the twelve columns wide. Up to 960px the head with the
   steps, the square and the scene follow each other in one column, and the square shrinks with
   the height of the window.
-- **About.** Five scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
-  shoulders, and four technologies, each with its mark in its color (.NET, Laravel, Angular,
-  PostgreSQL) and its tools as tags. A tag with a mark of its own answers a hover
-  (`technology_marks` in the content); the paths come from the `simple-icons` package.
+- **About.** Six scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
+  shoulders and three facts (his apprenticeship, his studies, what he builds); four
+  technologies, each with its mark in its color (.NET, Laravel, Angular, PostgreSQL) and its
+  tools as tags; and a last one that leads on to the contact page, with the envelope. A tag
+  with a mark of its own answers a hover (`technology_marks` in the content); the paths come
+  from the `simple-icons` package.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
   project's color. The head holds the way back, the name and the kind of project. The scenes

@@ -19,7 +19,7 @@
     .scene-stage .dot-orb {
         position: relative;
         inset: auto;
-        width: min(64%, 100svh - 500px);
+        width: min(64%, 100svh - 520px);
         margin: 0 auto;
         aspect-ratio: 1;
     }
@@ -148,9 +148,24 @@
         gap: 14px;
     }
 
-    /* On a narrow screen a scene with facts shows them in place of its sentence. */
+    /* On a narrow screen a scene with facts shows them in place of its sentence, and both its
+       statement and the facts are set smaller, so they fit below the square. */
     .js .scene:has(.scene__facts) .scene__detail {
         display: none;
+    }
+
+    .js .scene:has(.scene__facts) .scene__text {
+        font-size: clamp(20px, 3.2svh, 40px);
+    }
+
+    .js .scene__facts {
+        margin-top: 18px;
+        gap: 6px;
+    }
+
+    .js .scene__facts dd {
+        font-size: 14px;
+        line-height: 1.35;
     }
 
     .js .scene-stage__header {
@@ -314,6 +329,20 @@
 
         .js .scene:has(.scene__facts) .scene__detail {
             display: block;
+        }
+
+        .js .scene:has(.scene__facts) .scene__text {
+            font-size: clamp(30px, min(3.2vw, 5.8svh), 52px);
+        }
+
+        .js .scene__facts {
+            margin-top: 26px;
+            gap: 10px;
+        }
+
+        .js .scene__facts dd {
+            font-size: 15px;
+            line-height: 1.45;
         }
 
         /* The way on stands at the lower edge of the screen: the next scene, one press away.
