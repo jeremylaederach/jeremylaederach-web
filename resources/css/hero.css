@@ -1,24 +1,30 @@
 @layer components {
+    /* The home page is a stage of one screen: the name, the statement and the sphere. Up to 960px
+       the sphere has the upper part of the screen and the text stands below it. */
     .kinetic-index {
-        --index-column-gap: 32px;
-        --index-number-column: 64px;
         position: relative;
         z-index: 1;
         display: grid;
-        min-height: 100svh;
+        min-height: calc(100svh - 73px);
+        padding: 96px 0 clamp(28px, 6svh, 56px);
         overflow: hidden;
         user-select: none;
-        grid-template-rows: minmax(max-content, 45svh) minmax(360px, 1fr);
+        align-content: end;
         background: var(--bg);
+    }
+
+    /* The canvas ends where the text begins, and the dots fade out towards it. */
+    .kinetic-index .dot-orb {
+        inset: 0 0 auto;
+        height: 68svh;
+        mask-image: linear-gradient(#000 76%, transparent);
     }
 
     .kinetic-index__masthead {
         display: grid;
         width: var(--shell);
         margin: 0 auto;
-        padding: 142px 0 48px;
-        gap: 28px;
-        align-content: end;
+        gap: clamp(14px, 2.4svh, 22px);
     }
 
     .kinetic-index__heading {
@@ -40,82 +46,28 @@
         max-width: 17em;
         margin: 0;
         color: var(--ink);
-        font-size: clamp(28px, 7.6vw, 44px);
+        font-size: clamp(28px, min(7.6vw, 5.4svh), 46px);
         font-weight: 430;
         line-height: 1.08;
         letter-spacing: -0.025em;
         text-wrap: balance;
     }
 
-    .index-navigation {
-        display: flex;
-        min-height: 0;
-        flex-direction: column;
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-    }
-
-    .index-panel {
-        display: grid;
-        min-height: 0;
-        overflow: hidden;
-        flex: 1 1 0;
-        grid-template-columns: var(--index-number-column) minmax(210px, 0.8fr) minmax(280px, 1.8fr);
-        gap: var(--index-column-gap);
-        align-items: center;
-        padding: 20px max(32px, calc((100vw - 1600px) / 2));
-        border-bottom: 1px solid var(--line);
-        color: var(--ink);
-        text-decoration: none;
-        transition:
-            flex-grow 460ms var(--ease-heavy),
-            opacity 420ms ease;
-    }
-
-    .index-panel:last-child {
-        border-bottom-color: transparent;
-    }
-
-    .index-panel__number {
-        color: var(--quiet);
-        font-size: 11px;
-        font-variant-numeric: tabular-nums;
-        line-height: 1;
-        transition: color 360ms ease;
-    }
-
-    .index-panel__title {
-        font-size: 42px;
-        font-weight: 430;
-        line-height: 1;
-        transition: color 360ms ease, transform 720ms var(--ease-heavy);
-    }
-
-    .index-panel__description {
-        max-width: 430px;
-        color: var(--ink-muted);
-        font-size: 15px;
-        line-height: 1.45;
-        transition: color 360ms ease, transform 720ms var(--ease-heavy);
-    }
-
-    /* From 961px the page is a stage: the content keeps to a column on the left and the sphere
-       has the rest. */
+    /* From 961px the content keeps to a column on the left, at most half of the width, and the
+       sphere has the rest of a canvas that covers the stage; the page ends without the line of
+       links. */
     @media (min-width: 961px) {
         .kinetic-index {
+            min-height: 100svh;
             padding: clamp(128px, 15svh, 148px) max(32px, calc((100vw - 1600px) / 2)) clamp(24px, 6svh, 56px);
-            grid-template-rows: none;
-            grid-template-columns: minmax(0, 680px) minmax(0, 1fr);
-            row-gap: clamp(24px, 5svh, 48px);
+            grid-template-columns: minmax(0, min(680px, 50%)) minmax(0, 1fr);
             align-content: center;
         }
 
         .kinetic-index__masthead {
             width: auto;
             margin: 0;
-            padding: 0;
             gap: clamp(16px, 3svh, 28px);
-            grid-column: 1;
         }
 
         .kinetic-index__summary {
@@ -124,17 +76,13 @@
 
         /* The statement reaches further right than the mask of other pages allows for. */
         .kinetic-index .dot-orb {
+            inset: 0;
+            height: auto;
             mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 50%, #000 62%);
-        }
-
-        /* The header carries the navigation here. */
-        .index-navigation {
-            display: none;
         }
     }
 
-    .js .kinetic-index__masthead > *,
-    .js .index-panel > * {
+    .js .kinetic-index__masthead > * {
         opacity: 0;
         transform: translateY(18px);
     }
@@ -147,63 +95,5 @@
 
     .js.is-ready .kinetic-index__summary {
         transition-delay: 220ms;
-    }
-
-    .js.is-ready .index-panel > * {
-        opacity: 1;
-        transform: none;
-        animation: index-panel-enter 760ms var(--ease-heavy) backwards;
-    }
-
-    .js.is-ready .index-panel:nth-child(1) > * {
-        animation-delay: 260ms;
-    }
-
-    .js.is-ready .index-panel:nth-child(2) > * {
-        animation-delay: 340ms;
-    }
-
-    .js.is-ready .index-panel:nth-child(3) > * {
-        animation-delay: 420ms;
-    }
-
-    @keyframes index-panel-enter {
-        from {
-            opacity: 0;
-            transform: translateY(18px);
-        }
-
-        to {
-            opacity: 1;
-            transform: none;
-        }
-    }
-
-    .has-mouse-input .index-navigation:has(.index-panel:hover) .index-panel:not(:hover, :focus-visible),
-    .index-navigation:has(.index-panel:focus-visible) .index-panel:not(:focus-visible, :hover) {
-        flex-grow: 0.76;
-        opacity: 0.58;
-    }
-
-    .has-mouse-input .index-panel:hover,
-    .index-panel:focus-visible {
-        flex-grow: 1.75;
-    }
-
-    .has-mouse-input .index-panel:hover .index-panel__number,
-    .index-panel:focus-visible .index-panel__number {
-        color: var(--route-accent);
-    }
-
-    .has-mouse-input .index-panel:hover .index-panel__title,
-    .index-panel:focus-visible .index-panel__title {
-        color: var(--route-accent);
-        transform: translateX(8px);
-    }
-
-    .has-mouse-input .index-panel:hover .index-panel__description,
-    .index-panel:focus-visible .index-panel__description {
-        color: rgba(248, 246, 250, 0.78);
-        transform: translateX(5px);
     }
 }

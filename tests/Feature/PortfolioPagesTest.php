@@ -38,8 +38,7 @@ class PortfolioPagesTest extends TestCase
             ->assertDontSee('class="kinetic-index__number"', false)
             ->assertSee('class="kinetic-index__name figure-word" data-dot-orb-figure="mark"', false)
             ->assertDontSee('class="kinetic-index__eyebrow"', false)
-            ->assertSee('class="index-navigation"', false)
-            ->assertSee('data-index-panel', false)
+            ->assertDontSee('class="index-navigation"', false)
             ->assertSee('data-sound-toggle', false)
             ->assertSee('data-mark="http://localhost/brand/mark.svg"', false)
             ->assertSee('class="brand-mark brand-lockup__mark"', false)
@@ -57,8 +56,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="http://localhost/en/about"', false)
             ->assertSee('href="http://localhost/en/projects"', false);
 
-        $this->assertSame(3, substr_count($response->content(), 'data-index-panel'));
-        $this->assertSame(13, substr_count($response->content(), 'data-dot-orb-figure='));
+        $this->assertSame(10, substr_count($response->content(), 'data-dot-orb-figure='));
 
         // The letters of the words that name a figure are numbered through, so the light runs
         // from the first word to the last: "Data platforms" has 13 letters, "web" follows.

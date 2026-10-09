@@ -9,9 +9,11 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   `resources/css/foundation.css`. Components use them instead of literals; a tint is built from the
   `-rgb` companion of a color (`rgba(var(--accent-rgb), 0.16)`).
 - **Layers.** Stylesheets are layered (`base`, `components`), one file per page in
-  `resources/css/pages`. `responsive.css` is unlayered and ordered by breakpoint (1280, 960, 720,
-  420, 380 and 340px wide, plus a block for desktop windows up to 780px high), so its rules
-  override the component styles.
+  `resources/css/pages`. The home page, the stage lists, the about page, the 404 page and the
+  legal pages carry their own breakpoints, written from the small window up with the stage
+  starting at 961px. `responsive.css` is unlayered and ordered by breakpoint (1280, 960, 800,
+  720, 420 and 340px wide), so its rules override the component styles; it still holds the
+  header, the case studies and the interface previews.
 - **Input.** Hover effects apply only under `.has-mouse-input`, which the interaction controller
   sets from the pointer type of the last event. Every hover state has a `:focus-visible`
   counterpart. Touch gets the resting state.
@@ -69,11 +71,13 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 
 ### Home page
 
-The home page is one screen. From 961px it is a stage: the content keeps to a column on the left,
-and the right belongs to the sphere. The name stands small above the summary, which is the
-statement of the page and its largest text. The header carries the navigation. Text on the home
-page cannot be selected, because a held press moves the sphere. Up to 960px the three destinations
-follow below as full-width rows, not worked out for the sphere yet.
+The home page is one screen at every size, a stage of the name, the statement and the sphere. The
+name stands small above the summary, which is the statement of the page and its largest text. The
+header carries the navigation. Text on the home page cannot be selected, because a held press
+moves the sphere. From 961px the content keeps to a column on the left, at most half of the
+width, and the right belongs to the sphere. Up to 960px the sphere has the upper 68% of the
+screen, where its canvas ends and the dots fade out, and the text stands below it; the line that
+ends the page closes the screen.
 
 A sphere of 1200 dots (`resources/js/dot-orb-controller.js`, `resources/css/orb.css`) is the main
 element: a generative particle animation on a 2D canvas that covers the section and sits behind
@@ -111,11 +115,11 @@ the text.
 - **Place.** On a canvas that is not fitted the sphere wanders around a point at 68% of the
   canvas' width and half its height. The element it rests with can name another share of the
   width (`--dot-orb-x`): the sphere glides there in about a second, keeps level with the middle
-  of that element while the page scrolls and wanders much less.
+  of that element, or of the part of it marked `data-dot-orb-place`, while the page scrolls and
+  wanders much less.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
   sphere's own clock, which pauses while the canvas is off screen or the tab is hidden.
 - **Size.** The sphere's box follows the canvas: its height or 70% of its width, at most 1040px.
-  Up to 720px wide the canvas is shown at 60% opacity without the mask.
 - **Resting figure and color.** While nothing that names a figure is hovered or focused, the
   element marked `data-dot-orb-resting` holds its figure. An element can give its figure a color
   with `--dot-orb-rgb`; the dots blend to it and back to the page accent.
@@ -152,8 +156,14 @@ the left edge, and the list keeps to the right. A compact stage (`stage-list--co
 rows whose names stand a step below the heading, for plain entries. There the figure is the
 larger part: the square takes what the header and the page end leave of the height, up to 52% of
 the width, and the content and the square both stand in the middle of the stage's height; the
-current row's name takes the accent like its icon. Up to 960px the rows follow each other with their
-texts, and the sphere stays behind the page.
+current row's name takes the accent like its icon.
+
+Between 961 and 1180px the introduction stands below the heading. In a window up to 760px high
+the stage is set tighter (lower rows, smaller names, a description of two lines), so it still
+fills one screen with the page end on a laptop. Up to 960px the square of the sphere stands in
+the middle above the heading, at most 40% of the window's height, and the rows follow each other
+with their texts; a compact row then has its short text below its name. Touch never changes the
+current row, so the sphere shows the first row's figure.
 
 - **Projects overview.** The rows are the projects marked as featured in the content, Quantified
   and Jay-Jay; a project without the mark keeps its case study and its place in the sequence of
@@ -187,9 +197,11 @@ heading and the introduction, and the technologies. It stays light, the figure t
   Vite, GitHub Actions, Google, four panes for WinUI); the other tools show their group's. The
   paths come from the `simple-icons` package, as GitHub's does; the content lists which tool has
   which mark (`technology_marks`).
-- **Fallbacks.** Up to 960px the chapters follow each other across the whole width, and the
-  sphere stands in the middle behind them at 30% opacity. Under reduced motion it is one still
-  sphere that stays with the opening.
+- **Up to 960px.** The sphere belongs to the opening, which fills the first window: the heading,
+  the figure in the place held for it, the introduction. Its canvas covers that window, a fifth
+  wider than it so the figure is about half as wide as the page, and leaves with it; the
+  technologies follow as plain rows without dots behind them.
+- **Reduced motion.** One still sphere that stays with the opening.
 
 ### 404 and legal pages
 
@@ -197,8 +209,8 @@ heading and the introduction, and the technologies. It stays light, the figure t
   the heading, one sentence and the link home on the left, and on the right a square as high as
   the stage and at most 46% of its width. The sphere rests there in the figure of the number,
   404 in tall, narrow numerals, on a fitted canvas. From 961px the page and the line that ends
-  it fill one screen; up to 960px the square stands above the message, at most 42% of the
-  window's height.
+  it fill one screen; up to 960px the square stands in the middle above the message, at most
+  40% of the window's height.
 - **Legal notice and privacy notice.** Text only (`resources/views/pages/legal.blade.php`,
   `resources/css/pages/legal.css`): the title, the introduction and, on the privacy notice, the
   date; then one row between hairlines for every section. From 961px the titles of the sections

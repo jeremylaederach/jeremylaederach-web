@@ -7,7 +7,17 @@
         isolation: isolate;
         width: var(--shell);
         margin: 0 auto;
-        padding: 124px 0 72px;
+        padding: 96px 0 56px;
+    }
+
+    /* Up to 960px the square of the sphere stands above the heading, as the picture of the page. */
+    .stage-list .dot-orb {
+        position: relative;
+        inset: auto;
+        width: min(100%, 40svh);
+        margin: 0 auto 28px;
+        aspect-ratio: 1;
+        mask-image: none;
     }
 
     .stage-list__header h1 {
@@ -85,6 +95,23 @@
         padding: 0 0 26px;
     }
 
+    /* Up to 960px a compact row has a smaller name, and its short text stands below it. */
+    .stage-list--compact .stage-list__title {
+        padding: 18px 0;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+    }
+
+    .stage-list--compact .stage-list__name {
+        font-size: 30px;
+        letter-spacing: -0.02em;
+    }
+
+    .stage-list--compact .stage-list__value {
+        flex-basis: 100%;
+        order: 1;
+    }
+
     /* A note that belongs to the whole list stands below it. */
     .stage-list__note {
         max-width: 560px;
@@ -141,10 +168,12 @@
         }
 
         .stage-list .dot-orb {
+            position: absolute;
             inset: var(--top) 0 auto auto;
             width: var(--side);
             height: var(--side);
-            mask-image: none;
+            margin: 0;
+            aspect-ratio: auto;
         }
 
         /* The heading and the introduction share one line above the list. */
@@ -208,6 +237,49 @@
             translate: 0;
         }
 
+        /* Up to 1180px the introduction has no room beside the heading and stands below it. */
+        @media (max-width: 1180px) {
+            .stage-list__header {
+                display: block;
+                height: auto;
+            }
+
+            .stage-list__header > p {
+                max-width: none;
+                margin-top: 10px;
+                text-align: left;
+            }
+        }
+
+        /* In a window up to 760px high the stage is set tighter, so it still fills one screen
+           with the line that ends the page: lower rows, smaller names and a description of two
+           lines. */
+        @media (max-height: 760px) {
+            .stage-list {
+                --top: 116px;
+                --bottom: 20px;
+                --row: 76px;
+                --detail: 140px;
+            }
+
+            .stage-list__rows {
+                margin-top: 20px;
+            }
+
+            .stage-list__name {
+                font-size: clamp(44px, 6vw, 56px);
+            }
+
+            .stage-list__detail .stage-list__text {
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+            }
+
+            .stage-list--compact {
+                --row: 60px;
+            }
+        }
+
         /* A mirrored stage has the sphere's square on the left and the list on the right. */
         .stage-list--mirrored .dot-orb {
             inset: var(--top) auto auto 0;
@@ -235,6 +307,17 @@
 
         .stage-list--compact .dot-orb {
             top: calc(var(--top) + (100% - var(--top) - var(--bottom) - var(--side)) / 2);
+        }
+
+        .stage-list--compact .stage-list__title {
+            padding: 0;
+            flex-wrap: nowrap;
+            gap: 20px;
+        }
+
+        .stage-list--compact .stage-list__value {
+            flex-basis: auto;
+            order: 0;
         }
 
         /* Its current row stays lit: the name takes the accent like the icon. */

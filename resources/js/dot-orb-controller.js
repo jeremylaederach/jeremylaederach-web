@@ -14,8 +14,9 @@ const reach = 0.08;
 
 // Where the sphere stands: at this share of its canvas' width and height, unless the element it
 // rests with names another place. It then glides to that share of the width at `rate` per second
-// and keeps level with the middle of that element, which it follows at `follow` per second. It
-// wanders around its place by `wander` of the canvas, or by `held` beside such an element.
+// and keeps level with the middle of that element, or of the part of it marked
+// `data-dot-orb-place`, which it follows at `follow` per second. It wanders around its place by
+// `wander` of the canvas, or by `held` beside such an element.
 const stand = { share: 0.68, level: 0.5, rate: 2.4, follow: 7, wander: 0.1, held: 0.03 };
 
 // A click sends a ring outwards through the dots: how fast it travels and how wide it is, in
@@ -562,7 +563,7 @@ const initializeOrb = (canvas, reducedMotion, arriving) => {
         targetShape = points?.length ? 1 : 0;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
         targetStanding = Number.isFinite(share) ? share : stand.share;
-        anchor = Number.isFinite(share) ? resting : null;
+        anchor = Number.isFinite(share) ? resting.querySelector('[data-dot-orb-place]') ?? resting : null;
 
         if (points?.length) {
             figurePoints = points;

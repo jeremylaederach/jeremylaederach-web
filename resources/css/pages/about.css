@@ -6,18 +6,18 @@
         overflow: clip;
     }
 
-    /* The sphere's canvas covers the window and stays there while the chapters pass over it. Up
-       to 960px the text takes the whole width, so the dots recede behind it. */
+    /* Up to 960px the sphere belongs to the opening, which fills the first window: its canvas
+       covers that window and leaves with it, and the technologies follow as plain rows. The
+       canvas is wider than the window, so the figure is about half as wide as the page. */
     .about-story__orb {
-        position: sticky;
-        top: 0;
+        position: relative;
         height: 100svh;
         margin-bottom: -100svh;
-        opacity: 0.3;
         pointer-events: none;
     }
 
     .about-story__orb .dot-orb {
+        inset: 0 -10vw;
         mask-image: none;
     }
 
@@ -33,12 +33,17 @@
         scroll-margin-top: 72px;
     }
 
+    /* The opening: the heading, the place the sphere keeps level with, the introduction. */
     .about-chapter--opening {
-        padding-top: 148px;
+        display: grid;
+        min-height: calc(100svh - 73px);
+        padding: 104px 0 40px;
+        grid-template-rows: auto minmax(52vw, 1fr) auto;
     }
 
     .about-chapter--opening .about-chapter__lead {
         max-width: 44ch;
+        margin: 0;
     }
 
     .about-chapter h1 {
@@ -105,8 +110,9 @@
         list-style: none;
     }
 
-    /* From 961px the text keeps to the left and the sphere stands level with it on the right. A
-       chapter is at least as high as a figure. */
+    /* From 961px the canvas stays in the window while the chapters pass over it: the text keeps
+       to the left and the sphere stands level with it on the right. A chapter is at least as
+       high as a figure. */
     @media (min-width: 961px) {
         .about-story {
             /* The width of a figure on a canvas that covers the window. */
@@ -114,7 +120,12 @@
         }
 
         .about-story__orb {
-            opacity: 1;
+            position: sticky;
+            top: 0;
+        }
+
+        .about-story__orb .dot-orb {
+            inset: 0;
         }
 
         .about-chapter {
@@ -141,8 +152,9 @@
             min-height: calc(100svh - 112px);
             margin-top: 112px;
             padding: 0;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            column-gap: calc(var(--figure) + 48px);
+            grid-template-rows: none;
+            grid-template-columns: minmax(0, 1fr) var(--figure) minmax(0, 1fr);
+            column-gap: 24px;
             align-items: center;
             scroll-margin-top: 112px;
         }
@@ -152,7 +164,6 @@
         }
 
         .about-chapter--opening .about-chapter__lead {
-            margin: 0;
             font-size: clamp(17px, 1.35vw, 20px);
         }
     }

@@ -31,6 +31,8 @@
                     <x-animated-page-heading :text="$about['heading']" />
                 </div>
 
+                <div class="about-chapter__figure" data-dot-orb-place aria-hidden="true"></div>
+
                 <p class="about-chapter__lead" data-reveal>{{ $about['intro'] }}</p>
             </header>
 

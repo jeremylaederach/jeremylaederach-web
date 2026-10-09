@@ -2,7 +2,7 @@
     /* The 404 page is a stage: the message and a square for the sphere, which rests in the figure
        of the number. Up to 960px the square stands above the message. */
     .not-found-page {
-        --side: min(100%, 42svh);
+        --side: min(100%, 40svh);
         position: relative;
         isolation: isolate;
         display: grid;
@@ -19,6 +19,7 @@
         inset: auto;
         width: var(--side);
         height: var(--side);
+        justify-self: center;
         mask-image: none;
     }
 
@@ -65,6 +66,7 @@
             aspect-ratio: 1;
             grid-row: 1;
             grid-column: 2;
+            justify-self: stretch;
         }
 
         .not-found-page__message {

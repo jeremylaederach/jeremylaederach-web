@@ -320,10 +320,11 @@
         font-size: 12px;
     }
 
+    /* The gap narrows on a phone, so the four links stay on one line. */
     .site-colophon__links {
         display: flex;
         flex-wrap: wrap;
-        gap: 0 28px;
+        gap: 0 clamp(14px, 4vw, 28px);
         justify-content: center;
     }
 

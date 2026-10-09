@@ -1,9 +1,4 @@
 @media (max-width: 1280px) {
-    .kinetic-index {
-        --index-column-gap: 24px;
-        --index-number-column: 48px;
-    }
-
     .case-study-product h2,
     .case-study-section-heading h2 {
         font-size: 60px;
@@ -33,23 +28,6 @@
 
     .site-menu__panel[data-open] {
         pointer-events: auto;
-    }
-
-    .kinetic-index {
-        --index-column-gap: 22px;
-        --index-number-column: 40px;
-        grid-template-rows: minmax(300px, 42svh) minmax(390px, 1fr);
-    }
-
-    .kinetic-index__masthead {
-        padding: 112px 0 38px;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 24px;
-        align-content: center;
-    }
-
-    .index-panel {
-        grid-template-columns: var(--index-number-column) minmax(170px, 0.8fr) minmax(220px, 1.2fr);
     }
 
     .project-reel {
@@ -183,53 +161,12 @@
         font-size: 30px;
     }
 
-    .dot-orb {
+    .case-study-hero .dot-orb {
         mask-image: none;
     }
 
-    .is-ready .dot-orb {
+    .is-ready .case-study-hero .dot-orb {
         opacity: 0.6;
-    }
-
-    .kinetic-index {
-        --index-column-gap: 14px;
-        --index-number-column: 30px;
-        grid-template-rows: minmax(280px, 40svh) minmax(390px, 1fr);
-    }
-
-    .kinetic-index__masthead {
-        display: grid;
-        padding: 96px 0 26px;
-        grid-template-columns: 1fr;
-        gap: 18px;
-        align-content: center;
-    }
-
-    .index-panel {
-        grid-template-columns: var(--index-number-column) minmax(0, 1fr);
-        grid-template-rows: auto auto;
-        gap: 10px var(--index-column-gap);
-        align-content: center;
-        padding: 16px 20px;
-    }
-
-    .index-panel__number {
-        grid-row: 1;
-        align-self: center;
-        padding-top: 0;
-    }
-
-    .index-panel__title {
-        font-size: 30px;
-    }
-
-    .index-panel__description {
-        overflow: hidden;
-        max-width: 34ch;
-        grid-row: 2;
-        grid-column: 2;
-        font-size: 12px;
-        line-height: 1.35;
     }
 
     .project-visual {
@@ -739,21 +676,6 @@
     }
 }
 
-@media (max-width: 380px), (max-height: 700px) and (max-width: 720px) {
-    .kinetic-index__masthead {
-        padding-top: 84px;
-        gap: 12px;
-    }
-
-    .index-panel__title {
-        font-size: 26px;
-    }
-
-    .index-panel__description {
-        font-size: 11px;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -768,7 +690,6 @@
         scroll-behavior: auto !important;
     }
 
-    .index-panel,
     .project-visual,
     .project-visual img,
     [data-reveal],

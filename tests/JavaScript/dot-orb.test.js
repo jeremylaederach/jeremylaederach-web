@@ -182,6 +182,28 @@ test('a chapter gives the sphere its figure and its place once it is current, no
     assert.ok(before > 340 && middle() < 220);
 });
 
+test('the sphere keeps level with the part of a chapter that is marked as its place', (t) => {
+    const { dots, run } = setup(t);
+    const chapter = document.createElement('section');
+    const place = document.createElement('div');
+    const level = () => dots.reduce((sum, dot) => sum + dot.y, 0) / dots.length;
+
+    chapter.setAttribute('data-chapter', '');
+    chapter.setAttribute('data-dot-orb-resting', '');
+    chapter.dataset.place = '0.5';
+    chapter.getBoundingClientRect = () => ({ top: 0, height: 900 });
+    place.setAttribute('data-dot-orb-place', '');
+    place.getBoundingClientRect = () => ({ top: 150, height: 100 });
+    chapter.append(place);
+    document.body.append(chapter);
+
+    document.dispatchEvent(new window.CustomEvent(chapterChangedEvent));
+    run(400);
+
+    // The place has its middle 200 pixels below the top of the canvas, the chapter at 450.
+    assert.ok(Math.abs(level() - 200) < 40);
+});
+
 test('a click sends a ring through the dots that fades again', (t) => {
     const { dots, run, spread } = setup(t);
     const click = new window.MouseEvent('pointerdown', { bubbles: true, clientX: 412, clientY: 450 });
