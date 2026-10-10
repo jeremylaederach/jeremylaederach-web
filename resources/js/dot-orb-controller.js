@@ -1,17 +1,18 @@
 import { createAttention } from './dot-orb-attention.js';
-import { createDivision } from './dot-orb-division.js';
+import { createBuds } from './dot-orb-buds.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { approach, clamp, createLattice, mix, smooth } from './dot-orb-math.js';
 import { pairInStrips } from './dot-orb-pairing.js';
+import { createPresses } from './dot-orb-presses.js';
 import { sampleFigure } from './dot-orb-sampling.js';
+import { createStage } from './dot-orb-stage.js';
 import { sceneChangedEvent } from './scene-controller.js';
 
 const dotCount = 1200;
 const turnSeconds = 52;
 const tilt = 0.42;
 
-// Lengths are in units. One unit is the sphere's box, which follows the size of its stage.
-const unitOf = { height: 1, width: 0.7, largest: 1040 };
+// Lengths are in units of the stage (see dot-orb-stage.js).
 const sphereRadius = 0.3;
 const reach = 0.08;
 
@@ -19,38 +20,8 @@ const reach = 0.08;
 // wanders by `wander` of the stage.
 const stand = { share: 0.68, level: 0.5, wander: 0.1 };
 
-// A click sends a ring outwards through the dots: how fast it travels and how wide it is, in
-// units, how far it pushes a dot, how many seconds it lasts and how many rings travel at once.
-const pulse = { speed: 1.5, width: 0.1, strength: 0.07, life: 1.1, most: 6 };
-
-// A held press gathers the dots within reach towards the pointer and charges up; letting go
-// releases a ring that is stronger the longer the press lasted.
-const press = { reach: 0.5, pull: 0.24, chargeRate: 1.5, releaseRate: 7, boost: 2.2 };
-
 // Nearer dots are a lighter tint of the accent, in steps small enough to pass for a gradient.
 const tint = { levels: 8, lightest: 0.42 };
-
-// Like a blob in a lava lamp the sphere divides: it stretches along the axis it turns around, a
-// neck forms and thins, and a bud parts from it, drifts away and comes back (see
-// dot-orb-division.js). The first bud is the dots at one end of that axis and sinks, the last
-// those at the other end and rises. Each has its share of all the dots and its own slow cycle,
-// in seconds, and starts inside the sphere. A bud leaves in one motion: it has divided after
-// `parted` of its way out and drifts from `drifting` of it on, up to `drift` radii of the
-// sphere, so the neck still thins while the bud already moves away. It stays on the stage:
-// `margin` is the room, in units, that stays free at the stage's edges, and `swell` how much
-// further the sphere's waves may carry a bud. A bud that has no room to drift stays close, and
-// one that has no room to part stays on its neck.
-const bud = {
-    margin: 0.03,
-    swell: 1.12,
-    parted: 0.62,
-    drifting: 0.38,
-    drift: 0.6,
-    parts: [
-        { share: 0.18, period: 41, phase: 5.42 },
-        { share: 0.12, period: 53, phase: 3.9 },
-    ],
-};
 
 // A figure is a shape the dots take while an element that names it is hovered or focused. Its
 // points are sampled from a drawing (see dot-orb-sampling.js), one for every dot: the drawn
@@ -63,22 +34,14 @@ const bud = {
 // figure: the dots flow into the shape instead of crossing it.
 const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 
-// A press on the plain sphere splits it: one more bud parts, which takes `leave` seconds to
-// set out and stays for `stay` seconds before it takes `back` seconds to return. A held press
-// draws everything together again: within `gather` seconds every bud is back inside, and for
-// `calm` seconds after the press none sets out.
-const split = { leave: 2.2, stay: 14, back: 3, gather: 1, calm: 6 };
-
-
 // An element can name several figures, separated by spaces. The sphere then shows one after the
 // other, each for `dwell` seconds. A press on the dots always breaks up what they show: a
 // sequence moves on to its next figure, a single figure gives way to the plain sphere behind
-// it for `dwell` seconds, and the plain sphere splits (see `split`). The dots flow from shape
-// to shape like the blobs of a lava lamp: at `hover`
-// per second when the pointer moves on to another element, at `rest` when the element the
-// sphere rests with changes or a press moves on, and at `cycle` when a sequence steps by
-// itself. Every dot has a pace of its own, between `slowest` and `fastest` of that rate, so a
-// shape melts into the next instead of jumping.
+// it for `dwell` seconds, and the plain sphere splits (see dot-orb-buds.js). The dots flow from
+// shape to shape like the blobs of a lava lamp: at `hover` per second when the pointer moves on
+// to another element, at `rest` when the element the sphere rests with changes or a press moves
+// on, and at `cycle` when a sequence steps by itself. Every dot has a pace of its own, between
+// `slowest` and `fastest` of that rate, so a shape melts into the next instead of jumping.
 const sequence = { dwell: 8, hover: 9, rest: 3, cycle: 1.6, slowest: 0.7, fastest: 1.5 };
 
 // The dots that give way to the pointer leave an opening of this share of the reach around it,
@@ -92,18 +55,6 @@ const opening = { share: 0.6, dots: 4 };
 // its dots flow to the figure of the next scene as fast as to a hovered one. To a visitor who
 // comes back after a pause it answers with one ring of the strength `greeting`.
 const notice = { ahead: 0.2, sway: 0.00003, swing: 0.05, brisk: 1800, greeting: 0.6 };
-
-// The sphere stays through a page change and travels to where the next page wants it, at
-// `rate` per second. Every dot keeps its own pace on that way: the fast ones lead and the slow
-// ones trail, the more the larger `stretch` is, so the sphere pours to its new place and
-// gathers there.
-const journey = { rate: 3.4, stretch: 1.5 };
-
-// A stage can ask the dots to recede where its text stands (`--dot-orb-fade`): "left" dims
-// them towards the left edge, "down" towards the lower one, followed by where that begins and
-// where it is complete, as shares of the stage, and how much of a dot is left there. When the
-// page changes, the dimming fades in or out at `rate` per second.
-const fade = { rate: 3 };
 
 // On a page without a stage the dots scatter away from the middle of the sphere and fade; the
 // next page with one gathers them again. `reach` is how far they travel, in multiples of their
@@ -139,18 +90,15 @@ const createRotation = (turn, lean) => ({
     cosLean: Math.cos(lean),
 });
 
-// A bud as it is right now: how far out its cycle and the presses have it, how far a press has
-// called it and until when, how far it has divided from the sphere and how far it has drifted.
-const createBuds = () => bud.parts.map((part) => ({ ...part, out: 0, called: 0, calledUntil: 0, parted: 0, gap: 0 }));
-
 const initializeOrb = (canvas, reducedMotion) => {
     const context = canvas.getContext('2d');
     // The accent the page is heading for; the accent in use may still be blending towards it.
     const accent = () => readChannels(getComputedStyle(canvas).getPropertyValue('--route-accent-goal'));
     const color = accent() ?? [...white];
     const buds = createBuds();
+    const { division } = buds;
+    const presses = createPresses();
     const sphere = createLattice(dotCount);
-    const division = createDivision({ first: buds[0].share, last: buds[1].share });
     const figures = new Map();
     const dots = {
         x: new Float32Array(dotCount),
@@ -176,11 +124,6 @@ const initializeOrb = (canvas, reducedMotion) => {
     const heading = { x: 0, y: 0 };
     let scrolling = 0;
     let swayed = 0;
-    const ripples = [];
-    const hold = { x: 0, y: 0, down: false, charge: 0 };
-    // How far a held press has drawn the buds in, and until when they stay there.
-    let gathered = 0;
-    let calmUntil = 0;
     const home = { x: 0, y: 0 };
     // How the sphere stands in this frame: how it and a figure are turned, its time, and
     // whether a figure has formed, which hides the sphere.
@@ -190,25 +133,7 @@ const initializeOrb = (canvas, reducedMotion) => {
     const view = { x: 0, y: 0, z: 0 };
     const spot = { x: 0, y: 0, z: 0 };
     const shaped = { along: 0, around: 0, height: 0, ring: 0 };
-    // The canvas lies over the first screen of every page and stays through a page change. A
-    // page marks where the sphere stands with a stage (`data-dot-orb-stage`). A stage marked
-    // `data-dot-orb-fit` is a square: the sphere stands still in its middle and a figure fills
-    // its smaller side. On another stage the sphere wanders slowly around its place. A stage
-    // marked as pinned stays in the window while its page scrolls, and so does the canvas.
-    let stage = null;
-    let fit = false;
-    let pinned = false;
-    // The stage in canvas pixels: its size, the unit it asks for and where its corner lies.
-    let width = 0;
-    let height = 0;
-    let size = 1;
-    let originX = 0;
-    let originY = 0;
-    // What is left of the way from the last stage: in pixels, as a ratio of the units, and the
-    // share of both that is still to go.
-    const way = { x: 0, y: 0, zoom: 1, left: 0 };
-    let unit = 1;
-    let scale = 1;
+    const stage = createStage({ canvas, reducedMotion, figureShare: figure.size * figure.extent });
     let frame = 0;
     let previousTime = 0;
     let clock = 0;
@@ -228,9 +153,6 @@ const initializeOrb = (canvas, reducedMotion) => {
     let pointed = null;
     let scattered = 0;
     let targetScattered = 0;
-    // Where the dots recede, in canvas pixels, how much of them is left there, whether the
-    // stage of this page asks for it, and how far it has faded in.
-    const veil = { asked: false, down: false, begin: 0, end: 1, level: 1, from: 0, to: 0, shown: 0 };
     // The points on each side of a figure: the even ones lie on its front, the odd ones on its
     // back.
     const sides = new WeakMap();
@@ -244,95 +166,9 @@ const initializeOrb = (canvas, reducedMotion) => {
         view.z = point.y * rotation.sinLean + depth * rotation.cosLean;
     };
 
-    // Where the stage lies on the canvas right now. Both are read in every frame: a stage moves
-    // with its page while that page is revealed or leaves.
-    const measure = () => {
-        const bounds = stage.getBoundingClientRect();
-        const around = canvas.getBoundingClientRect();
-
-        width = bounds.width * scale;
-        height = bounds.height * scale;
-        size = (fit
-            ? Math.min(width, height) / (figure.size * figure.extent)
-            : Math.min(height * unitOf.height, width * unitOf.width, unitOf.largest * scale)) || 1;
-        unit = size * mix(1, way.zoom, way.left);
-        originX = (bounds.left - around.left) * scale + way.x * way.left;
-        originY = (bounds.top - around.top) * scale + way.y * way.left;
-
-        if (veil.asked) {
-            const start = (veil.down ? bounds.top - around.top : bounds.left - around.left) * scale;
-            const length = veil.down ? height : width;
-
-            veil.from = start + veil.begin * length;
-            veil.to = start + veil.end * length;
-        }
-    };
-
-    // What the stage says about where its dots recede.
-    const readVeil = () => {
-        const [side, begin, end, level] = getComputedStyle(stage).getPropertyValue('--dot-orb-fade').trim().split(/\s+/);
-
-        veil.asked = side === 'left' || side === 'down';
-
-        if (veil.asked) {
-            Object.assign(veil, { down: side === 'down', begin: Number(begin), end: Number(end), level: Number(level) });
-        }
-    };
-
-    // How much of a dot at this place of the canvas shows.
-    const shownAt = (x, y) => {
-        const along = clamp(((veil.down ? y : x) - veil.from) / (veil.to - veil.from || 1), 0, 1);
-
-        return mix(1, veil.down ? mix(1, veil.level, along) : mix(veil.level, 1, along), veil.shown);
-    };
-
     const wander = (seconds) => {
-        home.x = (width * (fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / unit;
-        home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit + swayed;
-    };
-
-    // How far each bud is out right now: as far as its own cycle or a press says, unless a held
-    // press holds it in. It divides from the sphere and drifts as far as the stage has room on
-    // its side: the first bud below the sphere, the last above it.
-    const arrange = (seconds, lean, delta) => {
-        // The room on each side of the sphere's middle, in radii as the screen shows them along
-        // the axis.
-        const span = sphereRadius * Math.cos(lean) * bud.swell;
-        const rooms = [(height / unit - home.y - bud.margin) / span, (home.y - bud.margin) / span];
-
-        gathered = clamp(gathered + (hold.down || seconds < calmUntil ? delta / split.gather : -delta / split.back), 0, 1);
-
-        for (const part of buds) {
-            const wave = Math.sin((seconds / part.period) * Math.PI * 2 + part.phase);
-
-            part.called = clamp(part.called + (seconds < part.calledUntil ? delta / split.leave : -delta / split.back), 0, 1);
-            part.out = Math.max(clamp((wave - 0.25) / 0.6, 0, 1), part.called) * (1 - smooth(gathered));
-        }
-
-        // The way a bud may go is worked out first, from where its far end would be with the
-        // bud all the way out: it may drift less far, and part less far if that is not enough.
-        // The bud then eases along that way, so it slows down before the edge of the stage
-        // instead of stopping at it. Twice, because each bud moves the other a little.
-        for (let pass = 0; pass < 2; pass += 1) {
-            buds.forEach((part, index) => {
-                const other = buds[1 - index];
-                const whole = [1, bud.drift];
-                const others = [other.parted, other.gap];
-
-                division.arrange(...(index ? others : whole), ...(index ? whole : others));
-                division.place(index, shaped);
-
-                const beyond = Math.abs(shaped.along) - rooms[index];
-                const closer = clamp(beyond / (1 - part.share), 0, bud.drift);
-                const reach = index ? division.reach.last : division.reach.first;
-                const parts = clamp(1 - Math.max(beyond - closer * (1 - part.share), 0) / (reach - 1), 0, 1);
-
-                part.parted = parts * smooth(clamp(part.out / bud.parted, 0, 1));
-                part.gap = (bud.drift - closer) * smooth(clamp((part.out - bud.drifting) / (1 - bud.drifting), 0, 1));
-            });
-        }
-
-        division.arrange(buds[0].parted, buds[0].gap, buds[1].parted, buds[1].gap);
+        home.x = (stage.width * (stage.fit ? 0.5 : stand.share + stand.wander * Math.sin(seconds / 23))) / stage.unit;
+        home.y = (stage.height * (stage.fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / stage.unit + swayed;
     };
 
     // The dot on the sphere, or on the bud it belongs to: turned with the sphere and swelling
@@ -390,8 +226,8 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // What the visitor does to the dot: it gives way to the pointer, a held press pulls it in,
-    // the rings of presses push it outwards, and a page without a stage scatters it.
+    // What the visitor does to the dot: it gives way to the pointer, the presses pull it in and
+    // push it outwards (see dot-orb-presses.js), and a page without a stage scatters it.
     const disturb = () => {
         const distance = Math.hypot(dot.x - pointer.x, dot.y - pointer.y);
 
@@ -402,25 +238,7 @@ const initializeOrb = (canvas, reducedMotion) => {
             dot.y += ((dot.y - pointer.y) / (distance || 1)) * push;
         }
 
-        if (hold.charge > 0.001) {
-            const fromPress = Math.hypot(dot.x - hold.x, dot.y - hold.y);
-
-            if (fromPress < press.reach) {
-                const pull = Math.min((1 - fromPress / press.reach) * press.pull * hold.charge, fromPress * 0.8);
-
-                dot.x -= ((dot.x - hold.x) / (fromPress || 1)) * pull;
-                dot.y -= ((dot.y - hold.y) / (fromPress || 1)) * pull;
-            }
-        }
-
-        for (const ripple of ripples) {
-            const fromClick = Math.hypot(dot.x - ripple.x, dot.y - ripple.y);
-            const front = Math.exp(-(((fromClick - ripple.age * pulse.speed) / pulse.width) ** 2));
-            const push = front * pulse.strength * ripple.power * (1 - ripple.age / pulse.life);
-
-            dot.x += ((dot.x - ripple.x) / (fromClick || 1)) * push;
-            dot.y += ((dot.y - ripple.y) / (fromClick || 1)) * push;
-        }
+        presses.disturb(dot);
 
         if (scattered > 0.001) {
             dot.x += (dot.x - home.x) * scattered * scatter.reach;
@@ -437,7 +255,11 @@ const initializeOrb = (canvas, reducedMotion) => {
         const leanY = clamp((pointer.y + heading.y - home.y) / sphereRadius, -2, 2);
         const lean = tilt + leanY * 0.35 * pointer.strength;
 
-        arrange(seconds, lean, delta);
+        buds.arrange(seconds, delta, {
+            below: stage.height / stage.unit - home.y,
+            above: home.y,
+            radius: sphereRadius * Math.cos(lean),
+        }, presses.held());
         scene.seconds = seconds;
         scene.formed = formed;
         scene.rotation = createRotation((seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength, lean);
@@ -450,6 +272,8 @@ const initializeOrb = (canvas, reducedMotion) => {
     const position = (seconds, delta) => {
         compose(seconds, shape > 0.999, delta);
 
+        const travelling = stage.travelling();
+
         for (let index = 0; index < dotCount; index += 1) {
             if (scene.formed) {
                 Object.assign(dot, home, { z: 0 });
@@ -460,11 +284,8 @@ const initializeOrb = (canvas, reducedMotion) => {
             intoFigure(index, delta);
             disturb();
 
-            if (way.left > 0.001) {
-                const behind = way.left ** (dots.pace[index] ** journey.stretch) - way.left;
-
-                dot.x += (way.x * behind) / unit;
-                dot.y += (way.y * behind) / unit;
+            if (travelling) {
+                stage.trail(dots.pace[index], dot);
             }
 
             dots.x[index] = dot.x;
@@ -477,6 +298,9 @@ const initializeOrb = (canvas, reducedMotion) => {
     // From the far dots to the near ones, one tint level and one fill color per pass.
     // Everything is drawn from the corner of the stage.
     const paint = () => {
+        const { unit, originX, originY } = stage;
+        const veiled = stage.veiled();
+
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.setTransform(1, 0, 0, 1, originX, originY);
@@ -492,11 +316,9 @@ const initializeOrb = (canvas, reducedMotion) => {
                 }
 
                 const closeness = (dots.z[index] + 1) / 2;
-                const visible = veil.shown > 0.001
-                    ? shownAt(originX + dots.x[index] * unit, originY + dots.y[index] * unit)
-                    : 1;
+                const shown = veiled ? stage.shownAt(originX + dots.x[index] * unit, originY + dots.y[index] * unit) : 1;
 
-                context.globalAlpha = (0.3 + closeness * closeness * 0.7) * (1 - scattered) * visible;
+                context.globalAlpha = (0.3 + closeness * closeness * 0.7) * (1 - scattered) * shown;
                 context.beginPath();
                 context.arc(
                     dots.x[index] * unit,
@@ -508,11 +330,6 @@ const initializeOrb = (canvas, reducedMotion) => {
                 context.fill();
             }
         }
-    };
-
-    const ring = (x, y, power) => {
-        ripples.push({ x, y, power, age: 0 });
-        ripples.splice(0, ripples.length - pulse.most);
     };
 
     // Which figure of the sequence is due.
@@ -613,15 +430,15 @@ const initializeOrb = (canvas, reducedMotion) => {
     // What the sphere notices of the visitor in this frame.
     const attend = (delta) => {
         const noticed = attention.read(delta);
-        const sway = pinned ? clamp(-noticed.scrolling * notice.sway, -notice.swing, notice.swing) : 0;
+        const sway = stage.pinned ? clamp(-noticed.scrolling * notice.sway, -notice.swing, notice.swing) : 0;
 
-        heading.x = approach(heading.x, (noticed.headingX * scale * notice.ahead) / unit, 6, delta);
-        heading.y = approach(heading.y, (noticed.headingY * scale * notice.ahead) / unit, 6, delta);
+        heading.x = approach(heading.x, (noticed.headingX * stage.scale * notice.ahead) / stage.unit, 6, delta);
+        heading.y = approach(heading.y, (noticed.headingY * stage.scale * notice.ahead) / stage.unit, 6, delta);
         scrolling = noticed.scrolling;
         swayed = approach(swayed, sway, 6, delta);
 
         if (noticed.returned) {
-            ring(home.x, home.y, notice.greeting);
+            presses.ring(home.x, home.y, notice.greeting);
         }
     };
 
@@ -631,26 +448,13 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         previousTime = time;
         clock += delta;
-        way.left = approach(way.left, 0, journey.rate, delta);
-
-        // A stage that has just been replaced is measured again once the next page is in place.
-        if (stage?.isConnected) {
-            measure();
-        }
+        stage.step(delta);
 
         if (attention) {
             attend(delta);
         }
 
-        for (let index = ripples.length - 1; index >= 0; index -= 1) {
-            ripples[index].age += delta;
-
-            if (ripples[index].age >= pulse.life) {
-                ripples.splice(index, 1);
-            }
-        }
-
-        hold.charge = approach(hold.charge, hold.down ? 1 : 0, hold.down ? press.chargeRate : press.releaseRate, delta);
+        presses.step(delta);
         pointer.x = approach(pointer.x, pointer.targetX, 5, delta);
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
@@ -659,7 +463,6 @@ const initializeOrb = (canvas, reducedMotion) => {
             color[index] = approach(channel, targetColor[index], 6, delta);
         });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
-        veil.shown = approach(veil.shown, veil.asked ? 1 : 0, fade.rate, delta);
 
         present(sequence.cycle);
         position(clock, delta);
@@ -668,7 +471,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
     // The sphere moves while its stage is in sight, and on a page without one until the dots
     // have scattered.
-    const moving = () => !reducedMotion && !document.hidden && (stage ? visible : scattered < 0.999);
+    const moving = () => !reducedMotion && !document.hidden && (stage.element ? visible : scattered < 0.999);
 
     const loop = (time) => {
         draw(time);
@@ -694,48 +497,31 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     const resize = () => {
-        if (stage) {
-            readVeil();
-        }
-
-        scale = Math.min(window.devicePixelRatio, 2);
-        canvas.width = Math.round(canvas.clientWidth * scale);
-        canvas.height = Math.round(canvas.clientHeight * scale);
+        stage.resize();
+        canvas.width = Math.round(canvas.clientWidth * stage.scale);
+        canvas.height = Math.round(canvas.clientHeight * stage.scale);
         update();
     };
 
-    // A pointer event's position in units from the corner of the stage.
-    const locate = (event) => {
-        const around = canvas.getBoundingClientRect();
-
-        return {
-            x: ((event.clientX - around.left) * scale - originX) / unit,
-            y: ((event.clientY - around.top) * scale - originY) / unit,
-        };
-    };
-
     const probe = (clientX, clientY) => {
-        const { x, y } = locate({ clientX, clientY });
+        const { x, y } = stage.locate({ clientX, clientY });
         let close = 0;
 
         for (let index = 0; index < dotCount && close < opening.dots; index += 1) {
             close += Math.hypot(dots.x[index] - x, dots.y[index] - y) < reach * 1.5 ? 1 : 0;
         }
 
-        return close < opening.dots ? 0 : (opening.share * 2 * reach * unit) / scale;
+        return close < opening.dots ? 0 : (opening.share * 2 * reach * stage.unit) / stage.scale;
     };
 
     // The pointer arrives where it is instead of sweeping in.
     const follow = (event) => {
-        const { x, y } = locate(event);
+        const { x, y } = stage.locate(event);
 
         pointer.targetX = x;
         pointer.targetY = y;
 
-        if (hold.down) {
-            hold.x = x;
-            hold.y = y;
-        }
+        presses.move({ x, y });
 
         if (pointer.targetStrength === 0) {
             pointer.x = pointer.targetX;
@@ -749,16 +535,6 @@ const initializeOrb = (canvas, reducedMotion) => {
         pointer.targetStrength = 0;
     };
 
-    // The plain sphere divides once more: the next bud that is inside parts from it. With both
-    // out, a press keeps them out for a while longer.
-    const shed = () => {
-        const inside = buds.find((part) => part.out < 0.05 && clock >= part.calledUntil);
-
-        for (const part of inside ? [inside] : buds) {
-            part.calledUntil = clock + split.leave + split.stay;
-        }
-    };
-
     const pressDown = (event) => {
         // A press on the dots breaks up what they show: a sequence moves on to its next figure,
         // which then stays its time, a single figure gives way to the sphere behind it and
@@ -769,35 +545,23 @@ const initializeOrb = (canvas, reducedMotion) => {
             } else if (shapes.length === 1) {
                 turnedUntil = clock < turnedUntil ? 0 : clock + sequence.dwell;
             } else {
-                shed();
+                buds.shed(clock);
             }
 
             present(sequence.rest);
         }
 
         if (event.pointerType === 'mouse') {
-            Object.assign(hold, locate(event), { down: true });
-            ring(hold.x, hold.y, 1);
+            presses.begin(stage.locate(event));
         }
     };
 
+    // The end of a press that was held: the buds settle, and a ring leaves its place.
     const pressUp = () => {
-        if (!hold.down) {
-            return;
+        if (presses.held()) {
+            buds.settle(clock);
+            presses.end();
         }
-
-        // A press that was held has drawn the buds in: none is called out any more, and they
-        // stay inside for a while.
-        if (gathered > 0.6) {
-            calmUntil = clock + split.calm;
-
-            for (const part of buds) {
-                part.calledUntil = 0;
-            }
-        }
-
-        hold.down = false;
-        ring(hold.x, hold.y, hold.charge * press.boost);
     };
 
     // While no element that names a figure is hovered or focused, the one marked as resting holds
@@ -837,32 +601,23 @@ const initializeOrb = (canvas, reducedMotion) => {
     // Takes the stage of the page that is now in place. The sphere travels there from where it
     // stands; on a page without a stage the dots scatter.
     const adopt = () => {
-        const from = stage ? { x: originX + home.x * unit, y: originY + home.y * unit, unit } : null;
+        const from = stage.element ? stage.onCanvas(home) : null;
 
-        stage = document.querySelector('[data-dot-orb-stage]');
-        fit = Boolean(stage?.hasAttribute('data-dot-orb-fit')) && !reducedMotion;
-        pinned = stage?.dataset.dotOrbStage === 'pinned';
-        targetScattered = stage ? 0 : 1;
-        veil.asked = false;
+        stage.take();
+        targetScattered = stage.element ? 0 : 1;
         visibilityObserver.disconnect();
         resizeObserver.disconnect();
         resizeObserver.observe(canvas);
 
-        if (stage) {
-            readVeil();
-            canvas.parentElement.toggleAttribute('data-pinned', pinned);
-            visibilityObserver.observe(stage);
-            resizeObserver.observe(stage);
-            way.left = 0;
-            measure();
+        if (stage.element) {
+            canvas.parentElement.toggleAttribute('data-pinned', stage.pinned);
+            visibilityObserver.observe(stage.element);
+            resizeObserver.observe(stage.element);
+            stage.measure();
             wander(clock);
 
             if (from && !reducedMotion) {
-                way.x = from.x - (originX + home.x * unit);
-                way.y = from.y - (originY + home.y * unit);
-                way.zoom = from.unit / size;
-                way.left = 1;
-                measure();
+                stage.comeFrom(from, home);
             }
 
             // The dots stand where they are on this stage before they are given a figure.
