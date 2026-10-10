@@ -19,8 +19,8 @@ check them again before relying on them.
   Content-Security-Policy without a violation, page changes included.
 - **Seen as stills from a headless browser:** every page in English or German at 1440 by 900,
   1024 by 768 and 375px width, the pages told in scenes also at 1280 by 720, 375 by 664 and
-  360 by 640; a bud leaving, a bud carried by a dragged press, morphs and page changes
-  frame by frame.
+  360 by 640; a bud leaving, the mark with its eyes, morphs and page changes frame by
+  frame.
 - **Not covered:** motion judged by eye, Firefox, Safari, a slow laptop, a real phone and
   touch. The JavaScript tests run in jsdom; no test loads a page in a real browser.
 
@@ -50,12 +50,13 @@ Built, and each a matter of one value or one rule:
   ahead along the pointer's way, sways with the scrolling of a page told in scenes and answers
   a return after twenty seconds with one ring. Each may be too much or too little.
 - **Division.** The sphere divides along the axis it turns around, into at most two buds; a
-  press parts one more, a held press draws them together, and a held press that is dragged
-  takes the bud along (`carry`). A bud leaves in one motion and slows down before the edge
-  of its stage (`bud.parted`, `bud.drifting`). A third bud would need a second axis.
-- **The eyes of the mark** look where the pointer is and blink (`dot-orb-eyes.js`): how far
-  they look and how often they blink are numbers there. Their place follows the drawing of
-  the mark; a test fails when the two differ.
+  press parts one more, and a held press draws them together. A bud leaves in one motion
+  and slows down before the edge of its stage (`bud.parted`, `bud.drifting`). A third bud
+  would need a second axis.
+- **The eyes of the mark** are two large dots in the holes of the figure
+  (`dot-orb-eyes.js`). They look where the pointer is and blink; how much of a hole a dot
+  fills and how often it blinks are numbers there. Their place follows the drawing of the
+  mark, and a test fails when the two differ.
 - **Morphs.** Each dot takes the nearest point of the next figure. Measured against the
   earlier fixed pairing: a third of the way, and at most 49 of 1200 dots change sides instead
   of about 500.

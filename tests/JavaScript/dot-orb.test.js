@@ -271,50 +271,6 @@ test('a press on the plain sphere splits it, and a held press draws it together 
     assert.ok(spread('y') < whole * 1.15);
 });
 
-test('a held press that is dragged takes a bud along, which finds its way back', (t) => {
-    const { dots, run } = setup(t);
-    const mouse = (type, clientX, clientY) => {
-        const event = new window.MouseEvent(type, { bubbles: true, clientX, clientY });
-
-        Object.defineProperty(event, 'pointerType', { value: 'mouse' });
-        window.dispatchEvent(event);
-    };
-    // The dots around a place far from the sphere, which stands at 408 by 450.
-    const around = (x, y) => dots.filter((dot) => Math.hypot(dot.x - x, dot.y - y) < 80).length;
-
-    run(100);
-    assert.equal(around(110, 140), 0);
-
-    mouse('pointerdown', 408, 450);
-    mouse('pointermove', 300, 330);
-    mouse('pointermove', 110, 140);
-    run(240);
-
-    // The bud holds 18% of the 1200 dots, and the sphere keeps the rest.
-    assert.ok(around(110, 140) > 190 && around(110, 140) < 240);
-
-    mouse('pointerup', 110, 140);
-    run(420);
-    assert.equal(around(110, 140), 0);
-});
-
-test('a press that stays in place takes no bud along', (t) => {
-    const { dots, run } = setup(t);
-    const mouse = (type, clientX, clientY) => {
-        const event = new window.MouseEvent(type, { bubbles: true, clientX, clientY });
-
-        Object.defineProperty(event, 'pointerType', { value: 'mouse' });
-        window.dispatchEvent(event);
-    };
-
-    run(100);
-    mouse('pointerdown', 408, 450);
-    mouse('pointermove', 412, 452);
-    run(240);
-
-    assert.equal(dots.filter((dot) => dot.x < 200).length, 0);
-});
-
 test('an element that names no known figure leaves the sphere whole', (t) => {
     const { run, hover, spread } = setup(t);
 

@@ -43,15 +43,12 @@ export const createDivision = ({ first, last }) => {
 
     // Where the dot at `count`, from 0 at the start of the count to 1 at its end, lies: how far
     // along the axis and how far from it, and the same on a sphere of radius 1, which says
-    // which way that part of the surface faces. `first` and `last` say how far the dot has
-    // left with that bud, from 0 inside the sphere to 1 once the bud has parted.
+    // which way that part of the surface faces.
     const place = (count, into) => {
         into.along = 0;
         into.around = 0;
         into.height = 0;
         into.ring = 0;
-        into.first = 0;
-        into.last = 0;
 
         for (const state of states) {
             if (state.share === 0) {
@@ -67,12 +64,10 @@ export const createDivision = ({ first, last }) => {
                 middle = state.firstMiddle;
                 radius = firstRadius;
                 through = count / first;
-                into.first += state.share;
             } else if (count > state.to) {
                 middle = state.lastMiddle;
                 radius = lastRadius;
                 through = (count - state.to) / last;
-                into.last += state.share;
             }
 
             const height = 1 - 2 * through;
@@ -92,15 +87,5 @@ export const createDivision = ({ first, last }) => {
         last: (1 - last) * (Math.sqrt(1 - last) + lastRadius) + lastRadius,
     };
 
-    // Where the middle of a bud lies along the axis once it is out: the first bud for 0, the
-    // last for 1.
-    const middleOf = (index) => {
-        const [alone, both] = index ? [states[2], states[3]] : [states[1], states[3]];
-        const middle = index ? 'lastMiddle' : 'firstMiddle';
-        const share = alone.share + both.share;
-
-        return share > 0 ? (alone.share * alone[middle] + both.share * both[middle]) / share : alone[middle];
-    };
-
-    return { arrange, place, middleOf, reach };
+    return { arrange, place, reach };
 };

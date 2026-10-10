@@ -7,19 +7,7 @@ const close = (actual, expected, tolerance = 1e-3) => assert.ok(
     Math.abs(actual - expected) < tolerance,
     `${actual} is not within ${tolerance} of ${expected}`,
 );
-const [left] = markEyes.middles;
-const { rim } = markEyes;
-// A point on the upper rim of the left eye, one beside it and one far from both eyes.
-const above = { x: left.x, y: left.y - rim.y };
-const beside = { x: left.x + rim.x, y: left.y };
-const far = { x: 0.3, y: -0.3 };
-const moved = (eyes, { x, y }) => {
-    const into = { x: 0, y: 0 };
-
-    eyes.move(x, y, into);
-
-    return into;
-};
+const { middles, rim } = markEyes;
 
 test('the eyes sit where the drawing of the mark leaves its holes', () => {
     const drawing = readFileSync(new URL('../../public/brand/mark.svg', import.meta.url), 'utf8');
@@ -30,47 +18,51 @@ test('the eyes sit where the drawing of the mark leaves its holes', () => {
     assert.equal(pills.length, 2);
 
     pills.forEach(([, x, y, radius, straight], index) => {
-        close((Number(x) + Number(radius)) / side - 0.5, markEyes.middles[index].x);
-        close((Number(y) + Number(straight) / 2) / side - 0.5, markEyes.middles[index].y);
+        close((Number(x) + Number(radius)) / side - 0.5, middles[index].x);
+        close((Number(y) + Number(straight) / 2) / side - 0.5, middles[index].y);
         close(Number(radius) / side, rim.x);
         close((Number(radius) + Number(straight) / 2) / side, rim.y);
     });
 });
 
-test('an eye follows the pointer and takes the dots at its rim along', () => {
+test('each eye is a large dot that looks towards the pointer without leaving its hole', () => {
     const eyes = createEyes();
+
+    // A pointer that has left the window: the dots rest in the middle of their holes.
+    eyes.watch(2, 2, 0, 0).forEach((eye, index) => {
+        close(eye.x, middles[index].x);
+        close(eye.y, middles[index].y);
+    });
 
     // A pointer far to the right and below, long before the first blink.
-    eyes.watch(2, 2, 1, 0);
+    eyes.watch(2, 2, 1, 0).forEach((eye, index) => {
+        assert.ok(eye.x > middles[index].x + rim.x * 0.15);
+        assert.ok(eye.y > middles[index].y + rim.y * 0.15);
+        assert.ok(eye.x + eye.width <= middles[index].x + rim.x);
+        assert.ok(eye.y + eye.height <= middles[index].y + rim.y);
+    });
 
-    assert.ok(moved(eyes, above).x > above.x + rim.x * 0.4);
-    assert.ok(moved(eyes, above).y > above.y + rim.y * 0.2);
-    assert.ok(moved(eyes, above).x < above.x + rim.x);
-    assert.deepEqual(moved(eyes, far), far);
-
-    // A pointer that has left the window lets the eyes rest.
-    eyes.watch(2, 2, 0, 0);
-    assert.deepEqual(moved(eyes, above), above);
+    // And one far to the left and above.
+    eyes.watch(-2, -2, 1, 0).forEach((eye, index) => {
+        assert.ok(eye.x - eye.width >= middles[index].x - rim.x);
+        assert.ok(eye.y - eye.height >= middles[index].y - rim.y);
+    });
 });
 
-test('a blink closes the eyes onto the line through their middle and opens them again', () => {
+test('a blink flattens the eyes and opens them again, without a jump from frame to frame', () => {
     const eyes = createEyes();
-    // The lowest the upper rim gets between two moments, in steps of a frame.
-    const lowest = (from, to) => {
-        let level = -Infinity;
+    const [open] = eyes.watch(0, 0, 0, 0).map((eye) => eye.height);
+    const heights = [];
 
-        for (let seconds = from; seconds < to; seconds += 1 / 60) {
-            eyes.watch(0, 0, 0, seconds);
-            level = Math.max(level, moved(eyes, above).y);
-        }
+    for (let frame = 0; frame < 60 * 5; frame += 1) {
+        heights.push(eyes.watch(0, 0, 0, frame / 60)[0].height);
+    }
 
-        return level;
-    };
+    const steps = heights.slice(1).map((height, frame) => Math.abs(height - heights[frame]));
 
-    close(lowest(0, 2.5), above.y);
-    close(lowest(2.5, 3), left.y, 0.01);
-    assert.deepEqual(moved(eyes, beside), beside);
-
-    eyes.watch(0, 0, 0, 3.2);
-    close(moved(eyes, above).y, above.y);
+    close(heights[60 * 2], open);
+    assert.ok(Math.min(...heights) < open * 0.1);
+    close(heights.at(-1), open);
+    // No frame closes or opens the eye by more than a fifth of its height.
+    assert.ok(Math.max(...steps) < open * 0.2);
 });

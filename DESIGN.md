@@ -113,9 +113,6 @@ the stage is the whole section.
   - *A held press* draws everything together: it gathers the dots around the pointer, calls
     every bud back into the sphere within a second and keeps them there for 6 seconds, and
     lets go with a stronger ring.
-  - *A held press that is dragged* takes a bud along: the bud that press has parted leaves
-    the axis and follows the pointer as a sphere of its own, on a neck until it has parted.
-    When the press ends, the bud returns to its place and joins the sphere again.
   - *A tap* on the dots moves on like a press. Nothing else follows a finger.
 - **What the sphere notices** of the visitor without being asked, and only a little
   (`resources/js/dot-orb-attention.js`):
@@ -137,7 +134,6 @@ the stage is the whole section.
   the other.
 - **Nothing flies.** A dot never changes sides: it moves only along the axis and towards or
   away from it, so no dot crosses another's way and the bodies never reach around each other.
-  Only a bud that is carried leaves the axis, as a whole.
   A bud stays on the stage: where there is no room to drift it stays close, and where there
   is none to part it stays on its neck.
 - **Color.** The dots take the page accent, lighter towards the viewer in eight steps and fading
@@ -148,9 +144,10 @@ the stage is the whole section.
   dots on its front and its back, and it sways from side to side and leans with the pointer. Each
   destination in the header has its own: a window for projects, a head and shoulders for about, an
   envelope for contact (`resources/js/dot-orb-figures.js`, drawn with canvas paths). The name on
-  the home page gives the mark itself, sampled from its image with the eyes left open. Those
-  eyes are alive (`resources/js/dot-orb-eyes.js`): they look where the pointer is, by moving
-  the dots around each of them a little, and every few seconds they blink.
+  the home page gives the mark itself, sampled from its image with the eyes left open. In
+  each of those two holes stands one large dot of the eye's own shape
+  (`resources/js/dot-orb-eyes.js`), the only dots of another size: the two look where the
+  pointer is, as far as their holes leave them room, and every few seconds they blink.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
   other, each for 8 seconds; a press on the dots moves on sooner. The sequence starts

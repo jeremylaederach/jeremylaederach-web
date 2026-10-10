@@ -70,12 +70,6 @@ const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 // `calm` seconds after the press none sets out.
 const split = { leave: 2.2, stay: 14, back: 3, gather: 1, calm: 6 };
 
-// A held press that is dragged takes a bud along. Once the pointer has moved `start` units from
-// where the press began on the plain sphere, the bud that press has called leaves its place on
-// the axis, at `take` per second, and follows the pointer at `follow` per second. When the
-// press ends it stays out for `linger` seconds and takes `home` seconds back to its place,
-// from where it joins the sphere as any bud does.
-const carry = { start: 0.05, take: 5, follow: 9, linger: 0.8, home: 1.4 };
 
 // An element can name several figures, separated by spaces. The sphere then shows one after the
 // other, each for `dwell` seconds. A press on the dots always breaks up what they show: a
@@ -184,18 +178,10 @@ const initializeOrb = (canvas, reducedMotion) => {
     let scrolling = 0;
     let swayed = 0;
     const ripples = [];
-    // A held press: where it is and where it began, how far it has charged, and the bud it
-    // called from the plain sphere.
-    const hold = { x: 0, y: 0, fromX: 0, fromY: 0, down: false, charge: 0, bud: null };
+    const hold = { x: 0, y: 0, down: false, charge: 0 };
     // How far a held press has drawn the buds in, and until when they stay there.
     let gathered = 0;
     let calmUntil = 0;
-    // The bud a dragged press takes along, and whether that press still lasts: where its
-    // middle is, how far it has left its place on the axis and how far it had when the press
-    // ended, and where its middle lies on the axis, as the view shows it.
-    const carried = { part: null, held: false, x: 0, y: 0, amount: 0, left: 0, endedAt: 0, placeX: 0, placeY: 0 };
-    // How far the dot that is being placed belongs to that bud.
-    let lifted = 0;
     const home = { x: 0, y: 0 };
     // How the sphere stands in this frame: how it and a figure are turned, its time, and
     // whether a figure has formed, which hides the sphere.
@@ -249,11 +235,9 @@ const initializeOrb = (canvas, reducedMotion) => {
     // The points on each side of a figure: the even ones lie on its front, the odd ones on its
     // back.
     const sides = new WeakMap();
-    // The eyes of the mark, whether the mark is the figure in this frame, and where they move
-    // the point that is being placed.
+    // The eyes of the mark, and the two large dots they are while the mark is the figure.
     const eyes = createEyes();
-    const looked = { x: 0, y: 0 };
-    let watching = false;
+    let pupils = null;
 
     // Turns a point of the lattice's frame into view space.
     const turn = (point, rotation) => {
@@ -320,10 +304,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         const span = sphereRadius * Math.cos(lean) * bud.swell;
         const rooms = [(height / unit - home.y - bud.margin) / span, (home.y - bud.margin) / span];
 
-        // A press that is held in place draws the buds in; one that drags a bud along does not.
-        const gathering = (hold.down && !carried.held) || seconds < calmUntil;
-
-        gathered = clamp(gathered + (gathering ? delta / split.gather : -delta / split.back), 0, 1);
+        gathered = clamp(gathered + (hold.down || seconds < calmUntil ? delta / split.gather : -delta / split.back), 0, 1);
 
         for (const part of buds) {
             const wave = Math.sin((seconds / part.period) * Math.PI * 2 + part.phase);
@@ -335,8 +316,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         // The way a bud may go is worked out first, from where its far end would be with the
         // bud all the way out: it may drift less far, and part less far if that is not enough.
         // The bud then eases along that way, so it slows down before the edge of the stage
-        // instead of stopping at it. Twice, because each bud moves the other a little. A bud
-        // that is carried has left the axis and parts wherever the sphere stands.
+        // instead of stopping at it. Twice, because each bud moves the other a little.
         for (let pass = 0; pass < 2; pass += 1) {
             buds.forEach((part, index) => {
                 const other = buds[1 - index];
@@ -349,8 +329,7 @@ const initializeOrb = (canvas, reducedMotion) => {
                 const beyond = Math.abs(shaped.along) - rooms[index];
                 const closer = clamp(beyond / (1 - part.share), 0, bud.drift);
                 const reach = index ? division.reach.last : division.reach.first;
-                const fits = clamp(1 - Math.max(beyond - closer * (1 - part.share), 0) / (reach - 1), 0, 1);
-                const parts = part === carried.part ? mix(fits, 1, carried.amount) : fits;
+                const parts = clamp(1 - Math.max(beyond - closer * (1 - part.share), 0) / (reach - 1), 0, 1);
 
                 part.parted = parts * smooth(clamp(part.out / bud.parted, 0, 1));
                 part.gap = (bud.drift - closer) * smooth(clamp((part.out - bud.drifting) / (1 - bud.drifting), 0, 1));
@@ -360,60 +339,9 @@ const initializeOrb = (canvas, reducedMotion) => {
         division.arrange(buds[0].parted, buds[0].gap, buds[1].parted, buds[1].gap);
     };
 
-    // Where the middle of a bud that is out stands, in units. It swells with the end of the
-    // sphere its dots come from.
-    const middleOf = (part, into) => {
-        const index = buds.indexOf(part);
-
-        spot.x = 0;
-        spot.y = index ? -1 : 1;
-        spot.z = 0;
-        turn(spot, scene.rotation);
-
-        const bulge = swell(view.x, view.y, view.z, scene.seconds);
-
-        spot.y = division.middleOf(index);
-        turn(spot, scene.rotation);
-        into.x = home.x + view.x * bulge * sphereRadius;
-        into.y = home.y + view.y * bulge * sphereRadius;
-    };
-
-    // Moves the bud a dragged press has taken along: towards the pointer while the press
-    // lasts, and back to its place on the axis when it has ended. The bud stays called for as
-    // long as it is held.
-    const tow = (seconds, delta) => {
-        const { part } = carried;
-
-        if (!part) {
-            return;
-        }
-
-        if (carried.held) {
-            part.calledUntil = seconds + split.leave + carry.linger;
-            carried.x = approach(carried.x, hold.x, carry.follow, delta);
-            carried.y = approach(carried.y, hold.y, carry.follow, delta);
-            carried.amount = approach(carried.amount, 1, carry.take, delta);
-        } else {
-            carried.amount = carried.left * smooth(clamp(1 - (seconds - carried.endedAt) / carry.home, 0, 1));
-        }
-
-        spot.x = 0;
-        spot.y = division.middleOf(buds.indexOf(part));
-        spot.z = 0;
-        turn(spot, scene.rotation);
-        carried.placeX = view.x;
-        carried.placeY = view.y;
-
-        if (!carried.held && carried.amount === 0) {
-            carried.part = null;
-        }
-    };
-
     // The dot on the sphere, or on the bud it belongs to: turned with the sphere and swelling
     // with it. The swell is that of the whole sphere at the dot's own place on it, so a neck
-    // between two bodies stays closed. A bud that is carried takes its dots with it, and those
-    // of its neck as far as they belong to it: they stand around its middle as they did on the
-    // axis, so it stays a sphere wherever it is taken.
+    // between two bodies stays closed.
     const onSphere = (index) => {
         const { rotation, seconds } = scene;
 
@@ -434,15 +362,6 @@ const initializeOrb = (canvas, reducedMotion) => {
         turn(spot, rotation);
         dot.x = home.x + view.x * bulge * sphereRadius;
         dot.y = home.y + view.y * bulge * sphereRadius;
-
-        if (carried.part) {
-            lifted = carried.part === buds[0] ? shaped.first : shaped.last;
-
-            const taken = lifted * carried.amount;
-
-            dot.x = mix(dot.x, carried.x + (view.x - carried.placeX) * bulge * sphereRadius, taken);
-            dot.y = mix(dot.y, carried.y + (view.y - carried.placeY) * bulge * sphereRadius, taken);
-        }
     };
 
     // Moves the dot towards its point of the figure, as far as the figure has formed. Within a
@@ -464,18 +383,10 @@ const initializeOrb = (canvas, reducedMotion) => {
             // sphere and a bud beside it turn into it in the same way.
             const amount = smooth(clamp(shape * 1.35 - (dots.point[index] / dotCount) * 0.35, 0, 1));
             const thickness = dots.figureHalf[index] * (dots.point[index] % 2 === 0 ? 1 : -1);
-
-            looked.x = dots.figureX[index];
-            looked.y = dots.figureY[index];
-
-            if (watching) {
-                eyes.move(looked.x, looked.y, looked);
-            }
-
-            const turnedX = looked.x * sway.cosTurn + thickness * sway.sinTurn;
-            const depth = thickness * sway.cosTurn - looked.x * sway.sinTurn;
-            const turnedY = looked.y * sway.cosLean - depth * sway.sinLean;
-            const turnedZ = looked.y * sway.sinLean + depth * sway.cosLean;
+            const turnedX = dots.figureX[index] * sway.cosTurn + thickness * sway.sinTurn;
+            const depth = thickness * sway.cosTurn - dots.figureX[index] * sway.sinTurn;
+            const turnedY = dots.figureY[index] * sway.cosLean - depth * sway.sinLean;
+            const turnedZ = dots.figureY[index] * sway.sinLean + depth * sway.cosLean;
 
             dot.x = mix(dot.x, home.x + turnedX * figure.size, amount);
             dot.y = mix(dot.y, home.y + turnedY * figure.size, amount);
@@ -483,14 +394,13 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // What the visitor does to the dot: it gives way to the pointer, unless it belongs to the
-    // bud the pointer carries, a held press pulls it in, the rings of presses push it outwards,
-    // and a page without a stage scatters it.
+    // What the visitor does to the dot: it gives way to the pointer, a held press pulls it in,
+    // the rings of presses push it outwards, and a page without a stage scatters it.
     const disturb = () => {
         const distance = Math.hypot(dot.x - pointer.x, dot.y - pointer.y);
 
         if (distance < reach && pointer.strength > 0.01) {
-            const push = ((reach - distance) / reach) ** 2 * 0.05 * pointer.strength * (1 - lifted);
+            const push = ((reach - distance) / reach) ** 2 * 0.05 * pointer.strength;
 
             dot.x += ((dot.x - pointer.x) / (distance || 1)) * push;
             dot.y += ((dot.y - pointer.y) / (distance || 1)) * push;
@@ -539,21 +449,16 @@ const initializeOrb = (canvas, reducedMotion) => {
             Math.sin(seconds * 0.5) * figure.sway + leanX * 0.2 * pointer.strength,
             0.1 + leanY * 0.12 * pointer.strength,
         );
-        tow(seconds, delta);
     };
 
     const position = (seconds, delta) => {
         compose(seconds, shape > 0.999, delta);
-        watching = shape > 0.001 && figurePoints === figures.get('mark');
-
-        // The mark looks at the pointer, from where its eyes are in the figure.
-        if (watching) {
-            eyes.watch((pointer.x - home.x) / figure.size, (pointer.y - home.y) / figure.size, pointer.strength, seconds);
-        }
+        // While the mark is the figure, its eyes look at the pointer from where they are in it.
+        pupils = shape > 0.001 && figurePoints === figures.get('mark')
+            ? eyes.watch((pointer.x - home.x) / figure.size, (pointer.y - home.y) / figure.size, pointer.strength, seconds)
+            : null;
 
         for (let index = 0; index < dotCount; index += 1) {
-            lifted = 0;
-
             if (scene.formed) {
                 Object.assign(dot, home, { z: 0 });
             } else {
@@ -577,6 +482,27 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
+    // The eyes of the mark: one large dot in each of its two holes, in the lightest tint, in
+    // the middle of the figure's depth and turned with it. They come with the last dots of the
+    // figure and go with them.
+    const paintEyes = () => {
+        const { sway } = scene;
+
+        context.fillStyle = `rgb(${color.map((channel) => Math.round(mix(channel, 255, tint.lightest))).join(' ')})`;
+        context.globalAlpha = smooth(clamp(shape * 1.35 - 0.35, 0, 1)) * (1 - scattered);
+
+        for (const eye of pupils) {
+            const depth = -eye.x * sway.sinTurn;
+            const x = (home.x + eye.x * sway.cosTurn * figure.size) * unit;
+            const y = (home.y + (eye.y * sway.cosLean - depth * sway.sinLean) * figure.size) * unit;
+            const halfWidth = eye.width * sway.cosTurn * figure.size * unit;
+            const halfHeight = eye.height * sway.cosLean * figure.size * unit;
+
+            context.beginPath();
+            context.roundRect(x - halfWidth, y - halfHeight, halfWidth * 2, halfHeight * 2, Math.min(halfWidth, halfHeight));
+            context.fill();
+        }
+    };
     // From the far dots to the near ones, one tint level and one fill color per pass.
     // Everything is drawn from the corner of the stage.
     const paint = () => {
@@ -610,6 +536,10 @@ const initializeOrb = (canvas, reducedMotion) => {
                 );
                 context.fill();
             }
+        }
+
+        if (pupils) {
+            paintEyes();
         }
     };
 
@@ -753,10 +683,7 @@ const initializeOrb = (canvas, reducedMotion) => {
             }
         }
 
-        // A press charges while it is held in place; one that carries a bud lets the dots be.
-        const charging = hold.down && !carried.held;
-
-        hold.charge = approach(hold.charge, charging ? 1 : 0, charging ? press.chargeRate : press.releaseRate, delta);
+        hold.charge = approach(hold.charge, hold.down ? 1 : 0, hold.down ? press.chargeRate : press.releaseRate, delta);
         pointer.x = approach(pointer.x, pointer.targetX, 5, delta);
         pointer.y = approach(pointer.y, pointer.targetY, 5, delta);
         pointer.strength = approach(pointer.strength, pointer.targetStrength, 3.6, delta);
@@ -841,15 +768,6 @@ const initializeOrb = (canvas, reducedMotion) => {
         if (hold.down) {
             hold.x = x;
             hold.y = y;
-
-            // A press that moves away from where it began takes the bud it called along,
-            // from where that bud is.
-            if (hold.bud && !carried.part && Math.hypot(x - hold.fromX, y - hold.fromY) > carry.start) {
-                carried.part = hold.bud;
-                carried.held = true;
-                carried.amount = 0;
-                middleOf(hold.bud, carried);
-            }
         }
 
         if (pointer.targetStrength === 0) {
@@ -865,28 +783,16 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     // The plain sphere divides once more: the next bud that is inside parts from it. With both
-    // out, a press keeps them out for a while longer. Answers the bud the press has called:
-    // the one that parts, or the one nearest to the press.
-    const shed = ({ x, y }) => {
+    // out, a press keeps them out for a while longer.
+    const shed = () => {
         const inside = buds.find((part) => part.out < 0.05 && clock >= part.calledUntil);
 
         for (const part of inside ? [inside] : buds) {
             part.calledUntil = clock + split.leave + split.stay;
         }
-
-        const away = buds.map((part) => {
-            middleOf(part, dot);
-
-            return Math.hypot(dot.x - x, dot.y - y);
-        });
-
-        return inside ?? buds[away[0] <= away[1] ? 0 : 1];
     };
 
     const pressDown = (event) => {
-        const place = locate(event);
-        let called = null;
-
         // A press on the dots breaks up what they show: a sequence moves on to its next figure,
         // which then stays its time, a single figure gives way to the sphere behind it and
         // comes back with the next press, and the plain sphere splits.
@@ -896,14 +802,14 @@ const initializeOrb = (canvas, reducedMotion) => {
             } else if (shapes.length === 1) {
                 turnedUntil = clock < turnedUntil ? 0 : clock + sequence.dwell;
             } else {
-                called = shed(place);
+                shed();
             }
 
             present(sequence.rest);
         }
 
         if (event.pointerType === 'mouse') {
-            Object.assign(hold, place, { fromX: place.x, fromY: place.y, down: true, bud: called });
+            Object.assign(hold, locate(event), { down: true });
             ring(hold.x, hold.y, 1);
         }
     };
@@ -911,14 +817,6 @@ const initializeOrb = (canvas, reducedMotion) => {
     const pressUp = () => {
         if (!hold.down) {
             return;
-        }
-
-        // A bud that was carried stays out a moment and then finds its way back.
-        if (carried.held) {
-            carried.held = false;
-            carried.part.calledUntil = clock + carry.linger;
-            carried.left = carried.amount;
-            carried.endedAt = clock;
         }
 
         // A press that was held has drawn the buds in: none is called out any more, and they
