@@ -104,9 +104,8 @@ the stage is the whole section.
     leaving gives them back (see "Figures").
   - *A press on the dots* breaks up what they show. Where several figures follow each other,
     the next one comes. A single figure gives way to the plain sphere behind it, for 8 seconds
-    or until the next press. The plain sphere splits: every press sheds one more bud, which
-    goes to a place of its own beside the sphere and stays for 14 seconds, so three presses
-    leave four smaller bodies.
+    or until the next press. The plain sphere divides: with every press one more bud
+    parts from it and stays out for 14 seconds, so two presses leave three bodies in a row.
   - *A press anywhere:* a ring travels outwards through the dots from where it happened;
     several rings travel at once.
   - *A held press* draws everything together: it gathers the dots around the pointer, calls
@@ -122,20 +121,17 @@ the stage is the whole section.
     into the next figure.
   - *That somebody is back:* after twenty seconds without a pointer, a key or a scroll, the
     first sign of the visitor is answered with one soft ring from the middle of the sphere.
-- **Buds.** Like a lava lamp it sheds buds: a quarter of the dots is the core and always stays;
-  three buds each take another quarter on their own slow cycle (41, 53 and 67 seconds), form a
-  smaller sphere of their own size beside the main one, rise and sink over the height of the
-  stage and return. The main sphere shrinks by what has left. A bud starts in the middle of
-  the sphere and returns there, and where two blobs are close their surfaces join
-  (`resources/js/dot-orb-lamp.js`): the sphere bulges, the bud grows out on a neck that thins
-  and parts, and on its way back the two touch, grow a neck and become one body again.
-- **Which dots a bud takes.** The ones beside it (`resources/js/dot-orb-buds.js`): the quarter
-  of the dots nearest to where it leaves, the tip of that cap first. The dots that stay close
-  over the place, each moving a little towards it, so the sphere is evenly covered again while
-  the bud is out. On its way back the bud lands where it reaches the sphere at that moment,
-  and the dots there make room. No dot crosses the sphere. A bud can turn back before it is
-  all the way out and set out again before it is back; its dots then start from where they
-  are.
+- **Buds.** Like a blob in a lava lamp the sphere divides (`resources/js/dot-orb-division.js`):
+  it stretches along the axis it turns around, a neck forms and thins, and a bud parts from
+  it, drifts away and comes back the same way. One bud is the dots at the lower end of that
+  axis, 18% of them, and sinks; the other is the 12% at the upper end and rises; each has its
+  own slow cycle (41 and 53 seconds). Every body is a sphere of its own, as large as its dots
+  need to lie as close as before, and what leaves on one side moves the sphere a little to
+  the other.
+- **Nothing flies.** A dot never changes sides: it moves only along the axis and towards or
+  away from it, so no dot crosses another's way and the bodies never reach around each other.
+  A bud stays on the stage: where there is no room to drift it stays close, and where there
+  is none to part it stays on its neck.
 - **Color.** The dots take the page accent, lighter towards the viewer in eight steps and fading
   with depth. There is no glow, so the far side stays readable.
 - **Figures.** Hovering or focusing an element that names a figure (`data-dot-orb-figure`) morphs

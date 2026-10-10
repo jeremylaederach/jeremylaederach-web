@@ -7,7 +7,7 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 ## Highlights
 
 - English and German routes with matching content
-- A generative sphere of 1200 dots on a 2D canvas: it sheds buds like a lava lamp, flows from figure to figure and answers the pointer
+- A generative sphere of 1200 dots on a 2D canvas: it divides and joins again like a blob in a lava lamp, flows from figure to figure and answers the pointer
 - Custom client-side navigation: the page fades, and the sphere stays and travels to its place on the next page
 - An about page and case studies told in scenes: one screen stays in place, and scrolling changes its statement and the figure together
 - Accessible keyboard navigation, reduced-motion support and responsive layouts
@@ -64,7 +64,7 @@ DESIGN.md                What the interface does: craft standard, identity, the 
 docs/handoff.md          Current state, open decisions and audit findings
 ```
 
-The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), which dots a bud takes and how the surfaces of the blobs join (`buds`, `lamp`), what the sphere notices of the visitor (`attention`), and the shared arithmetic (`math`).
+The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), how the sphere divides into a body and its buds (`division`), what the sphere notices of the visitor (`attention`), and the shared arithmetic (`math`).
 
 The about page and the case studies are told in scenes: one Blade component (`scene-stage`), one stylesheet and one small controller that shows the scene whose step crosses the middle of the window. What the sphere shows for each scene is listed in `config/portfolio.php`. The site shows no screenshots; the sphere draws rough pictures instead.
 

@@ -1,7 +1,6 @@
 import { createAttention } from './dot-orb-attention.js';
-import { createDivision } from './dot-orb-buds.js';
+import { createDivision } from './dot-orb-division.js';
 import { drawnFigures } from './dot-orb-figures.js';
-import { settle } from './dot-orb-lamp.js';
 import { approach, clamp, createLattice, mix, smooth } from './dot-orb-math.js';
 import { pairInStrips } from './dot-orb-pairing.js';
 import { sampleFigure } from './dot-orb-sampling.js';
@@ -31,25 +30,23 @@ const press = { reach: 0.5, pull: 0.24, chargeRate: 1.5, releaseRate: 7, boost: 
 // Nearer dots are a lighter tint of the accent, in steps small enough to pass for a gradient.
 const tint = { levels: 8, lightest: 0.42 };
 
-// A bud is a smaller sphere that leaves the main one for a while, like a blob in a lava lamp: it
-// grows out of the sphere, drifts beside it, rises and sinks over the height of the stage and
-// melts back into it (see dot-orb-lamp.js for how their surfaces join). A quarter of the dots is
-// the core and never leaves; every bud takes another quarter, the dots beside it at that moment
-// (see dot-orb-buds.js), and turns `turn` further than the sphere. The buds have their own size,
-// their own side and their own cycles, in seconds, and start inside the sphere. A bud is on its
-// way out or back for `transit` of its period. A bud that a press has called out goes to a
-// place of its own beside the sphere (`call`, from the sphere's middle), far enough to stand
-// apart from it. The first entry stands for the core.
+// Like a blob in a lava lamp the sphere divides: it stretches along the axis it turns around, a
+// neck forms and thins, and a bud parts from it, drifts away and comes back (see
+// dot-orb-division.js). The first bud is the dots at one end of that axis and sinks, the last
+// those at the other end and rises. Each has its share of all the dots and its own slow cycle,
+// in seconds, and starts inside the sphere. A bud divides during the first `parting` of its way
+// out and then drifts, up to `drift` radii of the sphere. It stays on the stage: `margin` is the
+// room, in units, that stays free at the stage's edges, and `swell` how much further the
+// sphere's waves may carry a bud. A bud that has no room to drift stays close, and one that has
+// no room to part stays on its neck.
 const bud = {
-    margin: 0.2,
-    travel: 0.3,
-    turn: 2.1,
-    transit: 0.12,
-    groups: [
-        null,
-        { radius: 0.15, offset: 0.46, period: 41, phase: 5.42, rise: 29, call: [0.35, -0.27] },
-        { radius: 0.11, offset: -0.4, period: 53, phase: 3.9, rise: 37, call: [-0.15, -0.41] },
-        { radius: 0.13, offset: 0.12, period: 67, phase: 2.6, rise: 23, call: [0.35, 0.27] },
+    margin: 0.03,
+    swell: 1.12,
+    parting: 0.55,
+    drift: 0.6,
+    parts: [
+        { share: 0.18, period: 41, phase: 5.42 },
+        { share: 0.12, period: 53, phase: 3.9 },
     ],
 };
 
@@ -64,7 +61,7 @@ const bud = {
 // figure: the dots flow into the shape instead of crossing it.
 const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 
-// A press on the plain sphere splits it: it sheds one more bud, which takes `leave` seconds to
+// A press on the plain sphere splits it: one more bud parts, which takes `leave` seconds to
 // set out and stays for `stay` seconds before it takes `back` seconds to return. A held press
 // draws everything together again: within `gather` seconds every bud is back inside, and for
 // `calm` seconds after the press none sets out.
@@ -137,25 +134,9 @@ const createRotation = (turn, lean) => ({
     cosLean: Math.cos(lean),
 });
 
-const createBuds = () => bud.groups.map((group) => ({
-    group,
-    radius: group?.radius ?? 0,
-    out: 0,
-    rising: false,
-    // How far a press has called the bud out, and until when it stays called.
-    called: 0,
-    calledUntil: 0,
-    x: 0,
-    y: 0,
-    axis: { x: 0, y: 0, z: 0 },
-}));
-
-// The places on a bud, in the frame of the sphere's lattice: a lattice of its own, turned on.
-const createSeats = (count, turn) => createLattice(count).map(({ x, y, z }) => ({
-    x: x * Math.cos(turn) + z * Math.sin(turn),
-    y,
-    z: z * Math.cos(turn) - x * Math.sin(turn),
-}));
+// A bud as it is right now: how far out its cycle and the presses have it, how far a press has
+// called it and until when, how far it has divided from the sphere and how far it has drifted.
+const createBuds = () => bud.parts.map((part) => ({ ...part, out: 0, called: 0, calledUntil: 0, parted: 0, gap: 0 }));
 
 const initializeOrb = (canvas, reducedMotion) => {
     const context = canvas.getContext('2d');
@@ -164,16 +145,17 @@ const initializeOrb = (canvas, reducedMotion) => {
     const color = accent() ?? [...white];
     const buds = createBuds();
     const sphere = createLattice(dotCount);
-    const leaving = buds.filter((part) => part.group);
-    const seats = leaving.map((_, index) => createSeats(dotCount / buds.length, (index + 1) * bud.turn));
-    const division = createDivision(sphere, seats);
+    const division = createDivision({ first: buds[0].share, last: buds[1].share });
     const figures = new Map();
     const dots = {
         x: new Float32Array(dotCount),
         y: new Float32Array(dotCount),
         z: new Float32Array(dotCount),
-        scale: new Float32Array(dotCount),
         level: new Uint8Array(dotCount),
+        // Where each dot lies around the sphere's axis, and how far along it, from 0 to 1.
+        cos: Float32Array.from(sphere, ({ x, z }) => x / (Math.hypot(x, z) || 1)),
+        sin: Float32Array.from(sphere, ({ x, z }) => z / (Math.hypot(x, z) || 1)),
+        count: Float32Array.from(sphere, ({ y }) => (1 - y) / 2),
         figureX: new Float32Array(dotCount),
         figureY: new Float32Array(dotCount),
         figureHalf: new Float32Array(dotCount),
@@ -195,17 +177,14 @@ const initializeOrb = (canvas, reducedMotion) => {
     let gathered = 0;
     let calmUntil = 0;
     const home = { x: 0, y: 0 };
-    // The sphere itself and the blobs whose surfaces join right now.
-    const body = { x: 0, y: 0, radius: sphereRadius };
-    const blobs = [];
-    // How the sphere stands in this frame: how it and a figure are turned, its radius without
-    // the buds that are out, its time, and whether a figure has formed, which hides the sphere.
-    const scene = { rotation: null, sway: null, radius: sphereRadius, seconds: 0, formed: false };
+    // How the sphere stands in this frame: how it and a figure are turned, its time, and
+    // whether a figure has formed, which hides the sphere.
+    const scene = { rotation: null, sway: null, seconds: 0, formed: false };
     // The dot that is being placed, and what its place is worked out from.
-    const dot = { x: 0, y: 0, z: 0, size: 1 };
-    const view = { x: 0, y: 0, z: 0, plainX: 0, plainY: 0 };
-    const joint = { x: 0, y: 0, z: 0 };
+    const dot = { x: 0, y: 0, z: 0 };
+    const view = { x: 0, y: 0, z: 0 };
     const spot = { x: 0, y: 0, z: 0 };
+    const shaped = { along: 0, around: 0, height: 0, ring: 0 };
     // The canvas lies over the first screen of every page and stays through a page change. A
     // page marks where the sphere stands with a stage (`data-dot-orb-stage`). A stage marked
     // `data-dot-orb-fit` is a square: the sphere stands still in its middle and a figure fills
@@ -251,20 +230,13 @@ const initializeOrb = (canvas, reducedMotion) => {
     // back.
     const sides = new WeakMap();
 
-    // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii,
-    // and once more as they are without the swell.
-    const place = (point, rotation, seconds) => {
-        const x = point.x * rotation.cosTurn + point.z * rotation.sinTurn;
+    // Turns a point of the lattice's frame into view space.
+    const turn = (point, rotation) => {
         const depth = point.z * rotation.cosTurn - point.x * rotation.sinTurn;
-        const y = point.y * rotation.cosLean - depth * rotation.sinLean;
-        const z = point.y * rotation.sinLean + depth * rotation.cosLean;
-        const bulge = swell(x, y, z, seconds);
 
-        view.x = x * bulge;
-        view.y = y * bulge;
-        view.z = z;
-        view.plainX = x;
-        view.plainY = y;
+        view.x = point.x * rotation.cosTurn + point.z * rotation.sinTurn;
+        view.y = point.y * rotation.cosLean - depth * rotation.sinLean;
+        view.z = point.y * rotation.sinLean + depth * rotation.cosLean;
     };
 
     // Where the stage lies on the canvas right now. Both are read in every frame: a stage moves
@@ -314,86 +286,69 @@ const initializeOrb = (canvas, reducedMotion) => {
         home.y = (height * (fit ? 0.5 : stand.level + stand.wander * Math.sin(seconds / 17))) / unit + swayed;
     };
 
-    // Where each bud is right now, how far out of the sphere, and its axis: the way from the
-    // middle of the sphere to where the bud is heading, in the frame of the turning lattice as
-    // it will stand when the bud is half on its way, because the dots it takes turn on with
-    // the sphere while it leaves or lands. A bud is out when its own cycle or a press says so,
-    // unless a held press holds it in.
-    const arrange = (seconds, turn, lean, delta) => {
+    // How far each bud is out right now: as far as its own cycle or a press says, unless a held
+    // press holds it in. It divides from the sphere first and then drifts, as far as the stage
+    // has room on its side: the first bud below the sphere, the last above it.
+    const arrange = (seconds, lean, delta) => {
+        // The room on each side of the sphere's middle, in radii as the screen shows them along
+        // the axis.
+        const span = sphereRadius * Math.cos(lean) * bud.swell;
+        const rooms = [(height / unit - home.y - bud.margin) / span, (home.y - bud.margin) / span];
+
         gathered = clamp(gathered + (hold.down || seconds < calmUntil ? delta / split.gather : -delta / split.back), 0, 1);
 
-        for (const part of leaving) {
-            const { offset, period, phase, rise, call } = part.group;
-            const rotation = createRotation(turn + ((period * bud.transit) / 2 / turnSeconds) * Math.PI * 2, lean);
-            const wave = Math.sin((seconds / period) * Math.PI * 2 + phase);
-            const lift = Math.sin((seconds / rise) * Math.PI * 2 + phase) * bud.travel;
+        for (const part of buds) {
+            const wave = Math.sin((seconds / part.period) * Math.PI * 2 + part.phase);
 
             part.called = clamp(part.called + (seconds < part.calledUntil ? delta / split.leave : -delta / split.back), 0, 1);
-
-            // Where the bud is heading: along its own way, or to the place a press calls it to.
-            const towards = smooth(part.called);
-            const x = clamp(home.x + mix(offset, call[0], towards), bud.margin, width / unit - bud.margin) - home.x;
-            const y = clamp(mix((height / unit) * (0.5 + lift), home.y + call[1], towards), bud.margin, height / unit - bud.margin) - home.y;
-            const length = Math.hypot(x, y) || 1;
-            const depth = (y / length) * rotation.sinLean;
-
-            // A bud leaves from the middle of the sphere and returns into it.
-            const out = Math.max(smooth(clamp((wave - 0.25) / 0.6, 0, 1)), smooth(part.called)) * (1 - smooth(gathered));
-
-            part.rising = out === part.out ? part.rising : out > part.out;
-            part.out = out;
-            part.x = home.x + x * part.out;
-            part.y = home.y + y * part.out;
-            part.axis.x = (x / length) * rotation.cosTurn + depth * rotation.sinTurn;
-            part.axis.y = (y / length) * rotation.cosLean;
-            part.axis.z = (x / length) * rotation.sinTurn - depth * rotation.cosTurn;
+            part.out = Math.max(smooth(clamp((wave - 0.25) / 0.6, 0, 1)), smooth(part.called)) * (1 - smooth(gathered));
+            part.parted = smooth(clamp(part.out / bud.parting, 0, 1));
+            part.gap = bud.drift * smooth(clamp((part.out - bud.parting) / (1 - bud.parting), 0, 1));
         }
+
+        // A bud that reaches beyond its room gives way: it drifts less far first, and parts
+        // less far if that is not enough. Twice, because each bud moves the other a little.
+        for (let pass = 0; pass < 2; pass += 1) {
+            division.arrange(buds[0].parted, buds[0].gap, buds[1].parted, buds[1].gap);
+
+            buds.forEach((part, index) => {
+                division.place(index, shaped);
+
+                const beyond = Math.abs(shaped.along) - rooms[index];
+                const closer = clamp(beyond / (1 - part.share), 0, part.gap);
+                const reach = index ? division.reach.last : division.reach.first;
+
+                part.gap -= closer;
+                part.parted = clamp(part.parted - Math.max(beyond - closer * (1 - part.share), 0) / (reach - 1), 0, 1);
+            });
+        }
+
+        division.arrange(buds[0].parted, buds[0].gap, buds[1].parted, buds[1].gap);
     };
 
-    // The dot on the sphere, or on its bud while that is out, with the surfaces of the blobs
-    // joined where they are close.
+    // The dot on the sphere, or on the bud it belongs to: turned with the sphere and swelling
+    // with it. The swell is that of the whole sphere at the dot's own place on it, so a neck
+    // between two bodies stays closed.
     const onSphere = (index) => {
-        const { rotation, radius, seconds } = scene;
-        const part = buds[division.bud[index]];
-        // The radius of the blob the dot sits on, and where it sits on that blob without the
-        // swell: the surfaces join on those plain shapes.
-        let own = radius;
+        const { rotation, seconds } = scene;
 
-        spot.x = division.at.x[index];
-        spot.y = division.at.y[index];
-        spot.z = division.at.z[index];
-        place(spot, rotation, seconds);
-        dot.x = home.x + view.x * radius;
-        dot.y = home.y + view.y * radius;
-        dot.z = view.z;
-        dot.size = 1;
-        joint.x = home.x + view.plainX * radius;
-        joint.y = home.y + view.plainY * radius;
-        joint.z = view.z * radius;
+        turn(sphere[index], rotation);
 
-        if (part.out > 0.001) {
-            const amount = division.away[index];
+        const bulge = swell(view.x, view.y, view.z, seconds);
 
-            // Each bud swells on its own phase.
-            place(seats[division.bud[index] - 1][division.seat[index]], rotation, seconds + division.bud[index] * 7);
-            dot.x = mix(dot.x, part.x + view.x * part.radius, amount);
-            dot.y = mix(dot.y, part.y + view.y * part.radius, amount);
-            dot.z = mix(dot.z, view.z, amount);
-            dot.size = mix(1, 0.86, amount);
-            own = mix(own, part.radius, amount);
-            joint.x = mix(joint.x, part.x + view.plainX * part.radius, amount);
-            joint.y = mix(joint.y, part.y + view.plainY * part.radius, amount);
-            joint.z = mix(joint.z, view.z * part.radius, amount);
-        }
-
-        if (blobs.length > 1) {
-            const { x, y, z } = joint;
-
-            settle(joint, blobs);
-            dot.x += joint.x - x;
-            dot.y += joint.y - y;
-            dot.z = clamp(dot.z + (joint.z - z) / own, -1, 1);
-        }
+        division.place(dots.count[index], shaped);
+        // Which way the dot's part of the surface faces: towards the viewer or away.
+        spot.x = shaped.ring * dots.cos[index];
+        spot.y = shaped.height;
+        spot.z = shaped.ring * dots.sin[index];
+        turn(spot, rotation);
+        dot.z = clamp(view.z, -1, 1);
+        spot.x = shaped.around * dots.cos[index];
+        spot.y = shaped.along;
+        spot.z = shaped.around * dots.sin[index];
+        turn(spot, rotation);
+        dot.x = home.x + view.x * bulge * sphereRadius;
+        dot.y = home.y + view.y * bulge * sphereRadius;
     };
 
     // Moves the dot towards its point of the figure, as far as the figure has formed. Within a
@@ -423,7 +378,6 @@ const initializeOrb = (canvas, reducedMotion) => {
             dot.x = mix(dot.x, home.x + turnedX * figure.size, amount);
             dot.y = mix(dot.y, home.y + turnedY * figure.size, amount);
             dot.z = mix(dot.z, clamp(turnedZ / figure.depth, -1, 1), amount);
-            dot.size = mix(dot.size, 1, amount);
         }
     };
 
@@ -465,47 +419,23 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // Sets the scene for a moment: where the sphere stands, how it leans towards the pointer,
-    // where its buds are and which dots they hold. A figure that has formed hides the sphere,
-    // so nothing of the sphere has to be worked out then.
+    // Sets the scene for a moment: where the sphere stands, how it leans towards the pointer
+    // and how far its buds are out.
     const compose = (seconds, formed, delta = 0) => {
         wander(seconds);
 
         const leanX = clamp((pointer.x + heading.x - home.x) / sphereRadius, -2, 2);
         const leanY = clamp((pointer.y + heading.y - home.y) / sphereRadius, -2, 2);
-        const turn = (seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength;
         const lean = tilt + leanY * 0.35 * pointer.strength;
 
-        arrange(seconds, turn, lean, delta);
+        arrange(seconds, lean, delta);
         scene.seconds = seconds;
         scene.formed = formed;
-        scene.rotation = createRotation(turn, lean);
+        scene.rotation = createRotation((seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength, lean);
         scene.sway = createRotation(
             Math.sin(seconds * 0.5) * figure.sway + leanX * 0.2 * pointer.strength,
             0.1 + leanY * 0.12 * pointer.strength,
         );
-        // The sphere shrinks by the share of its dots that are out as buds.
-        scene.radius = sphereRadius * Math.sqrt(1 - buds.reduce((sum, part) => sum + part.out, 0) / buds.length);
-
-        // The sphere and every bud that is out of it are the blobs of the lamp: where they are
-        // close, their surfaces join, so a bud grows out of the sphere on a neck and melts back
-        // into it.
-        blobs.length = 0;
-
-        if (!formed) {
-            Object.assign(body, home, { radius: scene.radius });
-            blobs.push(body);
-
-            for (const part of leaving) {
-                if (part.out > 0.001) {
-                    blobs.push(part);
-                }
-            }
-        }
-
-        // The dots are shared out between the sphere and the buds that are out of it, behind a
-        // figure too: a bud that set out meanwhile is not made up for in one frame.
-        division.follow(leaving);
     };
 
     const position = (seconds, delta) => {
@@ -513,7 +443,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         for (let index = 0; index < dotCount; index += 1) {
             if (scene.formed) {
-                Object.assign(dot, home, { z: 0, size: 1 });
+                Object.assign(dot, home, { z: 0 });
             } else {
                 onSphere(index);
             }
@@ -523,7 +453,6 @@ const initializeOrb = (canvas, reducedMotion) => {
             dots.x[index] = dot.x;
             dots.y[index] = dot.y;
             dots.z[index] = dot.z;
-            dots.scale[index] = dot.size;
             dots.level[index] = Math.min(Math.floor(((dot.z + 1) / 2) * tint.levels), tint.levels - 1);
         }
     };
@@ -555,7 +484,7 @@ const initializeOrb = (canvas, reducedMotion) => {
                 context.arc(
                     dots.x[index] * unit,
                     dots.y[index] * unit,
-                    unit * (0.0012 + closeness * 0.0026) * dots.scale[index],
+                    unit * (0.0012 + closeness * 0.0026),
                     0,
                     Math.PI * 2,
                 );
@@ -803,12 +732,12 @@ const initializeOrb = (canvas, reducedMotion) => {
         pointer.targetStrength = 0;
     };
 
-    // The plain sphere sheds one more bud: the next one that is inside. With every bud out, a
-    // press keeps them out for a while longer.
+    // The plain sphere divides once more: the next bud that is inside parts from it. With both
+    // out, a press keeps them out for a while longer.
     const shed = () => {
-        const inside = leaving.find((part) => part.out < 0.05 && clock >= part.calledUntil);
+        const inside = buds.find((part) => part.out < 0.05 && clock >= part.calledUntil);
 
-        for (const part of inside ? [inside] : leaving) {
+        for (const part of inside ? [inside] : buds) {
             part.calledUntil = clock + split.leave + split.stay;
         }
     };
@@ -845,7 +774,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         if (gathered > 0.6) {
             calmUntil = clock + split.calm;
 
-            for (const part of leaving) {
+            for (const part of buds) {
                 part.calledUntil = 0;
             }
         }
