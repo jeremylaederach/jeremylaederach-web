@@ -98,3 +98,28 @@ test('a bud needs the room it says it does', () => {
     close(division.reach.first, lowest, 0.01);
     close(division.reach.last, -highest, 0.01);
 });
+
+test('a dot belongs to a bud as far as that bud has parted', () => {
+    const half = shape(0.5, 0, 0, 0);
+    const out = shape(1, 0, 1, 0);
+
+    for (const { count, first: withFirst, last: withLast } of half) {
+        close(withFirst, count < first ? 0.5 : 0);
+        close(withLast, 0);
+    }
+
+    for (const { count, first: withFirst, last: withLast } of out) {
+        close(withFirst, count < first ? 1 : 0);
+        close(withLast, count > 1 - last ? 1 : 0);
+    }
+});
+
+test('the middle of a bud that is out is the middle of its sphere', () => {
+    const division = createDivision({ first, last });
+    const places = shape(1, 0.3, 1, 0.2);
+
+    division.arrange(1, 0.3, 1, 0.2);
+
+    close(division.middleOf(0), sphereOf(places.filter(({ count }) => count < first)).middle, 0.01);
+    close(division.middleOf(1), sphereOf(places.filter(({ count }) => count > 1 - last)).middle, 0.01);
+});

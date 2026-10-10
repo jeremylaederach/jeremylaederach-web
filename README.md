@@ -64,7 +64,7 @@ DESIGN.md                What the interface does: craft standard, identity, the 
 docs/handoff.md          Current state, open items and next steps
 ```
 
-The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), how the sphere divides into a body and its buds (`division`), what the sphere notices of the visitor (`attention`), and the shared arithmetic (`math`).
+The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), how the sphere divides into a body and its buds (`division`), what the sphere notices of the visitor (`attention`), the eyes of the mark (`eyes`), and the shared arithmetic (`math`).
 
 The about page and the case studies are told in scenes: one Blade component (`scene-stage`), one stylesheet and one small controller that shows the scene whose step crosses the middle of the window. What the sphere shows for each scene is listed in `config/portfolio.php`. The site shows no screenshots; the sphere draws rough pictures instead.
 

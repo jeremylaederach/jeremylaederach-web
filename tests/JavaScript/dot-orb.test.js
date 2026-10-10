@@ -271,6 +271,50 @@ test('a press on the plain sphere splits it, and a held press draws it together 
     assert.ok(spread('y') < whole * 1.15);
 });
 
+test('a held press that is dragged takes a bud along, which finds its way back', (t) => {
+    const { dots, run } = setup(t);
+    const mouse = (type, clientX, clientY) => {
+        const event = new window.MouseEvent(type, { bubbles: true, clientX, clientY });
+
+        Object.defineProperty(event, 'pointerType', { value: 'mouse' });
+        window.dispatchEvent(event);
+    };
+    // The dots around a place far from the sphere, which stands at 408 by 450.
+    const around = (x, y) => dots.filter((dot) => Math.hypot(dot.x - x, dot.y - y) < 80).length;
+
+    run(100);
+    assert.equal(around(110, 140), 0);
+
+    mouse('pointerdown', 408, 450);
+    mouse('pointermove', 300, 330);
+    mouse('pointermove', 110, 140);
+    run(240);
+
+    // The bud holds 18% of the 1200 dots, and the sphere keeps the rest.
+    assert.ok(around(110, 140) > 190 && around(110, 140) < 240);
+
+    mouse('pointerup', 110, 140);
+    run(420);
+    assert.equal(around(110, 140), 0);
+});
+
+test('a press that stays in place takes no bud along', (t) => {
+    const { dots, run } = setup(t);
+    const mouse = (type, clientX, clientY) => {
+        const event = new window.MouseEvent(type, { bubbles: true, clientX, clientY });
+
+        Object.defineProperty(event, 'pointerType', { value: 'mouse' });
+        window.dispatchEvent(event);
+    };
+
+    run(100);
+    mouse('pointerdown', 408, 450);
+    mouse('pointermove', 412, 452);
+    run(240);
+
+    assert.equal(dots.filter((dot) => dot.x < 200).length, 0);
+});
+
 test('an element that names no known figure leaves the sphere whole', (t) => {
     const { run, hover, spread } = setup(t);
 
@@ -420,6 +464,24 @@ test('on a page change the sphere travels to the stage of the next page', (t) =>
 
     run(200);
     assert.ok(Math.abs(middle() - 504) < 20);
+});
+
+test('on its way to the next stage the sphere strings out and gathers again', (t) => {
+    const { run, spread, middle, swap } = setup(t);
+
+    run(30);
+
+    const resting = spread('x');
+
+    // A stage of the same size, 200 pixels further right: a sixth of a second later the
+    // fast dots are well ahead of the slow ones.
+    swap([200, 0, 600, 900]);
+    run(10);
+    assert.ok(spread('x') > resting + 15);
+
+    run(300);
+    assert.ok(Math.abs(middle() - 608) < 30);
+    assert.ok(spread('x') < resting * 1.3);
 });
 
 test('a page without a stage scatters the dots and the next stage gathers them again', (t) => {

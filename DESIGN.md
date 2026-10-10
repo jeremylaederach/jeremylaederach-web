@@ -113,6 +113,9 @@ the stage is the whole section.
   - *A held press* draws everything together: it gathers the dots around the pointer, calls
     every bud back into the sphere within a second and keeps them there for 6 seconds, and
     lets go with a stronger ring.
+  - *A held press that is dragged* takes a bud along: the bud that press has parted leaves
+    the axis and follows the pointer as a sphere of its own, on a neck until it has parted.
+    When the press ends, the bud returns to its place and joins the sphere again.
   - *A tap* on the dots moves on like a press. Nothing else follows a finger.
 - **What the sphere notices** of the visitor without being asked, and only a little
   (`resources/js/dot-orb-attention.js`):
@@ -125,13 +128,16 @@ the stage is the whole section.
     first sign of the visitor is answered with one soft ring from the middle of the sphere.
 - **Buds.** Like a blob in a lava lamp the sphere divides (`resources/js/dot-orb-division.js`):
   it stretches along the axis it turns around, a neck forms and thins, and a bud parts from
-  it, drifts away and comes back the same way. One bud is the dots at the lower end of that
+  it, drifts away and comes back the same way. It leaves in one motion: the neck still thins
+  while the bud already moves away, and before the edge of its stage a bud slows down
+  instead of stopping there. One bud is the dots at the lower end of that
   axis, 18% of them, and sinks; the other is the 12% at the upper end and rises; each has its
   own slow cycle (41 and 53 seconds). Every body is a sphere of its own, as large as its dots
   need to lie as close as before, and what leaves on one side moves the sphere a little to
   the other.
 - **Nothing flies.** A dot never changes sides: it moves only along the axis and towards or
   away from it, so no dot crosses another's way and the bodies never reach around each other.
+  Only a bud that is carried leaves the axis, as a whole.
   A bud stays on the stage: where there is no room to drift it stays close, and where there
   is none to part it stays on its neck.
 - **Color.** The dots take the page accent, lighter towards the viewer in eight steps and fading
@@ -142,7 +148,9 @@ the stage is the whole section.
   dots on its front and its back, and it sways from side to side and leans with the pointer. Each
   destination in the header has its own: a window for projects, a head and shoulders for about, an
   envelope for contact (`resources/js/dot-orb-figures.js`, drawn with canvas paths). The name on
-  the home page gives the mark itself, sampled from its image with the eyes left open.
+  the home page gives the mark itself, sampled from its image with the eyes left open. Those
+  eyes are alive (`resources/js/dot-orb-eyes.js`): they look where the pointer is, by moving
+  the dots around each of them a little, and every few seconds they blink.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
   other, each for 8 seconds; a press on the dots moves on sooner. The sequence starts
@@ -186,7 +194,8 @@ the stage is the whole section.
   "Scenes: about and the case studies"). The 404 page is a stage for it (see "404 and legal
   pages"). The legal pages have no sphere.
 - **Page change.** The sphere travels to the stage of the next page: its place and its size
-  ease there within about a second while the dots flow into the new figure. On a page without
+  ease there within about a second while the dots flow into the new figure. Every dot keeps
+  its own pace on that way: the sphere strings out, pours to its new place and gathers there. On a page without
   a stage, the legal pages, the dots scatter away from the middle and fade, and the next stage
   gathers them again.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
