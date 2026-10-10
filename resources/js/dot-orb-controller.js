@@ -5,6 +5,7 @@ import { approach, clamp, createLattice, mix, smooth } from './dot-orb-math.js';
 import { pairInStrips } from './dot-orb-pairing.js';
 import { createPresses } from './dot-orb-presses.js';
 import { sampleFigure } from './dot-orb-sampling.js';
+import { createShow } from './dot-orb-show.js';
 import { createStage } from './dot-orb-stage.js';
 import { sceneChangedEvent } from './scene-controller.js';
 
@@ -34,15 +35,12 @@ const tint = { levels: 8, lightest: 0.42 };
 // figure: the dots flow into the shape instead of crossing it.
 const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 
-// An element can name several figures, separated by spaces. The sphere then shows one after the
-// other, each for `dwell` seconds. A press on the dots always breaks up what they show: a
-// sequence moves on to its next figure, a single figure gives way to the plain sphere behind
-// it for `dwell` seconds, and the plain sphere splits (see dot-orb-buds.js). The dots flow from
-// shape to shape like the blobs of a lava lamp: at `hover` per second when the pointer moves on
-// to another element, at `rest` when the element the sphere rests with changes or a press moves
-// on, and at `cycle` when a sequence steps by itself. Every dot has a pace of its own, between
-// `slowest` and `fastest` of that rate, so a shape melts into the next instead of jumping.
-const sequence = { dwell: 8, hover: 9, rest: 3, cycle: 1.6, slowest: 0.7, fastest: 1.5 };
+// Which figure the dots show is worked out in dot-orb-show.js. They flow from shape to shape
+// like the blobs of a lava lamp: at `hover` per second when the pointer moves on to another
+// element, at `rest` when the element the sphere rests with changes or a press moves on, and at
+// `cycle` when a sequence steps by itself. Every dot has a pace of its own, between `slowest`
+// and `fastest` of that rate, so a shape melts into the next instead of jumping.
+const sequence = { hover: 9, rest: 3, cycle: 1.6, slowest: 0.7, fastest: 1.5 };
 
 // The dots that give way to the pointer leave an opening of this share of the reach around it,
 // where at least this many dots are close.
@@ -138,14 +136,9 @@ const initializeOrb = (canvas, reducedMotion) => {
     let previousTime = 0;
     let clock = 0;
     let visible = false;
-    // The figures of the element the sphere is with, the one whose dots are placed now, and
-    // since when that element is shown.
-    let shapes = [];
+    // What the dots show, and the points of the figure whose dots are placed now.
+    const show = createShow({ figures });
     let figurePoints = [];
-    let shown = null;
-    let since = 0;
-    // Until when the other side of the shown shape stays.
-    let turnedUntil = 0;
     let glideRate = sequence.hover;
     let shape = 0;
     let targetShape = 0;
@@ -332,9 +325,6 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // Which figure of the sequence is due.
-    const due = () => Math.floor((clock - since) / sequence.dwell) % shapes.length;
-
     // Gives every dot its point of a figure: the one nearest to where the dot is. Coming from
     // the sphere, the dots on its near side take the front of the figure, and every dot is on
     // its point at once, because the figure has not formed yet. Within a figure every dot keeps
@@ -409,22 +399,21 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // What the dots show right now: the figure of a sequence that is due, the one figure, or
-    // the plain sphere, which a single figure also gives way to while a press has broken it
-    // up. A new figure is flowed into at `rate`.
+    // Gives the dots what they show right now: a figure, which a new one is flowed into at
+    // `rate`, or the plain sphere.
     const present = (rate) => {
-        const next = shapes.length > 1 ? shapes[due()] : shapes[0] ?? null;
-        const showing = Boolean(next) && (shapes.length > 1 || clock >= turnedUntil);
+        const next = show.current(clock)?.points ?? null;
 
-        if (showing && (next !== figurePoints || (!targetShape && shape < 0.02))) {
+        if (next && (next !== figurePoints || (!targetShape && shape < 0.02))) {
             turnTo(next);
             figurePoints = next;
             glideRate = rate;
-        } else if (!showing && targetShape && shape > 0.98) {
+            takeColor();
+        } else if (!next && targetShape && shape > 0.98) {
             letGo();
         }
 
-        targetShape = showing ? 1 : 0;
+        targetShape = next ? 1 : 0;
     };
 
     // What the sphere notices of the visitor in this frame.
@@ -535,19 +524,12 @@ const initializeOrb = (canvas, reducedMotion) => {
         pointer.targetStrength = 0;
     };
 
+    // A press on the dots moves on to the next shape. A press of the mouse also sends a ring
+    // from its place and starts to charge.
     const pressDown = (event) => {
-        // A press on the dots breaks up what they show: a sequence moves on to its next figure,
-        // which then stays its time, a single figure gives way to the sphere behind it and
-        // comes back with the next press, and the plain sphere splits.
         if (probe(event.clientX, event.clientY)) {
-            if (shapes.length > 1) {
-                since = clock - (due() + 1) * sequence.dwell;
-            } else if (shapes.length === 1) {
-                turnedUntil = clock < turnedUntil ? 0 : clock + sequence.dwell;
-            } else {
-                buds.shed(clock);
-            }
-
+            show.press(clock);
+            takeColor();
             present(sequence.rest);
         }
 
@@ -556,7 +538,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // The end of a press that was held: the buds settle, and a ring leaves its place.
+    // The end of a press that was held: the buds stay in for a while, and a ring leaves its place.
     const pressUp = () => {
         if (presses.held()) {
             buds.settle(clock);
@@ -564,30 +546,23 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // While no element that names a figure is hovered or focused, the one marked as resting holds
-    // its figure. An element that names several figures starts with the first whenever the sphere
-    // turns to it. An element may also name the color of its figure (`--dot-orb-rgb`). The dots
-    // keep the last figure while they return to the sphere.
-    const react = (target) => {
-        const hovered = target instanceof Element ? target.closest('[data-dot-orb-figure]') : null;
-        const element = hovered ?? document.querySelector('[data-dot-orb-resting]');
-        const named = (element?.dataset.dotOrbFigure ?? '').split(' ')
-            .map((name) => figures.get(name))
-            .filter((points) => points?.length);
-        const tone = named.length ? getComputedStyle(element).getPropertyValue('--dot-orb-rgb').trim() : '';
+    // The dots take the color the element that names their figure asks for (`--dot-orb-rgb`),
+    // or the accent of the page.
+    const takeColor = () => {
+        const source = show.source();
+        const tone = source ? getComputedStyle(source).getPropertyValue('--dot-orb-rgb').trim() : '';
 
-        pointed = target;
         targetColor = (tone ? readChannels(tone) : accent()) ?? targetColor;
-        shapes = named;
+    };
 
-        if (element !== shown) {
-            shown = element;
-            since = clock;
-            turnedUntil = 0;
-        }
-
-        // The dots keep the pace of a visitor who scrolls briskly through the scenes.
-        present(hovered
+    // The sphere turns to what the pointer or the focus is on. The dots keep the last figure
+    // while they return to the sphere, and the pace of a visitor who scrolls briskly through
+    // the scenes.
+    const react = (target) => {
+        pointed = target;
+        show.turnTo(target, clock);
+        takeColor();
+        present(show.hovered()
             ? sequence.hover
             : mix(sequence.rest, sequence.hover, clamp(Math.abs(scrolling) / notice.brisk, 0, 1)));
     };
@@ -604,6 +579,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         const from = stage.element ? stage.onCanvas(home) : null;
 
         stage.take();
+        show.enter(stage.element);
         targetScattered = stage.element ? 0 : 1;
         visibilityObserver.disconnect();
         resizeObserver.disconnect();

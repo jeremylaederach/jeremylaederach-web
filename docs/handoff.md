@@ -13,8 +13,8 @@ check them again before relying on them.
 - **On `main`, not deployed:** the rework of every page around one element, a generative sphere
   of dots. It replaces the look of `v1.5.1` and goes out as one release after a review of the
   whole site.
-- **Checked on 10 October:** `npm test` with 71 tests; `composer test` with Pint, PHPStan and
-  19 tests (513 assertions, the static export included); CI passed on `main`. Earlier that
+- **Checked on 10 October:** `npm test` with 75 tests; `composer test` with Pint, PHPStan and
+  19 tests (514 assertions, the static export included); CI passed on `main`. Earlier that
   day, before the last changes to the sphere: ten pages of the exported site under its own
   Content-Security-Policy without a violation, page changes included.
 - **Seen as stills from a headless browser:** every page in English or German at 1440 by 900,
@@ -52,6 +52,12 @@ Built, and each a matter of one value or one rule:
   press parts one more, and a held press draws them together. A bud leaves in one motion
   and slows down before the edge of its stage (`bud.parted`, `bud.drifting` in
   `dot-orb-buds.js`). A third bud would need a second axis.
+- **A press on the home page** gives the plain sphere the next figure of the statement and
+  lights up the word that names it (`dot-orb-show.js`); it no longer parts a bud. Which
+  figures and in which order follows the statement's words.
+- **Stacks.** A tool with a mark carries a bead in that mark's color, and while the sphere
+  goes through the marks by itself the tool lights up and the dots take its color. On the
+  pages in one accent this is the one place with other colors.
 - **Links** carry a bead instead of an arrow: one dot in the accent that draws out the way
   the link leads when it is hovered or focused (`link-bead` in `components.css`). Its size
   and its reach are two values.
@@ -96,6 +102,9 @@ Open, without a date:
   data, never real records.
 - **Ideas for the sphere:** a figure of two eyes alone, two blobs of dots like those in
   Jay-Jay's mark; more buds at times, for which a third bud needs a second axis.
+- **Types.** JavaScript is the largest language of the repository, about half of it, and the
+  sphere is most of that. Moving its modules to TypeScript would check them at build time;
+  it is a change of tooling and belongs in a planned maintenance step.
 - **Ideas:** a click on the email row copies the address; the contact figure goes through the
   channels by itself; small side projects on the about page; a way for visitors to play with
   the accent color.

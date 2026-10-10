@@ -60,6 +60,12 @@
         transition: width 320ms var(--ease-out), background-color var(--accent-blend) ease;
     }
 
+    /* A link back starts with its bead, which keeps to the edge of the text and draws out
+       beyond it. */
+    .link-bead--back {
+        width: var(--bead);
+    }
+
     .link-bead--back::before {
         inset: 0 0 0 auto;
     }

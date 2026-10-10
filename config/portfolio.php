@@ -42,13 +42,13 @@ return [
         ],
         'quantified' => [
             'overview' => ['figures' => ['quantified', 'trend', 'ring', 'calendar']],
-            'stack' => ['figures' => ['angular', 'dotnet', 'postgresql']],
+            'stack' => ['figures' => ['angular', 'typescript', 'dotnet', 'postgresql']],
             'details' => ['figures' => ['timeline', 'ledger', 'target']],
             'outlook' => ['figures' => ['converge']],
         ],
         'jay-jay' => [
             'overview' => ['figures' => ['jay-jay', 'website', 'cloud', 'contact']],
-            'stack' => ['figures' => ['laravel', 'tailwindcss']],
+            'stack' => ['figures' => ['laravel', 'tailwindcss', 'githubactions']],
             'details' => ['figures' => ['website', 'leaf', 'cloud', 'sheet']],
             'outlook' => ['figures' => ['checklist']],
         ],
@@ -169,10 +169,7 @@ return [
                         'label' => 'Overview',
                         'text' => 'Quantified shows me where my time, my health and my money go.',
                         'detail' => 'A personal analytics app. It turns records I already produce into dashboards and timelines.',
-                        'facts' => [
-                            ['label' => 'State', 'text' => 'In active development. A private instance runs for me.'],
-                            ['label' => 'Role', 'text' => 'Product design and full-stack engineering.'],
-                        ],
+                        'note' => 'In active development; a private instance runs for me. Product design and full-stack engineering.',
                     ],
                     [
                         'id' => 'stack',
@@ -215,10 +212,7 @@ return [
                         'label' => 'Overview',
                         'text' => 'Jay-Jay is my business for websites, hosting, domains, email and support.',
                         'detail' => 'For small Swiss organizations, with direct technical support. The software behind it is mine too.',
-                        'facts' => [
-                            ['label' => 'State', 'text' => 'The business is running and the website is live. The Client Hub is in development.'],
-                            ['label' => 'Role', 'text' => 'Founder, product designer and developer.'],
-                        ],
+                        'note' => 'The business is running and the website is live. Founder, product designer and developer.',
                     ],
                     [
                         'id' => 'stack',
@@ -420,10 +414,7 @@ return [
                         'label' => 'Überblick',
                         'text' => 'Quantified zeigt mir, wohin meine Zeit, meine Gesundheit und mein Geld gehen.',
                         'detail' => 'Eine persönliche Analyse-App. Sie macht aus Daten, die ohnehin anfallen, Dashboards und Timelines.',
-                        'facts' => [
-                            ['label' => 'Stand', 'text' => 'In aktiver Entwicklung. Eine private Instanz läuft für mich.'],
-                            ['label' => 'Rolle', 'text' => 'Product Design und Full-Stack-Entwicklung.'],
-                        ],
+                        'note' => 'In aktiver Entwicklung; eine private Instanz läuft für mich. Product Design und Full-Stack-Entwicklung.',
                     ],
                     [
                         'id' => 'stack',
@@ -466,10 +457,7 @@ return [
                         'label' => 'Überblick',
                         'text' => 'Jay-Jay ist mein Unternehmen für Websites, Hosting, Domains, E-Mail und Betreuung.',
                         'detail' => 'Für kleine Schweizer Organisationen, mit direktem technischem Support. Die Software dahinter ist auch von mir.',
-                        'facts' => [
-                            ['label' => 'Stand', 'text' => 'Das Unternehmen läuft, die Website ist live. Der Client Hub ist in Entwicklung.'],
-                            ['label' => 'Rolle', 'text' => 'Gründer, Product Designer und Entwickler.'],
-                        ],
+                        'note' => 'Das Unternehmen läuft, die Website ist live. Gründer, Product Designer und Entwickler.',
                     ],
                     [
                         'id' => 'stack',

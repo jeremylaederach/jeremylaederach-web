@@ -230,13 +230,9 @@
             padding-top: clamp(28px, 5svh, 48px);
         }
 
-        /* The current row shows its bead, drawn out. */
+        /* The current row shows its bead. */
         .stage-list__item[data-current] .link-bead {
             opacity: 1;
-        }
-
-        .stage-list__item[data-current] .link-bead::before {
-            width: var(--bead-reach);
         }
 
         /* Up to 1180px the introduction has no room beside the heading and stands below it. */

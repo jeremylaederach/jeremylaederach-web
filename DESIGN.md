@@ -71,14 +71,14 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   while its dots flow into that page's figure. The header answers the click at once, with the
   destination as the current one, and the accent blends to the new page's. Nothing covers the
   page. Reduced motion swaps the page without a transition.
-- **Hover.** No surface lights up under the pointer: a hovered link or card answers with its
-  accent, a rule drawn in the accent or a small movement. A link that leads somewhere carries
-  a bead instead of an arrow (`resources/views/components/link-bead.blade.php`): one dot in
-  the accent, which draws out into a short line the way the link leads when it is hovered or
-  focused: forward, back, down the page, or up and out of the site. Every link that takes the accent does
-  it the same way, the destinations of the header, the languages, the steps of a page told in
-  scenes and the links that end a page: at once when it is hovered or focused (`--hover-in`,
-  60ms), and gently back (`--hover-out`, 220ms). Optional interface sounds.
+- **Hover.** No surface lights up under the pointer: a hovered link or card answers with its accent,
+  a rule drawn in the accent or a small movement. A link that leads somewhere carries a bead instead
+  of an arrow (`resources/views/components/link-bead.blade.php`): one dot in the accent, which draws
+  out into a short line the way the link leads when it is hovered or focused: forward, back, down
+  the page, or up and out of the site. Every link that takes the accent does it the same way, the
+  destinations of the header, the languages, the steps of a page told in scenes and the links that
+  end a page: at once when it is hovered or focused (`--hover-in`, 60ms), and gently back
+  (`--hover-out`, 220ms). Optional interface sounds.
 - **Page end.** Every page ends with one quiet line in the middle: the profiles and the legal
   pages, each link at least 44px tall. The main region leaves room for it, so a short page and
   the line fill one screen. The home page, one screen from 961px, ends without it there.
@@ -87,10 +87,10 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 
 The home page is one screen at every size, a stage of the name, the statement and the sphere. The
 name stands small above the summary, which is the statement of the page and its largest text. The
-header carries the navigation. From 961px the content keeps to a column on the left, at most half of the
-width, and the right belongs to the sphere. Up to 960px the sphere has the upper 68% of the
-screen, where its stage ends and the dots fade out, and the text stands below it; the line that
-ends the page closes the screen.
+header carries the navigation. From 961px the content keeps to a column on the left, at most half of
+the width, and the right belongs to the sphere. Up to 960px the sphere has the upper 68% of the
+screen, where its stage ends and the dots fade out, and the text stands below it; the line that ends
+the page closes the screen.
 
 A sphere of 1200 dots (`resources/js/dot-orb-controller.js`, `resources/css/orb.css`) is the main
 element: a generative particle animation on a 2D canvas behind the text. There is one canvas for
@@ -99,18 +99,18 @@ it. A page marks where the sphere stands with a stage (`data-dot-orb-stage`); on
 the stage is the whole section.
 
 - **Idle motion.** The dots sit on a Fibonacci lattice. The sphere turns once in 52 seconds, bulges
-  in slow overlapping waves and wanders around the middle of the stage. On the home page the dots recede to
-  20% behind the text column, so they never compete with the text. The stage asks for it
+  in slow overlapping waves and wanders around the middle of the stage. On the home page the dots
+  recede to 20% behind the text column, so they never compete with the text. The stage asks for it
   (`--dot-orb-fade`) and the canvas draws those dots fainter; it fades in and out with a page
   change. Nothing masks the canvas.
 - **What the dots answer to** is the same on every page, so a visitor learns it once:
   - *The pointer near them:* the sphere leans towards it, and dots within reach give way.
   - *Hovering or focusing something that names a figure:* the dots take that figure, and
     leaving gives them back (see "Figures").
-  - *A press on the dots* breaks up what they show. Where several figures follow each other,
-    the next one comes. A single figure gives way to the plain sphere behind it, for 8 seconds
-    or until the next press. The plain sphere divides: with every press one more bud
-    parts from it and stays out for 14 seconds, so two presses leave three bodies in a row.
+  - *A press on the dots* moves on to the next shape. Where several figures follow each
+    other, the next one comes. A single figure gives way to the plain sphere behind it, for 8
+    seconds or until the next press. The plain sphere of the home page takes the next figure
+    of the statement for 8 seconds, and the word that names it lights up.
   - *A press anywhere:* a ring travels outwards through the dots from where it happened;
     several rings travel at once.
   - *A held press* draws everything together: it gathers the dots around the pointer, calls
@@ -152,7 +152,10 @@ the stage is the whole section.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
   other, each for 8 seconds; a press on the dots moves on sooner. The sequence starts
   with the first figure whenever the sphere turns to the element, and it runs on the sphere's
-  clock, so it pauses with it.
+  clock, so it pauses with it (`resources/js/dot-orb-show.js`).
+- **What is shown is marked.** While the sphere shows a figure by itself, one of a sequence
+  or one that a press has called, the word or the tool that names that figure on the page
+  lights up in its color (`data-dot-orb-shown`), and the dots take that color too.
 - **Lava lamp.** From one figure to the next the dots flow instead of jumping: every dot has a
   pace of its own, so a shape melts into the next. The flow is quick when the pointer moves on
   to another element, slower when the element the sphere rests with changes, and slowest, about
@@ -166,13 +169,13 @@ the stage is the whole section.
   a dot comes from, so the sphere and a bud beside it turn into it in one wave.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
-  beside the text. Hovered, they light up in the color of their figure, the accent unless they
-  or their row name another. In a text those words are set letter by letter, and the light of
-  the page headings runs through them every three seconds, from the first of their letters to
-  the last, so the text shows which of its words answer. In the statement of the home page the
-  three kinds of work give the bars of Quantified, the mark of Jay-Jay and four panes, the
-  word for the database gives one, the last pixel the arrow of a pointer, and the name gives the mark;
-  everything stays in the accent.
+  beside the text. Hovered, they light up in the color of their figure, the accent unless they or
+  their row name another. In a text those words are set letter by letter, and the light of the page
+  headings runs through them every three seconds, from the first of their letters to the last, so
+  the text shows which of its words answer. In the statement of the home page the three kinds of
+  work give the bars of Quantified, the mark of Jay-Jay and four panes, the word for the database
+  gives one, the last pixel the arrow of a pointer, and the name gives the mark; everything stays in
+  the accent.
 - **Place.** On a stage that is not fitted the sphere wanders around a point at 68% of the
   stage's width and half its height.
 - **Timing.** Every value eases towards its target independently of the frame rate, on the
@@ -190,11 +193,11 @@ the stage is the whole section.
 - **Sub-pages.** The about page and the case studies are told in scenes beside the sphere (see
   "Scenes: about and the case studies"). The 404 page is a stage for it (see "404 and legal
   pages"). The legal pages have no sphere.
-- **Page change.** The sphere travels to the stage of the next page: its place and its size
-  ease there within about a second while the dots flow into the new figure. Every dot keeps
-  its own pace on that way: the sphere strings out, pours to its new place and gathers there. On a page without
-  a stage, the legal pages, the dots scatter away from the middle and fade, and the next stage
-  gathers them again.
+- **Page change.** The sphere travels to the stage of the next page: its place and its size ease
+  there within about a second while the dots flow into the new figure. Every dot keeps its own pace
+  on that way: the sphere strings out, pours to its new place and gathers there. On a page without a
+  stage, the legal pages, the dots scatter away from the middle and fade, and the next stage gathers
+  them again.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
   sphere. Without scripts there is no sphere, and a stage takes no room on its page.
 
@@ -249,9 +252,9 @@ changes is its content: the statement and the figure of the sphere, together. No
 shows a screenshot.
 
 - **Scene.** A short label, one statement as the largest text of the page, and below it at most
-  a sentence or two, a few tags and one or two links. A scene can also list facts, each a name and what
-  it stands for, so that a first scene says what there is to know at one glance; up to 960px
-  they take the place of its sentence. The sphere shows the scene's figures (`scenes` in the
+  a sentence or two, a quiet line, a few tags and one or two links. A scene can also list
+  facts, each a name and what it stands for; up to 960px they take the place of its
+  sentence and are set a step smaller. The sphere shows the scene's figures (`scenes` in the
   content), in the page's accent or in the color the scene names.
 - **Scrolling.** Behind the screen runs a track of steps, one for each scene and 70% of the
   window high. The step that crosses the middle of the window shows its scene: the old statement
@@ -262,8 +265,8 @@ shows a screenshot.
   destinations, a hovered or focused one and the current one take the accent; the current one
   also stands on a line in the accent, which grows in from the left. Each is a link to
   its step, so a scene has an address (`/en/jay-jay#details`). On a narrow screen the row
-  scrolls sideways and keeps the current step in sight. From 961px a link at the lower edge of
-  the screen leads on: it names the next scene and is gone on the last.
+  scrolls sideways and keeps the current step in sight. From 961px a link below the scene
+  leads on: it names the next scene and is gone on the last.
 - **From 961px.** A stage like the projects overview: the head of the page with the steps, the
   scene and the way on stand on the left, and on the right a square for the sphere, as high as
   the stage allows and at most five of the twelve columns wide. Up to 960px the head with the
@@ -275,13 +278,14 @@ shows a screenshot.
   shoulders and three facts (his apprenticeship, his studies, what he builds); his stack, as
   four groups of tools, while the sphere goes through the marks of .NET, Laravel, Angular and
   PostgreSQL; and one that leads on to the contact page, with the envelope. A tool with a mark
-  of its own answers a hover in that mark's color (`technology_marks` in the content); the
+  of its own carries a bead in that mark's color (`technology_marks` in the content) and
+  takes the color when it is hovered or while the sphere shows its mark by itself; the
   paths come from the `simple-icons` package.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
   project's color. The head holds the way back, the name and the kind of project. The scenes
   say what the project is and does, each with rough pictures. Each project has the same four.
-  The overview states what it is, with its state and the role as facts. The stack lists its
+  The overview states what it is, with its state and the role as a quiet line. The stack lists its
   tools in groups, while the sphere goes through their marks. The details list what it
   holds, one fact for each part: for Quantified a timeline, a ledger and a target, for
   Jay-Jay a website, a leaf for the client's garden business, a cloud and a document. The

@@ -34,38 +34,35 @@ test('the sphere starts whole', () => {
     farEnds(buds).forEach((end) => close(end, 1));
 });
 
-test('every press sheds one more bud, and a held press calls them back for a while', () => {
+test('a bud leaves by itself, and a held press calls it back for a while', () => {
     const buds = createBuds();
 
-    // One bud out: the sphere, the bud and the way it has drifted.
-    buds.shed(0);
-    run(buds, 0, 4, wide);
+    // The first bud sets out after seven seconds. At thirteen it is all the way out: the
+    // sphere, the bud and the way it has drifted.
+    run(buds, 0, 13, wide);
     assert.ok(length(buds) > 3 && length(buds) < 3.5);
 
-    // Both out: three bodies in a row.
-    buds.shed(4);
-    run(buds, 4, 8, wide);
-    assert.ok(length(buds) > 4);
-
-    // Held for two seconds, both are back inside, and they stay there after the press.
-    run(buds, 8, 10, wide, true);
-    buds.settle(10);
-    run(buds, 10, 13, wide);
+    // Held for two seconds, it is back inside, and it stays there after the press.
+    run(buds, 13, 15, wide, true);
+    buds.settle(15);
+    run(buds, 15, 18, wide);
     close(length(buds), 2);
+
+    // Later the buds leave again; by then the second one has set out too.
+    run(buds, 18, 27, wide);
+    assert.ok(length(buds) > 2.5);
 });
 
 test('a bud goes only as far as the stage has room', () => {
     // Room for 1.25 radii on each side: a bud parts a little and stays on its neck.
     const narrow = createBuds();
 
-    narrow.shed(0);
-    run(narrow, 0, 4, { below: 0.45, above: 0.45, radius: 0.3 });
+    run(narrow, 0, 13, { below: 0.45, above: 0.45, radius: 0.3 });
     assert.ok(farEnds(narrow)[0] > 1.1 && farEnds(narrow)[0] < 1.27);
 
     // No room beyond the sphere itself: the bud stays inside.
     const none = createBuds();
 
-    none.shed(0);
-    run(none, 0, 4, { below: 0.36, above: 0.36, radius: 0.3 });
+    run(none, 0, 13, { below: 0.36, above: 0.36, radius: 0.3 });
     close(farEnds(none)[0], 1);
 });

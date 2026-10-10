@@ -242,8 +242,8 @@ test('a press on the dots of a single figure shows the plain sphere for a while'
     assert.ok(spread('y') < figure * 1.2);
 });
 
-test('a press on the plain sphere splits it, and a held press draws it together again', (t) => {
-    const { run, press, spread } = setup(t);
+test('a held press draws the buds back into the sphere', (t) => {
+    const { run, spread } = setup(t);
     const hold = (type) => {
         const event = new window.MouseEvent(type, { bubbles: true, clientX: 408, clientY: 450 });
 
@@ -256,14 +256,11 @@ test('a press on the plain sphere splits it, and a held press draws it together 
 
     const whole = spread('y');
 
-    // Every press sheds one more bud, to a place of its own above or below the sphere.
-    press();
-    press();
-    press();
-    run(190);
-    assert.ok(spread('y') > whole * 1.4);
+    // Thirteen seconds in, the first bud is all the way out, below the sphere.
+    run(712);
+    assert.ok(spread('y') > whole * 1.3);
 
-    // Holding for two seconds brings them back, and they stay for a while.
+    // Holding for two seconds brings it back, and it stays for a while.
     hold('pointerdown');
     run(125);
     hold('pointerup');

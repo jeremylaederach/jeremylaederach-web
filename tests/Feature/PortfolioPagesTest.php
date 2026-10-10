@@ -231,10 +231,11 @@ class PortfolioPagesTest extends TestCase
         $this->assertSame(5, preg_match_all('/\sdata-scene\s/', $html));
         $this->assertSame(5, substr_count($html, 'data-scene-step="'));
 
-        // The first scene says what the project is at one glance, its state and the role. The
-        // second lists its stack in groups, whose entries name their marks. The way on leads to
-        // the second scene.
-        $this->assertSame(2, preg_match_all('/<dt>(State|Role)<\/dt>/', $html));
+        // The first scene says what the project is, with its state and the role as a quiet
+        // line. The second lists its stack in groups, whose entries name their marks. The way
+        // on leads to the second scene.
+        $this->assertStringContainsString('<p class="scene__note">In active development; a private instance runs for me.', $html);
+        $this->assertSame(0, preg_match_all('/<dt>(State|Role)<\/dt>/', $html));
         $this->assertSame(3, preg_match_all('/<dt>(Interface|API|Data)<\/dt>/', $html));
         $this->assertSame(4, preg_match_all('/<dt>(Sources|Life|Finances|Goals)<\/dt>/', $html));
         $this->assertMatchesRegularExpression('/<dd>\s*<ul class="scene__tags">.*?data-dot-orb-figure="angular".*?<\/ul>\s*<\/dd>/s', $html);
@@ -268,7 +269,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('project-detail--jay-jay', false)
             ->assertSee('Jay-Jay is my business for websites, hosting, domains, email and support.')
             ->assertSee('<dt>Quality</dt>', false)
-            ->assertSee('Founder, product designer and developer.')
+            ->assertSee('The business is running and the website is live. Founder, product designer and developer.')
             ->assertSee('<div id="details" class="scene-stage__step" data-scene-step="details-scene"></div>', false)
             ->assertSee('That stays the base.')
             ->assertSee('Customer portal, in development.')

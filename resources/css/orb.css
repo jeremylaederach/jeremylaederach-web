@@ -1,11 +1,13 @@
 @layer components {
-    /* Words that name a figure look like the text around them. Hovered, they light up in the
-       color of their figure: the one they or their row name, or the accent. */
+    /* Words that name a figure look like the text around them. Hovered, or while the dots show
+       their figure by themselves, they light up in the color of that figure: the one they or
+       their row name, or the accent. */
     .figure-word {
         transition: color 220ms ease;
     }
 
-    .has-mouse-input .figure-word:hover {
+    .has-mouse-input .figure-word:hover,
+    .figure-word[data-dot-orb-shown] {
         color: rgb(var(--dot-orb-rgb, var(--route-accent-goal)));
     }
 
@@ -17,7 +19,8 @@
         animation: wordmark-signal 3s ease calc(var(--letter-index) * 40ms) infinite;
     }
 
-    .has-mouse-input .figure-word:hover .figure-word__letter {
+    .has-mouse-input .figure-word:hover .figure-word__letter,
+    .figure-word[data-dot-orb-shown] .figure-word__letter {
         animation: none;
     }
 
