@@ -144,10 +144,7 @@ the stage is the whole section.
   dots on its front and its back, and it sways from side to side and leans with the pointer. Each
   destination in the header has its own: a window for projects, a head and shoulders for about, an
   envelope for contact (`resources/js/dot-orb-figures.js`, drawn with canvas paths). The name on
-  the home page gives the mark itself, sampled from its image with the eyes left open. In
-  each of those two holes stands one large dot of the eye's own shape
-  (`resources/js/dot-orb-eyes.js`), the only dots of another size: the two look where the
-  pointer is, as far as their holes leave them room, and every few seconds they blink.
+  the home page gives the mark itself, sampled from its image with the eyes left open.
   Moving from one element to the next, the dots glide from shape to shape.
 - **Several figures.** An element can name several figures. The sphere then shows one after the
   other, each for 8 seconds; a press on the dots moves on sooner. The sequence starts
@@ -233,7 +230,7 @@ current row, so the sphere shows the first row's figure.
   brings its project's color, which is then the accent of the page, and its figures (those of
   the overview of its case study, `scenes` in the content), which the sphere goes through
   while the row is current: for Quantified the bars of a chart, a line chart, a ring and a
-  calendar; for Jay-Jay its mark, a globe, a cloud and an envelope. The current
+  calendar; for Jay-Jay its mark, a website, a cloud and an envelope. The current
   row holds the project's kind, description and technologies.
 - **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
   largest text. The rows are the channels, each
@@ -284,7 +281,7 @@ shows a screenshot.
   The overview states what it is, with its state and the role as facts. The stack lists its
   tools in groups, while the sphere goes through their marks. The details list what it
   holds, one fact for each part: for Quantified a timeline, a ledger and a target, for
-  Jay-Jay a globe, a leaf for the client's garden business, a cloud and a document. The
+  Jay-Jay a website, a leaf for the client's garden business, a cloud and a document. The
   outlook says in two sentences where the project is heading. The last scene stands for the
   next project: its name, one sentence and the way there, and while it is shown the page and
   the dots already take that project's color.

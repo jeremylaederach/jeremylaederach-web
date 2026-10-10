@@ -47,9 +47,9 @@ return [
             'outlook' => ['figures' => ['converge']],
         ],
         'jay-jay' => [
-            'overview' => ['figures' => ['jay-jay', 'globe', 'cloud', 'contact']],
+            'overview' => ['figures' => ['jay-jay', 'website', 'cloud', 'contact']],
             'stack' => ['figures' => ['laravel', 'tailwindcss']],
-            'details' => ['figures' => ['globe', 'leaf', 'cloud', 'sheet']],
+            'details' => ['figures' => ['website', 'leaf', 'cloud', 'sheet']],
             'outlook' => ['figures' => ['checklist']],
         ],
     ],

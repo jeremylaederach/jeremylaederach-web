@@ -215,16 +215,18 @@ const checklist = (context, size) => {
     }
 };
 
-// Domains: a globe.
-const globe = (context, size) => {
+// A website: a browser window with a page laid out in it, a wide picture above two columns.
+const website = (context, size) => {
     context.beginPath();
-    context.arc(size * 0.5, size * 0.5, size * 0.37, 0, Math.PI * 2);
+    context.roundRect(size * 0.1, size * 0.18, size * 0.8, size * 0.64, size * 0.07);
     context.fill();
     cut(context, size, (line) => {
-        line.moveTo(size * 0.13, size * 0.5);
-        line.lineTo(size * 0.87, size * 0.5);
-        line.moveTo(size * 0.66, size * 0.5);
-        line.ellipse(size * 0.5, size * 0.5, size * 0.16, size * 0.37, 0, 0, Math.PI * 2);
+        line.moveTo(size * 0.1, size * 0.31);
+        line.lineTo(size * 0.9, size * 0.31);
+        line.moveTo(size * 0.1, size * 0.57);
+        line.lineTo(size * 0.9, size * 0.57);
+        line.moveTo(size * 0.5, size * 0.57);
+        line.lineTo(size * 0.5, size * 0.82);
     });
 };
 
@@ -380,7 +382,7 @@ export const drawnFigures = {
     calendar,
     converge,
     checklist,
-    globe,
+    website,
     sheet,
     leaf,
     'jay-jay': jayJay,

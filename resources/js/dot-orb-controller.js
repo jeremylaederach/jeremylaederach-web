@@ -1,6 +1,5 @@
 import { createAttention } from './dot-orb-attention.js';
 import { createDivision } from './dot-orb-division.js';
-import { createEyes } from './dot-orb-eyes.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { approach, clamp, createLattice, mix, smooth } from './dot-orb-math.js';
 import { pairInStrips } from './dot-orb-pairing.js';
@@ -235,9 +234,6 @@ const initializeOrb = (canvas, reducedMotion) => {
     // The points on each side of a figure: the even ones lie on its front, the odd ones on its
     // back.
     const sides = new WeakMap();
-    // The eyes of the mark, and the two large dots they are while the mark is the figure.
-    const eyes = createEyes();
-    let pupils = null;
 
     // Turns a point of the lattice's frame into view space.
     const turn = (point, rotation) => {
@@ -453,10 +449,6 @@ const initializeOrb = (canvas, reducedMotion) => {
 
     const position = (seconds, delta) => {
         compose(seconds, shape > 0.999, delta);
-        // While the mark is the figure, its eyes look at the pointer from where they are in it.
-        pupils = shape > 0.001 && figurePoints === figures.get('mark')
-            ? eyes.watch((pointer.x - home.x) / figure.size, (pointer.y - home.y) / figure.size, pointer.strength, seconds)
-            : null;
 
         for (let index = 0; index < dotCount; index += 1) {
             if (scene.formed) {
@@ -482,27 +474,6 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // The eyes of the mark: one large dot in each of its two holes, in the lightest tint, in
-    // the middle of the figure's depth and turned with it. They come with the last dots of the
-    // figure and go with them.
-    const paintEyes = () => {
-        const { sway } = scene;
-
-        context.fillStyle = `rgb(${color.map((channel) => Math.round(mix(channel, 255, tint.lightest))).join(' ')})`;
-        context.globalAlpha = smooth(clamp(shape * 1.35 - 0.35, 0, 1)) * (1 - scattered);
-
-        for (const eye of pupils) {
-            const depth = -eye.x * sway.sinTurn;
-            const x = (home.x + eye.x * sway.cosTurn * figure.size) * unit;
-            const y = (home.y + (eye.y * sway.cosLean - depth * sway.sinLean) * figure.size) * unit;
-            const halfWidth = eye.width * sway.cosTurn * figure.size * unit;
-            const halfHeight = eye.height * sway.cosLean * figure.size * unit;
-
-            context.beginPath();
-            context.roundRect(x - halfWidth, y - halfHeight, halfWidth * 2, halfHeight * 2, Math.min(halfWidth, halfHeight));
-            context.fill();
-        }
-    };
     // From the far dots to the near ones, one tint level and one fill color per pass.
     // Everything is drawn from the corner of the stage.
     const paint = () => {
@@ -536,10 +507,6 @@ const initializeOrb = (canvas, reducedMotion) => {
                 );
                 context.fill();
             }
-        }
-
-        if (pupils) {
-            paintEyes();
         }
     };
 

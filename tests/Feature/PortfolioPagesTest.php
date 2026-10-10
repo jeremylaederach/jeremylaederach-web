@@ -181,7 +181,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('.NET / C#')
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false)
-            ->assertSee('data-dot-orb-figure="jay-jay globe cloud contact"', false)
+            ->assertSee('data-dot-orb-figure="jay-jay website cloud contact"', false)
             ->assertDontSee('Nativer Workspace-Launcher')
             ->assertSee('aria-describedby="quantified-detail"', false)
             ->assertSee('data-project="quantified"', false)
@@ -242,7 +242,7 @@ class PortfolioPagesTest extends TestCase
         $this->assertStringContainsString('<span data-scene-next-name>Stack</span>', $html);
         $this->assertSame(1, substr_count($html, 'data-active data-dot-orb-resting'));
         $this->assertMatchesRegularExpression(
-            '/id="next-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="jay-jay globe cloud contact"\s+data-project="jay-jay"/',
+            '/id="next-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="jay-jay website cloud contact"\s+data-project="jay-jay"/',
             $html,
         );
         $this->assertMatchesRegularExpression('/href="http:\/\/localhost\/en\/jay-jay"\s+data-route="projects"\s+data-route-transition/', $html);
@@ -276,7 +276,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('href="https://scherergartengestaltung.ch/"', false)
             ->assertSee('href="https://jay-jay.ch/en/"', false)
             ->assertSee('rel="noopener noreferrer"', false)
-            ->assertSee('data-dot-orb-figure="globe leaf cloud sheet"', false)
+            ->assertSee('data-dot-orb-figure="website leaf cloud sheet"', false)
             ->assertSee('data-project="quantified"', false)
             ->assertSee('href="http://localhost/en/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
