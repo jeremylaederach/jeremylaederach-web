@@ -99,7 +99,6 @@ return [
                 'scenes' => 'Scenes of this page',
             ],
             'nav' => [
-                ['label' => 'Home', 'route' => 'home'],
                 ['label' => 'Projects', 'route' => 'projects'],
                 ['label' => 'About', 'route' => 'about'],
                 ['label' => 'Contact', 'route' => 'contact'],
@@ -358,7 +357,6 @@ return [
                 'scenes' => 'Szenen dieser Seite',
             ],
             'nav' => [
-                ['label' => 'Start', 'route' => 'home'],
                 ['label' => 'Projekte', 'route' => 'projects'],
                 ['label' => 'Profil', 'route' => 'about'],
                 ['label' => 'Kontakt', 'route' => 'contact'],

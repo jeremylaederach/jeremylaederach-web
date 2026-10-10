@@ -48,10 +48,16 @@
         height: 100%;
     }
 
-    /* A stage: where the sphere stands on a page. By default it covers its section. */
+    /* A stage: where the sphere stands on a page. By default it covers its section. Without
+       scripts there is no sphere, and a stage takes no room. */
     .dot-orb {
+        display: none;
         position: absolute;
         inset: 0;
         pointer-events: none;
+    }
+
+    .js .dot-orb {
+        display: block;
     }
 }

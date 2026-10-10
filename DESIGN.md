@@ -49,9 +49,10 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   destinations in the middle with even gaps, the languages and the sound toggle on the right. The
   destinations behave like the languages: the current one and a hovered or focused one take the
   accent, and the pointer's ring wraps the hovered one. They fade by how far they are lit, not
-  by their color, so they keep step with the accent while it blends to another page's. On a page with a sphere a hovered
-  destination also morphs it into that destination's figure. Up to 960px a menu button replaces
-  the destinations and the languages.
+  by their color, so they keep step with the accent while it blends to another page's. On a
+  page with a sphere a hovered destination also morphs it into that destination's figure. Up to
+  960px a menu button replaces the destinations and the languages: it opens a panel over the
+  whole window that lists the same three destinations as large rows, and the languages.
 - **Pointer.** A dot at the mouse position and a ring of fine beads around it that travel slowly
   (`resources/js/pointer-controller.js`, `resources/css/pointer.css`). Over a control up to 240
   by 72 pixels the ring leaves the dot and wraps the control, easing there in about a quarter of a
@@ -179,7 +180,7 @@ the stage is the whole section.
   a stage, the legal pages, the dots scatter away from the middle and fade, and the next stage
   gathers them again.
 - **Fallbacks.** Touch input never morphs it. Under reduced motion it is one still
-  sphere.
+  sphere. Without scripts there is no sphere, and a stage takes no room on its page.
 
 ### Stage list: projects overview and contact
 

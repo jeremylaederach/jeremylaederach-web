@@ -208,7 +208,7 @@
         min-height: 100svh;
         overflow-y: auto;
         padding: 92px 24px 28px;
-        background: rgba(var(--bg-rgb), 0.985);
+        background: var(--bg);
         opacity: 0;
         transform: translateY(-22px);
         transition: opacity 320ms ease, transform 520ms var(--ease-heavy);
@@ -226,7 +226,7 @@
 
     .primary-nav a {
         display: grid;
-        grid-template-columns: 34px 1fr 24px;
+        grid-template-columns: 1fr 24px;
         align-items: center;
         min-height: 82px;
         border-top: 1px solid var(--line);
@@ -239,11 +239,6 @@
     .site-menu__panel[data-open] .primary-nav a {
         opacity: 1;
         transform: none;
-    }
-
-    .primary-nav a > span {
-        color: var(--quiet);
-        font-size: 10px;
     }
 
     .primary-nav a strong {

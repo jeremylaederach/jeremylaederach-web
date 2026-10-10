@@ -77,8 +77,6 @@
 
                 <nav class="site-header__nav" aria-label="{{ $content['ui']['menu'] }}">
                     @foreach ($content['nav'] as $item)
-                        @continue($item['route'] === 'home')
-
                         @php
                             $isActive = $currentScene === $item['route'];
                         @endphp
@@ -165,7 +163,6 @@
                                         data-sound-tone="navigation"
                                         style="--menu-index: {{ $loop->index }}"
                                     >
-                                        <span>0{{ $loop->iteration }}</span>
                                         <strong>{{ $item['label'] }}</strong>
                                         <x-nav-icon name="arrow-right" />
                                     </a>
