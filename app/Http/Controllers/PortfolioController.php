@@ -35,7 +35,7 @@ class PortfolioController extends Controller
 
     public function jayJayClientHub(string $locale): RedirectResponse
     {
-        return redirect()->to(route('jay-jay', ['locale' => $locale]).'#client-hub', 301);
+        return redirect()->to(route('jay-jay', ['locale' => $locale]).'#details', 301);
     }
 
     public function sessionDeck(string $locale): RedirectResponse

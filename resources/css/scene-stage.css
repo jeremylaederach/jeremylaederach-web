@@ -117,6 +117,14 @@
         gap: 2px 16px;
     }
 
+    /* The links a scene leads on with stand side by side and wrap where there is no room. */
+    .scene__links {
+        display: flex;
+        margin: 0;
+        flex-wrap: wrap;
+        gap: 0 28px;
+    }
+
     .scene__link {
         min-height: 44px;
         margin-top: 14px;

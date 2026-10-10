@@ -217,25 +217,29 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('Product · Active build')
             ->assertSee('Quantified shows me where my time, my health and my money go.')
             ->assertSee('data-dot-orb-figure="quantified trend ring calendar"', false)
-            ->assertSee('Apple Health delivers running, nutrition and weight.')
-            ->assertSee('data-dot-orb-figure="ledger"', false)
+            ->assertSee('Apple Health for running, nutrition and weight.')
+            ->assertSee('data-dot-orb-figure="timeline ledger target"', false)
+            ->assertSee('First a tool for myself. Later a product for others.')
             ->assertSee('PostgreSQL 18')
             ->assertSee('href="http://localhost/en/projects#quantified"', false)
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertDontSee('<img', false);
 
-        // Five scenes of its own and one that leads on to the next project, in that project's
-        // color and with its figures.
+        // Four scenes of its own, overview, stack, details and outlook, and one that leads on
+        // to the next project, in that project's color and with its figures.
         $html = $english->content();
-        $this->assertSame(6, preg_match_all('/\sdata-scene\s/', $html));
-        $this->assertSame(6, substr_count($html, 'data-scene-step="'));
+        $this->assertSame(5, preg_match_all('/\sdata-scene\s/', $html));
+        $this->assertSame(5, substr_count($html, 'data-scene-step="'));
 
-        // The first scene says what the project is at one glance: its stack, whose entries name
-        // their marks, its state and the role. The way on leads to the second scene.
-        $this->assertSame(3, preg_match_all('/<dt>(Stack|State|Role)<\/dt>/', $html));
+        // The first scene says what the project is at one glance, its state and the role. The
+        // second lists its stack in groups, whose entries name their marks. The way on leads to
+        // the second scene.
+        $this->assertSame(2, preg_match_all('/<dt>(State|Role)<\/dt>/', $html));
+        $this->assertSame(3, preg_match_all('/<dt>(Interface|API|Data)<\/dt>/', $html));
+        $this->assertSame(4, preg_match_all('/<dt>(Sources|Life|Finances|Goals)<\/dt>/', $html));
         $this->assertMatchesRegularExpression('/<dd>\s*<ul class="scene__tags">.*?data-dot-orb-figure="angular".*?<\/ul>\s*<\/dd>/s', $html);
-        $this->assertMatchesRegularExpression('/class="scene-stage__next"\s+href="#sources"\s+data-scene-next/', $html);
-        $this->assertStringContainsString('<span data-scene-next-name>Sources</span>', $html);
+        $this->assertMatchesRegularExpression('/class="scene-stage__next"\s+href="#stack"\s+data-scene-next/', $html);
+        $this->assertStringContainsString('<span data-scene-next-name>Stack</span>', $html);
         $this->assertSame(1, substr_count($html, 'data-active data-dot-orb-resting'));
         $this->assertMatchesRegularExpression(
             '/id="next-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="jay-jay globe cloud contact"\s+data-project="jay-jay"/',
@@ -263,23 +267,25 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Jay-Jay</title>', false)
             ->assertSee('project-detail--jay-jay', false)
             ->assertSee('Jay-Jay is my business for websites, hosting, domains, email and support.')
-            ->assertSee('<dt>Stack</dt>', false)
+            ->assertSee('<dt>Quality</dt>', false)
             ->assertSee('Founder, product designer and developer.')
-            ->assertSee('<div id="client-hub" class="scene-stage__step" data-scene-step="client-hub-scene"></div>', false)
-            ->assertSee('It runs on demo data')
+            ->assertSee('<div id="details" class="scene-stage__step" data-scene-step="details-scene"></div>', false)
+            ->assertSee('That stays the base.')
+            ->assertSee('Customer portal, in development.')
             ->assertSee('Scherer Gartengestaltung &amp; Pflege AG', false)
             ->assertSee('href="https://scherergartengestaltung.ch/"', false)
             ->assertSee('href="https://jay-jay.ch/en/"', false)
             ->assertSee('rel="noopener noreferrer"', false)
-            ->assertSee('data-dot-orb-figure="leaf"', false)
+            ->assertSee('data-dot-orb-figure="globe leaf cloud sheet"', false)
             ->assertSee('data-project="quantified"', false)
             ->assertSee('href="http://localhost/en/quantified"', false)
             ->assertSee('href="http://localhost/de/jay-jay"', false);
 
         $this->get('/de/jay-jay')
             ->assertOk()
-            ->assertSee('Websites für Kunden, auf dieselbe Art gebaut.')
-            ->assertSee('Ein Portal für Kunden')
+            ->assertSee('Websites wie die der Scherer')
+            ->assertSee('Das bleibt die Basis.')
+            ->assertSee('Kundenportal, in Entwicklung.')
             ->assertSee('href="https://jay-jay.ch/de/"', false)
             ->assertSee('href="http://localhost/de/quantified"', false)
             ->assertSee('href="http://localhost/en/jay-jay"', false);
@@ -317,15 +323,15 @@ class PortfolioPagesTest extends TestCase
     public function test_legacy_client_hub_routes_redirect_to_the_jay_jay_case_study(): void
     {
         $this->get('/jay-jay-client-hub')
-            ->assertRedirect('/en/jay-jay#client-hub');
+            ->assertRedirect('/en/jay-jay#details');
 
         $this->get('/en/jay-jay-client-hub')
             ->assertMovedPermanently()
-            ->assertRedirect('/en/jay-jay#client-hub');
+            ->assertRedirect('/en/jay-jay#details');
 
         $this->get('/de/jay-jay-client-hub')
             ->assertMovedPermanently()
-            ->assertRedirect('/de/jay-jay#client-hub');
+            ->assertRedirect('/de/jay-jay#details');
     }
 
     public function test_contact_footer_and_legal_pages_render_per_locale(): void

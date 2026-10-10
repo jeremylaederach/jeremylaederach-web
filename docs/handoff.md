@@ -13,8 +13,8 @@ check them again before relying on them.
 - **On `main`, not deployed:** the rework of every page around one element, a generative sphere
   of dots. It replaces the look of `v1.5.1` and goes out as one release after a review of the
   whole site.
-- **Checked on 10 October:** `npm test` with 73 tests; `composer test` with Pint, PHPStan and
-  19 tests (508 assertions, the static export included); CI passed on `main`. Earlier that
+- **Checked on 10 October:** `npm test` with 69 tests; `composer test` with Pint, PHPStan and
+  19 tests (513 assertions, the static export included); CI passed on `main`. Earlier that
   day, before the last changes to the sphere: ten pages of the exported site under its own
   Content-Security-Policy without a violation, page changes included.
 - **Seen as stills from a headless browser:** every page in English or German at 1440 by 900,
@@ -75,20 +75,21 @@ Content to confirm:
   at OST since 2026.
 - The texts in both languages need proofreading. The home statement still names native apps;
   SessionDeck, the one native project, is no longer on the site.
-- What the shorter pages no longer say: TypeScript, .NET 10 and EF Core for Quantified;
-  Blade, Pest, Larastan and Plesk for Jay-Jay; a sentence on each of the four technologies
-  of the about page.
+- The case studies have four steps each since 10 October: overview, stack, details and
+  outlook. The outlook is new text and needs a careful read in both languages: it names a
+  direction and promises nothing. The details list one short fact for each part of a
+  project, short enough for a phone; the longer sentences the earlier scenes had on each
+  part are gone.
+- What the about page no longer says: a sentence on each of its four technologies.
 
 ## Next steps
 
 1. Review of the whole site on a desktop and on a real phone, Firefox and Safari included,
    and the changes that follow from it.
-2. The case studies: three steps each, overview, stack and details, and a way to show
-   where a project is heading. The texts for that are still to be written.
-3. The content above: facts, texts, tool lists.
-4. `dot-orb-controller.js` has grown past 1,000 lines. Once the behaviour is settled, the
-   presses with the carried bud and the journey between stages become modules of their own.
-5. Release (see below).
+2. The content above: facts, texts, the outlook of both case studies.
+3. `dot-orb-controller.js` is close to 1,000 lines. Once the behaviour is settled, the
+   presses and the journey between stages become modules of their own.
+4. Release (see below).
 
 Open, without a date:
 
@@ -144,8 +145,8 @@ Not to be rebuilt without a new reason:
 
 - Public pages under `/en` and `/de`: home, about, projects, the case studies Quantified and
   Jay-Jay, contact, legal notice and privacy, with localized 404 pages. `/` leads to `/en/`.
-  The former Client Hub address redirects to the Jay-Jay case study, the former SessionDeck
-  address to the projects.
+  The former Client Hub address redirects to the details of the Jay-Jay case study, the
+  former SessionDeck address to the projects.
 - Page titles are the bare localized heading; a test pins it.
 - Larastan runs at level 8. Level 9 would need typed access to the content array.
 - In development the framework still registers a route for a local storage disk

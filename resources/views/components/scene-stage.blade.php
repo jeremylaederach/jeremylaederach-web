@@ -13,6 +13,7 @@
             tags    short entries below, such as tools (see the scene-tags component) (optional)
             link    ['label' => ..., 'url' => ..., 'route' => name of the page's route for a page
                     of this site] (optional)
+            links   several such links side by side, instead of one (optional)
             project slug of the project the scene stands for, which brings that project's color
     sphere  what the sphere shows for each scene, by its id: ['figures' => [...], 'color' => '#...']
     label   accessible name of the list of steps
@@ -92,23 +93,31 @@
                         <x-scene-tags :tags="$scene['tags']" />
                     @endisset
 
-                    @isset($scene['link'])
-                        <a
-                            class="scene__link directional-link directional-link--forward"
-                            href="{{ $scene['link']['url'] }}"
-                            @isset($scene['link']['route'])
-                                data-route="{{ $scene['link']['route'] }}"
-                                data-route-transition
-                            @else
-                                rel="noopener noreferrer"
-                            @endisset
-                            data-interface-sound
-                            data-sound-tone="action"
-                        >
-                            <span>{{ $scene['link']['label'] }}</span>
-                            <x-nav-icon :name="isset($scene['link']['route']) ? 'arrow-right' : 'arrow-up-right'" />
-                        </a>
-                    @endisset
+                    @php
+                        $links = $scene['links'] ?? (isset($scene['link']) ? [$scene['link']] : []);
+                    @endphp
+
+                    @if ($links)
+                        <p class="scene__links">
+                            @foreach ($links as $link)
+                                <a
+                                    class="scene__link directional-link directional-link--forward"
+                                    href="{{ $link['url'] }}"
+                                    @isset($link['route'])
+                                        data-route="{{ $link['route'] }}"
+                                        data-route-transition
+                                    @else
+                                        rel="noopener noreferrer"
+                                    @endisset
+                                    data-interface-sound
+                                    data-sound-tone="action"
+                                >
+                                    <span>{{ $link['label'] }}</span>
+                                    <x-nav-icon :name="isset($link['route']) ? 'arrow-right' : 'arrow-up-right'" />
+                                </a>
+                            @endforeach
+                        </p>
+                    @endif
                 </li>
             @endforeach
         </ol>

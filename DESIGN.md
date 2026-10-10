@@ -249,7 +249,7 @@ changes is its content: the statement and the figure of the sphere, together. No
 shows a screenshot.
 
 - **Scene.** A short label, one statement as the largest text of the page, and below it at most
-  a sentence or two, a few tags or one link. A scene can also list facts, each a name and what
+  a sentence or two, a few tags and one or two links. A scene can also list facts, each a name and what
   it stands for, so that a first scene says what there is to know at one glance; up to 960px
   they take the place of its sentence. The sphere shows the scene's figures (`scenes` in the
   content), in the page's accent or in the color the scene names.
@@ -261,7 +261,7 @@ shows a screenshot.
   ends with the last of them. Like the header's
   destinations, a hovered or focused one and the current one take the accent; the current one
   also stands on a line in the accent, which grows in from the left. Each is a link to
-  its step, so a scene has an address (`/en/jay-jay#client-hub`). On a narrow screen the row
+  its step, so a scene has an address (`/en/jay-jay#details`). On a narrow screen the row
   scrolls sideways and keeps the current step in sight. From 961px a link at the lower edge of
   the screen leads on: it names the next scene and is gone on the last.
 - **From 961px.** A stage like the projects overview: the head of the page with the steps, the
@@ -280,11 +280,14 @@ shows a screenshot.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
   project's color. The head holds the way back, the name and the kind of project. The scenes
-  say what the project is and does, each with a rough picture. Each project has five: the first
-  lists the stack, the state and the role as facts. The others show, for Quantified, sources
-  that lead into one place, a timeline, a ledger and a target, and for Jay-Jay a globe, a leaf
-  for the client's garden business, a cloud and a document. The last scene stands for the next project: its name, one sentence and the way
-  there, and while it is shown the page and the dots already take that project's color.
+  say what the project is and does, each with rough pictures. Each project has the same four.
+  The overview states what it is, with its state and the role as facts. The stack lists its
+  tools in groups, while the sphere goes through their marks. The details list what it
+  holds, one fact for each part: for Quantified a timeline, a ledger and a target, for
+  Jay-Jay a globe, a leaf for the client's garden business, a cloud and a document. The
+  outlook says in two sentences where the project is heading. The last scene stands for the
+  next project: its name, one sentence and the way there, and while it is shown the page and
+  the dots already take that project's color.
 - **Without scripts** the scenes follow each other as plain sections. **Reduced motion** keeps
   the screen in place and changes the statement at once; the sphere is one still sphere.
 - **Focus.** A scene that is not shown still holds its links. When one of them receives the
