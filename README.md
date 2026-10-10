@@ -7,11 +7,11 @@ The bilingual personal portfolio of [Jeremy Läderach](https://jeremylaederach.c
 ## Highlights
 
 - English and German routes with matching content
-- Custom client-side navigation and coordinated page transitions
+- A generative sphere of 1200 dots on a 2D canvas: it sheds buds like a lava lamp, flows from figure to figure and answers the pointer
+- Custom client-side navigation: the page fades, and the sphere stays and travels to its place on the next page
+- An about page and case studies told in scenes: one screen stays in place, and scrolling changes its statement and the figure together
 - Accessible keyboard navigation, reduced-motion support and responsive layouts
 - A custom pointer and original interface sounds
-- A generative sphere of dots that flows from figure to figure: one for each destination, several for each project
-- An about page and case studies told in scenes: one screen stays in place, and scrolling changes its statement and the figure together
 - Static production export with localized 404 pages and hardened response headers
 - PHPUnit feature coverage, JavaScript interaction tests, PHPStan analysis and Laravel Pint formatting checks
 
@@ -53,8 +53,7 @@ config/portfolio.php    English and German content
 resources/views/        Blade pages and reusable components
 resources/css/          Foundation, layout and shared components; pages/ holds what one kind of page needs
 resources/fonts/        Self-hosted Instrument Sans (variable, SIL Open Font License)
-resources/js/           One small controller per concern: navigation, pointer, sphere, scenes, sound, transitions;
-                        the sphere's parts are the dot-orb-* modules
+resources/js/           One small controller per concern: navigation, pointer, sphere, scenes, sound, transitions
 tests/Feature/           Public-page and export coverage
 tests/JavaScript/        Controller and DOM interaction tests
 scripts/deploy_static.py Restricted FTPS upload and live verification
@@ -64,6 +63,8 @@ AGENTS.md                Working rules for coding agents
 DESIGN.md                What the interface does: craft standard, identity, the pages
 docs/handoff.md          Current state, open decisions and audit findings
 ```
+
+The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), which dots a bud takes and how the surfaces of the blobs join (`buds`, `lamp`), what the sphere notices of the visitor (`attention`), and the shared arithmetic (`math`).
 
 The about page and the case studies are told in scenes: one Blade component (`scene-stage`), one stylesheet and one small controller that shows the scene whose step crosses the middle of the window. What the sphere shows for each scene is listed in `config/portfolio.php`. The site shows no screenshots; the sphere draws rough pictures instead.
 
@@ -104,7 +105,7 @@ GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, 
 2. In Hosttech/Plesk hosting 117, create a separate FTP user **jeremylaederach-deploy** restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not allow access to Jay-Jay or other sites. The uploader checks the existing portfolio URL before writing. Do not reuse the master login or Jay-Jay's deployment credential.
 3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** (`jeremylaederach-deploy`) and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The endpoint is `117.hosttech.eu:21`; both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
 4. Commit and push the reviewed changes; the push runs CI only. Start **Actions → Deploy → Run workflow** on `main`.
-5. Wait for both jobs to succeed, then review EN/DE, project galleries, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job reads every uploaded file back over FTPS, then compares the published HTML, CSS and JavaScript with the package. The public comparison is repeated twice before it fails, because the host's bot protection can answer a runner with a challenge page; the error then states what the server returned, and re-running the deploy job repeats the check. None of this replaces a visual review.
+5. Wait for both jobs to succeed, then review EN/DE, the case studies, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job reads every uploaded file back over FTPS, then compares the published HTML, CSS and JavaScript with the package. The public comparison is repeated twice before it fails, because the host's bot protection can answer a runner with a challenge page; the error then states what the server returned, and re-running the deploy job repeats the check. None of this replaces a visual review.
 6. Create the release tag on the uploaded commit once the live result is accepted. Every later release repeats steps 4 to 6.
 
 The upload installs root dot-file protection first, then assets, then HTML. Files are transferred under temporary names and renamed only after transfer completes. Active production runs are not cancelled by another push. The uploader never mirror-deletes server files or old hashed assets, preserving `.well-known` and existing server-managed content. The portfolio package rejects every PHP file.
