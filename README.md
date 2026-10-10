@@ -61,7 +61,7 @@ scripts/render-brand.mjs Favicon, app icons and link preview, rendered from publ
 tests/deployment/        Deployment safeguards (Python standard library)
 AGENTS.md                Working rules for coding agents
 DESIGN.md                What the interface does: craft standard, identity, the pages
-docs/handoff.md          Current state, open decisions and audit findings
+docs/handoff.md          Current state, open items and next steps
 ```
 
 The sphere is the `dot-orb-*` modules. The controller holds the scene: the canvas, the stage a page marks for the sphere, the clock and what the pointer does. Beside it stand the parts that can be read and tested on their own: the drawings of the figures and how they become points (`figures`, `sampling`), which point each dot takes when the shape changes (`pairing`), how the sphere divides into a body and its buds (`division`), what the sphere notices of the visitor (`attention`), and the shared arithmetic (`math`).
@@ -102,8 +102,8 @@ GitHub Actions builds and retains a **hosttech-<commit>** artifact after tests, 
 ### First-time setup
 
 1. Back up this website's document root and confirm how to restore it. Restore only the portfolio files, not unrelated subscription data.
-2. In Hosttech/Plesk hosting 117, create a separate FTP user **jeremylaederach-deploy** restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not allow access to Jay-Jay or other sites. The uploader checks the existing portfolio URL before writing. Do not reuse the master login or Jay-Jay's deployment credential.
-3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** (`jeremylaederach-deploy`) and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The endpoint is `117.hosttech.eu:21`; both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
+2. In Plesk, create a separate FTP user for deployments, restricted to this domain's `httpdocs`. The account's FTP `/` must contain the existing portfolio's `de/index.html` and must not reach any other site. The uploader checks the existing portfolio URL before writing. Do not reuse the subscription's main login or another project's deployment credential.
+3. In this repository's GitHub settings, create the **production** environment and restrict deployment branches to `main`. Add environment secrets **DEPLOY_FTP_USERNAME** and **DEPLOY_FTP_PASSWORD**. Store the credential in your password manager, never in Git. The uploader is pinned to this site's host and to the one account it accepts (`scripts/deploy_static.py`); both control and data connections use TLS with certificate verification. No production PHP handler or database is needed.
 4. Commit and push the reviewed changes; the push runs CI only. Start **Actions → Deploy → Run workflow** on `main`.
 5. Wait for both jobs to succeed, then review EN/DE, the case studies, mobile layout, direct page loads, localized 404s and browser back/forward navigation on the live website. The job reads every uploaded file back over FTPS, then compares the published HTML, CSS and JavaScript with the package. The public comparison is repeated twice before it fails, because the host's bot protection can answer a runner with a challenge page; the error then states what the server returned, and re-running the deploy job repeats the check. None of this replaces a visual review.
 6. Create the release tag on the uploaded commit once the live result is accepted. Every later release repeats steps 4 to 6.
