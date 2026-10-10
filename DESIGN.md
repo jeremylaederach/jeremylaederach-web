@@ -242,8 +242,10 @@ shows a screenshot.
 - **From 961px.** A stage like the projects overview: the head of the page with the steps, the
   scene and the way on stand on the left, and on the right a square for the sphere, as high as
   the stage allows and at most five of the twelve columns wide. Up to 960px the head with the
-  steps, the square and the scene follow each other in one column, and the square shrinks with
-  the height of the window.
+  steps, the stage of the sphere and the scene follow each other in one column. There the scenes
+  are as tall as the tallest of them needs and the stage takes what is left of the screen, at
+  most 44% of its height: the figure fills the smaller side of that room, so a long scene makes
+  the figure smaller instead of running out of the window.
 - **About.** Six scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
   shoulders and three facts (his apprenticeship, his studies, what he builds); four
   technologies, each with its mark in its color (.NET, Laravel, Angular, PostgreSQL) and its
