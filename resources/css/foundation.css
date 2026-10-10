@@ -1,26 +1,3 @@
-/* The accent as three numbers, so that it can blend from one color to another. */
-@property --route-accent-rgb {
-    syntax: '<number>#';
-    inherits: true;
-    initial-value: 125, 240, 201;
-}
-
-/* How far a control of the header is lit, from its resting color to the accent. The accent
-   itself blends from page to page, and a color that followed it with a transition of its own
-   would trail behind: such a control fades by this number instead of by its color. */
-@property --lit {
-    syntax: '<number>';
-    inherits: false;
-    initial-value: 0;
-}
-
-/* How strongly the dots show behind the text column of the home page. */
-@property --orb-shade {
-    syntax: '<number>';
-    inherits: false;
-    initial-value: 1;
-}
-
 @layer base {
     :root {
         --bg: #07070a;
@@ -36,6 +13,11 @@
         --route-accent-goal: var(--mint-rgb);
         --route-accent: rgb(var(--route-accent-rgb));
         --shell: min(calc(100% - 64px), 1600px);
+        /* A link takes the accent at once when it is hovered and gives it back gently. What
+           shows the accent of the page blends to another page's in `--accent-blend`. */
+        --hover-in: 60ms;
+        --hover-out: 220ms;
+        --accent-blend: 400ms;
         --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
         --ease-heavy: cubic-bezier(0.16, 0.76, 0.24, 1);
     }
@@ -52,11 +34,12 @@
         text-rendering: optimizeLegibility;
     }
 
-    /* The page names the accent it is heading for; the accent in use follows it smoothly. */
+    /* The page names its accent. The accent itself changes at once; what shows it, the mark,
+       the current destination and the like, has a transition of its own. An accent that blends
+       as a property of the whole page makes every element work out its style in every frame. */
     body {
         --route-accent-rgb: var(--route-accent-goal);
         --route-accent: rgb(var(--route-accent-rgb));
-        transition: --route-accent-rgb 420ms ease;
         min-height: 100svh;
         margin: 0;
         overflow-x: hidden;

@@ -11,16 +11,12 @@
         align-content: end;
     }
 
-    /* The stage ends where the text begins, and the dots fade out towards it. */
+    /* The stage ends where the text begins, and the dots fade out towards it: from 76% of the
+       stage's height to nothing at its lower edge (see `fade` in dot-orb-controller.js). */
     .kinetic-index .dot-orb {
+        --dot-orb-fade: down 0.76 1 0;
         inset: 0 0 auto;
         height: 68svh;
-    }
-
-    @media (max-width: 960px) {
-        .route-home .site-orb {
-            mask-image: linear-gradient(#000 52svh, transparent 68svh);
-        }
     }
 
     .kinetic-index__masthead {
@@ -77,20 +73,12 @@
             font-size: clamp(38px, min(3.9vw, 7.4svh), 62px);
         }
 
+        /* Behind the text column the dots recede to a fifth, so the sphere may wander anywhere:
+           up to half of the stage's width, and in full from 62% of it. */
         .kinetic-index .dot-orb {
+            --dot-orb-fade: left 0.5 0.62 0.2;
             inset: 0;
             height: auto;
-        }
-
-        /* Behind the text column the dots recede, so the sphere may wander anywhere. The shade
-           is a number, so it fades when the page changes. */
-        .site-orb {
-            mask-image: linear-gradient(90deg, rgb(0 0 0 / var(--orb-shade)) 50%, #000 62%);
-            transition: opacity 1600ms ease 200ms, --orb-shade 600ms ease;
-        }
-
-        .route-home .site-orb {
-            --orb-shade: 0.2;
         }
     }
 

@@ -10,6 +10,7 @@
 
     .accent-dot {
         color: var(--route-accent);
+        transition: color var(--accent-blend) ease;
     }
 
     .directional-link {
@@ -28,7 +29,7 @@
         width: 16px;
         height: 16px;
         color: var(--directional-accent);
-        transition: transform 420ms var(--ease-out);
+        transition: transform 420ms var(--ease-out), color var(--accent-blend) ease;
     }
 
     .directional-link:hover,

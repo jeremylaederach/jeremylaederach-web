@@ -42,7 +42,7 @@
     .brand-lockup__mark {
         width: 38px;
         height: 38px;
-        transition: scale 320ms var(--ease-out);
+        transition: scale 320ms var(--ease-out), background-color var(--accent-blend) ease;
     }
 
     .has-mouse-input .brand-lockup:hover .brand-lockup__mark,
@@ -51,14 +51,12 @@
     }
 
     /* The mark takes the accent of the page: its drawing is the mask, and the accent runs from a
-       lighter tone at the top left to a deeper one, as in the drawing itself. */
+       lighter tone at the top left to a deeper one, as in the drawing itself. The tones are a
+       veil over the accent, so the accent below can blend to another page's. */
     .brand-mark {
         display: block;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--route-accent) 76%, white) 20%,
-            color-mix(in srgb, var(--route-accent) 92%, black) 80%
-        );
+        background-color: var(--route-accent);
+        background-image: linear-gradient(135deg, rgb(255 255 255 / 0.24) 20%, rgb(0 0 0 / 0.08) 80%);
         mask: var(--brand-mark) center / contain no-repeat;
     }
 
@@ -88,17 +86,22 @@
         height: 48px;
         padding: 0 22px;
         align-items: center;
-        color: color-mix(in srgb, var(--route-accent) calc(var(--lit) * 100%), var(--muted));
+        color: var(--muted);
         font-size: 17px;
         font-weight: 430;
         line-height: 1;
-        transition: --lit 200ms ease;
+        transition: color var(--hover-out) ease;
     }
 
     .site-header__nav-link.is-active,
     .has-mouse-input .site-header__nav-link:hover,
     .site-header__nav-link:focus-visible {
-        --lit: 1;
+        color: var(--route-accent);
+    }
+
+    .has-mouse-input .site-header__nav-link:hover,
+    .site-header__nav-link:focus-visible {
+        transition-duration: var(--hover-in);
     }
 
     @media (max-width: 960px) {
@@ -121,13 +124,18 @@
         width: 44px;
         height: 44px;
         place-items: center;
-        color: color-mix(in srgb, var(--route-accent) calc(var(--lit) * 100%), var(--quiet));
-        transition: --lit 200ms ease;
+        transition: color var(--hover-out) ease;
     }
 
-    .site-header__languages a:hover,
-    .site-header__languages a.is-active {
-        --lit: 1;
+    .site-header__languages a.is-active,
+    .has-mouse-input .site-header__languages a:hover,
+    .site-header__languages a:focus-visible {
+        color: var(--route-accent);
+    }
+
+    .has-mouse-input .site-header__languages a:hover,
+    .site-header__languages a:focus-visible {
+        transition-duration: var(--hover-in);
     }
 
     .sound-toggle,
@@ -141,12 +149,13 @@
         background: none;
         color: var(--quiet);
         cursor: pointer;
-        transition: color 220ms ease;
+        transition: color var(--hover-out) ease;
     }
 
-    .sound-toggle:hover,
-    .site-menu__toggle:hover {
+    .has-mouse-input :is(.sound-toggle, .site-menu__toggle):hover,
+    :is(.sound-toggle, .site-menu__toggle):focus-visible {
         color: var(--route-accent);
+        transition-duration: var(--hover-in);
     }
 
     .sound-toggle .nav-icon {
@@ -309,12 +318,13 @@
         display: flex;
         min-height: 44px;
         align-items: center;
-        transition: color 200ms ease;
+        transition: color var(--hover-out) ease;
     }
 
     .has-mouse-input .site-colophon__links a:hover,
     .site-colophon__links a:focus-visible {
         color: var(--route-accent);
+        transition-duration: var(--hover-in);
     }
 
     /* The home page is one screen from 961px and ends without the line. */

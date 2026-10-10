@@ -41,15 +41,16 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
 - **Colors.** Background `#07070a`, ink `#f4f1ea`, muted text `#aaa6af`, hairlines at 13% ink.
   One accent, mint `#7df0c9`. Where a project is shown, in its case study or as the current one
   of the projects overview, its color replaces mint as the accent of the whole page, the header
-  and the pointer included. A page names the accent it is heading for (`--route-accent-goal`);
-  the accent in use (`--route-accent`, `--route-accent-rgb`) blends to it in 0.4 seconds.
+  and the pointer included. A page names its accent (`--route-accent-goal`); it changes at once,
+  and what shows it, the mark, the current destination, the dots, blends to the new one on its
+  own, in 0.4 seconds or less. The accent does not blend as a property of the whole page: that
+  makes every element work out its style in every frame.
 - **Type.** Instrument Sans, self-hosted, weights 400 to 700. Display sizes are set at weight 430
   with a line height of 0.94.
 - **Header.** The same on every page: the mark as the link home on the left, the three
   destinations in the middle with even gaps, the languages and the sound toggle on the right. The
   destinations behave like the languages: the current one and a hovered or focused one take the
-  accent, and the pointer's ring wraps the hovered one. They fade by how far they are lit, not
-  by their color, so they keep step with the accent while it blends to another page's. On a
+  accent, and the pointer's ring wraps the hovered one. On a
   page with a sphere a hovered destination also morphs it into that destination's figure. Up to
   960px a menu button replaces the destinations and the languages: it opens a panel over the
   whole window that lists the same three destinations as large rows, and the languages.
@@ -69,7 +70,10 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   destination as the current one, and the accent blends to the new page's. Nothing covers the
   page. Reduced motion swaps the page without a transition.
 - **Hover.** No surface lights up under the pointer: a hovered link or card answers with its
-  accent, a rule drawn in the accent or a small movement. Optional interface sounds.
+  accent, a rule drawn in the accent or a small movement. Every link that takes the accent does
+  it the same way, the destinations of the header, the languages, the steps of a page told in
+  scenes and the links that end a page: at once when it is hovered or focused (`--hover-in`,
+  60ms), and gently back (`--hover-out`, 220ms). Optional interface sounds.
 - **Page end.** Every page ends with one quiet line in the middle: the profiles and the legal
   pages, each link at least 44px tall. The main region leaves room for it, so a short page and
   the line fill one screen. The home page, one screen from 961px, ends without it there.
@@ -90,8 +94,10 @@ it. A page marks where the sphere stands with a stage (`data-dot-orb-stage`); on
 the stage is the whole section.
 
 - **Idle motion.** The dots sit on a Fibonacci lattice. The sphere turns once in 52 seconds, bulges
-  in slow overlapping waves and wanders around the middle of the stage. On the home page a mask dims the dots to 20% behind
-  the text column, so they never compete with the text; it fades in and out with a page change.
+  in slow overlapping waves and wanders around the middle of the stage. On the home page the dots recede to
+  20% behind the text column, so they never compete with the text. The stage asks for it
+  (`--dot-orb-fade`) and the canvas draws those dots fainter; it fades in and out with a page
+  change. Nothing masks the canvas.
 - **What the dots answer to** is the same on every page, so a visitor learns it once:
   - *The pointer near them:* the sphere leans towards it, and dots within reach give way.
   - *Hovering or focusing something that names a figure:* the dots take that figure, and
@@ -148,7 +154,8 @@ the stage is the whole section.
   neighbours stay neighbours, left stays left, and a dot on the near side of the sphere goes to
   the front of the figure. Before a figure lets its dots go, they change places within it,
   unseen, so that each returns to the nearest place on the sphere. No dot crosses the shape it
-  comes from or the one it goes to.
+  comes from or the one it goes to. A figure forms from its first point to its last, wherever
+  a dot comes from, so the sphere and a bud beside it turn into it in one wave.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
   beside the text. Hovered, they light up in the color of their figure, the accent unless they
@@ -241,8 +248,9 @@ shows a screenshot.
   window high. The step that crosses the middle of the window shows its scene: the old statement
   fades out as it sinks, the new one fades in, and the dots flow into the new figure. Nothing
   takes over the scroll; the page is simply as long as its steps.
-- **Steps.** The names of the scenes are a row of tabs below the heading: the current one
-  stands in full ink on a line in the accent, which grows in from the left. Each is a link to
+- **Steps.** The names of the scenes are a row of tabs below the heading. Like the header's
+  destinations, a hovered or focused one and the current one take the accent; the current one
+  also stands on a line in the accent, which grows in from the left. Each is a link to
   its step, so a scene has an address (`/en/jay-jay#client-hub`). On a narrow screen the row
   scrolls sideways and keeps the current step in sight. From 961px a link at the lower edge of
   the screen leads on: it names the next scene and is gone on the last.

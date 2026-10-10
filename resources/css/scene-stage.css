@@ -193,8 +193,9 @@
         transition: opacity 420ms ease 160ms, translate 620ms var(--ease-out) 160ms;
     }
 
-    /* The steps: the names of the scenes as a row of tabs below the heading. The current one
-       stands in full ink on a line in the accent, which grows in from the left. */
+    /* The steps: the names of the scenes as a row of tabs below the heading. Like the
+       destinations of the header, a hovered or focused one and the current one take the accent;
+       the current one also stands on a line in the accent, which grows in from the left. */
     .js .scene-stage__steps {
         display: flex;
         margin-top: 14px;
@@ -212,7 +213,7 @@
         display: flex;
         min-height: 44px;
         align-items: center;
-        transition: color 200ms ease;
+        transition: color var(--hover-out) ease;
     }
 
     .scene-stage__steps a::after {
@@ -223,13 +224,18 @@
         content: '';
         scale: 0 1;
         transform-origin: left;
-        transition: scale 420ms var(--ease-out);
+        transition: scale 420ms var(--ease-out), background-color var(--accent-blend) ease;
     }
 
     .has-mouse-input .scene-stage__steps a:hover,
     .scene-stage__steps a:focus-visible,
     .scene-stage__steps a[aria-current] {
-        color: var(--ink);
+        color: var(--route-accent);
+    }
+
+    .has-mouse-input .scene-stage__steps a:hover,
+    .scene-stage__steps a:focus-visible {
+        transition-duration: var(--hover-in);
     }
 
     .scene-stage__steps a[aria-current]::after {
@@ -243,7 +249,7 @@
         align-items: center;
         color: var(--ink);
         font-size: 15px;
-        transition: color 200ms ease;
+        transition: color var(--hover-out) ease;
     }
 
     .scene-stage__next-label {
@@ -257,12 +263,13 @@
         width: 16px;
         height: 16px;
         color: var(--route-accent);
-        transition: translate 320ms var(--ease-out);
+        transition: translate 320ms var(--ease-out), color var(--accent-blend) ease;
     }
 
     .has-mouse-input .scene-stage__next:hover,
     .scene-stage__next:focus-visible {
         color: var(--route-accent);
+        transition-duration: var(--hover-in);
     }
 
     .has-mouse-input .scene-stage__next:hover .nav-icon,

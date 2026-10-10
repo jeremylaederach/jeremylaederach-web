@@ -57,6 +57,7 @@
     .project-page__kind {
         margin: 0;
         color: var(--route-accent);
+        transition: color var(--accent-blend) ease;
         font-size: 11px;
         font-weight: 560;
         text-transform: uppercase;

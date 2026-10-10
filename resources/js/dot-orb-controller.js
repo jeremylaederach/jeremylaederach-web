@@ -89,6 +89,12 @@ const notice = { ahead: 0.2, sway: 0.00003, swing: 0.05, brisk: 1800, greeting: 
 // `rate` per second.
 const journey = { rate: 3.4 };
 
+// A stage can ask the dots to recede where its text stands (`--dot-orb-fade`): "left" dims
+// them towards the left edge, "down" towards the lower one, followed by where that begins and
+// where it is complete, as shares of the stage, and how much of a dot is left there. When the
+// page changes, the dimming fades in or out at `rate` per second.
+const fade = { rate: 3 };
+
 // On a page without a stage the dots scatter away from the middle of the sphere and fade; the
 // next page with one gathers them again. `reach` is how far they travel, in multiples of their
 // distance from the middle.
@@ -224,6 +230,12 @@ const initializeOrb = (canvas, reducedMotion) => {
     let pointed = null;
     let scattered = 0;
     let targetScattered = 0;
+    // Where the dots recede, in canvas pixels, how much of them is left there, whether the
+    // stage of this page asks for it, and how far it has faded in.
+    const veil = { asked: false, down: false, begin: 0, end: 1, level: 1, from: 0, to: 0, shown: 0 };
+    // The points on each side of a figure: the even ones lie on its front, the odd ones on its
+    // back.
+    const sides = new WeakMap();
 
     // Turns a lattice point into view space and lets it swell; x and y come back in sphere radii,
     // and once more as they are without the swell.
@@ -255,6 +267,32 @@ const initializeOrb = (canvas, reducedMotion) => {
         unit = size * mix(1, way.zoom, way.left);
         originX = (bounds.left - around.left) * scale + way.x * way.left;
         originY = (bounds.top - around.top) * scale + way.y * way.left;
+
+        if (veil.asked) {
+            const start = (veil.down ? bounds.top - around.top : bounds.left - around.left) * scale;
+            const length = veil.down ? height : width;
+
+            veil.from = start + veil.begin * length;
+            veil.to = start + veil.end * length;
+        }
+    };
+
+    // What the stage says about where its dots recede.
+    const readVeil = () => {
+        const [side, begin, end, level] = getComputedStyle(stage).getPropertyValue('--dot-orb-fade').trim().split(/\s+/);
+
+        veil.asked = side === 'left' || side === 'down';
+
+        if (veil.asked) {
+            Object.assign(veil, { down: side === 'down', begin: Number(begin), end: Number(end), level: Number(level) });
+        }
+    };
+
+    // How much of a dot at this place of the canvas shows.
+    const shownAt = (x, y) => {
+        const along = clamp(((veil.down ? y : x) - veil.from) / (veil.to - veil.from || 1), 0, 1);
+
+        return mix(1, veil.down ? mix(1, veil.level, along) : mix(veil.level, 1, along), veil.shown);
     };
 
     const wander = (seconds) => {
@@ -350,7 +388,9 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
 
         if (shape > 0.001) {
-            const amount = smooth(clamp(shape * 1.35 - (index / dotCount) * 0.35, 0, 1));
+            // The figure forms from its first point to its last, wherever a dot comes from: the
+            // sphere and a bud beside it turn into it in the same way.
+            const amount = smooth(clamp(shape * 1.35 - (dots.point[index] / dotCount) * 0.35, 0, 1));
             const thickness = dots.figureHalf[index] * (dots.point[index] % 2 === 0 ? 1 : -1);
             const turnedX = dots.figureX[index] * sway.cosTurn + thickness * sway.sinTurn;
             const depth = thickness * sway.cosTurn - dots.figureX[index] * sway.sinTurn;
@@ -438,10 +478,11 @@ const initializeOrb = (canvas, reducedMotion) => {
                     blobs.push(part);
                 }
             }
-
-            // The dots are shared out between the sphere and the buds that are out of it.
-            division.follow(leaving);
         }
+
+        // The dots are shared out between the sphere and the buds that are out of it, behind a
+        // figure too: a bud that set out meanwhile is not made up for in one frame.
+        division.follow(leaving);
     };
 
     const position = (seconds, delta) => {
@@ -482,8 +523,11 @@ const initializeOrb = (canvas, reducedMotion) => {
                 }
 
                 const closeness = (dots.z[index] + 1) / 2;
+                const visible = veil.shown > 0.001
+                    ? shownAt(originX + dots.x[index] * unit, originY + dots.y[index] * unit)
+                    : 1;
 
-                context.globalAlpha = (0.3 + closeness * closeness * 0.7) * (1 - scattered);
+                context.globalAlpha = (0.3 + closeness * closeness * 0.7) * (1 - scattered) * visible;
                 context.beginPath();
                 context.arc(
                     dots.x[index] * unit,
@@ -510,6 +554,10 @@ const initializeOrb = (canvas, reducedMotion) => {
     // its point at once, because the figure has not formed yet. Within a figure every dot keeps
     // its side and glides to its new point.
     const turnTo = (points) => {
+        if (!sides.has(points)) {
+            sides.set(points, [0, 1].map((face) => points.filter((_, index) => index % 2 === face)));
+        }
+
         const forming = shape < 0.02;
         const order = [...dots.point.keys()];
         const places = order.map((index) => (forming
@@ -522,10 +570,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         for (const face of [0, 1]) {
             const side = order.slice((face * dotCount) / 2, ((face + 1) * dotCount) / 2);
-            const partners = pairInStrips(
-                side.map((index) => places[index]),
-                points.filter((_, index) => index % 2 === face),
-            );
+            const partners = pairInStrips(side.map((index) => places[index]), sides.get(points)[face]);
 
             side.forEach((index, place) => {
                 dots.point[index] = partners[place] * 2 + face;
@@ -647,6 +692,7 @@ const initializeOrb = (canvas, reducedMotion) => {
             color[index] = approach(channel, targetColor[index], 6, delta);
         });
         scattered = approach(scattered, targetScattered, targetScattered ? scatter.leaveRate : scatter.arriveRate, delta);
+        veil.shown = approach(veil.shown, veil.asked ? 1 : 0, fade.rate, delta);
 
         present(sequence.cycle);
         position(clock, delta);
@@ -681,6 +727,10 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     const resize = () => {
+        if (stage) {
+            readVeil();
+        }
+
         scale = Math.min(window.devicePixelRatio, 2);
         canvas.width = Math.round(canvas.clientWidth * scale);
         canvas.height = Math.round(canvas.clientHeight * scale);
@@ -801,11 +851,13 @@ const initializeOrb = (canvas, reducedMotion) => {
         fit = Boolean(stage?.hasAttribute('data-dot-orb-fit')) && !reducedMotion;
         pinned = stage?.dataset.dotOrbStage === 'pinned';
         targetScattered = stage ? 0 : 1;
+        veil.asked = false;
         visibilityObserver.disconnect();
         resizeObserver.disconnect();
         resizeObserver.observe(canvas);
 
         if (stage) {
+            readVeil();
             canvas.parentElement.toggleAttribute('data-pinned', pinned);
             visibilityObserver.observe(stage);
             resizeObserver.observe(stage);

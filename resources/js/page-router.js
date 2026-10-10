@@ -20,7 +20,8 @@ const routeFromUrl = (url) => {
     return sceneFromRoute(route);
 };
 
-const loadPage = async (url, pageCache) => {
+// The text of a page, asked for once: a link that is hovered or focused has it fetched ahead.
+const fetchPage = (url, pageCache) => {
     const cacheKey = `${url.origin}${url.pathname}${url.search}`;
 
     if (!pageCache.has(cacheKey)) {
@@ -44,7 +45,13 @@ const loadPage = async (url, pageCache) => {
         pageCache.set(cacheKey, request);
     }
 
-    const html = await pageCache.get(cacheKey);
+    return pageCache.get(cacheKey);
+};
+
+// The page as a document. It is read only when it is navigated to: reading it takes the main
+// thread a moment, which a hover should not cost.
+const loadPage = async (url, pageCache) => {
+    const html = await fetchPage(url, pageCache);
     const nextDocument = new DOMParser().parseFromString(html, 'text/html');
     const main = nextDocument.querySelector('[data-page-main]');
 
@@ -268,7 +275,7 @@ export const createPageRouter = ({ soundController, transitionController }) => {
         const destination = new URL(link.href, window.location.href);
 
         if (destination.origin === window.location.origin && destination.href !== window.location.href) {
-            loadPage(destination, pageCache).catch(() => {});
+            fetchPage(destination, pageCache).catch(() => {});
         }
     };
 
