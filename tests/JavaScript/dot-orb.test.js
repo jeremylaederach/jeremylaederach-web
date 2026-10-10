@@ -30,7 +30,7 @@ const createContext = (calls) => new Proxy(calls, {
     },
 });
 
-const setup = (t, { reducedMotion = false, fitted = false, mark = false, pinned = false } = {}) => {
+const setup = (t, { reducedMotion = false, fitted = false, pinned = false } = {}) => {
     const window = createDom(t, `
         <div><canvas data-dot-orb></canvas></div>
         <main><div data-dot-orb-stage></div></main>
@@ -48,20 +48,6 @@ const setup = (t, { reducedMotion = false, fitted = false, mark = false, pinned 
 
     stage.toggleAttribute('data-dot-orb-fit', fitted);
     stage.dataset.dotOrbStage = pinned ? 'pinned' : '';
-
-    // The mark is sampled from its image, which is told to have loaded once it is asked for.
-    if (mark) {
-        const source = Object.getOwnPropertyDescriptor(window.HTMLImageElement.prototype, 'src');
-
-        canvas.dataset.mark = 'mark.svg';
-        Object.defineProperty(window.HTMLImageElement.prototype, 'src', {
-            configurable: true,
-            set() {
-                this.dispatchEvent(new window.Event('load'));
-            },
-        });
-        t.after(() => Object.defineProperty(window.HTMLImageElement.prototype, 'src', source));
-    }
     lay(stage, 0, 0, 600, 900);
     lay(canvas, 0, 0, 600, 900);
 
@@ -256,20 +242,33 @@ test('a press on the dots of a single figure shows the plain sphere for a while'
     assert.ok(spread('y') < figure * 1.2);
 });
 
-test('a press on the plain sphere shows the mark, and another one the sphere again', (t) => {
-    const { run, press, spread } = setup(t, { mark: true });
+test('a press on the plain sphere splits it, and a held press draws it together again', (t) => {
+    const { run, press, spread } = setup(t);
+    const hold = (type) => {
+        const event = new window.MouseEvent(type, { bubbles: true, clientX: 408, clientY: 450 });
 
-    run(30);
+        Object.defineProperty(event, 'pointerType', { value: 'mouse' });
+        window.dispatchEvent(event);
+    };
 
-    const sphere = spread('y');
+    // The first bud to set out by itself does so after seven seconds; this is long before.
+    run(100);
 
+    const whole = spread('y');
+
+    // Every press sheds one more bud, to a place of its own above or below the sphere.
     press();
-    run(200);
-    assert.ok(spread('y') < sphere * 0.75);
-
     press();
-    run(200);
-    assert.ok(spread('y') > sphere * 0.9);
+    press();
+    run(190);
+    assert.ok(spread('y') > whole * 1.4);
+
+    // Holding for two seconds brings them back, and they stay for a while.
+    hold('pointerdown');
+    run(125);
+    hold('pointerup');
+    run(120);
+    assert.ok(spread('y') < whole * 1.15);
 });
 
 test('an element that names no known figure leaves the sphere whole', (t) => {

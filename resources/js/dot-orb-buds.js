@@ -6,7 +6,9 @@
 // bud is out, the places dealt to it are empty, so the dots that stay are spread evenly; they
 // are not the dots that had those places, but the ones nearest to the bud. Whenever a bud sets
 // out or turns back, every dot on the sphere is given a place again in a way that keeps all of
-// them close to where they are, and glides there while the bud is on its way.
+// them close to where they are, and glides there while the bud is on its way. A bud may turn
+// back before it is all the way out, and set out again before it is back: the dots then start
+// from where they are.
 import { clamp, smooth } from './dot-orb-math.js';
 
 const along = (point, axis) => point.x * axis.x + point.y * axis.y + point.z * axis.z;
@@ -55,8 +57,9 @@ export const createDivision = (lattice, seats) => {
     // The bud whose way a dot glides along, or 0 once it has arrived.
     const paced = new Uint8Array(count);
     const taken = new Uint8Array(count).fill(1);
-    const stages = ['in', 'leaving', 'out', 'returning'];
-    const states = seats.map(() => ({ stage: 'in', out: 0 }));
+    // Where each bud is on its way: its stage, how far it is out, and how far it was when it
+    // last set out or turned back.
+    const states = seats.map(() => ({ stage: 'in', out: 0, start: 0 }));
     const all = [...lattice.keys()];
 
     lattice.forEach((point, index) => {
@@ -65,11 +68,16 @@ export const createDivision = (lattice, seats) => {
         from.z[index] = point.z;
     });
 
-    // How far the dots that glide along with a bud have come.
+    // How far the dots that glide along with a bud have come: the share of the bud's way since
+    // it set out or turned back.
     const pace = (number) => {
-        const { stage, out } = states[number - 1];
+        const { stage, out, start } = states[number - 1];
 
-        return stage === 'leaving' ? out : stage === 'returning' ? 1 - out : 1;
+        if (stage === 'leaving') {
+            return clamp((out - start) / (1 - start || 1), 0, 1);
+        }
+
+        return stage === 'returning' ? clamp((start - out) / (start || 1), 0, 1) : 1;
     };
 
     const locate = (index) => {
@@ -104,23 +112,30 @@ export const createDivision = (lattice, seats) => {
 
     const highest = (indices, height) => indices.sort((first, second) => height(second) - height(first));
 
-    // The bud takes the dots nearest to its axis, and the others close over their places.
-    const leave = (number, axis) => {
-        const free = highest(all.filter((index) => bud[index] === 0), (index) => along(lattice[place[index]], axis));
-        const members = free.slice(0, size);
-        const seated = inWedges(seats[number - 1], axis);
+    // The bud takes the dots nearest to its axis, and the others close over their places. A bud
+    // that sets out again before it is back keeps the dots it has.
+    const leave = (number, axis, again) => {
+        const members = again
+            ? all.filter((index) => bud[index] === number)
+            : highest(all.filter((index) => bud[index] === 0), (index) => along(lattice[place[index]], axis)).slice(0, size);
 
-        inWedges(members.map((index) => lattice[place[index]]), axis).forEach((member, rank) => {
-            seat[members[member]] = seated[rank];
-        });
+        if (!again) {
+            const seated = inWedges(seats[number - 1], axis);
 
-        members.forEach((index, rank) => {
+            inWedges(members.map((index) => lattice[place[index]]), axis).forEach((member, rank) => {
+                seat[members[member]] = seated[rank];
+            });
+            members.forEach((index, rank) => {
+                bud[index] = number;
+                depth[index] = rank / size;
+            });
+        }
+
+        members.forEach((index) => {
             locate(index);
             from.x[index] = at.x[index];
             from.y[index] = at.y[index];
             from.z[index] = at.z[index];
-            bud[index] = number;
-            depth[index] = rank / size;
             place[index] = -1;
             paced[index] = 0;
         });
@@ -131,8 +146,10 @@ export const createDivision = (lattice, seats) => {
         settle(all.filter((index) => place[index] >= 0), all.filter((index) => taken[index]), axis, number);
     };
 
-    // The dots of the bud land on the places nearest to its axis, and the others make room.
-    const land = (number, axis) => {
+    // The dots of the bud land on the places nearest to its axis, and the others make room. A
+    // bud that turns back before it is all the way out still has dots on the sphere: they glide
+    // to their landing places, and every dot leaves in the order it had.
+    const land = (number, axis, whole) => {
         all.forEach((index) => {
             taken[index] = taken[index] || index % (seats.length + 1) === number ? 1 : 0;
         });
@@ -148,10 +165,16 @@ export const createDivision = (lattice, seats) => {
             const index = members[order[rank]];
 
             place[index] = landing[spot];
-            depth[index] = spot / size;
-            from.x[index] = lattice[landing[spot]].x;
-            from.y[index] = lattice[landing[spot]].y;
-            from.z[index] = lattice[landing[spot]].z;
+            paced[index] = number;
+
+            // A dot that is all the way out heads straight for its landing place, last out
+            // first back.
+            if (whole) {
+                depth[index] = spot / size;
+                from.x[index] = lattice[landing[spot]].x;
+                from.y[index] = lattice[landing[spot]].y;
+                from.z[index] = lattice[landing[spot]].z;
+            }
         });
     };
 
@@ -171,35 +194,44 @@ export const createDivision = (lattice, seats) => {
         }
     };
 
-    const stageOf = ({ out, rising }) => {
-        if (out <= 0) {
-            return 'in';
+    // Takes a bud one stage further if where it is now asks for it, and says whether it did.
+    const advance = (state, { out, rising, axis }, number) => {
+        if (state.stage === 'in' && out > 0) {
+            leave(number, axis, false);
+            Object.assign(state, { stage: 'leaving', start: 0, out: 0 });
+        } else if (state.stage === 'leaving' && out >= 1) {
+            arrive(number, false);
+            Object.assign(state, { stage: 'out', out: 1 });
+        } else if (state.stage === 'leaving' && !rising && state.out > 0) {
+            land(number, axis, false);
+            Object.assign(state, { stage: 'returning', start: state.out });
+        } else if (state.stage === 'leaving' && !rising) {
+            // First seen on its way back: it has been all the way out.
+            arrive(number, false);
+            Object.assign(state, { stage: 'out', out: 1 });
+        } else if (state.stage === 'out' && out < 1) {
+            land(number, axis, true);
+            Object.assign(state, { stage: 'returning', start: 1 });
+        } else if (state.stage === 'returning' && out <= 0) {
+            arrive(number, true);
+            Object.assign(state, { stage: 'in', out: 0 });
+        } else if (state.stage === 'returning' && rising) {
+            leave(number, axis, true);
+            Object.assign(state, { stage: 'leaving', start: state.out });
+        } else {
+            return false;
         }
 
-        if (out >= 1) {
-            return 'out';
-        }
-
-        return rising ? 'leaving' : 'returning';
+        return true;
     };
 
     const follow = (parts) => {
         parts.forEach((part, index) => {
             const state = states[index];
-            const stage = stageOf(part);
 
             // A bud goes through its stages in their order, also when it is first seen on its way.
-            while (state.stage !== stage) {
-                state.stage = stages[(stages.indexOf(state.stage) + 1) % stages.length];
-                state.out = { in: 0, leaving: 0, out: 1, returning: 1 }[state.stage];
-
-                if (state.stage === 'leaving') {
-                    leave(index + 1, part.axis);
-                } else if (state.stage === 'returning') {
-                    land(index + 1, part.axis);
-                } else {
-                    arrive(index + 1, state.stage === 'in');
-                }
+            while (advance(state, part, index + 1)) {
+                // Each step may ask for the next.
             }
 
             state.out = part.out;

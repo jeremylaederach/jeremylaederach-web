@@ -102,13 +102,16 @@ the stage is the whole section.
   - *The pointer near them:* the sphere leans towards it, and dots within reach give way.
   - *Hovering or focusing something that names a figure:* the dots take that figure, and
     leaving gives them back (see "Figures").
-  - *A press on the dots:* they move on to the next shape. Where several figures follow each
-    other, that is the next figure. Where there is one figure, it is the plain sphere behind
-    it, and behind the plain sphere of the home page it is the mark; that other side stays for
-    8 seconds or until the next press.
+  - *A press on the dots* breaks up what they show. Where several figures follow each other,
+    the next one comes. A single figure gives way to the plain sphere behind it, for 8 seconds
+    or until the next press. The plain sphere splits: every press sheds one more bud, which
+    goes to a place of its own beside the sphere and stays for 14 seconds, so three presses
+    leave four smaller bodies.
   - *A press anywhere:* a ring travels outwards through the dots from where it happened;
     several rings travel at once.
-  - *A held press:* gathers the dots around the pointer and lets go with a stronger ring.
+  - *A held press* draws everything together: it gathers the dots around the pointer, calls
+    every bud back into the sphere within a second and keeps them there for 6 seconds, and
+    lets go with a stronger ring.
   - *A tap* on the dots moves on like a press. Nothing else follows a finger.
 - **What the sphere notices** of the visitor without being asked, and only a little
   (`resources/js/dot-orb-attention.js`):
@@ -130,7 +133,9 @@ the stage is the whole section.
   of the dots nearest to where it leaves, the tip of that cap first. The dots that stay close
   over the place, each moving a little towards it, so the sphere is evenly covered again while
   the bud is out. On its way back the bud lands where it reaches the sphere at that moment,
-  and the dots there make room. No dot crosses the sphere.
+  and the dots there make room. No dot crosses the sphere. A bud can turn back before it is
+  all the way out and set out again before it is back; its dots then start from where they
+  are.
 - **Color.** The dots take the page accent, lighter towards the viewer in eight steps and fading
   with depth. There is no glow, so the far side stays readable.
 - **Figures.** Hovering or focusing an element that names a figure (`data-dot-orb-figure`) morphs

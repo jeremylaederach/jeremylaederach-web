@@ -125,6 +125,40 @@ test('a second bud on the same side takes the nearest dots that are left', () =>
     assert.equal(dots.filter((index) => division.bud[index] === 0).length, count - 2 * size);
 });
 
+test('a bud that turns back half way takes its dots home without a jump', () => {
+    const { division, at, dots, members, apart } = setup();
+    const axis = towards(0.3);
+    // Where every dot is drawn: on the sphere, or on the way to a bud two radii away.
+    const drawn = () => dots.map((index) => {
+        const sphere = at(index);
+        const share = division.away[index];
+        const seatOf = seats[0][division.seat[index]];
+
+        return ['x', 'y', 'z'].map((key) => sphere[key] + (axis[key] * 2 + seatOf[key] * 0.5 - sphere[key]) * share);
+    });
+    const furthest = (first, second) => Math.max(...first.map((point, index) => Math.hypot(...point.map((value, key) => value - second[index][key]))));
+
+    division.follow([{ out: 0.25, rising: true, axis }, inside, inside]);
+    division.follow([{ out: 0.5, rising: true, axis }, inside, inside]);
+
+    const before = drawn();
+
+    division.follow([{ out: 0.49, rising: false, axis }, inside, inside]);
+    assert.ok(furthest(before, drawn()) < 0.08);
+
+    const turned = drawn();
+
+    division.follow([{ out: 0.5, rising: true, axis }, inside, inside]);
+    assert.ok(furthest(turned, drawn()) < 0.08);
+
+    division.follow([{ out: 0.2, rising: false, axis }, inside, inside]);
+    division.follow([{ ...inside, axis }, inside, inside]);
+
+    // Every dot is back on the sphere, one on each place.
+    assert.equal(members(1).length, 0);
+    assert.equal(new Set(dots.map((index) => lattice.findIndex((point) => apart(point, at(index)) < 0.1))).size, count);
+});
+
 test('a bud first seen on its way back is out with its dots at once', () => {
     const { division, members } = setup();
 

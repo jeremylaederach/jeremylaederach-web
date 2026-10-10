@@ -37,7 +37,9 @@ const tint = { levels: 8, lightest: 0.42 };
 // the core and never leaves; every bud takes another quarter, the dots beside it at that moment
 // (see dot-orb-buds.js), and turns `turn` further than the sphere. The buds have their own size,
 // their own side and their own cycles, in seconds, and start inside the sphere. A bud is on its
-// way out or back for `transit` of its period. The first entry stands for the core.
+// way out or back for `transit` of its period. A bud that a press has called out goes to a
+// place of its own beside the sphere (`call`, from the sphere's middle), far enough to stand
+// apart from it. The first entry stands for the core.
 const bud = {
     margin: 0.2,
     travel: 0.3,
@@ -45,9 +47,9 @@ const bud = {
     transit: 0.12,
     groups: [
         null,
-        { radius: 0.15, offset: 0.46, period: 41, phase: 5.42, rise: 29 },
-        { radius: 0.11, offset: -0.4, period: 53, phase: 3.9, rise: 37 },
-        { radius: 0.13, offset: 0.12, period: 67, phase: 2.6, rise: 23 },
+        { radius: 0.15, offset: 0.46, period: 41, phase: 5.42, rise: 29, call: [0.35, -0.27] },
+        { radius: 0.11, offset: -0.4, period: 53, phase: 3.9, rise: 37, call: [-0.15, -0.41] },
+        { radius: 0.13, offset: 0.12, period: 67, phase: 2.6, rise: 23, call: [0.35, 0.27] },
     ],
 };
 
@@ -62,11 +64,17 @@ const bud = {
 // figure: the dots flow into the shape instead of crossing it.
 const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 
+// A press on the plain sphere splits it: it sheds one more bud, which takes `leave` seconds to
+// set out and stays for `stay` seconds before it takes `back` seconds to return. A held press
+// draws everything together again: within `gather` seconds every bud is back inside, and for
+// `calm` seconds after the press none sets out.
+const split = { leave: 2.2, stay: 14, back: 3, gather: 1, calm: 6 };
+
 // An element can name several figures, separated by spaces. The sphere then shows one after the
-// other, each for `dwell` seconds. A press on the dots always moves on to the next shape: the
-// next figure of several, and where there is one figure or none, the other side of what is
-// shown, which stays for `dwell` seconds: the plain sphere behind a figure, the mark behind
-// the plain sphere. The dots flow from shape to shape like the blobs of a lava lamp: at `hover`
+// other, each for `dwell` seconds. A press on the dots always breaks up what they show: a
+// sequence moves on to its next figure, a single figure gives way to the plain sphere behind
+// it for `dwell` seconds, and the plain sphere splits (see `split`). The dots flow from shape
+// to shape like the blobs of a lava lamp: at `hover`
 // per second when the pointer moves on to another element, at `rest` when the element the
 // sphere rests with changes or a press moves on, and at `cycle` when a sequence steps by
 // itself. Every dot has a pace of its own, between `slowest` and `fastest` of that rate, so a
@@ -134,6 +142,9 @@ const createBuds = () => bud.groups.map((group) => ({
     radius: group?.radius ?? 0,
     out: 0,
     rising: false,
+    // How far a press has called the bud out, and until when it stays called.
+    called: 0,
+    calledUntil: 0,
     x: 0,
     y: 0,
     axis: { x: 0, y: 0, z: 0 },
@@ -180,6 +191,9 @@ const initializeOrb = (canvas, reducedMotion) => {
     let swayed = 0;
     const ripples = [];
     const hold = { x: 0, y: 0, down: false, charge: 0 };
+    // How far a held press has drawn the buds in, and until when they stay there.
+    let gathered = 0;
+    let calmUntil = 0;
     const home = { x: 0, y: 0 };
     // The sphere itself and the blobs whose surfaces join right now.
     const body = { x: 0, y: 0, radius: sphereRadius };
@@ -303,22 +317,31 @@ const initializeOrb = (canvas, reducedMotion) => {
     // Where each bud is right now, how far out of the sphere, and its axis: the way from the
     // middle of the sphere to where the bud is heading, in the frame of the turning lattice as
     // it will stand when the bud is half on its way, because the dots it takes turn on with
-    // the sphere while it leaves or lands.
-    const arrange = (seconds, turn, lean) => {
+    // the sphere while it leaves or lands. A bud is out when its own cycle or a press says so,
+    // unless a held press holds it in.
+    const arrange = (seconds, turn, lean, delta) => {
+        gathered = clamp(gathered + (hold.down || seconds < calmUntil ? delta / split.gather : -delta / split.back), 0, 1);
+
         for (const part of leaving) {
-            const { offset, period, phase, rise } = part.group;
+            const { offset, period, phase, rise, call } = part.group;
             const rotation = createRotation(turn + ((period * bud.transit) / 2 / turnSeconds) * Math.PI * 2, lean);
-            const cycle = (seconds / period) * Math.PI * 2 + phase;
-            const wave = Math.sin(cycle);
+            const wave = Math.sin((seconds / period) * Math.PI * 2 + phase);
             const lift = Math.sin((seconds / rise) * Math.PI * 2 + phase) * bud.travel;
-            const x = clamp(home.x + offset, bud.margin, width / unit - bud.margin) - home.x;
-            const y = clamp((height / unit) * (0.5 + lift), bud.margin, height / unit - bud.margin) - home.y;
+
+            part.called = clamp(part.called + (seconds < part.calledUntil ? delta / split.leave : -delta / split.back), 0, 1);
+
+            // Where the bud is heading: along its own way, or to the place a press calls it to.
+            const towards = smooth(part.called);
+            const x = clamp(home.x + mix(offset, call[0], towards), bud.margin, width / unit - bud.margin) - home.x;
+            const y = clamp(mix((height / unit) * (0.5 + lift), home.y + call[1], towards), bud.margin, height / unit - bud.margin) - home.y;
             const length = Math.hypot(x, y) || 1;
             const depth = (y / length) * rotation.sinLean;
 
             // A bud leaves from the middle of the sphere and returns into it.
-            part.out = smooth(clamp((wave - 0.25) / 0.6, 0, 1));
-            part.rising = Math.cos(cycle) > 0;
+            const out = Math.max(smooth(clamp((wave - 0.25) / 0.6, 0, 1)), smooth(part.called)) * (1 - smooth(gathered));
+
+            part.rising = out === part.out ? part.rising : out > part.out;
+            part.out = out;
             part.x = home.x + x * part.out;
             part.y = home.y + y * part.out;
             part.axis.x = (x / length) * rotation.cosTurn + depth * rotation.sinTurn;
@@ -445,7 +468,7 @@ const initializeOrb = (canvas, reducedMotion) => {
     // Sets the scene for a moment: where the sphere stands, how it leans towards the pointer,
     // where its buds are and which dots they hold. A figure that has formed hides the sphere,
     // so nothing of the sphere has to be worked out then.
-    const compose = (seconds, formed) => {
+    const compose = (seconds, formed, delta = 0) => {
         wander(seconds);
 
         const leanX = clamp((pointer.x + heading.x - home.x) / sphereRadius, -2, 2);
@@ -453,7 +476,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         const turn = (seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength;
         const lean = tilt + leanY * 0.35 * pointer.strength;
 
-        arrange(seconds, turn, lean);
+        arrange(seconds, turn, lean, delta);
         scene.seconds = seconds;
         scene.formed = formed;
         scene.rotation = createRotation(turn, lean);
@@ -486,7 +509,7 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     const position = (seconds, delta) => {
-        compose(seconds, shape > 0.999);
+        compose(seconds, shape > 0.999, delta);
 
         for (let index = 0; index < dotCount; index += 1) {
             if (scene.formed) {
@@ -624,13 +647,11 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     // What the dots show right now: the figure of a sequence that is due, the one figure, or
-    // the plain sphere; and while a press has turned that around, its other side. A new figure
-    // is flowed into at `rate`.
+    // the plain sphere, which a single figure also gives way to while a press has broken it
+    // up. A new figure is flowed into at `rate`.
     const present = (rate) => {
-        const turned = clock < turnedUntil;
-        const other = shapes.length ? null : figures.get('mark');
-        const next = shapes.length > 1 ? shapes[due()] : shapes[0] ?? (other?.length ? other : null);
-        const showing = Boolean(next) && (shapes.length > 1 || turned === !shapes.length);
+        const next = shapes.length > 1 ? shapes[due()] : shapes[0] ?? null;
+        const showing = Boolean(next) && (shapes.length > 1 || clock >= turnedUntil);
 
         if (showing && (next !== figurePoints || (!targetShape && shape < 0.02))) {
             turnTo(next);
@@ -782,14 +803,27 @@ const initializeOrb = (canvas, reducedMotion) => {
         pointer.targetStrength = 0;
     };
 
+    // The plain sphere sheds one more bud: the next one that is inside. With every bud out, a
+    // press keeps them out for a while longer.
+    const shed = () => {
+        const inside = leaving.find((part) => part.out < 0.05 && clock >= part.calledUntil);
+
+        for (const part of inside ? [inside] : leaving) {
+            part.calledUntil = clock + split.leave + split.stay;
+        }
+    };
+
     const pressDown = (event) => {
-        // A press on the dots moves on: to the next figure of a sequence, which then stays its
-        // time, or to the other side of what is shown and back.
+        // A press on the dots breaks up what they show: a sequence moves on to its next figure,
+        // which then stays its time, a single figure gives way to the sphere behind it and
+        // comes back with the next press, and the plain sphere splits.
         if (probe(event.clientX, event.clientY)) {
             if (shapes.length > 1) {
                 since = clock - (due() + 1) * sequence.dwell;
-            } else {
+            } else if (shapes.length === 1) {
                 turnedUntil = clock < turnedUntil ? 0 : clock + sequence.dwell;
+            } else {
+                shed();
             }
 
             present(sequence.rest);
@@ -802,10 +836,22 @@ const initializeOrb = (canvas, reducedMotion) => {
     };
 
     const pressUp = () => {
-        if (hold.down) {
-            hold.down = false;
-            ring(hold.x, hold.y, hold.charge * press.boost);
+        if (!hold.down) {
+            return;
         }
+
+        // A press that was held has drawn the buds in: none is called out any more, and they
+        // stay inside for a while.
+        if (gathered > 0.6) {
+            calmUntil = clock + split.calm;
+
+            for (const part of leaving) {
+                part.calledUntil = 0;
+            }
+        }
+
+        hold.down = false;
+        ring(hold.x, hold.y, hold.charge * press.boost);
     };
 
     // While no element that names a figure is hovered or focused, the one marked as resting holds
