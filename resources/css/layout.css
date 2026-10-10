@@ -255,16 +255,13 @@
         font-weight: 420;
     }
 
-    .primary-nav a .nav-icon {
-        width: 20px;
-        height: 20px;
-        transition: transform 280ms var(--ease-out);
+    .primary-nav a .link-bead {
+        --bead: 6px;
+        --bead-reach: 20px;
     }
 
-    .primary-nav a:hover .nav-icon,
-    .primary-nav a.is-active .nav-icon {
-        color: var(--route-accent);
-        transform: translateX(4px);
+    .primary-nav a.is-active .link-bead::before {
+        width: var(--bead-reach);
     }
 
     .language-switcher {

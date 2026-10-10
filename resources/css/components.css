@@ -25,11 +25,8 @@
         transition: color 240ms ease;
     }
 
-    .directional-link .nav-icon {
-        width: 16px;
-        height: 16px;
+    .directional-link .link-bead {
         color: var(--directional-accent);
-        transition: transform 420ms var(--ease-out), color var(--accent-blend) ease;
     }
 
     .directional-link:hover,
@@ -37,18 +34,47 @@
         color: var(--ink);
     }
 
-    .directional-link--back .nav-icon {
-        transform: rotate(180deg);
+    /* What leads somewhere carries a bead instead of an arrow: one dot in the accent, like
+       those of the sphere. Hovered or focused, the bead draws out the way its link leads:
+       forward, back, down the page, or up and out of the site. The room for that is
+       reserved, so nothing beside it moves. */
+    .link-bead {
+        --bead: 5px;
+        --bead-reach: 16px;
+        position: relative;
+        display: block;
+        flex: none;
+        width: var(--bead-reach);
+        height: var(--bead);
+        color: var(--route-accent);
+        transform-origin: calc(var(--bead) / 2) 50%;
     }
 
-    .directional-link--back:hover .nav-icon,
-    .directional-link--back:focus-visible .nav-icon {
-        transform: translateX(-4px) rotate(180deg);
+    .link-bead::before {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--bead);
+        border-radius: calc(var(--bead) / 2);
+        background: currentColor;
+        content: '';
+        transition: width 320ms var(--ease-out), background-color var(--accent-blend) ease;
     }
 
-    .directional-link--forward:hover .nav-icon,
-    .directional-link--forward:focus-visible .nav-icon {
-        transform: translateX(4px);
+    .link-bead--back::before {
+        inset: 0 0 0 auto;
+    }
+
+    .link-bead--down {
+        rotate: 90deg;
+    }
+
+    .link-bead--out {
+        rotate: -45deg;
+    }
+
+    .has-mouse-input a:hover .link-bead::before,
+    a:focus-visible .link-bead::before {
+        width: var(--bead-reach);
     }
 
     @keyframes wordmark-signal {

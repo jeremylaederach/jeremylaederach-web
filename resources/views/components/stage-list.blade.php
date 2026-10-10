@@ -7,7 +7,8 @@
     label    accessible name of the link
     href     where the link leads
     figure   the figure the sphere takes, or several separated by spaces (see dot-orb-figures.js)
-    icon     name of the icon at the end of the row's first line
+    leads    which way the row's link leads, for the bead at the end of its first line:
+             forward into the site or out of it
     route    name of the page's route, for a page of this site
     project  slug of the project the row stands for, which brings that project's color
     value    short text at the end of the row's first line
@@ -63,7 +64,7 @@
                         @isset($item['value'])
                             <span class="stage-list__value">{{ $item['value'] }}</span>
                         @endisset
-                        <x-nav-icon :name="$item['icon']" />
+                        <x-link-bead :to="$item['leads']" />
                     </span>
 
                     @isset($item['detail'])

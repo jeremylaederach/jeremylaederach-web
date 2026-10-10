@@ -13,14 +13,13 @@ check them again before relying on them.
 - **On `main`, not deployed:** the rework of every page around one element, a generative sphere
   of dots. It replaces the look of `v1.5.1` and goes out as one release after a review of the
   whole site.
-- **Checked on 10 October:** `npm test` with 69 tests; `composer test` with Pint, PHPStan and
+- **Checked on 10 October:** `npm test` with 71 tests; `composer test` with Pint, PHPStan and
   19 tests (513 assertions, the static export included); CI passed on `main`. Earlier that
   day, before the last changes to the sphere: ten pages of the exported site under its own
   Content-Security-Policy without a violation, page changes included.
 - **Seen as stills from a headless browser:** every page in English or German at 1440 by 900,
   1024 by 768 and 375px width, the pages told in scenes also at 1280 by 720, 375 by 664 and
-  360 by 640; a bud leaving, the mark with its eyes, morphs and page changes frame by
-  frame.
+  360 by 640; a bud leaving, morphs and page changes frame by frame.
 - **Not covered:** motion judged by eye, Firefox, Safari, a slow laptop, a real phone and
   touch. The JavaScript tests run in jsdom; no test loads a page in a real browser.
 
@@ -43,7 +42,7 @@ check them again before relying on them.
 Built, and each a matter of one value or one rule:
 
 - **Page change.** The pace at which the sphere travels to the next page (`journey.rate` in
-  `dot-orb-controller.js`), and how far its dots string out on the way (`journey.stretch`; 0
+  `dot-orb-stage.js`), and how far its dots string out on the way (`journey.stretch`; 0
   lets it travel as one body). From the projects to the contact page the dots cross the next
   page's text for a moment.
 - **What the sphere notices** (`notice` in the controller, `dot-orb-attention.js`): it looks
@@ -51,12 +50,13 @@ Built, and each a matter of one value or one rule:
   a return after twenty seconds with one ring. Each may be too much or too little.
 - **Division.** The sphere divides along the axis it turns around, into at most two buds; a
   press parts one more, and a held press draws them together. A bud leaves in one motion
-  and slows down before the edge of its stage (`bud.parted`, `bud.drifting`). A third bud
-  would need a second axis.
-- **The eyes of the mark** are two large dots in the holes of the figure
-  (`dot-orb-eyes.js`). They look where the pointer is and blink; how much of a hole a dot
-  fills and how often it blinks are numbers there. Their place follows the drawing of the
-  mark, and a test fails when the two differ.
+  and slows down before the edge of its stage (`bud.parted`, `bud.drifting` in
+  `dot-orb-buds.js`). A third bud would need a second axis.
+- **Links** carry a bead instead of an arrow: one dot in the accent that draws out the way
+  the link leads when it is hovered or focused (`link-bead` in `components.css`). Its size
+  and its reach are two values.
+- **Figures.** A website stands where Jay-Jay's globe was: the globe's meridians read as a
+  letter.
 - **Morphs.** Each dot takes the nearest point of the next figure. Measured against the
   earlier fixed pairing: a third of the way, and at most 49 of 1200 dots change sides instead
   of about 500.
@@ -84,17 +84,18 @@ Content to confirm:
 
 ## Next steps
 
-1. Review of the whole site on a desktop and on a real phone, Firefox and Safari included,
-   and the changes that follow from it.
+1. Review of the site on a desktop, Firefox and Safari included, and the changes that
+   follow from it.
 2. The content above: facts, texts, the outlook of both case studies.
-3. `dot-orb-controller.js` is close to 1,000 lines. Once the behaviour is settled, the
-   presses and the journey between stages become modules of their own.
-4. Release (see below).
+3. Release (see below), once everything fits.
+4. Review on a laptop, a phone and a tablet. It comes last, and again on the live site.
 
 Open, without a date:
 
 - **Pictures for the case studies.** They need screens of the running apps with illustrative
   data, never real records.
+- **Ideas for the sphere:** a figure of two eyes alone, two blobs of dots like those in
+  Jay-Jay's mark; more buds at times, for which a third bud needs a second axis.
 - **Ideas:** a click on the email row copies the address; the contact figure goes through the
   channels by itself; small side projects on the about page; a way for visitors to play with
   the accent color.

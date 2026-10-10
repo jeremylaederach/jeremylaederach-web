@@ -270,22 +270,10 @@
         text-transform: uppercase;
     }
 
-    .scene-stage__next .nav-icon {
-        width: 16px;
-        height: 16px;
-        color: var(--route-accent);
-        transition: translate 320ms var(--ease-out), color var(--accent-blend) ease;
-    }
-
     .has-mouse-input .scene-stage__next:hover,
     .scene-stage__next:focus-visible {
         color: var(--route-accent);
         transition-duration: var(--hover-in);
-    }
-
-    .has-mouse-input .scene-stage__next:hover .nav-icon,
-    .scene-stage__next:focus-visible .nav-icon {
-        translate: 0 3px;
     }
 
     /* Behind the screen the page is as long as its steps: 70% of the window's height for each,

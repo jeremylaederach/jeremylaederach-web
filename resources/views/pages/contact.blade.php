@@ -13,7 +13,7 @@
             'href' => $social['url'],
             'value' => $social['display'],
             'figure' => $figures[$key],
-            'icon' => 'arrow-up-right',
+            'leads' => 'out',
         ];
     }
 @endphp

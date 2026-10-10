@@ -164,7 +164,7 @@
                                         style="--menu-index: {{ $loop->index }}"
                                     >
                                         <strong>{{ $item['label'] }}</strong>
-                                        <x-nav-icon name="arrow-right" />
+                                        <x-link-bead />
                                     </a>
                                 @endforeach
                             </nav>

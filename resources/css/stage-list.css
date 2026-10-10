@@ -59,7 +59,7 @@
         transition: color 360ms ease;
     }
 
-    /* The first line of a row: its name, an optional short text and the icon. */
+    /* The first line of a row: its name, an optional short text and the bead of its link. */
     .stage-list__title {
         display: flex;
         padding: 22px 0 10px;
@@ -76,11 +76,11 @@
         letter-spacing: -0.03em;
     }
 
-    .stage-list__link .nav-icon {
-        width: 22px;
-        height: 22px;
+    .stage-list__link .link-bead {
+        --bead: 7px;
+        --bead-reach: 24px;
         color: var(--item-accent);
-        transition: opacity 260ms ease, translate 460ms var(--ease-out);
+        transition: opacity 260ms ease;
     }
 
     /* A short text at the end of the first line, such as an address. */
@@ -214,11 +214,10 @@
             font-size: clamp(44px, min(6vw, 11.5svh), 104px);
         }
 
-        .stage-list__link .nav-icon {
-            width: 26px;
-            height: 26px;
+        .stage-list__link .link-bead {
+            --bead: 9px;
+            --bead-reach: 30px;
             opacity: 0;
-            translate: -10px 0;
         }
 
         .stage-list__item[data-current] .stage-list__link,
@@ -231,9 +230,13 @@
             padding-top: clamp(28px, 5svh, 48px);
         }
 
-        .stage-list__item[data-current] .nav-icon {
+        /* The current row shows its bead, drawn out. */
+        .stage-list__item[data-current] .link-bead {
             opacity: 1;
-            translate: 0;
+        }
+
+        .stage-list__item[data-current] .link-bead::before {
+            width: var(--bead-reach);
         }
 
         /* Up to 1180px the introduction has no room beside the heading and stands below it. */

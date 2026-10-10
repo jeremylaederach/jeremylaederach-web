@@ -72,7 +72,10 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   destination as the current one, and the accent blends to the new page's. Nothing covers the
   page. Reduced motion swaps the page without a transition.
 - **Hover.** No surface lights up under the pointer: a hovered link or card answers with its
-  accent, a rule drawn in the accent or a small movement. Every link that takes the accent does
+  accent, a rule drawn in the accent or a small movement. A link that leads somewhere carries
+  a bead instead of an arrow (`resources/views/components/link-bead.blade.php`): one dot in
+  the accent, which draws out into a short line the way the link leads when it is hovered or
+  focused: forward, back, down the page, or up and out of the site. Every link that takes the accent does
   it the same way, the destinations of the header, the languages, the steps of a page told in
   scenes and the links that end a page: at once when it is hovered or focused (`--hover-in`,
   60ms), and gently back (`--hover-out`, 220ms). Optional interface sounds.
@@ -201,7 +204,7 @@ Both pages are one component (`resources/views/components/stage-list.blade.php`,
 `resources/css/stage-list.css`, `resources/js/stage-list-controller.js`): a heading with the
 introduction on one line, a list of large rows and the sphere. Hairlines separate the rows. One
 row is always current, the first at the start and after that the one last hovered or focused. The
-current one stands in full ink and shows an icon, the others recede, and the pointer's ring lies
+current one stands in full ink and shows its bead, the others recede, and the pointer's ring lies
 on the edges of a hovered row. Each row is one link.
 
 From 961px the section and the line that ends the page fill one screen. The right belongs to a
@@ -217,7 +220,7 @@ the left edge, and the list keeps to the right. A compact stage (`stage-list--co
 rows whose names stand a step below the heading, for plain entries. There the figure is the
 larger part: the square takes what the header and the page end leave of the height, up to 52% of
 the width, and the content and the square both stand in the middle of the stage's height; the
-current row's name takes the accent like its icon.
+current row's name takes the accent like its bead.
 
 Between 961 and 1180px the introduction stands below the heading. In a window up to 760px high
 the stage is set tighter (lower rows, smaller names, a description of two lines), so it still

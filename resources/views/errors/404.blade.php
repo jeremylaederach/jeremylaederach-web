@@ -28,7 +28,7 @@
                 data-sound-tone="action"
             >
                 <span>{{ $content['not_found']['action'] }}</span>
-                <x-nav-icon name="arrow-right" />
+                <x-link-bead />
             </a>
         </div>
     </section>

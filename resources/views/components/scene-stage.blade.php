@@ -113,7 +113,7 @@
                                     data-sound-tone="action"
                                 >
                                     <span>{{ $link['label'] }}</span>
-                                    <x-nav-icon :name="isset($link['route']) ? 'arrow-right' : 'arrow-up-right'" />
+                                    <x-link-bead :to="isset($link['route']) ? 'forward' : 'out'" />
                                 </a>
                             @endforeach
                         </p>
@@ -133,7 +133,7 @@
             >
                 <span class="scene-stage__next-label">{{ $next }}</span>
                 <span data-scene-next-name>{{ $scenes[1]['label'] }}</span>
-                <x-nav-icon name="arrow-down" />
+                <x-link-bead to="down" />
             </a>
         @endif
     </div>

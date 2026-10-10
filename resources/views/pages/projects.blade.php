@@ -9,7 +9,7 @@
         'route' => 'projects',
         'project' => $project['slug'],
         'figure' => implode(' ', config('portfolio.scenes')[$project['slug']]['overview']['figures']),
-        'icon' => 'arrow-right',
+        'leads' => 'forward',
         'detail' => [
             'kind' => $project['type'],
             'text' => $project['description'],

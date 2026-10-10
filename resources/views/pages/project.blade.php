@@ -32,7 +32,7 @@
                 data-interface-sound
                 data-sound-tone="navigation"
             >
-                <x-nav-icon name="arrow-right" />
+                <x-link-bead to="back" />
                 <span>{{ $project['back'] }}</span>
             </a>
 
