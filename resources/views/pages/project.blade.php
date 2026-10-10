@@ -9,7 +9,7 @@
         'detail' => $nextProject['description'],
         'project' => $nextProject['slug'],
         'link' => [
-            'label' => $content['ui']['open'].' '.$nextProject['name'],
+            'label' => str_replace(':name', $nextProject['name'], $content['ui']['open']),
             'url' => route($nextProject['detail_route'], ['locale' => $locale]),
             'route' => 'projects',
         ],

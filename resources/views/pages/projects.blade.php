@@ -4,7 +4,7 @@
     $items = array_map(fn (array $project): array => [
         'id' => $project['slug'],
         'name' => $project['name'],
-        'label' => $content['ui']['open'].' '.$project['name'],
+        'label' => str_replace(':name', $project['name'], $content['ui']['open']),
         'href' => route($project['detail_route'], ['locale' => $locale]),
         'route' => 'projects',
         'project' => $project['slug'],
