@@ -266,12 +266,12 @@ shows a screenshot.
   are as tall as the tallest of them needs and the stage takes what is left of the screen, at
   most 44% of its height: the figure fills the smaller side of that room, so a long scene makes
   the figure smaller instead of running out of the window.
-- **About.** Six scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
-  shoulders and three facts (his apprenticeship, his studies, what he builds); four
-  technologies, each with its mark in its color (.NET, Laravel, Angular, PostgreSQL) and its
-  tools as tags; and a last one that leads on to the contact page, with the envelope. A tag
-  with a mark of its own answers a hover (`technology_marks` in the content); the paths come
-  from the `simple-icons` package.
+- **About.** Three scenes (`resources/views/pages/about.blade.php`): who he is, with a head and
+  shoulders and three facts (his apprenticeship, his studies, what he builds); his stack, as
+  four groups of tools, while the sphere goes through the marks of .NET, Laravel, Angular and
+  PostgreSQL; and one that leads on to the contact page, with the envelope. A tool with a mark
+  of its own answers a hover in that mark's color (`technology_marks` in the content); the
+  paths come from the `simple-icons` package.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
   project's color. The head holds the way back, the name and the kind of project. The scenes

@@ -120,7 +120,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('data-page-heading-signal', false)
             ->assertSee('aria-label="About me."', false)
             ->assertSee('I&#039;m Jeremy, a software developer from Zurich.', false)
-            ->assertSee('My primary stack for APIs, domain logic, and native Windows tools.')
+            ->assertSee('The tools I use across my products and client projects.')
             ->assertSee('.NET 10 / C#')
             ->assertSee('Laravel 13')
             ->assertSee('Herd / Plesk')
@@ -130,12 +130,15 @@ class PortfolioPagesTest extends TestCase
 
         $aboutHtml = $about->content();
 
-        // Six scenes on one stage: each has its step behind the screen and its link among the
-        // steps, and the first is shown at the start. It lists three facts, and the last scene
-        // leads on to the contact page in that page's own words.
-        $this->assertSame(6, preg_match_all('/\sdata-scene\s/', $aboutHtml));
-        $this->assertSame(6, substr_count($aboutHtml, 'data-scene-step="'));
+        // Three scenes on one stage: each has its step behind the screen and its link among the
+        // steps, and the first is shown at the start. It lists three facts, the second lists the
+        // whole stack in four groups, and the last leads on to the contact page in that page's
+        // own words.
+        $this->assertSame(3, preg_match_all('/\sdata-scene\s/', $aboutHtml));
+        $this->assertSame(3, substr_count($aboutHtml, 'data-scene-step="'));
         $this->assertSame(3, preg_match_all('/<dt>(Training|Studies|Projects)<\/dt>/', $aboutHtml));
+        $this->assertSame(4, preg_match_all('/<dt>(\.NET &amp; C#|Laravel|Interfaces|Data &amp; hosting)<\/dt>/', $aboutHtml));
+        $this->assertMatchesRegularExpression('/id="stack-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="dotnet laravel angular postgresql"/', $aboutHtml);
         $this->assertMatchesRegularExpression('/id="contact-scene"\s+class="scene"\s+data-scene\s+data-dot-orb-figure="contact"/', $aboutHtml);
         $this->assertStringContainsString('A project, a role or a question? Write to me.', $aboutHtml);
         $this->assertMatchesRegularExpression('/href="http:\/\/localhost\/en\/contact"\s+data-route="contact"\s+data-route-transition/', $aboutHtml);
@@ -156,7 +159,8 @@ class PortfolioPagesTest extends TestCase
         $this->get('/de/about')
             ->assertOk()
             ->assertSee('aria-label="Über mich."', false)
-            ->assertSee('Mein Haupt-Stack für APIs')
+            ->assertSee('Diese Werkzeuge nutze ich für meine Produkte und Kundenprojekte.')
+            ->assertSee('<dt>Daten &amp; Hosting</dt>', false)
             ->assertSee('aria-label="Szenen dieser Seite"', false)
             ->assertSee('data-dot-orb-figure="tailwindcss"', false);
 

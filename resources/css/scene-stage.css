@@ -83,19 +83,19 @@
         list-style: none;
     }
 
-    /* What there is to know at one glance: a few facts, each a name and what it stands for. */
+    /* What there is to know at one glance: a few facts, each a name and what it stands for. The
+       names stand in a column of their own, as wide as the longest of them. */
     .scene__facts {
         display: grid;
-        max-width: 46ch;
+        max-width: 52ch;
         margin: 22px 0 0;
-        gap: 8px;
+        grid-template-columns: max-content minmax(0, 1fr);
+        gap: 8px 16px;
+        align-items: baseline;
     }
 
     .scene__facts > div {
-        display: grid;
-        grid-template-columns: 5.5em minmax(0, 1fr);
-        gap: 12px;
-        align-items: baseline;
+        display: contents;
     }
 
     .scene__facts dt {
