@@ -56,8 +56,6 @@ return [
             'clients' => ['figures' => ['leaf']],
             'hosting' => ['figures' => ['cloud']],
             'client-hub' => ['figures' => ['sheet', 'checklist']],
-            'stack' => ['figures' => ['laravel', 'tailwindcss', 'githubactions']],
-            'state' => ['figures' => ['checklist']],
         ],
     ],
 
@@ -234,6 +232,11 @@ return [
                         'label' => 'Overview',
                         'text' => 'Jay-Jay is my business for websites, hosting, domains, email and support.',
                         'detail' => 'For small Swiss organizations, with direct technical support. The software behind it is mine too.',
+                        'facts' => [
+                            ['label' => 'Stack', 'tags' => ['Laravel 13', 'Tailwind CSS 4', 'GitHub Actions']],
+                            ['label' => 'State', 'text' => 'The business is running and the website is live. The Client Hub is in development.'],
+                            ['label' => 'Role', 'text' => 'Founder, product designer and developer.'],
+                        ],
                     ],
                     [
                         'id' => 'web',
@@ -259,18 +262,6 @@ return [
                         'label' => 'Client Hub',
                         'text' => 'A portal for customers: boards, tickets, documents, invoices and requests.',
                         'detail' => 'A separate Laravel app with its own database, login and private document storage. It runs on demo data and is not ready for real customers yet.',
-                    ],
-                    [
-                        'id' => 'stack',
-                        'label' => 'Stack',
-                        'text' => 'Laravel and Blade, styled with Tailwind CSS, checked by GitHub Actions and shipped to Plesk as a static build.',
-                        'tags' => ['Laravel 13', 'Blade', 'Tailwind CSS 4', 'Pest', 'Larastan', 'GitHub Actions', 'Plesk'],
-                    ],
-                    [
-                        'id' => 'state',
-                        'label' => 'State',
-                        'text' => 'The business is running and the website is live. The Client Hub is in development.',
-                        'detail' => 'Role: founder, product designer and developer.',
                     ],
                 ],
             ],
@@ -499,6 +490,11 @@ return [
                         'label' => 'Überblick',
                         'text' => 'Jay-Jay ist mein Unternehmen für Websites, Hosting, Domains, E-Mail und Betreuung.',
                         'detail' => 'Für kleine Schweizer Organisationen, mit direktem technischem Support. Die Software dahinter ist auch von mir.',
+                        'facts' => [
+                            ['label' => 'Stack', 'tags' => ['Laravel 13', 'Tailwind CSS 4', 'GitHub Actions']],
+                            ['label' => 'Stand', 'text' => 'Das Unternehmen läuft, die Website ist live. Der Client Hub ist in Entwicklung.'],
+                            ['label' => 'Rolle', 'text' => 'Gründer, Product Designer und Entwickler.'],
+                        ],
                     ],
                     [
                         'id' => 'web',
@@ -524,18 +520,6 @@ return [
                         'label' => 'Client Hub',
                         'text' => 'Ein Portal für Kunden: Boards, Tickets, Dokumente, Rechnungen und Anfragen.',
                         'detail' => 'Eine eigene Laravel-App mit Datenbank, Login und geschützter Dokumentenablage. Sie läuft mit Demo-Daten und ist noch nicht bereit für echte Kunden.',
-                    ],
-                    [
-                        'id' => 'stack',
-                        'label' => 'Stack',
-                        'text' => 'Laravel und Blade, gestaltet mit Tailwind CSS, geprüft durch GitHub Actions und als statischer Build auf Plesk.',
-                        'tags' => ['Laravel 13', 'Blade', 'Tailwind CSS 4', 'Pest', 'Larastan', 'GitHub Actions', 'Plesk'],
-                    ],
-                    [
-                        'id' => 'state',
-                        'label' => 'Stand',
-                        'text' => 'Das Unternehmen läuft, die Website ist live. Der Client Hub ist in Entwicklung.',
-                        'detail' => 'Rolle: Gründer, Product Designer und Entwickler.',
                     ],
                 ],
             ],

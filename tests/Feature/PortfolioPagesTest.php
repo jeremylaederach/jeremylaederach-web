@@ -259,6 +259,8 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('<title>Jay-Jay</title>', false)
             ->assertSee('project-detail--jay-jay', false)
             ->assertSee('Jay-Jay is my business for websites, hosting, domains, email and support.')
+            ->assertSee('<dt>Stack</dt>', false)
+            ->assertSee('Founder, product designer and developer.')
             ->assertSee('<div id="client-hub" class="scene-stage__step" data-scene-step="client-hub-scene"></div>', false)
             ->assertSee('It runs on demo data')
             ->assertSee('Scherer Gartengestaltung &amp; Pflege AG', false)

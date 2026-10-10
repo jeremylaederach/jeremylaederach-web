@@ -255,11 +255,10 @@ shows a screenshot.
 - **Case study.** One template for Quantified and Jay-Jay
   (`resources/views/pages/project.blade.php`, `resources/css/pages/project.css`), in the
   project's color. The head holds the way back, the name and the kind of project. The scenes
-  say what the project is and does, each with a rough picture. Quantified has five: its first
-  lists the stack, the state and the role as facts, and the others show sources that lead into
-  one place, a timeline, a ledger and a target. Jay-Jay still has seven, with a globe, a leaf
-  for the client's garden business, a cloud, a document, the marks of its stack and a
-  checklist. The last scene stands for the next project: its name, one sentence and the way
+  say what the project is and does, each with a rough picture. Each project has five: the first
+  lists the stack, the state and the role as facts. The others show, for Quantified, sources
+  that lead into one place, a timeline, a ledger and a target, and for Jay-Jay a globe, a leaf
+  for the client's garden business, a cloud and a document. The last scene stands for the next project: its name, one sentence and the way
   there, and while it is shown the page and the dots already take that project's color.
 - **Without scripts** the scenes follow each other as plain sections. **Reduced motion** keeps
   the screen in place and changes the statement at once; the sphere is one still sphere.
