@@ -142,6 +142,12 @@ the stage is the whole section.
   pace of its own, so a shape melts into the next. The flow is quick when the pointer moves on
   to another element, slower when the element the sphere rests with changes, and slowest, about
   two seconds, when a sequence steps by itself.
+- **Who goes where.** A figure has exactly one point for every dot. Whenever the dots turn to a
+  figure, each takes the point nearest to where it is (`resources/js/dot-orb-pairing.js`):
+  neighbours stay neighbours, left stays left, and a dot on the near side of the sphere goes to
+  the front of the figure. Before a figure lets its dots go, they change places within it,
+  unseen, so that each returns to the nearest place on the sphere. No dot crosses the shape it
+  comes from or the one it goes to.
 - **Words that name a figure.** Words of a text can name a figure
   (`resources/views/components/figure-text.blade.php`, `.figure-word`); the content lists them
   beside the text. Hovered, they light up in the color of their figure, the accent unless they

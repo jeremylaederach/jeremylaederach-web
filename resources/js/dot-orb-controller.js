@@ -3,6 +3,7 @@ import { createDivision } from './dot-orb-buds.js';
 import { drawnFigures } from './dot-orb-figures.js';
 import { settle } from './dot-orb-lamp.js';
 import { approach, clamp, createLattice, mix, smooth } from './dot-orb-math.js';
+import { pairInStrips } from './dot-orb-pairing.js';
 import { sampleFigure } from './dot-orb-sampling.js';
 import { sceneChangedEvent } from './scene-controller.js';
 
@@ -51,9 +52,14 @@ const bud = {
 };
 
 // A figure is a shape the dots take while an element that names it is hovered or focused. Its
-// dots are sampled from a drawing (see dot-orb-sampling.js): the drawn ones at once, the mark
-// when its image has loaded. It sways instead of turning, and it is drawn within the middle
-// `extent` of its square.
+// points are sampled from a drawing (see dot-orb-sampling.js), one for every dot: the drawn
+// ones at once, the mark when its image has loaded. It sways instead of turning, and it is
+// drawn within the middle `extent` of its square. Every other point lies on the back of the
+// figure, so it has two faces.
+//
+// Whenever the dots turn to a figure, each is given the point nearest to where it is (see
+// dot-orb-pairing.js), and a dot on the near side of the sphere a point on the front of the
+// figure: the dots flow into the shape instead of crossing it.
 const figure = { size: 0.72, extent: 0.8, depth: 0.36, sway: 0.45 };
 
 // An element can name several figures, separated by spaces. The sphere then shows one after the
@@ -154,6 +160,8 @@ const initializeOrb = (canvas, reducedMotion) => {
         figureX: new Float32Array(dotCount),
         figureY: new Float32Array(dotCount),
         figureHalf: new Float32Array(dotCount),
+        // The point of the figure each dot is heading for; an even one lies on its front.
+        point: Uint16Array.from({ length: dotCount }, (_, index) => index),
         // The pace of each dot, spread evenly by the golden ratio.
         pace: Float32Array.from({ length: dotCount }, (_, index) => mix(sequence.slowest, sequence.fastest, (index * 0.618034) % 1)),
     };
@@ -170,6 +178,9 @@ const initializeOrb = (canvas, reducedMotion) => {
     // The sphere itself and the blobs whose surfaces join right now.
     const body = { x: 0, y: 0, radius: sphereRadius };
     const blobs = [];
+    // How the sphere stands in this frame: how it and a figure are turned, its radius without
+    // the buds that are out, its time, and whether a figure has formed, which hides the sphere.
+    const scene = { rotation: null, sway: null, radius: sphereRadius, seconds: 0, formed: false };
     // The dot that is being placed, and what its place is worked out from.
     const dot = { x: 0, y: 0, z: 0, size: 1 };
     const view = { x: 0, y: 0, z: 0, plainX: 0, plainY: 0 };
@@ -280,7 +291,8 @@ const initializeOrb = (canvas, reducedMotion) => {
 
     // The dot on the sphere, or on its bud while that is out, with the surfaces of the blobs
     // joined where they are close.
-    const onSphere = (index, rotation, radius, seconds) => {
+    const onSphere = (index) => {
+        const { rotation, radius, seconds } = scene;
         const part = buds[division.bud[index]];
         // The radius of the blob the dot sits on, and where it sits on that blob without the
         // swell: the surfaces join on those plain shapes.
@@ -323,13 +335,14 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    // Moves the dot towards its place in the figure, as far as the figure has formed. Within a
-    // figure the dots flow from one shape to the next, each at its own pace; coming from the
-    // sphere they head straight for the shape.
-    const intoFigure = (index, sway, delta) => {
+    // Moves the dot towards its point of the figure, as far as the figure has formed. Within a
+    // figure the dots flow from one shape to the next, each at its own pace.
+    const intoFigure = (index, delta) => {
+        const { sway } = scene;
+
         if (figurePoints.length) {
-            const point = figurePoints[index % figurePoints.length];
-            const glide = shape < 0.02 ? 1 : 1 - Math.exp(-glideRate * dots.pace[index] * delta);
+            const point = figurePoints[dots.point[index]];
+            const glide = 1 - Math.exp(-glideRate * dots.pace[index] * delta);
 
             dots.figureX[index] += (point.x - dots.figureX[index]) * glide;
             dots.figureY[index] += (point.y - dots.figureY[index]) * glide;
@@ -338,8 +351,7 @@ const initializeOrb = (canvas, reducedMotion) => {
 
         if (shape > 0.001) {
             const amount = smooth(clamp(shape * 1.35 - (index / dotCount) * 0.35, 0, 1));
-            // Every other dot lies on the back of the figure, so it has two faces.
-            const thickness = dots.figureHalf[index] * (index % 2 === 0 ? 1 : -1);
+            const thickness = dots.figureHalf[index] * (dots.point[index] % 2 === 0 ? 1 : -1);
             const turnedX = dots.figureX[index] * sway.cosTurn + thickness * sway.sinTurn;
             const depth = thickness * sway.cosTurn - dots.figureX[index] * sway.sinTurn;
             const turnedY = dots.figureY[index] * sway.cosLean - depth * sway.sinLean;
@@ -390,26 +402,27 @@ const initializeOrb = (canvas, reducedMotion) => {
         }
     };
 
-    const position = (seconds, delta) => {
+    // Sets the scene for a moment: where the sphere stands, how it leans towards the pointer,
+    // where its buds are and which dots they hold. A figure that has formed hides the sphere,
+    // so nothing of the sphere has to be worked out then.
+    const compose = (seconds, formed) => {
         wander(seconds);
 
         const leanX = clamp((pointer.x + heading.x - home.x) / sphereRadius, -2, 2);
         const leanY = clamp((pointer.y + heading.y - home.y) / sphereRadius, -2, 2);
         const turn = (seconds / turnSeconds) * Math.PI * 2 + leanX * 0.5 * pointer.strength;
         const lean = tilt + leanY * 0.35 * pointer.strength;
-        const rotation = createRotation(turn, lean);
-        const sway = createRotation(
+
+        arrange(seconds, turn, lean);
+        scene.seconds = seconds;
+        scene.formed = formed;
+        scene.rotation = createRotation(turn, lean);
+        scene.sway = createRotation(
             Math.sin(seconds * 0.5) * figure.sway + leanX * 0.2 * pointer.strength,
             0.1 + leanY * 0.12 * pointer.strength,
         );
-        // A figure that has formed hides the sphere: nothing of it has to be worked out.
-        const formed = shape > 0.999;
-
-        arrange(seconds, turn, lean);
-
         // The sphere shrinks by the share of its dots that are out as buds.
-        const away = buds.reduce((sum, part) => sum + part.out, 0) / buds.length;
-        const radius = sphereRadius * Math.sqrt(1 - away);
+        scene.radius = sphereRadius * Math.sqrt(1 - buds.reduce((sum, part) => sum + part.out, 0) / buds.length);
 
         // The sphere and every bud that is out of it are the blobs of the lamp: where they are
         // close, their surfaces join, so a bud grows out of the sphere on a neck and melts back
@@ -417,7 +430,7 @@ const initializeOrb = (canvas, reducedMotion) => {
         blobs.length = 0;
 
         if (!formed) {
-            Object.assign(body, home, { radius });
+            Object.assign(body, home, { radius: scene.radius });
             blobs.push(body);
 
             for (const part of leaving) {
@@ -429,15 +442,19 @@ const initializeOrb = (canvas, reducedMotion) => {
             // The dots are shared out between the sphere and the buds that are out of it.
             division.follow(leaving);
         }
+    };
+
+    const position = (seconds, delta) => {
+        compose(seconds, shape > 0.999);
 
         for (let index = 0; index < dotCount; index += 1) {
-            if (formed) {
+            if (scene.formed) {
                 Object.assign(dot, home, { z: 0, size: 1 });
             } else {
-                onSphere(index, rotation, radius, seconds);
+                onSphere(index);
             }
 
-            intoFigure(index, sway, delta);
+            intoFigure(index, delta);
             disturb();
             dots.x[index] = dot.x;
             dots.y[index] = dot.y;
@@ -488,6 +505,79 @@ const initializeOrb = (canvas, reducedMotion) => {
     // Which figure of the sequence is due.
     const due = () => Math.floor((clock - since) / sequence.dwell) % shapes.length;
 
+    // Gives every dot its point of a figure: the one nearest to where the dot is. Coming from
+    // the sphere, the dots on its near side take the front of the figure, and every dot is on
+    // its point at once, because the figure has not formed yet. Within a figure every dot keeps
+    // its side and glides to its new point.
+    const turnTo = (points) => {
+        const forming = shape < 0.02;
+        const order = [...dots.point.keys()];
+        const places = order.map((index) => (forming
+            ? { x: (dots.x[index] - home.x) / figure.size, y: (dots.y[index] - home.y) / figure.size }
+            : { x: dots.figureX[index], y: dots.figureY[index] }));
+
+        order.sort(forming
+            ? (first, second) => dots.z[second] - dots.z[first]
+            : (first, second) => (dots.point[first] % 2) - (dots.point[second] % 2));
+
+        for (const face of [0, 1]) {
+            const side = order.slice((face * dotCount) / 2, ((face + 1) * dotCount) / 2);
+            const partners = pairInStrips(
+                side.map((index) => places[index]),
+                points.filter((_, index) => index % 2 === face),
+            );
+
+            side.forEach((index, place) => {
+                dots.point[index] = partners[place] * 2 + face;
+            });
+        }
+
+        if (forming) {
+            for (const index of order) {
+                dots.figureX[index] = points[dots.point[index]].x;
+                dots.figureY[index] = points[dots.point[index]].y;
+                dots.figureHalf[index] = points[dots.point[index]].half;
+            }
+        }
+    };
+
+    // Before a figure lets its dots go, they change places within it, which nobody sees: each
+    // takes the place of the dot nearest to where it sits on the sphere, on the side of the
+    // figure that faces the same way. The dots then flow back as they would have come.
+    const letGo = () => {
+        compose(clock, false);
+
+        const order = [...dots.point.keys()];
+        const seated = order.map((index) => {
+            onSphere(index);
+
+            return { x: (dot.x - home.x) / figure.size, y: (dot.y - home.y) / figure.size, z: dot.z };
+        });
+        const held = order.map((index) => ({
+            x: dots.figureX[index],
+            y: dots.figureY[index],
+            half: dots.figureHalf[index],
+            point: dots.point[index],
+        }));
+
+        order.sort((first, second) => seated[second].z - seated[first].z);
+
+        for (const face of [0, 1]) {
+            const side = order.slice((face * dotCount) / 2, ((face + 1) * dotCount) / 2);
+            const places = held.filter(({ point }) => point % 2 === face);
+            const partners = pairInStrips(side.map((index) => seated[index]), places);
+
+            side.forEach((index, place) => {
+                const taken = places[partners[place]];
+
+                dots.figureX[index] = taken.x;
+                dots.figureY[index] = taken.y;
+                dots.figureHalf[index] = taken.half;
+                dots.point[index] = taken.point;
+            });
+        }
+    };
+
     // What the dots show right now: the figure of a sequence that is due, the one figure, or
     // the plain sphere; and while a press has turned that around, its other side. A new figure
     // is flowed into at `rate`.
@@ -495,13 +585,17 @@ const initializeOrb = (canvas, reducedMotion) => {
         const turned = clock < turnedUntil;
         const other = shapes.length ? null : figures.get('mark');
         const next = shapes.length > 1 ? shapes[due()] : shapes[0] ?? (other?.length ? other : null);
+        const showing = Boolean(next) && (shapes.length > 1 || turned === !shapes.length);
 
-        targetShape = next && (shapes.length > 1 || turned === !shapes.length) ? 1 : 0;
-
-        if (next && next !== figurePoints && targetShape) {
+        if (showing && (next !== figurePoints || (!targetShape && shape < 0.02))) {
+            turnTo(next);
             figurePoints = next;
             glideRate = rate;
+        } else if (!showing && targetShape && shape > 0.98) {
+            letGo();
         }
+
+        targetShape = showing ? 1 : 0;
     };
 
     // What the sphere notices of the visitor in this frame.
@@ -724,7 +818,11 @@ const initializeOrb = (canvas, reducedMotion) => {
                 way.y = from.y - (originY + home.y * unit);
                 way.zoom = from.unit / size;
                 way.left = 1;
+                measure();
             }
+
+            // The dots stand where they are on this stage before they are given a figure.
+            position(clock, 0);
         }
 
         react(pointed?.isConnected ? pointed : null);

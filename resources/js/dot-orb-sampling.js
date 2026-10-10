@@ -25,9 +25,10 @@ const distanceToEdge = (filled, size) => {
     return distance;
 };
 
-// About `count` evenly spaced points inside whatever `draw` paints, centred on (0, 0) in a square
-// of side 1, each with half the figure's thickness at that point. Transparent and near-white
-// areas are holes.
+// `count` evenly spaced points inside whatever `draw` paints, centred on (0, 0) in a square of
+// side 1, each with half the figure's thickness at that point. Transparent and near-white areas
+// are holes. The grid is laid a little too fine and then thinned out evenly, so that every dot
+// has a point of its own; a drawing too small for that lends some of its points twice.
 export const sampleFigure = (draw, count) => {
     const canvas = document.createElement('canvas');
 
@@ -51,7 +52,7 @@ export const sampleFigure = (draw, count) => {
     const distance = distanceToEdge(filled, resolution);
     const deepest = Math.max(...distance, 1);
     const area = distance.reduce((sum, value) => sum + (value > 0 ? 1 : 0), 0);
-    const step = Math.sqrt(area / count) * 1.02;
+    const step = Math.sqrt(area / count) * 0.97;
     const points = [];
 
     for (let y = step / 2; y < resolution; y += step) {
@@ -68,5 +69,7 @@ export const sampleFigure = (draw, count) => {
         }
     }
 
-    return points;
+    return Array.from({ length: points.length ? count : 0 }, (_, index) => (
+        points[Math.floor((index * points.length) / count)]
+    ));
 };
