@@ -167,7 +167,7 @@ the stage is the whole section.
   or their row name another. In a text those words are set letter by letter, and the light of
   the page headings runs through them every three seconds, from the first of their letters to
   the last, so the text shows which of its words answer. In the statement of the home page the
-  three kinds of work give the bars of Quantified, the brackets of Jay-Jay and four panes, the
+  three kinds of work give the bars of Quantified, the mark of Jay-Jay and four panes, the
   word for the database gives one, the last pixel the arrow of a pointer, and the name gives the mark;
   everything stays in the accent.
 - **Place.** On a stage that is not fitted the sphere wanders around a point at 68% of the
@@ -229,7 +229,7 @@ current row, so the sphere shows the first row's figure.
   brings its project's color, which is then the accent of the page, and its figures (those of
   the overview of its case study, `scenes` in the content), which the sphere goes through
   while the row is current: for Quantified the bars of a chart, a line chart, a ring and a
-  calendar; for Jay-Jay the brackets of a tag, a globe, a cloud and an envelope. The current
+  calendar; for Jay-Jay its mark, a globe, a cloud and an envelope. The current
   row holds the project's kind, description and technologies.
 - **Contact.** The stage is mirrored and compact, the sphere on the left and the heading as the
   largest text. The rows are the channels, each

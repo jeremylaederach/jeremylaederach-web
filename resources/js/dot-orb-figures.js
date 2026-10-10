@@ -251,21 +251,22 @@ const sheet = (context, size) => {
     });
 };
 
-// Jay-Jay: the brackets and the slash of a closing tag.
+// Jay-Jay's mark, as on jay-jay.ch: two strokes that each turn one corner and frame two eyes. It
+// is drawn in its own square of 256 units.
 const jayJay = (context, size) => {
-    context.lineWidth = size * 0.08;
+    context.save();
+    context.translate(size * 0.1, size * 0.1);
+    context.scale((size * 0.8) / 256, (size * 0.8) / 256);
+    context.lineWidth = 46;
     context.lineCap = 'round';
     context.lineJoin = 'round';
+    context.stroke(new Path2D('M205 51V157A48 48 0 0 1 157 205H112'));
+    context.stroke(new Path2D('M51 205V99A48 48 0 0 1 99 51H144'));
     context.beginPath();
-    context.moveTo(size * 0.36, size * 0.28);
-    context.lineTo(size * 0.15, size * 0.5);
-    context.lineTo(size * 0.36, size * 0.72);
-    context.moveTo(size * 0.64, size * 0.28);
-    context.lineTo(size * 0.85, size * 0.5);
-    context.lineTo(size * 0.64, size * 0.72);
-    context.moveTo(size * 0.56, size * 0.2);
-    context.lineTo(size * 0.44, size * 0.8);
-    context.stroke();
+    context.roundRect(96, 106, 24, 44, 12);
+    context.roundRect(136, 106, 24, 44, 12);
+    context.fill();
+    context.restore();
 };
 
 // Hosting: a cloud.
