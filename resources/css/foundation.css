@@ -31,6 +31,9 @@
         color: var(--ink);
         font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
         scroll-behavior: smooth;
+        /* A page of one screen has no scrollbar and a longer one has: its room stays reserved,
+           so the header does not move sideways when the page changes. */
+        scrollbar-gutter: stable;
         text-rendering: optimizeLegibility;
     }
 

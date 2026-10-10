@@ -193,11 +193,14 @@
         transition: opacity 420ms ease 160ms, translate 620ms var(--ease-out) 160ms;
     }
 
-    /* The steps: the names of the scenes as a row of tabs below the heading. Like the
-       destinations of the header, a hovered or focused one and the current one take the accent;
-       the current one also stands on a line in the accent, which grows in from the left. */
+    /* The steps: the names of the scenes as a row of tabs below the heading, on a hairline that
+       ends with the last of them. Like the destinations of the header, a hovered or focused one
+       and the current one take the accent; the current one also stands on a line in the accent,
+       which grows in from the left. */
     .js .scene-stage__steps {
         display: flex;
+        width: fit-content;
+        max-width: 100%;
         margin-top: 14px;
         overflow-x: auto;
         border-bottom: 1px solid var(--line);

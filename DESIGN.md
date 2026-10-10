@@ -21,7 +21,9 @@ plans and no taste rules. Working rules are in `AGENTS.md`, the current state in
   collapse to 1ms, page navigation swaps without a transition, and canvas animation draws one
   still frame.
 - **Stability.** Pages reveal with opacity and transform only, and animated regions keep their
-  size, so nothing shifts the layout after the first paint.
+  size, so nothing shifts the layout after the first paint. The room of the scrollbar stays
+  reserved on every page, so the header does not move sideways when a page of one screen
+  changes to a longer one.
 - **Performance.** No third-party scripts, fonts or embeds (the exported CSP allows `'self'`
   only). One variable font file. Canvas work stops while it is off screen or the tab is hidden.
 
@@ -249,7 +251,8 @@ shows a screenshot.
   window high. The step that crosses the middle of the window shows its scene: the old statement
   fades out as it sinks, the new one fades in, and the dots flow into the new figure. Nothing
   takes over the scroll; the page is simply as long as its steps.
-- **Steps.** The names of the scenes are a row of tabs below the heading. Like the header's
+- **Steps.** The names of the scenes are a row of tabs below the heading, on a hairline that
+  ends with the last of them. Like the header's
   destinations, a hovered or focused one and the current one take the accent; the current one
   also stands on a line in the accent, which grows in from the left. Each is a link to
   its step, so a scene has an address (`/en/jay-jay#client-hub`). On a narrow screen the row
